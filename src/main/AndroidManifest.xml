@@ -4,6 +4,8 @@
 	android:installLocation="auto">
 
 	<application
+		android:allowBackup="false"
+		android:name=".HawkularApplication"
 		android:label="@string/application_name">
 
 		<activity
