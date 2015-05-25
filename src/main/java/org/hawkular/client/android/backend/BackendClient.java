@@ -11,7 +11,7 @@ import org.jboss.aerogear.android.pipe.rest.RestfulPipeConfiguration;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public final class HawkularClient
+public final class BackendClient
 {
 	public static final class Pipes
 	{

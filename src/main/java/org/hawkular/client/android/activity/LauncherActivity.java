@@ -4,13 +4,16 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.EditText;
 
+import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.R;
-import org.hawkular.client.android.backend.HawkularClient;
+import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.jboss.aerogear.android.pipe.LoaderPipe;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -19,20 +22,24 @@ import timber.log.Timber;
 
 public class LauncherActivity extends Activity
 {
+	@Inject
+	BackendClient backendClient;
+
 	@InjectView(R.id.edit_server)
 	EditText serverEdit;
-
-	private HawkularClient hawkularClient;
 
 	@Override
 	protected void onCreate(Bundle state) {
 		super.onCreate(state);
+
 		setContentView(R.layout.activity_launcher);
 
 		setUpInjections();
 	}
 
 	private void setUpInjections() {
+		HawkularApplication.of(this).inject(this);
+
 		ButterKnife.inject(this);
 	}
 
@@ -44,8 +51,7 @@ public class LauncherActivity extends Activity
 	}
 
 	private void setUpClient() {
-		hawkularClient = new HawkularClient();
-		hawkularClient.setServerUrl(getServerUrl());
+		backendClient.setServerUrl(getServerUrl());
 	}
 
 	private String getServerUrl() {
@@ -53,7 +59,7 @@ public class LauncherActivity extends Activity
 	}
 
 	private void setUpTenants() {
-		LoaderPipe<Tenant> tenantsPipe = hawkularClient.getPipe(HawkularClient.Pipes.TENANTS, this);
+		LoaderPipe<Tenant> tenantsPipe = backendClient.getPipe(BackendClient.Pipes.TENANTS, this);
 
 		tenantsPipe.read(new TenantsCallback());
 	}
