@@ -3,6 +3,9 @@
 	package="org.hawkular.client.android"
 	android:installLocation="auto">
 
+	<uses-permission
+		android:name="android.permission.INTERNET"/>
+
 	<application
 		android:allowBackup="false"
 		android:name=".HawkularApplication"
