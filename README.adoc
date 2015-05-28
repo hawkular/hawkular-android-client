@@ -1,0 +1,23 @@
+= Hawkular Android Client
+
+This repository contains the source code for the Hawkular Android application.
+
+== License
+
+* http://www.apache.org/licenses/LICENSE-2.0.html[Apache Version 2.0]
+
+== Building
+
+[![Travis Status][Travis image]][Travis link]
+
+ifdef::env-github[]
+[link=https://travis-ci.org/hawkular/android-client]
+image:https://travis-ci.org/hawkular/android-client.svg["Build Status", link="https://travis-ci.org/android-client/android-client"]
+endif::[]
+
+You will need JDK 1.7+ installed.
+Gradle, Android SDK and all dependencies will be downloaded automatically.
+
+---
+$ ./gradlew clean assembleDebug
+---
