@@ -7,6 +7,7 @@ import org.hawkular.client.android.backend.model.Tenant;
 import org.jboss.aerogear.android.pipe.LoaderPipe;
 import org.jboss.aerogear.android.pipe.PipeManager;
 import org.jboss.aerogear.android.pipe.rest.RestfulPipeConfiguration;
+import org.jboss.aerogear.android.pipe.util.UrlUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,7 +27,7 @@ public final class BackendClient
 		private PipePaths() {
 		}
 
-		public static final String TENANTS = "hawkular-metrics/tenants";
+		public static final String TENANTS = "hawkular/inventory/tenant";
 	}
 
 	private final String serverUrl;
@@ -45,7 +46,7 @@ public final class BackendClient
 
 	private URL getPipeUrl(String pipePath) {
 		try {
-			return new URL(new URL(serverUrl), pipePath);
+			return UrlUtils.appendQueryToBaseURL(new URL(serverUrl), pipePath);
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
