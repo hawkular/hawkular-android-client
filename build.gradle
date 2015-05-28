@@ -45,8 +45,5 @@ dependencies {
     compile "com.android.support:support-annotations:22.1.1"
     compile "com.jakewharton:butterknife:6.1.0"
     compile "com.jakewharton.timber:timber:3.1.0"
-    compile "com.squareup.dagger:dagger:1.2.2"
     compile "org.jboss.aerogear:aerogear-android-pipe:2.1.0"
-
-    provided "com.squareup.dagger:dagger-compiler:1.2.2"
 }

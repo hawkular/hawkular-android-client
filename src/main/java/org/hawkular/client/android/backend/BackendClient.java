@@ -29,9 +29,9 @@ public final class BackendClient
 		public static final String TENANTS = "hawkular-metrics/tenants";
 	}
 
-	private String serverUrl;
+	private final String serverUrl;
 
-	public void setServerUrl(@NonNull String serverUrl) {
+	public BackendClient(@NonNull String serverUrl) {
 		this.serverUrl = serverUrl;
 
 		setUpPipes();
