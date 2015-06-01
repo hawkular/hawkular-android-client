@@ -6,7 +6,10 @@ import android.widget.EditText;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.BackendEndpoints;
+import org.hawkular.client.android.backend.BackendPipes;
 import org.hawkular.client.android.backend.model.Tenant;
+import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.pipe.LoaderPipe;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
@@ -17,7 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class LauncherActivity extends Activity
+public final class LauncherActivity extends Activity implements Callback<String>
 {
 	@InjectView(R.id.edit_server)
 	EditText serverEdit;
@@ -31,17 +34,23 @@ public class LauncherActivity extends Activity
 		setContentView(R.layout.activity_launcher);
 
 		setUpBindings();
+
+		setUpServerUrl();
 	}
 
 	private void setUpBindings() {
 		ButterKnife.inject(this);
 	}
 
+	private void setUpServerUrl() {
+		serverEdit.setText(BackendEndpoints.COMMUNITY);
+	}
+
 	@OnClick(R.id.button_fetch_tenants)
 	public void setUpContent() {
 		setUpClient();
 
-		setUpTenants();
+		setUpAuthorization();
 	}
 
 	private void setUpClient() {
@@ -52,8 +61,28 @@ public class LauncherActivity extends Activity
 		return serverEdit.getText().toString().trim();
 	}
 
+	private void setUpAuthorization() {
+		if (!backendClient.isAuthorized()) {
+			backendClient.authorize(this, this);
+		} else {
+			setUpTenants();
+		}
+	}
+
+	@Override
+	public void onSuccess(String authenticationResult) {
+		Timber.d("Success! The result is %s", authenticationResult);
+
+		setUpTenants();
+	}
+
+	@Override
+	public void onFailure(Exception authenticationException) {
+		Timber.d(authenticationException, "Failure...");
+	}
+
 	private void setUpTenants() {
-		LoaderPipe<Tenant> tenantsPipe = backendClient.getPipe(BackendClient.Pipes.TENANTS, this);
+		LoaderPipe<Tenant> tenantsPipe = backendClient.getPipe(BackendPipes.Names.TENANTS, this);
 
 		tenantsPipe.read(new TenantsCallback());
 	}
