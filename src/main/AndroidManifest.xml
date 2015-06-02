@@ -8,8 +8,10 @@
 
 	<application
 		android:allowBackup="false"
+		android:icon="@mipmap/ic_launcher"
 		android:name=".HawkularApplication"
-		android:label="@string/application_name">
+		android:label="@string/application_name"
+		android:theme="@style/Theme.Hawkular">
 
 		<activity
 			android:name=".activity.LauncherActivity">

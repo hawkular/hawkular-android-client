@@ -1,7 +1,8 @@
 package org.hawkular.client.android.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
 
 import org.hawkular.client.android.R;
@@ -20,8 +21,11 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public final class LauncherActivity extends Activity implements Callback<String>
+public final class LauncherActivity extends AppCompatActivity implements Callback<String>
 {
+	@InjectView(R.id.toolbar)
+	Toolbar toolbar;
+
 	@InjectView(R.id.edit_server)
 	EditText serverEdit;
 
@@ -30,16 +34,21 @@ public final class LauncherActivity extends Activity implements Callback<String>
 	@Override
 	protected void onCreate(Bundle state) {
 		super.onCreate(state);
-
 		setContentView(R.layout.activity_launcher);
 
 		setUpBindings();
+
+		setUpToolbar();
 
 		setUpServerUrl();
 	}
 
 	private void setUpBindings() {
 		ButterKnife.inject(this);
+	}
+
+	private void setUpToolbar() {
+		setSupportActionBar(toolbar);
 	}
 
 	private void setUpServerUrl() {
