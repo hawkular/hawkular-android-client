@@ -70,15 +70,15 @@ public final class LauncherActivity extends Activity implements Callback<String>
 	}
 
 	@Override
-	public void onSuccess(String authenticationResult) {
-		Timber.d("Success! The result is %s", authenticationResult);
+	public void onSuccess(String authorizationResult) {
+		Timber.d("Authorization :: Success! The result is %s", authorizationResult);
 
 		setUpTenants();
 	}
 
 	@Override
 	public void onFailure(Exception authenticationException) {
-		Timber.d(authenticationException, "Failure...");
+		Timber.d(authenticationException, "Authorization :: Failure...");
 	}
 
 	private void setUpTenants() {
@@ -91,12 +91,12 @@ public final class LauncherActivity extends Activity implements Callback<String>
 	{
 		@Override
 		public void onSuccess(List<Tenant> tenants) {
-			Timber.d("Success!");
+			Timber.d("Tenants :: Success!");
 		}
 
 		@Override
 		public void onFailure(Exception e) {
-			Timber.d("Failure...");
+			Timber.d("Tenants :: Failure...");
 		}
 	}
 }
