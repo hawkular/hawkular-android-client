@@ -23,9 +23,21 @@ import java.util.List;
 
 public final class BackendClient
 {
-	private final String serverUrl;
+	private static final class BackendClientHolder
+	{
+		public static final BackendClient BACKEND_CLIENT = new BackendClient();
+	}
 
-	public BackendClient(@NonNull String serverUrl) {
+	private String serverUrl;
+
+	public static BackendClient getInstance() {
+		return BackendClientHolder.BACKEND_CLIENT;
+	}
+
+	private BackendClient() {
+	}
+
+	public void setServerUrl(@NonNull String serverUrl) {
 		this.serverUrl = serverUrl;
 
 		setUpAuthorization();

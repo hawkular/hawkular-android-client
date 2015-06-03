@@ -29,8 +29,6 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 	@InjectView(R.id.edit_server)
 	EditText serverEdit;
 
-	private BackendClient backendClient;
-
 	@Override
 	protected void onCreate(Bundle state) {
 		super.onCreate(state);
@@ -63,7 +61,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 	}
 
 	private void setUpClient() {
-		backendClient = new BackendClient(getServerUrl());
+		BackendClient.getInstance().setServerUrl(getServerUrl());
 	}
 
 	private String getServerUrl() {
@@ -71,8 +69,8 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 	}
 
 	private void setUpAuthorization() {
-		if (!backendClient.isAuthorized()) {
-			backendClient.authorize(this, this);
+		if (!BackendClient.getInstance().isAuthorized()) {
+			BackendClient.getInstance().authorize(this, this);
 		} else {
 			setUpTenants();
 		}
@@ -80,7 +78,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 
 	@Override
 	public void onSuccess(String authorizationResult) {
-		Timber.d("Authorization :: Success! The result is %s", authorizationResult);
+		Timber.d("Authorization :: Success!");
 
 		setUpTenants();
 	}
@@ -91,7 +89,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 	}
 
 	private void setUpTenants() {
-		LoaderPipe<Tenant> tenantsPipe = backendClient.getPipe(BackendPipes.Names.TENANTS, this);
+		LoaderPipe<Tenant> tenantsPipe = BackendClient.getInstance().getPipe(BackendPipes.Names.TENANTS, this);
 
 		tenantsPipe.read(new TenantsCallback());
 	}
