@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string name="application_name">Hawkular</string>
+	<string name="application_name" translatable="false">Hawkular</string>
 
 </resources>

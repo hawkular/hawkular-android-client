@@ -14,7 +14,7 @@ apply plugin: "com.android.application"
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "22"
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         def versionMajor = 1
@@ -42,8 +42,10 @@ dependencies {
         mavenCentral()
     }
 
-    compile "com.android.support:support-annotations:22.1.1"
+    compile "com.android.support:appcompat-v7:22.2.0"
+    compile "com.android.support:support-annotations:22.2.0"
     compile "com.jakewharton:butterknife:6.1.0"
     compile "com.jakewharton.timber:timber:3.1.0"
+    compile "org.jboss.aerogear:aerogear-android-authz:2.1.0"
     compile "org.jboss.aerogear:aerogear-android-pipe:2.1.0"
 }
