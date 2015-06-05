@@ -1,5 +1,6 @@
 package org.hawkular.client.android.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,7 @@ import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.BackendEndpoints;
 import org.hawkular.client.android.backend.BackendPipes;
 import org.hawkular.client.android.backend.model.Tenant;
+import org.hawkular.client.android.util.Intents;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.pipe.LoaderPipe;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
@@ -28,8 +30,6 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 
 	@InjectView(R.id.edit_server)
 	EditText serverEdit;
-
-	private BackendClient backendClient;
 
 	@Override
 	protected void onCreate(Bundle state) {
@@ -63,7 +63,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 	}
 
 	private void setUpClient() {
-		backendClient = new BackendClient(getServerUrl());
+		BackendClient.getInstance().setServerUrl(getServerUrl());
 	}
 
 	private String getServerUrl() {
@@ -71,8 +71,8 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 	}
 
 	private void setUpAuthorization() {
-		if (!backendClient.isAuthorized()) {
-			backendClient.authorize(this, this);
+		if (!BackendClient.getInstance().isAuthorized()) {
+			BackendClient.getInstance().authorize(this, this);
 		} else {
 			setUpTenants();
 		}
@@ -80,7 +80,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 
 	@Override
 	public void onSuccess(String authorizationResult) {
-		Timber.d("Authorization :: Success! The result is %s", authorizationResult);
+		Timber.d("Authorization :: Success!");
 
 		setUpTenants();
 	}
@@ -91,9 +91,14 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 	}
 
 	private void setUpTenants() {
-		LoaderPipe<Tenant> tenantsPipe = backendClient.getPipe(BackendPipes.Names.TENANTS, this);
+		LoaderPipe<Tenant> tenantsPipe = BackendClient.getInstance().getPipe(BackendPipes.Names.TENANTS, this);
 
 		tenantsPipe.read(new TenantsCallback());
+	}
+
+	private void startResourceTypesActivity(Tenant tenant) {
+		Intent intent = Intents.Builder.of(this).buildResourceTypesIntent(tenant);
+		startActivity(intent);
 	}
 
 	private static final class TenantsCallback extends AbstractActivityCallback<List<Tenant>>
@@ -101,6 +106,10 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 		@Override
 		public void onSuccess(List<Tenant> tenants) {
 			Timber.d("Tenants :: Success!");
+
+			LauncherActivity activity = (LauncherActivity) getActivity();
+
+			activity.startResourceTypesActivity(tenants.get(0));
 		}
 
 		@Override

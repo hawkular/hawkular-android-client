@@ -10,6 +10,7 @@ public final class BackendPipes
 		private Names() {
 		}
 
+		public static final String RESOURCE_TYPES = "resource-types";
 		public static final String TENANTS = "tenants";
 	}
 
@@ -18,6 +19,7 @@ public final class BackendPipes
 		private Paths() {
 		}
 
+		public static final String RESOURCE_TYPES = "hawkular/inventory";
 		public static final String TENANTS = "hawkular/inventory/tenant";
 	}
 }
