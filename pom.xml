@@ -78,4 +78,23 @@
     <license.skip>true</license.skip>
     <checkstyle.skip>true</checkstyle.skip>
   </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <configuration>
+          <excludes combine.children="append">
+            <exclude>build/</exclude>
+            <exclude>.gradle/</exclude>
+            <exclude>gradlew</exclude>
+            <exclude>gradlew.bat</exclude>
+            <exclude>local.properties</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
