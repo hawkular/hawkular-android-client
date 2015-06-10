@@ -75,7 +75,6 @@
 
   <properties>
     <!-- delete license.skip and checkstyle.skip once you have resolved all reported issues -->
-    <license.skip>true</license.skip>
     <checkstyle.skip>true</checkstyle.skip>
   </properties>
 
