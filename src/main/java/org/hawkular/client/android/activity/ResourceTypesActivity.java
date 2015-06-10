@@ -37,86 +37,84 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public final class ResourceTypesActivity extends AppCompatActivity
-{
-	@InjectView(R.id.toolbar)
-	Toolbar toolbar;
+public final class ResourceTypesActivity extends AppCompatActivity {
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
 
-	@InjectView(R.id.list)
-	ListView list;
+    @InjectView(R.id.list)
+    ListView list;
 
-	@Override
-	protected void onCreate(Bundle state) {
-		super.onCreate(state);
-		setContentView(R.layout.activity_resource_types);
+    @Override
+    protected void onCreate(Bundle state) {
+        super.onCreate(state);
+        setContentView(R.layout.activity_resource_types);
 
-		setUpBindings();
+        setUpBindings();
 
-		setUpToolbar();
+        setUpToolbar();
 
-		setUpResourceTypes();
-	}
+        setUpResourceTypes();
+    }
 
-	private void setUpBindings() {
-		ButterKnife.inject(this);
-	}
+    private void setUpBindings() {
+        ButterKnife.inject(this);
+    }
 
-	private void setUpToolbar() {
-		setSupportActionBar(toolbar);
+    private void setUpToolbar() {
+        setSupportActionBar(toolbar);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-	}
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
 
-	private void setUpResourceTypes() {
-		showProgress();
+    private void setUpResourceTypes() {
+        showProgress();
 
-		BackendClient.getInstance().getResourceTypes(getTenant(), this, new ResourceTypesCallback());
-	}
+        BackendClient.getInstance().getResourceTypes(getTenant(), this, new ResourceTypesCallback());
+    }
 
-	private void showProgress() {
-		ViewDirector.of(this, R.id.animator).show(R.id.progress);
-	}
+    private void showProgress() {
+        ViewDirector.of(this, R.id.animator).show(R.id.progress);
+    }
 
-	private Tenant getTenant() {
-		return getIntent().getParcelableExtra(Intents.Extras.TENANT);
-	}
+    private Tenant getTenant() {
+        return getIntent().getParcelableExtra(Intents.Extras.TENANT);
+    }
 
-	private void setUpResourceTypes(List<ResourceType> resourceTypes) {
-		list.setAdapter(new ResourceTypesAdapter(this, resourceTypes));
+    private void setUpResourceTypes(List<ResourceType> resourceTypes) {
+        list.setAdapter(new ResourceTypesAdapter(this, resourceTypes));
 
-		hideProgress();
-	}
+        hideProgress();
+    }
 
-	private void hideProgress() {
-		ViewDirector.of(this, R.id.animator).show(R.id.list);
-	}
+    private void hideProgress() {
+        ViewDirector.of(this, R.id.animator).show(R.id.list);
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem menuItem) {
-		switch (menuItem.getItemId()) {
-			case android.R.id.home:
-				finish();
-				return true;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+        case android.R.id.home:
+            finish();
+            return true;
 
-			default:
-				return super.onOptionsItemSelected(menuItem);
-		}
-	}
+        default:
+            return super.onOptionsItemSelected(menuItem);
+        }
+    }
 
-	private static final class ResourceTypesCallback extends AbstractActivityCallback<List<ResourceType>>
-	{
-		@Override
-		public void onSuccess(List<ResourceType> resourceTypes) {
-			Timber.d("Resource type :: Success!");
+    private static final class ResourceTypesCallback extends AbstractActivityCallback<List<ResourceType>> {
+        @Override
+        public void onSuccess(List<ResourceType> resourceTypes) {
+            Timber.d("Resource type :: Success!");
 
-			ResourceTypesActivity activity = (ResourceTypesActivity) getActivity();
+            ResourceTypesActivity activity = (ResourceTypesActivity) getActivity();
 
-			activity.setUpResourceTypes(resourceTypes);
-		}
+            activity.setUpResourceTypes(resourceTypes);
+        }
 
-		@Override
-		public void onFailure(Exception e) {
-			Timber.d("Resource type :: Failure...");
-		}
-	}
+        @Override
+        public void onFailure(Exception e) {
+            Timber.d("Resource type :: Failure...");
+        }
+    }
 }

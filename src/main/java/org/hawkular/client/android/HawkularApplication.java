@@ -23,25 +23,24 @@ import org.hawkular.client.android.util.Android;
 
 import timber.log.Timber;
 
-public class HawkularApplication extends Application
-{
-	@Override
-	public void onCreate() {
-		super.onCreate();
+public class HawkularApplication extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
-		setUpLogging();
-		setUpDetections();
-	}
+        setUpLogging();
+        setUpDetections();
+    }
 
-	private void setUpLogging() {
-		if (Android.isDebugging()) {
-			Timber.plant(new Timber.DebugTree());
-		}
-	}
+    private void setUpLogging() {
+        if (Android.isDebugging()) {
+            Timber.plant(new Timber.DebugTree());
+        }
+    }
 
-	private void setUpDetections() {
-		if (Android.isDebugging()) {
-			StrictMode.enableDefaults();
-		}
-	}
+    private void setUpDetections() {
+        if (Android.isDebugging()) {
+            StrictMode.enableDefaults();
+        }
+    }
 }

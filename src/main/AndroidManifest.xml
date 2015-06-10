@@ -17,38 +17,29 @@
     limitations under the License.
 
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.hawkular.client.android"
-	android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.hawkular.client.android"
+  android:installLocation="auto">
 
-	<uses-permission
-		android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.INTERNET" />
 
-	<application
-		android:allowBackup="false"
-		android:icon="@mipmap/ic_launcher"
-		android:name=".HawkularApplication"
-		android:label="@string/application_name"
-		android:theme="@style/Theme.Hawkular">
+  <application android:allowBackup="false" android:icon="@mipmap/ic_launcher" android:name=".HawkularApplication"
+    android:label="@string/application_name" android:theme="@style/Theme.Hawkular">
 
-		<activity
-			android:name=".activity.LauncherActivity">
+    <activity android:name=".activity.LauncherActivity">
 
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN"/>
-				<category android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
 
-		</activity>
+    </activity>
 
-		<activity
-			android:name=".activity.ResourceTypesActivity">
-		</activity>
+    <activity android:name=".activity.ResourceTypesActivity">
+    </activity>
 
-		<service
-			android:name="org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthzService">
-		</service>
+    <service android:name="org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthzService">
+    </service>
 
-	</application>
+  </application>
 
 </manifest>

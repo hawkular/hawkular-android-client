@@ -31,55 +31,53 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public final class ResourceTypesAdapter extends BindableAdapter<ResourceType>
-{
-	static final class ViewHolder
-	{
-		@InjectView(R.id.text)
-		public TextView nameText;
+public final class ResourceTypesAdapter extends BindableAdapter<ResourceType> {
+    static final class ViewHolder {
+        @InjectView(R.id.text)
+        public TextView nameText;
 
-		public ViewHolder(@NonNull View view) {
-			ButterKnife.inject(this, view);
-		}
-	}
+        public ViewHolder(@NonNull View view) {
+            ButterKnife.inject(this, view);
+        }
+    }
 
-	private final List<ResourceType> resourceTypes;
+    private final List<ResourceType> resourceTypes;
 
-	public ResourceTypesAdapter(@NonNull Context context, @NonNull List<ResourceType> resourceTypes) {
-		super(context);
+    public ResourceTypesAdapter(@NonNull Context context, @NonNull List<ResourceType> resourceTypes) {
+        super(context);
 
-		this.resourceTypes = resourceTypes;
-	}
+        this.resourceTypes = resourceTypes;
+    }
 
-	@Override
-	public ResourceType getItem(int position) {
-		return resourceTypes.get(position);
-	}
+    @Override
+    public ResourceType getItem(int position) {
+        return resourceTypes.get(position);
+    }
 
-	@Override
-	public long getItemId(int position) {
-		return position;
-	}
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-	@Override
-	public int getCount() {
-		return resourceTypes.size();
-	}
+    @Override
+    public int getCount() {
+        return resourceTypes.size();
+    }
 
-	@NonNull
-	@Override
-	public View newView(LayoutInflater inflater, int position, ViewGroup viewContainer) {
-		View view = inflater.inflate(R.layout.layout_list_item, viewContainer, false);
+    @NonNull
+    @Override
+    public View newView(LayoutInflater inflater, int position, ViewGroup viewContainer) {
+        View view = inflater.inflate(R.layout.layout_list_item, viewContainer, false);
 
-		view.setTag(new ViewHolder(view));
+        view.setTag(new ViewHolder(view));
 
-		return view;
-	}
+        return view;
+    }
 
-	@Override
-	public void bindView(ResourceType resourceType, int position, View view) {
-		ViewHolder viewHolder = (ViewHolder) view.getTag();
+    @Override
+    public void bindView(ResourceType resourceType, int position, View view) {
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-		viewHolder.nameText.setText(resourceType.getId());
-	}
+        viewHolder.nameText.setText(resourceType.getId());
+    }
 }

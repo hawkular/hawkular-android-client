@@ -17,36 +17,22 @@
     limitations under the License.
 
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical"
+  android:layout_width="match_parent" android:layout_height="match_parent">
 
-	<include
-		layout="@layout/layout_toolbar"/>
+  <include layout="@layout/layout_toolbar" />
 
-	<LinearLayout
-		android:orientation="vertical"
-		android:padding="16dp"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+  <LinearLayout android:orientation="vertical" android:padding="16dp" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-		<EditText
-			android:id="@+id/edit_server"
-			android:hint="Server URL in format http://server.url:port"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
+    <EditText android:id="@+id/edit_server" android:hint="Server URL in format http://server.url:port"
+      android:layout_width="match_parent" android:layout_height="wrap_content" />
 
-		<Space
-			android:layout_width="match_parent"
-			android:layout_height="16dp"/>
+    <Space android:layout_width="match_parent" android:layout_height="16dp" />
 
-		<Button
-			android:id="@+id/button_fetch_tenants"
-			android:text="Fetch tenants"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
+    <Button android:id="@+id/button_fetch_tenants" android:text="Fetch tenants" android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
 
-	</LinearLayout>
+  </LinearLayout>
 
 </LinearLayout>

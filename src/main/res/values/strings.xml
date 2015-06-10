@@ -19,6 +19,6 @@
 -->
 <resources>
 
-	<string name="application_name" translatable="false">Hawkular</string>
+  <string name="application_name" translatable="false">Hawkular</string>
 
 </resources>
