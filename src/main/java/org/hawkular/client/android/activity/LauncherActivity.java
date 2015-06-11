@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * and other contributors as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.hawkular.client.android.activity;
 
 import android.content.Intent;
@@ -23,98 +39,96 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public final class LauncherActivity extends AppCompatActivity implements Callback<String>
-{
-	@InjectView(R.id.toolbar)
-	Toolbar toolbar;
+public final class LauncherActivity extends AppCompatActivity implements Callback<String> {
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
 
-	@InjectView(R.id.edit_server)
-	EditText serverEdit;
+    @InjectView(R.id.edit_server)
+    EditText serverEdit;
 
-	@Override
-	protected void onCreate(Bundle state) {
-		super.onCreate(state);
-		setContentView(R.layout.activity_launcher);
+    @Override
+    protected void onCreate(Bundle state) {
+        super.onCreate(state);
+        setContentView(R.layout.activity_launcher);
 
-		setUpBindings();
+        setUpBindings();
 
-		setUpToolbar();
+        setUpToolbar();
 
-		setUpServerUrl();
-	}
+        setUpServerUrl();
+    }
 
-	private void setUpBindings() {
-		ButterKnife.inject(this);
-	}
+    private void setUpBindings() {
+        ButterKnife.inject(this);
+    }
 
-	private void setUpToolbar() {
-		setSupportActionBar(toolbar);
-	}
+    private void setUpToolbar() {
+        setSupportActionBar(toolbar);
+    }
 
-	private void setUpServerUrl() {
-		serverEdit.setText(BackendEndpoints.COMMUNITY);
-	}
+    private void setUpServerUrl() {
+        serverEdit.setText(BackendEndpoints.COMMUNITY);
+    }
 
-	@OnClick(R.id.button_fetch_tenants)
-	public void setUpContent() {
-		setUpClient();
+    @OnClick(R.id.button_fetch_tenants)
+    public void setUpContent() {
+        setUpClient();
 
-		setUpAuthorization();
-	}
+        setUpAuthorization();
+    }
 
-	private void setUpClient() {
-		BackendClient.getInstance().setServerUrl(getServerUrl());
-	}
+    private void setUpClient() {
+        BackendClient.getInstance().setServerUrl(getServerUrl());
+    }
 
-	private String getServerUrl() {
-		return serverEdit.getText().toString().trim();
-	}
+    private String getServerUrl() {
+        return serverEdit.getText().toString().trim();
+    }
 
-	private void setUpAuthorization() {
-		if (!BackendClient.getInstance().isAuthorized()) {
-			BackendClient.getInstance().authorize(this, this);
-		} else {
-			setUpTenants();
-		}
-	}
+    private void setUpAuthorization() {
+        if (!BackendClient.getInstance().isAuthorized()) {
+            BackendClient.getInstance().authorize(this, this);
+        } else {
+            setUpTenants();
+        }
+    }
 
-	@Override
-	public void onSuccess(String authorizationResult) {
-		Timber.d("Authorization :: Success!");
+    @Override
+    public void onSuccess(String authorizationResult) {
+        Timber.d("Authorization :: Success!");
 
-		setUpTenants();
-	}
+        setUpTenants();
+    }
 
-	@Override
-	public void onFailure(Exception authenticationException) {
-		Timber.d(authenticationException, "Authorization :: Failure...");
-	}
+    @Override
+    public void onFailure(Exception authenticationException) {
+        Timber.d(authenticationException, "Authorization :: Failure...");
+    }
 
-	private void setUpTenants() {
-		LoaderPipe<Tenant> tenantsPipe = BackendClient.getInstance().getPipe(BackendPipes.Names.TENANTS, this);
+    private void setUpTenants() {
+        LoaderPipe<Tenant> tenantsPipe = BackendClient.getInstance().getPipe(BackendPipes.Names.TENANTS, this);
 
-		tenantsPipe.read(new TenantsCallback());
-	}
+        tenantsPipe.read(new TenantsCallback());
+    }
 
-	private void startResourceTypesActivity(Tenant tenant) {
-		Intent intent = Intents.Builder.of(this).buildResourceTypesIntent(tenant);
-		startActivity(intent);
-	}
+    private void startResourceTypesActivity(Tenant tenant) {
+        Intent intent = Intents.Builder.of(this).buildResourceTypesIntent(tenant);
+        startActivity(intent);
+    }
 
-	private static final class TenantsCallback extends AbstractActivityCallback<List<Tenant>>
-	{
-		@Override
-		public void onSuccess(List<Tenant> tenants) {
-			Timber.d("Tenants :: Success!");
+    private static final class TenantsCallback extends AbstractActivityCallback<List<Tenant>> {
+        @Override
+        public void onSuccess(List<Tenant> tenants) {
+            Timber.d("Tenants :: Success!");
 
-			LauncherActivity activity = (LauncherActivity) getActivity();
+            LauncherActivity activity = (LauncherActivity) getActivity();
 
-			activity.startResourceTypesActivity(tenants.get(0));
-		}
+            activity.startResourceTypesActivity(tenants.get(0));
+        }
 
-		@Override
-		public void onFailure(Exception e) {
-			Timber.d("Tenants :: Failure...");
-		}
-	}
+        @Override
+        public void onFailure(Exception e) {
+            Timber.d("Tenants :: Failure...");
+        }
+    }
 }
