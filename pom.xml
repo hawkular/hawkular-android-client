@@ -83,6 +83,7 @@
           <excludes combine.children="append">
             <exclude>build/</exclude>
             <exclude>.gradle/</exclude>
+            <exclude>gradle/</exclude>
             <exclude>gradlew</exclude>
             <exclude>gradlew.bat</exclude>
             <exclude>local.properties</exclude>
