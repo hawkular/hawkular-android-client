@@ -61,12 +61,12 @@ public final class BackendClient {
 
     private void setUpAuthorization() {
         AuthorizationManager.config(BackendAuthorization.NAME, OAuth2AuthorizationConfiguration.class)
-                .setBaseURL(getServerUrl(BackendAuthorization.Paths.BASE))
-                .setAccessTokenEndpoint(BackendAuthorization.Paths.ENDPOINT_ACCESS)
-                .setAuthzEndpoint(BackendAuthorization.Paths.ENDPOINT_AUTHZ)
-                .setRefreshEndpoint(BackendAuthorization.Paths.ENDPOINT_REFRESH)
-                .setAccountId(BackendAuthorization.Ids.ACCOUNT).setClientId(BackendAuthorization.Ids.CLIENT)
-                .setRedirectURL(getServerUrl(BackendAuthorization.Paths.REDIRECT).toString()).asModule();
+            .setBaseURL(getServerUrl(BackendAuthorization.Paths.BASE))
+            .setAccessTokenEndpoint(BackendAuthorization.Paths.ENDPOINT_ACCESS)
+            .setAuthzEndpoint(BackendAuthorization.Paths.ENDPOINT_AUTHZ)
+            .setRefreshEndpoint(BackendAuthorization.Paths.ENDPOINT_REFRESH)
+            .setAccountId(BackendAuthorization.Ids.ACCOUNT).setClientId(BackendAuthorization.Ids.CLIENT)
+            .setRedirectURL(getServerUrl(BackendAuthorization.Paths.REDIRECT).toString()).asModule();
     }
 
     private URL getServerUrl(String path) {
@@ -88,7 +88,7 @@ public final class BackendClient {
 
     private void setUpPipe(String pipeName, String pipePath, Class pipeClass) {
         PipeManager.config(pipeName, RestfulPipeConfiguration.class).module(getAuthorizationModule())
-                .withUrl(getServerUrl(pipePath)).forClass(pipeClass);
+            .withUrl(getServerUrl(pipePath)).forClass(pipeClass);
     }
 
     private AuthzModule getAuthorizationModule() {
@@ -110,7 +110,7 @@ public final class BackendClient {
 
     @SuppressWarnings("unchecked")
     public void getResourceTypes(@NonNull Tenant tenant, @NonNull Activity activity,
-            @NonNull Callback<List<ResourceType>> callback) {
+                                 @NonNull Callback<List<ResourceType>> callback) {
         ReadFilter filter = new ReadFilter();
         filter.setLinkUri(getPathUri(String.format("%s/resourceTypes", tenant.getId())));
 

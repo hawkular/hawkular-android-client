@@ -93,12 +93,12 @@ public final class ResourceTypesActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-        case android.R.id.home:
-            finish();
-            return true;
+            case android.R.id.home:
+                finish();
+                return true;
 
-        default:
-            return super.onOptionsItemSelected(menuItem);
+            default:
+                return super.onOptionsItemSelected(menuItem);
         }
     }
 
