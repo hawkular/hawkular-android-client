@@ -16,10 +16,13 @@
  */
 package org.hawkular.client.android.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.hawkular.client.android.R;
@@ -37,7 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public final class ResourceTypesActivity extends AppCompatActivity {
+public final class ResourceTypesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -47,11 +50,12 @@ public final class ResourceTypesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
-        setContentView(R.layout.activity_resource_types);
+        setContentView(R.layout.activity_list);
 
         setUpBindings();
 
         setUpToolbar();
+        setUpList();
 
         setUpResourceTypes();
     }
@@ -64,6 +68,10 @@ public final class ResourceTypesActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void setUpList() {
+        list.setOnItemClickListener(this);
     }
 
     private void setUpResourceTypes() {
@@ -88,6 +96,22 @@ public final class ResourceTypesActivity extends AppCompatActivity {
 
     private void hideProgress() {
         ViewDirector.of(this, R.id.animator).show(R.id.list);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        ResourceType resourceType = getResourceTypesAdapter().getItem(position);
+
+        startResourcesActivity(resourceType);
+    }
+
+    private ResourceTypesAdapter getResourceTypesAdapter() {
+        return (ResourceTypesAdapter) list.getAdapter();
+    }
+
+    private void startResourcesActivity(ResourceType resourceType) {
+        Intent intent = Intents.Builder.of(this).buildResourcesIntent(getTenant(), resourceType);
+        startActivity(intent);
     }
 
     @Override

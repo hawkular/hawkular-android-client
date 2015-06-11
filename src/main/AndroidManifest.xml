@@ -44,6 +44,10 @@
       android:name=".activity.ResourceTypesActivity">
     </activity>
 
+    <activity
+      android:name=".activity.ResourcesActivity">
+    </activity>
+
     <service
       android:name="org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthzService">
     </service>
