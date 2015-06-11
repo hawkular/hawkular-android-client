@@ -63,11 +63,12 @@
   </mailingLists>
 
   <scm>
-    <connection>scm:git:git@github.com:hawkular/hawkular-alerts.git</connection>
-    <developerConnection>scm:git:git@github.com:hawkular/hawkular-alerts.git</developerConnection>
-    <url>https://github.com/hawkular/hawkular-alerts</url>
+    <connection>scm:git:git@github.com:hawkular/android-client.git</connection>
+    <developerConnection>scm:git:git@github.com:hawkular/android-client.git</developerConnection>
+    <url>https://github.com/hawkular/android-client</url>
     <tag>head</tag>
   </scm>
+
   <issueManagement>
     <url>https://issues.jboss.org/browse/HAWKULAR</url>
     <system>jira</system>
