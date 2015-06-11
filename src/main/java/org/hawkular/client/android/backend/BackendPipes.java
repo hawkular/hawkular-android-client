@@ -25,6 +25,7 @@ public final class BackendPipes {
         }
 
         public static final String RESOURCE_TYPES = "resource-types";
+        public static final String RESOURCES = "resources";
         public static final String TENANTS = "tenants";
     }
 
@@ -40,6 +41,7 @@ public final class BackendPipes {
         }
 
         public static final String RESOURCE_TYPES = "%s/resourceTypes";
+        public static final String RESOURCES = "%s/resourceTypes/%s/resources";
         public static final String TENANTS = "tenant";
     }
 }

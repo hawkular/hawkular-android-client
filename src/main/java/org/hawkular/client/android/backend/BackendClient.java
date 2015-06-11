@@ -19,6 +19,7 @@ package org.hawkular.client.android.backend;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 
+import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.ResourceType;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.jboss.aerogear.android.authorization.AuthorizationManager;
@@ -83,6 +84,7 @@ public final class BackendClient {
 
     private void setUpPipes() {
         setUpPipe(BackendPipes.Names.RESOURCE_TYPES, BackendPipes.Roots.INVENTORY, ResourceType.class);
+        setUpPipe(BackendPipes.Names.RESOURCES, BackendPipes.Roots.INVENTORY, Resource.class);
         setUpPipe(BackendPipes.Names.TENANTS, BackendPipes.Roots.INVENTORY, Tenant.class);
     }
 
@@ -100,8 +102,8 @@ public final class BackendClient {
         return getAuthorizationModule().isAuthorized();
     }
 
-    public void authorize(@NonNull Activity activity, @NonNull Callback<String> authorizationCallback) {
-        getAuthorizationModule().requestAccess(activity, authorizationCallback);
+    public void authorize(@NonNull Activity activity, @NonNull Callback<String> callback) {
+        getAuthorizationModule().requestAccess(activity, callback);
     }
 
     public void getTenants(@NonNull Activity activity, @NonNull Callback<List<Tenant>> callback) {
@@ -109,10 +111,16 @@ public final class BackendClient {
             .read(getFilter(BackendPipes.Paths.TENANTS), callback);
     }
 
-    public void getResourceTypes(@NonNull Tenant tenant, @NonNull Activity activity,
-                                 @NonNull Callback<List<ResourceType>> callback) {
+    public void getResourceTypes(@NonNull Tenant tenant,
+                                 @NonNull Activity activity, @NonNull Callback<List<ResourceType>> callback) {
         PipeManager.getPipe(BackendPipes.Names.RESOURCE_TYPES, activity)
             .read(getFilter(String.format(BackendPipes.Paths.RESOURCE_TYPES, tenant.getId())), callback);
+    }
+
+    public void getResources(@NonNull Tenant tenant, @NonNull ResourceType resourceType,
+                             @NonNull Activity activity, @NonNull Callback<List<Resource>> callback) {
+        PipeManager.getPipe(BackendPipes.Names.RESOURCES, activity)
+            .read(getFilter(String.format(BackendPipes.Paths.RESOURCES, tenant.getId(), resourceType.getId())), callback);
     }
 
     private ReadFilter getFilter(String path) {
