@@ -1,18 +1,23 @@
 # Android SDK
+
 local.properties
 
 # Android Studio
+
 .idea/
 *.iml
 
 # Eclipse
+
 .project
 .classpath
 .settings
 
 # Gradle
+
 .gradle/
 build/
 
 # Maven
-/target/
+
+target/
