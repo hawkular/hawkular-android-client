@@ -10,4 +10,4 @@ android:
     - extra-android-m2repository
 
 script:
-  - mvn -s .travis.maven.settings.xml license:check checkstyle:check && ./gradlew clean assembleDebug
+  - mvn --settings maven.settings.xml license:check checkstyle:check && ./gradlew clean assembleDebug
