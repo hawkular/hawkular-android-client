@@ -26,7 +26,6 @@ import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthorizationConfiguration;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.core.ReadFilter;
-import org.jboss.aerogear.android.pipe.LoaderPipe;
 import org.jboss.aerogear.android.pipe.PipeManager;
 import org.jboss.aerogear.android.pipe.rest.RestfulPipeConfiguration;
 import org.jboss.aerogear.android.pipe.util.UrlUtils;
@@ -37,6 +36,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public final class BackendClient {
     private static final class BackendClientHolder {
         public static final BackendClient BACKEND_CLIENT = new BackendClient();
@@ -82,12 +82,13 @@ public final class BackendClient {
     }
 
     private void setUpPipes() {
-        setUpPipe(BackendPipes.Names.RESOURCE_TYPES, BackendPipes.Paths.RESOURCE_TYPES, ResourceType.class);
-        setUpPipe(BackendPipes.Names.TENANTS, BackendPipes.Paths.TENANTS, Tenant.class);
+        setUpPipe(BackendPipes.Names.RESOURCE_TYPES, BackendPipes.Roots.INVENTORY, ResourceType.class);
+        setUpPipe(BackendPipes.Names.TENANTS, BackendPipes.Roots.INVENTORY, Tenant.class);
     }
 
     private void setUpPipe(String pipeName, String pipePath, Class pipeClass) {
-        PipeManager.config(pipeName, RestfulPipeConfiguration.class).module(getAuthorizationModule())
+        PipeManager.config(pipeName, RestfulPipeConfiguration.class)
+            .module(getAuthorizationModule())
             .withUrl(getServerUrl(pipePath)).forClass(pipeClass);
     }
 
@@ -103,18 +104,23 @@ public final class BackendClient {
         getAuthorizationModule().requestAccess(activity, authorizationCallback);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> LoaderPipe<T> getPipe(@NonNull String pipe, @NonNull Activity activity) {
-        return PipeManager.getPipe(pipe, activity);
+    public void getTenants(@NonNull Activity activity, @NonNull Callback<List<Tenant>> callback) {
+        PipeManager.getPipe(BackendPipes.Names.TENANTS, activity)
+            .read(getFilter(BackendPipes.Paths.TENANTS), callback);
     }
 
-    @SuppressWarnings("unchecked")
     public void getResourceTypes(@NonNull Tenant tenant, @NonNull Activity activity,
                                  @NonNull Callback<List<ResourceType>> callback) {
-        ReadFilter filter = new ReadFilter();
-        filter.setLinkUri(getPathUri(String.format("%s/resourceTypes", tenant.getId())));
+        PipeManager.getPipe(BackendPipes.Names.RESOURCE_TYPES, activity)
+            .read(getFilter(String.format(BackendPipes.Paths.RESOURCE_TYPES, tenant.getId())), callback);
+    }
 
-        PipeManager.getPipe(BackendPipes.Names.RESOURCE_TYPES, activity).read(filter, callback);
+    private ReadFilter getFilter(String path) {
+        ReadFilter filter = new ReadFilter();
+
+        filter.setLinkUri(getPathUri(path));
+
+        return filter;
     }
 
     private URI getPathUri(String path) {

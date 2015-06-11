@@ -20,7 +20,7 @@ public final class BackendPipes {
     private BackendPipes() {
     }
 
-    public static final class Names {
+    static final class Names {
         private Names() {
         }
 
@@ -28,11 +28,18 @@ public final class BackendPipes {
         public static final String TENANTS = "tenants";
     }
 
+    static final class Roots {
+        private Roots() {
+        }
+
+        public static final String INVENTORY = "hawkular/inventory";
+    }
+
     static final class Paths {
         private Paths() {
         }
 
-        public static final String RESOURCE_TYPES = "hawkular/inventory";
-        public static final String TENANTS = "hawkular/inventory/tenant";
+        public static final String RESOURCE_TYPES = "%s/resourceTypes";
+        public static final String TENANTS = "tenant";
     }
 }

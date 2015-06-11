@@ -25,11 +25,9 @@ import android.widget.EditText;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.BackendEndpoints;
-import org.hawkular.client.android.backend.BackendPipes;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Intents;
 import org.jboss.aerogear.android.core.Callback;
-import org.jboss.aerogear.android.pipe.LoaderPipe;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
 import java.util.List;
@@ -106,9 +104,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
     }
 
     private void setUpTenants() {
-        LoaderPipe<Tenant> tenantsPipe = BackendClient.getInstance().getPipe(BackendPipes.Names.TENANTS, this);
-
-        tenantsPipe.read(new TenantsCallback());
+        BackendClient.getInstance().getTenants(this, new TenantsCallback());
     }
 
     private void startResourceTypesActivity(Tenant tenant) {
