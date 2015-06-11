@@ -22,7 +22,7 @@
   android:installLocation="auto">
 
   <uses-permission
-    android:name="android.permission.INTERNET" />
+    android:name="android.permission.INTERNET"/>
 
   <application
     android:allowBackup="false"
@@ -34,8 +34,8 @@
     <activity android:name=".activity.LauncherActivity">
 
       <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
 
     </activity>
