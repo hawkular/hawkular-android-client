@@ -21,4 +21,7 @@
 
   <string name="application_name" translatable="false">Hawkular</string>
 
+  <string name="title_resources">Resources</string>
+  <string name="title_resource_types">Resource Types</string>
+
 </resources>
