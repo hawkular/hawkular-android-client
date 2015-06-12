@@ -5,13 +5,13 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public final class Resource implements Parcelable {
+public final class Metric implements Parcelable {
     public static final class Properties implements Parcelable {
-        @SerializedName("url")
-        private String url;
+        @SerializedName("description")
+        private String description;
 
-        public String getUrl() {
-            return url;
+        public String getDescription() {
+            return description;
         }
 
         public static Creator<Properties> CREATOR = new Creator<Properties>() {
@@ -27,12 +27,12 @@ public final class Resource implements Parcelable {
         };
 
         private Properties(Parcel parcel) {
-            this.url = parcel.readString();
+            this.description = parcel.readString();
         }
 
         @Override
         public void writeToParcel(Parcel parcel, int flags) {
-            parcel.writeString(url);
+            parcel.writeString(description);
         }
 
         @Override
@@ -47,6 +47,9 @@ public final class Resource implements Parcelable {
     @SerializedName("properties")
     private Properties properties;
 
+    @SerializedName("type")
+    private MetricType type;
+
     public String getId() {
         return id;
     }
@@ -55,27 +58,33 @@ public final class Resource implements Parcelable {
         return properties;
     }
 
-    public static Creator<Resource> CREATOR = new Creator<Resource>() {
+    public MetricType getType() {
+        return type;
+    }
+
+    public static Creator<Metric> CREATOR = new Creator<Metric>() {
         @Override
-        public Resource createFromParcel(Parcel parcel) {
-            return new Resource(parcel);
+        public Metric createFromParcel(Parcel parcel) {
+            return null;
         }
 
         @Override
-        public Resource[] newArray(int size) {
-            return new Resource[size];
+        public Metric[] newArray(int i) {
+            return new Metric[0];
         }
     };
 
-    private Resource(Parcel parcel) {
+    private Metric(Parcel parcel) {
         this.id = parcel.readString();
         this.properties = parcel.readParcelable(Properties.class.getClassLoader());
+        this.type = parcel.readParcelable(MetricType.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(id);
         parcel.writeParcelable(properties, flags);
+        parcel.writeParcelable(type, flags);
     }
 
     @Override

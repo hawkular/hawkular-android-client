@@ -19,6 +19,7 @@ package org.hawkular.client.android.backend;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 
+import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricType;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.ResourceType;
@@ -84,6 +85,7 @@ public final class BackendClient {
     }
 
     private void setUpPipes() {
+        setUpPipe(BackendPipes.Names.METRICS, BackendPipes.Roots.INVENTORY, Metric.class);
         setUpPipe(BackendPipes.Names.METRIC_TYPES, BackendPipes.Roots.INVENTORY, MetricType.class);
         setUpPipe(BackendPipes.Names.RESOURCE_TYPES, BackendPipes.Roots.INVENTORY, ResourceType.class);
         setUpPipe(BackendPipes.Names.RESOURCES, BackendPipes.Roots.INVENTORY, Resource.class);
@@ -129,6 +131,12 @@ public final class BackendClient {
                                @NonNull Activity activity, @NonNull Callback<List<MetricType>> callback) {
         PipeManager.getPipe(BackendPipes.Names.METRIC_TYPES, activity)
             .read(getFilter(String.format(BackendPipes.Paths.METRIC_TYPES, tenant.getId())), callback);
+    }
+
+    public void getMetrics(@NonNull Tenant tenant, @NonNull Resource resource,
+                           @NonNull Activity activity, @NonNull Callback<List<Metric>> callback) {
+        PipeManager.getPipe(BackendPipes.Names.METRICS, activity)
+            .read(getFilter(String.format(BackendPipes.Paths.METRICS, tenant.getId(), resource.getId())), callback);
     }
 
     private ReadFilter getFilter(String path) {

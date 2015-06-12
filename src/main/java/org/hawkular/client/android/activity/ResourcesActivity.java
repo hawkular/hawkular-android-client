@@ -91,15 +91,15 @@ public class ResourcesActivity extends AppCompatActivity implements AdapterView.
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Resource resource = getResourcesAdapter().getItem(position);
 
-        startMetricTypesActivity();
+        startMetricTypesActivity(resource);
     }
 
     private ResourcesAdapter getResourcesAdapter() {
         return (ResourcesAdapter) list.getAdapter();
     }
 
-    private void startMetricTypesActivity() {
-        Intent intent = Intents.Builder.of(this).buildMetricTypesIntent(getTenant());
+    private void startMetricTypesActivity(Resource resource) {
+        Intent intent = Intents.Builder.of(this).buildMetricsIntent(getTenant(), resource);
         startActivity(intent);
     }
 

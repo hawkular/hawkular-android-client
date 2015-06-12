@@ -7,9 +7,10 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import org.hawkular.client.android.R;
-import org.hawkular.client.android.adapter.MetricTypesAdapter;
+import org.hawkular.client.android.adapter.MetricsAdapter;
 import org.hawkular.client.android.backend.BackendClient;
-import org.hawkular.client.android.backend.model.MetricType;
+import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
@@ -21,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public final class MetricTypesActivity extends AppCompatActivity {
+public final class MetricsActivity extends AppCompatActivity {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -37,7 +38,7 @@ public final class MetricTypesActivity extends AppCompatActivity {
 
         setUpToolbar();
 
-        setUpMetricTypes();
+        setUpMetrics();
     }
 
     private void setUpBindings() {
@@ -50,10 +51,10 @@ public final class MetricTypesActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void setUpMetricTypes() {
+    private void setUpMetrics() {
         showProgress();
 
-        BackendClient.getInstance().getMetricTypes(getTenant(), this, new MetricTypesCallback());
+        BackendClient.getInstance().getMetrics(getTenant(), getResource(), this, new MetricsCallback());
     }
 
     private void showProgress() {
@@ -64,8 +65,12 @@ public final class MetricTypesActivity extends AppCompatActivity {
         return getIntent().getParcelableExtra(Intents.Extras.TENANT);
     }
 
-    private void setUpMetricTypes(List<MetricType> metricTypes) {
-        list.setAdapter(new MetricTypesAdapter(this, metricTypes));
+    private Resource getResource() {
+        return getIntent().getParcelableExtra(Intents.Extras.RESOURCE);
+    }
+
+    private void setUpMetrics(List<Metric> metrics) {
+        list.setAdapter(new MetricsAdapter(this, metrics));
 
         hideProgress();
     }
@@ -86,14 +91,14 @@ public final class MetricTypesActivity extends AppCompatActivity {
         }
     }
 
-    private static final class MetricTypesCallback extends AbstractActivityCallback<List<MetricType>> {
+    private static final class MetricsCallback extends AbstractActivityCallback<List<Metric>> {
         @Override
-        public void onSuccess(List<MetricType> metricTypes) {
+        public void onSuccess(List<Metric> metrics) {
             Timber.d("Metric type :: Success!");
 
-            MetricTypesActivity activity = (MetricTypesActivity) getActivity();
+            MetricsActivity activity = (MetricsActivity) getActivity();
 
-            activity.setUpMetricTypes(metricTypes);
+            activity.setUpMetrics(metrics);
         }
 
         @Override

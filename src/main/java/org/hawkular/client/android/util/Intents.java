@@ -20,9 +20,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import org.hawkular.client.android.activity.MetricTypesActivity;
+import org.hawkular.client.android.activity.MetricsActivity;
 import org.hawkular.client.android.activity.ResourceTypesActivity;
 import org.hawkular.client.android.activity.ResourcesActivity;
+import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.ResourceType;
 import org.hawkular.client.android.backend.model.Tenant;
 
@@ -34,6 +35,7 @@ public class Intents {
         private Extras() {
         }
 
+        public static final String RESOURCE = "resource";
         public static final String RESOURCE_TYPE = "resource-type";
         public static final String TENANT = "tenant";
     }
@@ -64,9 +66,10 @@ public class Intents {
             return intent;
         }
 
-        public Intent buildMetricTypesIntent(@NonNull Tenant tenant) {
-            Intent intent = new Intent(context, MetricTypesActivity.class);
+        public Intent buildMetricsIntent(@NonNull Tenant tenant, @NonNull Resource resource) {
+            Intent intent = new Intent(context, MetricsActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
+            intent.putExtra(Extras.RESOURCE, resource);
 
             return intent;
         }

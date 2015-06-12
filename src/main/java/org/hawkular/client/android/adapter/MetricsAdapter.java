@@ -24,14 +24,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.hawkular.client.android.R;
-import org.hawkular.client.android.backend.model.MetricType;
+import org.hawkular.client.android.backend.model.Metric;
 
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public final class MetricTypesAdapter extends BindableAdapter<MetricType> {
+public final class MetricsAdapter extends BindableAdapter<Metric> {
     static final class ViewHolder {
         @InjectView(R.id.text)
         public TextView nameText;
@@ -41,17 +41,17 @@ public final class MetricTypesAdapter extends BindableAdapter<MetricType> {
         }
     }
 
-    private final List<MetricType> metricTypes;
+    private final List<Metric> metrics;
 
-    public MetricTypesAdapter(@NonNull Context context, @NonNull List<MetricType> metricTypes) {
+    public MetricsAdapter(@NonNull Context context, @NonNull List<Metric> metrics) {
         super(context);
 
-        this.metricTypes = metricTypes;
+        this.metrics = metrics;
     }
 
     @Override
-    public MetricType getItem(int position) {
-        return metricTypes.get(position);
+    public Metric getItem(int position) {
+        return metrics.get(position);
     }
 
     @Override
@@ -61,7 +61,7 @@ public final class MetricTypesAdapter extends BindableAdapter<MetricType> {
 
     @Override
     public int getCount() {
-        return metricTypes.size();
+        return metrics.size();
     }
 
     @NonNull
@@ -75,9 +75,10 @@ public final class MetricTypesAdapter extends BindableAdapter<MetricType> {
     }
 
     @Override
-    public void bindView(MetricType metricType, int position, View view) {
+    public void bindView(Metric metric, int position, View view) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        viewHolder.nameText.setText(metricType.getId());
+        viewHolder.nameText.setText(String.format("%s i. e. %s",
+            metric.getProperties().getDescription(), metric.getType().getId()));
     }
 }

@@ -24,6 +24,7 @@ public final class BackendPipes {
         private Names() {
         }
 
+        public static final String METRICS = "metrics";
         public static final String METRIC_TYPES = "metric-types";
         public static final String RESOURCE_TYPES = "resource-types";
         public static final String RESOURCES = "resources";
@@ -41,6 +42,7 @@ public final class BackendPipes {
         private Paths() {
         }
 
+        public static final String METRICS = "%s/test/resources/%s/metrics";
         public static final String METRIC_TYPES = "%s/metricTypes";
         public static final String RESOURCE_TYPES = "%s/resourceTypes";
         public static final String RESOURCES = "%s/resourceTypes/%s/resources";
