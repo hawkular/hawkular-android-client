@@ -68,7 +68,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
         serverEdit.setText(BackendEndpoints.COMMUNITY);
     }
 
-    @OnClick(R.id.button_fetch_tenants)
+    @OnClick(R.id.button_proceed)
     public void setUpContent() {
         setUpClient();
 

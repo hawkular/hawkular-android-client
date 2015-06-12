@@ -78,7 +78,7 @@ public final class MetricsAdapter extends BindableAdapter<Metric> {
     public void bindView(Metric metric, int position, View view) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        viewHolder.nameText.setText(String.format("%s i. e. %s",
+        viewHolder.nameText.setText(String.format("%s: %s",
             metric.getProperties().getDescription(), metric.getType().getId()));
     }
 }
