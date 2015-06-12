@@ -112,31 +112,36 @@ public final class BackendClient {
 
     public void getTenants(@NonNull Activity activity, @NonNull Callback<List<Tenant>> callback) {
         PipeManager.getPipe(BackendPipes.Names.TENANTS, activity)
-            .read(getFilter(BackendPipes.Paths.TENANTS), callback);
+            .read(getFilter(
+                BackendPipes.Paths.TENANTS), callback);
     }
 
     public void getResourceTypes(@NonNull Tenant tenant,
                                  @NonNull Activity activity, @NonNull Callback<List<ResourceType>> callback) {
         PipeManager.getPipe(BackendPipes.Names.RESOURCE_TYPES, activity)
-            .read(getFilter(String.format(BackendPipes.Paths.RESOURCE_TYPES, tenant.getId())), callback);
+            .read(getFilter(
+                String.format(BackendPipes.Paths.RESOURCE_TYPES, tenant.getId())), callback);
     }
 
     public void getResources(@NonNull Tenant tenant, @NonNull ResourceType resourceType,
                              @NonNull Activity activity, @NonNull Callback<List<Resource>> callback) {
         PipeManager.getPipe(BackendPipes.Names.RESOURCES, activity)
-            .read(getFilter(String.format(BackendPipes.Paths.RESOURCES, tenant.getId(), resourceType.getId())), callback);
+            .read(getFilter(
+                String.format(BackendPipes.Paths.RESOURCES,tenant.getId(), resourceType.getId())), callback);
     }
 
     public void getMetricTypes(@NonNull Tenant tenant,
                                @NonNull Activity activity, @NonNull Callback<List<MetricType>> callback) {
         PipeManager.getPipe(BackendPipes.Names.METRIC_TYPES, activity)
-            .read(getFilter(String.format(BackendPipes.Paths.METRIC_TYPES, tenant.getId())), callback);
+            .read(getFilter(
+                String.format(BackendPipes.Paths.METRIC_TYPES, tenant.getId())), callback);
     }
 
     public void getMetrics(@NonNull Tenant tenant, @NonNull Resource resource,
                            @NonNull Activity activity, @NonNull Callback<List<Metric>> callback) {
         PipeManager.getPipe(BackendPipes.Names.METRICS, activity)
-            .read(getFilter(String.format(BackendPipes.Paths.METRICS, tenant.getId(), resource.getId())), callback);
+            .read(getFilter(
+                String.format(BackendPipes.Paths.METRICS, tenant.getId(), resource.getId())), callback);
     }
 
     private ReadFilter getFilter(String path) {
