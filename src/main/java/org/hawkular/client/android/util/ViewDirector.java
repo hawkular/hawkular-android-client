@@ -29,21 +29,24 @@ public final class ViewDirector {
     private final Activity activity;
     private final Fragment fragment;
 
-    private final int animatorId;
+    private int animatorId;
 
-    public static ViewDirector of(@NonNull Activity activity, @IdRes int animatorId) {
-        return new ViewDirector(activity, null, animatorId);
+    public static ViewDirector of(@NonNull Activity activity) {
+        return new ViewDirector(activity, null);
     }
 
-    public static ViewDirector of(@NonNull Fragment fragment, @IdRes int animatorId) {
-        return new ViewDirector(null, fragment, animatorId);
+    public static ViewDirector of(@NonNull Fragment fragment) {
+        return new ViewDirector(null, fragment);
     }
 
-    private ViewDirector(Activity activity, Fragment fragment, int animatorId) {
+    private ViewDirector(Activity activity, Fragment fragment) {
         this.activity = activity;
         this.fragment = fragment;
+    }
 
+    public ViewDirector using(@IdRes int animatorId) {
         this.animatorId = animatorId;
+        return this;
     }
 
     public void show(@IdRes int viewId) {

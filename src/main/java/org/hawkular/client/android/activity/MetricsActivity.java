@@ -74,7 +74,7 @@ public final class MetricsActivity extends AppCompatActivity {
     }
 
     private void showProgress() {
-        ViewDirector.of(this, R.id.animator).show(R.id.progress);
+        ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
     }
 
     private Tenant getTenant() {
@@ -92,7 +92,7 @@ public final class MetricsActivity extends AppCompatActivity {
     }
 
     private void hideProgress() {
-        ViewDirector.of(this, R.id.animator).show(R.id.list);
+        ViewDirector.of(this).using(R.id.animator).show(R.id.list);
     }
 
     @Override

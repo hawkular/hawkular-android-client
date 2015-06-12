@@ -82,7 +82,7 @@ public class ResourcesActivity extends AppCompatActivity implements AdapterView.
     }
 
     private void showProgress() {
-        ViewDirector.of(this, R.id.animator).show(R.id.progress);
+        ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
     }
 
     private Tenant getTenant() {
@@ -100,7 +100,7 @@ public class ResourcesActivity extends AppCompatActivity implements AdapterView.
     }
 
     private void hideProgress() {
-        ViewDirector.of(this, R.id.animator).show(R.id.list);
+        ViewDirector.of(this).using(R.id.animator).show(R.id.list);
     }
 
     @Override
