@@ -23,5 +23,6 @@
 
   <string name="title_resources">Resources</string>
   <string name="title_resource_types">Resource Types</string>
+  <string name="title_metric_types">Metric Types</string>
 
 </resources>

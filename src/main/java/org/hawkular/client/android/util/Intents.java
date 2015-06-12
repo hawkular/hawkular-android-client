@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import org.hawkular.client.android.activity.MetricTypesActivity;
 import org.hawkular.client.android.activity.ResourceTypesActivity;
 import org.hawkular.client.android.activity.ResourcesActivity;
 import org.hawkular.client.android.backend.model.ResourceType;
@@ -59,6 +60,13 @@ public class Intents {
             Intent intent = new Intent(context, ResourcesActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
             intent.putExtra(Extras.RESOURCE_TYPE, resourceType);
+
+            return intent;
+        }
+
+        public Intent buildMetricTypesIntent(@NonNull Tenant tenant) {
+            Intent intent = new Intent(context, MetricTypesActivity.class);
+            intent.putExtra(Extras.TENANT, tenant);
 
             return intent;
         }

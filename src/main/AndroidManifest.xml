@@ -50,6 +50,11 @@
       android:label="@string/title_resources">
     </activity>
 
+    <activity
+      android:name=".activity.MetricTypesActivity"
+      android:label="@string/title_metric_types">
+    </activity>
+
     <service
       android:name="org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthzService">
     </service>
