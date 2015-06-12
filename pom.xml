@@ -39,7 +39,7 @@
 
   <name>Hawkular Android Client</name>
   <description>Hawkular Mobile Application for Android</description>
-  <url>https://github.com/hawkular/android-client</url>
+  <url>https://github.com/hawkular/hawkular-android-client</url>
   <inceptionYear>2015</inceptionYear>
   <organization>
     <name>Red Hat, Inc.</name>
