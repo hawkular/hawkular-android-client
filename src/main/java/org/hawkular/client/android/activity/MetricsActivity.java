@@ -16,19 +16,17 @@
  */
 package org.hawkular.client.android.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.hawkular.client.android.R;
-import org.hawkular.client.android.adapter.ResourceTypesAdapter;
+import org.hawkular.client.android.adapter.MetricsAdapter;
 import org.hawkular.client.android.backend.BackendClient;
-import org.hawkular.client.android.backend.model.ResourceType;
+import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
@@ -40,7 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public final class ResourceTypesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public final class MetricsActivity extends AppCompatActivity {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -55,9 +53,8 @@ public final class ResourceTypesActivity extends AppCompatActivity implements Ad
         setUpBindings();
 
         setUpToolbar();
-        setUpList();
 
-        setUpResourceTypes();
+        setUpMetrics();
     }
 
     private void setUpBindings() {
@@ -70,14 +67,10 @@ public final class ResourceTypesActivity extends AppCompatActivity implements Ad
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void setUpList() {
-        list.setOnItemClickListener(this);
-    }
-
-    private void setUpResourceTypes() {
+    private void setUpMetrics() {
         showProgress();
 
-        BackendClient.getInstance().getResourceTypes(getTenant(), this, new ResourceTypesCallback());
+        BackendClient.getInstance().getMetrics(getTenant(), getResource(), this, new MetricsCallback());
     }
 
     private void showProgress() {
@@ -88,30 +81,18 @@ public final class ResourceTypesActivity extends AppCompatActivity implements Ad
         return getIntent().getParcelableExtra(Intents.Extras.TENANT);
     }
 
-    private void setUpResourceTypes(List<ResourceType> resourceTypes) {
-        list.setAdapter(new ResourceTypesAdapter(this, resourceTypes));
+    private Resource getResource() {
+        return getIntent().getParcelableExtra(Intents.Extras.RESOURCE);
+    }
+
+    private void setUpMetrics(List<Metric> metrics) {
+        list.setAdapter(new MetricsAdapter(this, metrics));
 
         hideProgress();
     }
 
     private void hideProgress() {
         ViewDirector.of(this, R.id.animator).show(R.id.list);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        ResourceType resourceType = getResourceTypesAdapter().getItem(position);
-
-        startResourcesActivity(resourceType);
-    }
-
-    private ResourceTypesAdapter getResourceTypesAdapter() {
-        return (ResourceTypesAdapter) list.getAdapter();
-    }
-
-    private void startResourcesActivity(ResourceType resourceType) {
-        Intent intent = Intents.Builder.of(this).buildResourcesIntent(getTenant(), resourceType);
-        startActivity(intent);
     }
 
     @Override
@@ -126,19 +107,19 @@ public final class ResourceTypesActivity extends AppCompatActivity implements Ad
         }
     }
 
-    private static final class ResourceTypesCallback extends AbstractActivityCallback<List<ResourceType>> {
+    private static final class MetricsCallback extends AbstractActivityCallback<List<Metric>> {
         @Override
-        public void onSuccess(List<ResourceType> resourceTypes) {
-            Timber.d("Resource type :: Success!");
+        public void onSuccess(List<Metric> metrics) {
+            Timber.d("Metric type :: Success!");
 
-            ResourceTypesActivity activity = (ResourceTypesActivity) getActivity();
+            MetricsActivity activity = (MetricsActivity) getActivity();
 
-            activity.setUpResourceTypes(resourceTypes);
+            activity.setUpMetrics(metrics);
         }
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d("Resource type :: Failure...");
+            Timber.d("Metric type :: Failure...");
         }
     }
 }

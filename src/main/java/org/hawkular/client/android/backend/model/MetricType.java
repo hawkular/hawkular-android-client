@@ -21,7 +21,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public final class ResourceType implements Parcelable {
+public final class MetricType implements Parcelable {
     @SerializedName("id")
     private String id;
 
@@ -29,19 +29,19 @@ public final class ResourceType implements Parcelable {
         return id;
     }
 
-    public static Creator<ResourceType> CREATOR = new Creator<ResourceType>() {
+    public static Creator<MetricType> CREATOR = new Creator<MetricType>() {
         @Override
-        public ResourceType createFromParcel(Parcel parcel) {
-            return new ResourceType(parcel);
+        public MetricType createFromParcel(Parcel parcel) {
+            return new MetricType(parcel);
         }
 
         @Override
-        public ResourceType[] newArray(int size) {
-            return new ResourceType[size];
+        public MetricType[] newArray(int size) {
+            return new MetricType[size];
         }
     };
 
-    private ResourceType(Parcel parcel) {
+    private MetricType(Parcel parcel) {
         this.id = parcel.readString();
     }
 

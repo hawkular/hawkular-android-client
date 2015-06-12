@@ -41,7 +41,18 @@
     </activity>
 
     <activity
-      android:name=".activity.ResourceTypesActivity">
+      android:name=".activity.ResourceTypesActivity"
+      android:label="@string/title_resource_types">
+    </activity>
+
+    <activity
+      android:name=".activity.ResourcesActivity"
+      android:label="@string/title_resources">
+    </activity>
+
+    <activity
+      android:name=".activity.MetricsActivity"
+      android:label="@string/title_metrics">
     </activity>
 
     <service

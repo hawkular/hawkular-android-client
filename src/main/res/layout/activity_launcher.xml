@@ -42,8 +42,8 @@
       android:layout_height="16dp"/>
 
     <Button
-      android:id="@+id/button_fetch_tenants"
-      android:text="Fetch tenants"
+      android:id="@+id/button_proceed"
+      android:text="Proceed"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"/>
 
