@@ -9,8 +9,8 @@ This repository contains the source code for the Hawkular Android application.
 == Building
 
 ifdef::env-github[]
-[link=https://travis-ci.org/hawkular/android-client]
-image:https://travis-ci.org/hawkular/android-client.svg["Build Status", link="https://travis-ci.org/hawkular/android-client"]
+[link=https://travis-ci.org/hawkular/hawkular-android-client]
+image:https://travis-ci.org/hawkular/hawkular-android-client.svg["Build Status", link="https://travis-ci.org/hawkular/hawkular-android-client"]
 endif::[]
 
 You will need JDK 1.7+ installed.
