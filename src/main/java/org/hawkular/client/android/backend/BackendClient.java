@@ -164,7 +164,8 @@ public final class BackendClient {
 
         PipeManager.getPipe(BackendPipes.Names.METRIC_DATA, activity)
             .read(getFilter(
-                String.format(BackendPipes.Paths.METRIC_DATA, tenant.getId(), metric.getId()), pipeParameters), callback);
+                String.format(BackendPipes.Paths.METRIC_DATA, tenant.getId(), metric.getId()),
+                pipeParameters), callback);
     }
 
     private ReadFilter getFilter(String path) {
