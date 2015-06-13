@@ -31,7 +31,8 @@
     android:label="@string/application_name"
     android:theme="@style/Theme.Hawkular">
 
-    <activity android:name=".activity.LauncherActivity">
+    <activity
+      android:name=".activity.LauncherActivity">
 
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -53,6 +54,11 @@
     <activity
       android:name=".activity.MetricsActivity"
       android:label="@string/title_metrics">
+    </activity>
+
+    <activity
+      android:name=".activity.MetricDataActivity"
+      android:label="@string/title_metric_data">
     </activity>
 
     <service

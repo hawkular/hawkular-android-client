@@ -64,6 +64,7 @@ dependencies {
 
     compile "com.android.support:appcompat-v7:22.2.0"
     compile "com.android.support:support-annotations:22.2.0"
+    compile "com.github.lecho:hellocharts-library:1.5.5@aar"
     compile "com.jakewharton:butterknife:6.1.0"
     compile "com.jakewharton.timber:timber:3.1.0"
     compile "org.jboss.aerogear:aerogear-android-authz:2.1.0"
