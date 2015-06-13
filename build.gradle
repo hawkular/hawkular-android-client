@@ -43,6 +43,10 @@ android {
         minSdkVersion 16
         targetSdkVersion 22
     }
+
+    dexOptions {
+        preDexLibraries = !project.hasProperty("preDexDisabled")
+    }
 }
 
 def buildVersionName(versionMajor, versionMinor, versionPatch) {
