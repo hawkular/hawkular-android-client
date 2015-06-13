@@ -23,46 +23,35 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ViewAnimator;
 
-import butterknife.ButterKnife;
-
 public final class ViewDirector {
-    private final Activity activity;
-    private final Fragment fragment;
+    private final View sceneView;
 
     private int animatorId;
 
     public static ViewDirector of(@NonNull Activity activity) {
-        return new ViewDirector(activity, null);
+        return new ViewDirector(activity.getWindow().getDecorView());
     }
 
     public static ViewDirector of(@NonNull Fragment fragment) {
-        return new ViewDirector(null, fragment);
+        return new ViewDirector(fragment.getView());
     }
 
-    private ViewDirector(Activity activity, Fragment fragment) {
-        this.activity = activity;
-        this.fragment = fragment;
+    private ViewDirector(View sceneView) {
+        this.sceneView = sceneView;
     }
 
     public ViewDirector using(@IdRes int animatorId) {
         this.animatorId = animatorId;
+
         return this;
     }
 
     public void show(@IdRes int viewId) {
-        ViewAnimator animator = findView(animatorId);
-        View view = findView(viewId);
+        ViewAnimator animator = (ViewAnimator) sceneView.findViewById(animatorId);
+        View view = sceneView.findViewById(viewId);
 
         if (animator.getDisplayedChild() != animator.indexOfChild(view)) {
             animator.setDisplayedChild(animator.indexOfChild(view));
-        }
-    }
-
-    private <T extends View> T findView(int viewId) {
-        if (activity != null) {
-            return ButterKnife.findById(activity, viewId);
-        } else {
-            return ButterKnife.findById(fragment.getView(), viewId);
         }
     }
 }
