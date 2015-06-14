@@ -45,7 +45,9 @@
 
       <lecho.lib.hellocharts.view.LineChartView
         android:id="@+id/chart"
-        android:padding="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
