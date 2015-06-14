@@ -33,6 +33,7 @@ import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -95,6 +96,8 @@ public class MetricDataActivity extends AppCompatActivity {
     }
 
     private void setUpMetricData(List<MetricData> metricDataList) {
+        sortMetricData(metricDataList);
+
         List<PointValue> chartPoints = new ArrayList<>();
 
         List<AxisValue> chartAxisPoints = new ArrayList<>();
@@ -133,6 +136,10 @@ public class MetricDataActivity extends AppCompatActivity {
         hideProgress();
     }
 
+    private void sortMetricData(List<MetricData> metricDataList) {
+        Collections.sort(metricDataList, new MetricDataComparator());
+    }
+
     private void hideProgress() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.chart);
     }
@@ -162,6 +169,24 @@ public class MetricDataActivity extends AppCompatActivity {
         @Override
         public void onFailure(Exception e) {
             Timber.d("Metric data :: Failure...");
+        }
+    }
+
+    private static final class MetricDataComparator implements Comparator<MetricData> {
+        @Override
+        public int compare(MetricData leftMetricData, MetricData rightMetricData) {
+            long leftTimestamp = leftMetricData.getTimestamp();
+            long rightTimestamp = rightMetricData.getTimestamp();
+
+            if (leftTimestamp == rightTimestamp) {
+                return 0;
+            }
+
+            if (leftTimestamp < rightTimestamp) {
+                return -1;
+            } else {
+                return 1;
+            }
         }
     }
 }
