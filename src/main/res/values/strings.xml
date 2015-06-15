@@ -25,5 +25,6 @@
   <string name="title_resource_types">Resource Types</string>
   <string name="title_metrics">Metrics</string>
   <string name="title_metric_data">Metric Data</string>
+  <string name="title_alerts">Alerts</string>
 
 </resources>
