@@ -16,36 +16,47 @@
  */
 package org.hawkular.client.android.backend;
 
-public final class BackendPipes {
+final class BackendPipes {
     private BackendPipes() {
     }
 
-    static final class Names {
+    public static final class Names {
         private Names() {
         }
 
         public static final String METRICS = "metrics";
+        public static final String METRIC_DATA = "metric-data";
         public static final String METRIC_TYPES = "metric-types";
         public static final String RESOURCE_TYPES = "resource-types";
         public static final String RESOURCES = "resources";
         public static final String TENANTS = "tenants";
     }
 
-    static final class Roots {
+    public static final class Roots {
         private Roots() {
         }
 
         public static final String INVENTORY = "hawkular/inventory";
+        public static final String METRICS = "hawkular-metrics";
     }
 
-    static final class Paths {
+    public static final class Paths {
         private Paths() {
         }
 
         public static final String METRICS = "%s/test/resources/%s/metrics";
+        public static final String METRIC_DATA = "%s/metrics/numeric/%s/data";
         public static final String METRIC_TYPES = "%s/metricTypes";
         public static final String RESOURCE_TYPES = "%s/resourceTypes";
         public static final String RESOURCES = "%s/resourceTypes/%s/resources";
         public static final String TENANTS = "tenant";
+    }
+
+    public static final class Parameters {
+        private Parameters() {
+        }
+
+        public static final String START = "start";
+        public static final String FINISH = "end";
     }
 }

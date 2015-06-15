@@ -17,9 +17,11 @@
 package org.hawkular.client.android.backend;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.backend.model.MetricType;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.ResourceType;
@@ -37,7 +39,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public final class BackendClient {
@@ -86,6 +92,7 @@ public final class BackendClient {
 
     private void setUpPipes() {
         setUpPipe(BackendPipes.Names.METRICS, BackendPipes.Roots.INVENTORY, Metric.class);
+        setUpPipe(BackendPipes.Names.METRIC_DATA, BackendPipes.Roots.METRICS, MetricData.class);
         setUpPipe(BackendPipes.Names.METRIC_TYPES, BackendPipes.Roots.INVENTORY, MetricType.class);
         setUpPipe(BackendPipes.Names.RESOURCE_TYPES, BackendPipes.Roots.INVENTORY, ResourceType.class);
         setUpPipe(BackendPipes.Names.RESOURCES, BackendPipes.Roots.INVENTORY, Resource.class);
@@ -144,17 +151,52 @@ public final class BackendClient {
                 String.format(BackendPipes.Paths.METRICS, tenant.getId(), resource.getId())), callback);
     }
 
+    public void getMetricData(@NonNull Tenant tenant, @NonNull Metric metric,
+                              @NonNull Activity activity, @NonNull Callback<List<MetricData>> callback) {
+        Calendar startTime = GregorianCalendar.getInstance();
+        startTime.add(Calendar.MINUTE, -10);
+
+        Calendar finishTime = GregorianCalendar.getInstance();
+
+        Map<String, String> pipeParameters = new HashMap<>();
+        pipeParameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTimeInMillis()));
+        pipeParameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTimeInMillis()));
+
+        PipeManager.getPipe(BackendPipes.Names.METRIC_DATA, activity)
+            .read(getFilter(
+                String.format(BackendPipes.Paths.METRIC_DATA, tenant.getId(), metric.getId()),
+                pipeParameters), callback);
+    }
+
     private ReadFilter getFilter(String path) {
         ReadFilter filter = new ReadFilter();
 
-        filter.setLinkUri(getPathUri(path));
+        filter.setLinkUri(getUri(new Uri.Builder().appendPath(path).build().toString()));
 
         return filter;
     }
 
-    private URI getPathUri(String path) {
+    private ReadFilter getFilter(String path, Map<String, String> parameters) {
+        ReadFilter filter = new ReadFilter();
+
+        Uri.Builder uriBuilder = new Uri.Builder();
+
+        uriBuilder.appendPath(path);
+
+        for (String parameterKey : parameters.keySet()) {
+            String parameterValue = parameters.get(parameterKey);
+
+            uriBuilder.appendQueryParameter(parameterKey, parameterValue);
+        }
+
+        filter.setLinkUri(getUri(uriBuilder.build().toString()));
+
+        return filter;
+    }
+
+    private URI getUri(String uri) {
         try {
-            return new URI(null, null, path, null);
+            return new URI(uri);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

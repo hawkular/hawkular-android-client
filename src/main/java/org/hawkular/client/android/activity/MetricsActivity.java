@@ -16,10 +16,13 @@
  */
 package org.hawkular.client.android.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.hawkular.client.android.R;
@@ -38,7 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public final class MetricsActivity extends AppCompatActivity {
+public final class MetricsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -53,6 +56,7 @@ public final class MetricsActivity extends AppCompatActivity {
         setUpBindings();
 
         setUpToolbar();
+        setUpList();
 
         setUpMetrics();
     }
@@ -65,6 +69,10 @@ public final class MetricsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void setUpList() {
+        list.setOnItemClickListener(this);
     }
 
     private void setUpMetrics() {
@@ -93,6 +101,22 @@ public final class MetricsActivity extends AppCompatActivity {
 
     private void hideProgress() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.list);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        Metric metric = getMetricsAdapter().getItem(position);
+
+        startMetricDataActivity(metric);
+    }
+
+    private MetricsAdapter getMetricsAdapter() {
+        return (MetricsAdapter) list.getAdapter();
+    }
+
+    private void startMetricDataActivity(Metric metric) {
+        Intent intent = Intents.Builder.of(this).buildMetricDataIntent(getTenant(), metric);
+        startActivity(intent);
     }
 
     @Override

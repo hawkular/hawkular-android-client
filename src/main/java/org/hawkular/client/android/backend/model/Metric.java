@@ -81,12 +81,12 @@ public final class Metric implements Parcelable {
     public static Creator<Metric> CREATOR = new Creator<Metric>() {
         @Override
         public Metric createFromParcel(Parcel parcel) {
-            return null;
+            return new Metric(parcel);
         }
 
         @Override
-        public Metric[] newArray(int i) {
-            return new Metric[0];
+        public Metric[] newArray(int size) {
+            return new Metric[size];
         }
     };
 
