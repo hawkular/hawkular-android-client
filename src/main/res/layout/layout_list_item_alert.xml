@@ -17,14 +17,29 @@
     limitations under the License.
 
 -->
-<resources>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:gravity="center_vertical"
+  android:padding="16dp"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
 
-  <string name="application_name" translatable="false">Hawkular</string>
+  <TextView
+    android:id="@+id/text_title"
+    android:textSize="16sp"
+    android:textStyle="bold|italic"
+    android:singleLine="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
 
-  <string name="title_resources">Resources</string>
-  <string name="title_resource_types">Resource Types</string>
-  <string name="title_metrics">Metrics</string>
-  <string name="title_metric_data">Metric Data</string>
-  <string name="title_alerts">Alerts</string>
+  <Space
+    android:layout_width="match_parent"
+    android:layout_height="8dp"/>
 
-</resources>
+  <TextView
+    android:id="@+id/text_message"
+    android:textSize="15sp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+
+</LinearLayout>

@@ -20,6 +20,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import org.hawkular.client.android.R;
@@ -43,6 +45,9 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 
     @InjectView(R.id.edit_server)
     EditText serverEdit;
+
+    @InjectView(R.id.layout_categories)
+    ViewGroup categoriesLayout;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -68,7 +73,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
         serverEdit.setText(BackendEndpoints.COMMUNITY);
     }
 
-    @OnClick(R.id.button_proceed)
+    @OnClick(R.id.button_authorization)
     public void setUpContent() {
         setUpClient();
 
@@ -87,7 +92,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
         if (!BackendClient.getInstance().isAuthorized()) {
             BackendClient.getInstance().authorize(this, this);
         } else {
-            setUpTenants();
+            showCategories();
         }
     }
 
@@ -95,7 +100,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
     public void onSuccess(String authorizationResult) {
         Timber.d("Authorization :: Success!");
 
-        setUpTenants();
+        showCategories();
     }
 
     @Override
@@ -103,12 +108,23 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
         Timber.d(authenticationException, "Authorization :: Failure...");
     }
 
-    private void setUpTenants() {
+    private void showCategories() {
+        categoriesLayout.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.button_tenants)
+    public void setUpTenants() {
         BackendClient.getInstance().getTenants(this, new TenantsCallback());
     }
 
     private void startResourceTypesActivity(Tenant tenant) {
         Intent intent = Intents.Builder.of(this).buildResourceTypesIntent(tenant);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.button_alerts)
+    public void setUpAlerts() {
+        Intent intent = Intents.Builder.of(this).buildAlertsIntent();
         startActivity(intent);
     }
 

@@ -42,10 +42,39 @@
       android:layout_height="16dp"/>
 
     <Button
-      android:id="@+id/button_proceed"
-      android:text="Proceed"
+      android:id="@+id/button_authorization"
+      android:text="Authorize"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"/>
+
+    <LinearLayout
+      android:id="@+id/layout_categories"
+      android:visibility="gone"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <Space
+        android:layout_width="match_parent"
+        android:layout_height="16dp"/>
+
+      <Button
+        android:id="@+id/button_tenants"
+        android:text="Tenants"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+      <Space
+        android:layout_width="match_parent"
+        android:layout_height="16dp"/>
+
+      <Button
+        android:id="@+id/button_alerts"
+        android:text="Alerts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
   </LinearLayout>
 

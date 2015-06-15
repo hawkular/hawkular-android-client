@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import org.hawkular.client.android.activity.AlertsActivity;
 import org.hawkular.client.android.activity.MetricDataActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
 import org.hawkular.client.android.activity.ResourceTypesActivity;
@@ -83,6 +84,10 @@ public class Intents {
             intent.putExtra(Extras.METRIC, metric);
 
             return intent;
+        }
+
+        public Intent buildAlertsIntent() {
+            return new Intent(context, AlertsActivity.class);
         }
     }
 }

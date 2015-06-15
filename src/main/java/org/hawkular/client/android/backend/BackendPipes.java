@@ -24,6 +24,7 @@ final class BackendPipes {
         private Names() {
         }
 
+        public static final String ALERTS = "alerts";
         public static final String METRICS = "metrics";
         public static final String METRIC_DATA = "metric-data";
         public static final String METRIC_TYPES = "metric-types";
@@ -36,6 +37,7 @@ final class BackendPipes {
         private Roots() {
         }
 
+        public static final String ALERTS = "hawkular/alerts";
         public static final String INVENTORY = "hawkular/inventory";
         public static final String METRICS = "hawkular-metrics";
     }
