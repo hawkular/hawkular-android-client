@@ -42,6 +42,18 @@ android {
 
         minSdkVersion 16
         targetSdkVersion 22
+
+        def serverFile = file("server.properties")
+        def serverProperties = new Properties()
+
+        if (serverFile.exists()) {
+            serverProperties.load(serverFile.newInputStream())
+
+            buildConfigField "String", "UPS_URL", formatStringField(serverProperties["ups.url"])
+            buildConfigField "String", "UPS_VARIANT", formatStringField(serverProperties["ups.variant"])
+            buildConfigField "String", "UPS_SECRET", formatStringField(serverProperties["ups.secret"])
+            buildConfigField "String", "GCM_SENDER", formatStringField(serverProperties["gcm.sender"])
+        }
     }
 
     dexOptions {
@@ -57,6 +69,10 @@ def buildVersionCode(versionMajor, versionMinor, versionPatch) {
     return versionMajor * 10 ** 2 + versionMinor * 10 ** 1 + versionPatch * 10 ** 0
 }
 
+def formatStringField(field) {
+    return "\"${field}\""
+}
+
 dependencies {
     repositories {
         mavenCentral()
@@ -69,4 +85,5 @@ dependencies {
     compile "com.jakewharton.timber:timber:3.1.0"
     compile "org.jboss.aerogear:aerogear-android-authz:2.1.0"
     compile "org.jboss.aerogear:aerogear-android-pipe:2.1.0"
+    compile "org.jboss.aerogear:aerogear-android-push:2.1.0"
 }

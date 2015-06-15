@@ -1,0 +1,51 @@
+diff --git a/src/main/AndroidManifest.xml b/src/main/AndroidManifest.xml
+index 2b58e4c..613f3ae 100644
+--- a/src/main/AndroidManifest.xml
++++ b/src/main/AndroidManifest.xml
+@@ -22,7 +22,22 @@
+   android:installLocation="auto">
+ 
+   <uses-permission
++    android:name="android.permission.ACCESS_COARSE_LOCATION"/>
++  <uses-permission
+     android:name="android.permission.INTERNET"/>
++  <uses-permission
++    android:name="android.permission.GET_ACCOUNTS"/>
++  <uses-permission
++    android:name="android.permission.WAKE_LOCK"/>
++
++  <uses-permission
++    android:name="com.google.android.c2dm.permission.RECEIVE"/>
++
++  <uses-permission
++    android:name="org.hawkular.client.android.permission.C2D_MESSAGE"/>
++  <permission
++    android:name="org.hawkular.client.android.permission.C2D_MESSAGE"
++    android:protectionLevel="signature"/>
+ 
+   <application
+     android:allowBackup="false"
+@@ -70,6 +85,23 @@
+       android:name="org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthzService">
+     </service>
+ 
++    <receiver
++      android:name="org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMMessageReceiver"
++      android:permission="com.google.android.c2dm.permission.SEND">
++
++      <intent-filter>
++        <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
++        <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
++
++        <category android:name="org.hawkular.client.android"/>
++      </intent-filter>
++
++      <meta-data
++        android:name="DEFAULT_MESSAGE_HANDLER_KEY"
++        android:value="org.hawkular.client.android.BackendPushHandler"/>
++
++    </receiver>
++
+   </application>
+ 
+ </manifest>
