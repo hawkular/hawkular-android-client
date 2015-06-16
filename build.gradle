@@ -49,10 +49,15 @@ android {
         if (serverFile.exists()) {
             serverProperties.load(serverFile.newInputStream())
 
-            buildConfigField "String", "UPS_URL", serverProperties["ups.url"]
-            buildConfigField "String", "UPS_VARIANT", serverProperties["ups.variant"]
-            buildConfigField "String", "UPS_SECRET", serverProperties["ups.secret"]
-            buildConfigField "String", "GCM_SENDER", serverProperties["gcm.sender"]
+            buildConfigField "String", "UPS_URL", formatStringField(serverProperties["ups.url"])
+            buildConfigField "String", "UPS_VARIANT", formatStringField(serverProperties["ups.variant"])
+            buildConfigField "String", "UPS_SECRET", formatStringField(serverProperties["ups.secret"])
+            buildConfigField "String", "GCM_SENDER", formatStringField(serverProperties["gcm.sender"])
+        } else {
+            buildConfigField "String", "UPS_URL", formatStringField("placeholder")
+            buildConfigField "String", "UPS_VARIANT", formatStringField("placeholder")
+            buildConfigField "String", "UPS_SECRET", formatStringField("placeholder")
+            buildConfigField "String", "GCM_SENDER", formatStringField("placeholder")
         }
     }
 
@@ -67,6 +72,10 @@ def buildVersionName(versionMajor, versionMinor, versionPatch) {
 
 def buildVersionCode(versionMajor, versionMinor, versionPatch) {
     return versionMajor * 10 ** 2 + versionMinor * 10 ** 1 + versionPatch * 10 ** 0
+}
+
+def formatStringField(field) {
+    return "\"${field}\""
 }
 
 dependencies {
