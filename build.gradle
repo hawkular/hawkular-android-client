@@ -60,10 +60,6 @@ android {
             buildConfigField "String", "GCM_SENDER", formatStringField("placeholder")
         }
     }
-
-    dexOptions {
-        preDexLibraries = !project.hasProperty("preDexDisabled")
-    }
 }
 
 def buildVersionName(versionMajor, versionMinor, versionPatch) {
