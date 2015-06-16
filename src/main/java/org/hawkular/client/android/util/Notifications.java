@@ -74,7 +74,6 @@ public final class Notifications {
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(notificationColor)
             .setLights(notificationColor, Led.DURATION_ON, Led.DURATION_OFF)
-            .setCategory(NotificationCompat.CATEGORY_EVENT)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .build();
