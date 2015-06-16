@@ -22,22 +22,18 @@
   android:installLocation="auto">
 
   <uses-permission
-    android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-  <uses-permission
     android:name="android.permission.INTERNET"/>
-  <uses-permission
-    android:name="android.permission.GET_ACCOUNTS"/>
   <uses-permission
     android:name="android.permission.WAKE_LOCK"/>
 
   <uses-permission
     android:name="com.google.android.c2dm.permission.RECEIVE"/>
 
-  <uses-permission
-    android:name="org.hawkular.client.android.permission.C2D_MESSAGE"/>
   <permission
     android:name="org.hawkular.client.android.permission.C2D_MESSAGE"
     android:protectionLevel="signature"/>
+  <uses-permission
+    android:name="org.hawkular.client.android.permission.C2D_MESSAGE"/>
 
   <application
     android:allowBackup="false"
