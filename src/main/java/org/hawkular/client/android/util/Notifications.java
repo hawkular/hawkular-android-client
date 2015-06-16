@@ -55,7 +55,7 @@ public final class Notifications {
 
     public void sendAlertNotification() {
         getNotificationManager().notify(Ids.ALERT, getAlertNotification(
-            "Hawkular", "Some metric had not a great mood lately.", new Date()));
+            "Hawkular", "Some metric is not in the mood.", new Date()));
     }
 
     private NotificationManager getNotificationManager() {

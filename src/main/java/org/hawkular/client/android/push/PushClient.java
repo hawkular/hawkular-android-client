@@ -38,6 +38,10 @@ public final class PushClient implements Callback<Void> {
     }
 
     public void setUpPush() {
+        if (!isPushServerUriCorrect()) {
+            return;
+        }
+
         RegistrarManager.config(PushConfiguration.NAME, AeroGearGCMPushConfiguration.class)
             .setPushServerURI(Uris.getUri(PushConfiguration.Ups.URL))
             .setSecret(PushConfiguration.Ups.SECRET)
@@ -46,6 +50,16 @@ public final class PushClient implements Callback<Void> {
             .asRegistrar();
 
         RegistrarManager.getRegistrar(PushConfiguration.NAME).register(context, this);
+    }
+
+    private boolean isPushServerUriCorrect() {
+        try {
+            Uris.getUri(PushConfiguration.Ups.URL);
+
+            return true;
+        } catch (RuntimeException e) {
+            return false;
+        }
     }
 
     public void onSuccess(Void ignored) {
