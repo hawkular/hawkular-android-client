@@ -94,7 +94,7 @@
 
       <meta-data
         android:name="DEFAULT_MESSAGE_HANDLER_KEY"
-        android:value="org.hawkular.client.android.BackendPushHandler"/>
+        android:value="org.hawkular.client.android.push.PushHandler"/>
 
     </receiver>
 

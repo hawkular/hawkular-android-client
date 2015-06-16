@@ -1,9 +1,9 @@
-package org.hawkular.client.android.backend;
+package org.hawkular.client.android.push;
 
 import org.hawkular.client.android.BuildConfig;
 
-public final class BackendPush {
-    private BackendPush() {
+final class PushConfiguration {
+    private PushConfiguration() {
     }
 
     public static final String NAME = "Hawkular";

@@ -19,15 +19,8 @@ package org.hawkular.client.android;
 import android.app.Application;
 import android.os.StrictMode;
 
-import org.hawkular.client.android.backend.BackendPush;
+import org.hawkular.client.android.push.PushClient;
 import org.hawkular.client.android.util.Android;
-import org.jboss.aerogear.android.core.Callback;
-import org.jboss.aerogear.android.unifiedpush.PushRegistrar;
-import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import timber.log.Timber;
 
@@ -54,34 +47,7 @@ public class HawkularApplication extends Application {
         }
     }
 
-    public void setUpPush() {
-        RegistrarManager.config(BackendPush.NAME, AeroGearGCMPushConfiguration.class)
-            .setPushServerURI(getUri(BackendPush.Ups.URL))
-            .setSecret(BackendPush.Ups.SECRET)
-            .setVariantID(BackendPush.Ups.VARIANT)
-            .setSenderIds(BackendPush.Gcm.SENDER)
-            .asRegistrar();
-
-        PushRegistrar registrar = RegistrarManager.getRegistrar(BackendPush.NAME);
-
-        registrar.register(getApplicationContext(), new Callback<Void>() {
-            @Override
-            public void onSuccess(Void data) {
-                Timber.d("Push :: Success!");
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Timber.d("Push :: Failure...");
-            }
-        });
-    }
-
-    private URI getUri(String uri) {
-        try {
-            return new URI(uri);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+    private void setUpPush() {
+        PushClient.of(this).setUpPush();
     }
 }
