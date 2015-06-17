@@ -19,6 +19,7 @@ package org.hawkular.client.android;
 import android.app.Application;
 import android.os.StrictMode;
 
+import org.hawkular.client.android.push.PushClient;
 import org.hawkular.client.android.util.Android;
 
 import timber.log.Timber;
@@ -30,6 +31,8 @@ public class HawkularApplication extends Application {
 
         setUpLogging();
         setUpDetections();
+
+        setUpPush();
     }
 
     private void setUpLogging() {
@@ -42,5 +45,9 @@ public class HawkularApplication extends Application {
         if (Android.isDebugging()) {
             StrictMode.enableDefaults();
         }
+    }
+
+    private void setUpPush() {
+        PushClient.of(this).setUpPush();
     }
 }

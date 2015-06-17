@@ -42,10 +42,23 @@ android {
 
         minSdkVersion 16
         targetSdkVersion 22
-    }
 
-    dexOptions {
-        preDexLibraries = !project.hasProperty("preDexDisabled")
+        def serverFile = file("server.properties")
+        def serverProperties = new Properties()
+
+        if (serverFile.exists()) {
+            serverProperties.load(serverFile.newInputStream())
+
+            buildConfigField "String", "UPS_URL", formatStringField(serverProperties["ups.url"])
+            buildConfigField "String", "UPS_VARIANT", formatStringField(serverProperties["ups.variant"])
+            buildConfigField "String", "UPS_SECRET", formatStringField(serverProperties["ups.secret"])
+            buildConfigField "String", "GCM_SENDER", formatStringField(serverProperties["gcm.sender"])
+        } else {
+            buildConfigField "String", "UPS_URL", formatStringField("placeholder")
+            buildConfigField "String", "UPS_VARIANT", formatStringField("placeholder")
+            buildConfigField "String", "UPS_SECRET", formatStringField("placeholder")
+            buildConfigField "String", "GCM_SENDER", formatStringField("placeholder")
+        }
     }
 }
 
@@ -57,16 +70,22 @@ def buildVersionCode(versionMajor, versionMinor, versionPatch) {
     return versionMajor * 10 ** 2 + versionMinor * 10 ** 1 + versionPatch * 10 ** 0
 }
 
+def formatStringField(field) {
+    return "\"${field}\""
+}
+
 dependencies {
     repositories {
         mavenCentral()
     }
 
     compile "com.android.support:appcompat-v7:22.2.0"
+    compile "com.android.support:support-v4:22.2.0"
     compile "com.android.support:support-annotations:22.2.0"
     compile "com.github.lecho:hellocharts-library:1.5.5@aar"
     compile "com.jakewharton:butterknife:6.1.0"
     compile "com.jakewharton.timber:timber:3.1.0"
     compile "org.jboss.aerogear:aerogear-android-authz:2.1.0"
     compile "org.jboss.aerogear:aerogear-android-pipe:2.1.0"
+    compile "org.jboss.aerogear:aerogear-android-push:2.1.0"
 }
