@@ -25,6 +25,7 @@ final class BackendPipes {
         }
 
         public static final String ALERTS = "alerts";
+        public static final String ENVIRONMENTS = "environments";
         public static final String METRICS = "metrics";
         public static final String METRIC_DATA = "metric-data";
         public static final String METRIC_TYPES = "metric-types";
@@ -46,6 +47,7 @@ final class BackendPipes {
         private Paths() {
         }
 
+        public static final String ENVIRONMENTS = "%s/environments";
         public static final String METRICS = "%s/test/resources/%s/metrics";
         public static final String METRIC_DATA = "%s/metrics/numeric/%s/data";
         public static final String METRIC_TYPES = "%s/metricTypes";

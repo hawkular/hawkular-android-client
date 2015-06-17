@@ -18,6 +18,7 @@ package org.hawkular.client.android.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import android.widget.EditText;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.BackendEndpoints;
+import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Android;
 import org.hawkular.client.android.util.Preferences;
@@ -136,15 +138,22 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
         BackendClient.getInstance().getTenants(this, new TenantsCallback());
     }
 
-    private void saveBackendPreferences(Tenant tenant) {
+    private void setUpEnvironment(Tenant tenant) {
+        BackendClient.getInstance().getEnvironments(tenant, this, new EnvironmentsCallback(tenant));
+    }
+
+    private void succeed(Tenant tenant, Environment environment) {
+        saveBackendPreferences(tenant, environment);
+
+        setResult(Activity.RESULT_OK);
+        finish();
+    }
+
+    private void saveBackendPreferences(Tenant tenant, Environment environment) {
         Preferences.ofBackend(this).host().set(getHost());
         Preferences.ofBackend(this).port().set(getPort());
         Preferences.ofBackend(this).tenant().set(tenant.getId());
-    }
-
-    private void succeed() {
-        setResult(Activity.RESULT_OK);
-        finish();
+        Preferences.ofBackend(this).environment().set(environment.getId());
     }
 
     private static final class TenantsCallback extends AbstractActivityCallback<List<Tenant>> {
@@ -155,15 +164,47 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
                 return;
             }
 
+            // This is a potentially dangerous action.
+            // AeroGear does not support single item fetching.
+            Tenant tenant = tenants.get(0);
+
             AuthorizationActivity activity = (AuthorizationActivity) getActivity();
 
-            activity.saveBackendPreferences(tenants.get(0));
-            activity.succeed();
+            activity.setUpEnvironment(tenant);
         }
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d(e, "Tenants retrieving failed.");
+            Timber.d(e, "Tenants fetching failed.");
+        }
+    }
+
+    private static final class EnvironmentsCallback extends AbstractActivityCallback<List<Environment>> {
+        private final Tenant tenant;
+
+        public EnvironmentsCallback(@NonNull Tenant tenant) {
+            this.tenant = tenant;
+        }
+
+        @Override
+        public void onSuccess(List<Environment> environments) {
+            if (environments.isEmpty()) {
+                Timber.d("Environments list is empty, this should not happen.");
+                return;
+            }
+
+            // This is a potentially dangerous action.
+            // The first environment is picked and used as main, this should change in the future.
+            Environment environment = environments.get(0);
+
+            AuthorizationActivity activity = (AuthorizationActivity) getActivity();
+
+            activity.succeed(tenant, environment);
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            Timber.d(e, "Environments fetching failed.");
         }
     }
 }

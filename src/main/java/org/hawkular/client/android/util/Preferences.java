@@ -37,10 +37,12 @@ public final class Preferences {
         public static final String BACKEND_HOST = "host";
         public static final String BACKEND_PORT = "port";
         public static final String BACKEND_TENANT = "tenant";
+        public static final String BACKEND_ENVIRONMENT = "environment";
     }
 
     private SharedPreferences serverPreferences;
 
+    @NonNull
     public static Preferences ofBackend(@NonNull Context context) {
         return new Preferences(context, Locations.BACKEND);
     }
@@ -49,15 +51,23 @@ public final class Preferences {
         this.serverPreferences = context.getSharedPreferences(preferencesLocation, Context.MODE_PRIVATE);
     }
 
+    @NonNull
     public StringPreference host() {
         return new StringPreference(serverPreferences, Keys.BACKEND_HOST);
     }
 
+    @NonNull
     public StringPreference port() {
         return new StringPreference(serverPreferences, Keys.BACKEND_PORT);
     }
 
+    @NonNull
     public StringPreference tenant() {
         return new StringPreference(serverPreferences, Keys.BACKEND_TENANT);
+    }
+
+    @NonNull
+    public StringPreference environment() {
+        return new StringPreference(serverPreferences, Keys.BACKEND_ENVIRONMENT);
     }
 }
