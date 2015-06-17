@@ -23,6 +23,8 @@
     <item name="colorPrimary">@color/background_primary</item>
     <item name="colorPrimaryDark">@color/background_primary_dark</item>
     <item name="colorAccent">@color/background_accent</item>
+
+    <item name="colorButtonNormal">?attr/colorPrimary</item>
   </style>
 
 </resources>
