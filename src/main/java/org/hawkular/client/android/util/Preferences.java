@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-import info.metadude.android.typedpreferences.IntPreference;
 import info.metadude.android.typedpreferences.StringPreference;
 
 public final class Preferences {

@@ -18,6 +18,7 @@ package org.hawkular.client.android.backend.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -27,6 +28,10 @@ public final class Tenant implements Parcelable {
 
     public String getId() {
         return id;
+    }
+
+    public Tenant(@NonNull String id) {
+        this.id = id;
     }
 
     public static Creator<Tenant> CREATOR = new Creator<Tenant>() {

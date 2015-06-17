@@ -61,16 +61,12 @@ public final class BackendClient {
     private BackendClient() {
     }
 
-    public void setServerUrl(@NonNull String serverUrl) {
-        this.serverUrl = serverUrl;
+    public void setUpBackend(@NonNull String serverHost, @NonNull String serverPort) {
+        this.serverUrl = String.format("http://%s:%s", serverHost, serverPort);
 
         setUpAuthorization();
 
         setUpPipes();
-    }
-
-    public void setServerUrl(@NonNull String serverHost, @NonNull String serverPort) {
-        setServerUrl(String.format("http://%s:%s", serverHost, serverPort));
     }
 
     private void setUpAuthorization() {
@@ -113,10 +109,6 @@ public final class BackendClient {
 
     private AuthzModule getAuthorizationModule() {
         return AuthorizationManager.getModule(BackendAuthorization.NAME);
-    }
-
-    public boolean isAuthorized() {
-        return getAuthorizationModule().isAuthorized();
     }
 
     public void authorize(@NonNull Activity activity, @NonNull Callback<String> callback) {

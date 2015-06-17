@@ -20,34 +20,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
-import org.hawkular.client.android.backend.BackendEndpoints;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Intents;
+import org.hawkular.client.android.util.Preferences;
 import org.jboss.aerogear.android.core.Callback;
-import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
-
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 public final class LauncherActivity extends AppCompatActivity implements Callback<String> {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
-
-    @InjectView(R.id.edit_server)
-    EditText serverEdit;
-
-    @InjectView(R.id.layout_categories)
-    ViewGroup categoriesLayout;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -58,7 +45,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 
         setUpToolbar();
 
-        setUpServerUrl();
+        setUpBackendClient();
     }
 
     private void setUpBindings() {
@@ -69,78 +56,56 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
         setSupportActionBar(toolbar);
     }
 
-    private void setUpServerUrl() {
-        serverEdit.setText(BackendEndpoints.COMMUNITY);
-    }
+    private void setUpBackendClient() {
+        String backendHost = Preferences.ofBackend(this).host().get();
+        String backendPort = Preferences.ofBackend(this).port().get();
 
-    @OnClick(R.id.button_authorization)
-    public void setUpContent() {
-        setUpClient();
-
-        setUpAuthorization();
-    }
-
-    private void setUpClient() {
-        BackendClient.getInstance().setServerUrl(getServerUrl());
-    }
-
-    private String getServerUrl() {
-        return serverEdit.getText().toString().trim();
-    }
-
-    private void setUpAuthorization() {
-        if (!BackendClient.getInstance().isAuthorized()) {
-            BackendClient.getInstance().authorize(this, this);
-        } else {
-            showCategories();
+        if (backendHost.isEmpty() || backendPort.isEmpty()) {
+            startAuthorizationActivity();
+            return;
         }
+
+        BackendClient.getInstance().setUpBackend(backendHost, backendPort);
+
+        BackendClient.getInstance().authorize(this, this);
     }
 
     @Override
-    public void onSuccess(String authorizationResult) {
-        Timber.d("Authorization :: Success!");
-
-        showCategories();
+    public void onSuccess(String authorization) {
     }
 
     @Override
-    public void onFailure(Exception authenticationException) {
-        Timber.d(authenticationException, "Authorization :: Failure...");
+    public void onFailure(Exception e) {
+        startAuthorizationActivity();
     }
 
-    private void showCategories() {
-        categoriesLayout.setVisibility(View.VISIBLE);
+    private void startAuthorizationActivity() {
+        Intent intent = Intents.Builder.of(this).buildAuthorizationIntent();
+        startActivityForResult(intent, Intents.Requests.AUTHORIZATION);
+    }
+
+    @Override
+    protected void onActivityResult(int request, int result, Intent intent) {
+        super.onActivityResult(request, result, intent);
+
+        if ((request == Intents.Requests.AUTHORIZATION) && (result != RESULT_OK)) {
+            finish();
+        }
     }
 
     @OnClick(R.id.button_tenants)
     public void setUpTenants() {
-        BackendClient.getInstance().getTenants(this, new TenantsCallback());
+        Intent intent = Intents.Builder.of(this).buildResourceTypesIntent(getTenant());
+        startActivity(intent);
     }
 
-    private void startResourceTypesActivity(Tenant tenant) {
-        Intent intent = Intents.Builder.of(this).buildResourceTypesIntent(tenant);
-        startActivity(intent);
+    private Tenant getTenant() {
+        return new Tenant(Preferences.ofBackend(this).tenant().get());
     }
 
     @OnClick(R.id.button_alerts)
     public void setUpAlerts() {
         Intent intent = Intents.Builder.of(this).buildAlertsIntent();
         startActivity(intent);
-    }
-
-    private static final class TenantsCallback extends AbstractActivityCallback<List<Tenant>> {
-        @Override
-        public void onSuccess(List<Tenant> tenants) {
-            Timber.d("Tenants :: Success!");
-
-            LauncherActivity activity = (LauncherActivity) getActivity();
-
-            activity.startResourceTypesActivity(tenants.get(0));
-        }
-
-        @Override
-        public void onFailure(Exception e) {
-            Timber.d("Tenants :: Failure...");
-        }
     }
 }

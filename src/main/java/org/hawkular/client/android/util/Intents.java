@@ -45,6 +45,13 @@ public class Intents {
         public static final String TENANT = "tenant";
     }
 
+    public static final class Requests {
+        private Requests() {
+        }
+
+        public static final int AUTHORIZATION = 42;
+    }
+
     public static final class Builder {
         private final Context context;
 

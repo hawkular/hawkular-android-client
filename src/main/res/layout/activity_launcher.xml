@@ -31,9 +31,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-      android:id="@+id/edit_server"
-      android:hint="Server URL in format http://server.url:port"
+    <Button
+      android:id="@+id/button_tenants"
+      android:text="Tenants"
+      android:textColor="@android:color/white"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"/>
 
@@ -42,39 +43,11 @@
       android:layout_height="16dp"/>
 
     <Button
-      android:id="@+id/button_authorization"
-      android:text="Authorize"
+      android:id="@+id/button_alerts"
+      android:text="Alerts"
+      android:textColor="@android:color/white"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"/>
-
-    <LinearLayout
-      android:id="@+id/layout_categories"
-      android:visibility="gone"
-      android:orientation="vertical"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-
-      <Space
-        android:layout_width="match_parent"
-        android:layout_height="16dp"/>
-
-      <Button
-        android:id="@+id/button_tenants"
-        android:text="Tenants"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-      <Space
-        android:layout_width="match_parent"
-        android:layout_height="16dp"/>
-
-      <Button
-        android:id="@+id/button_alerts"
-        android:text="Alerts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    </LinearLayout>
 
   </LinearLayout>
 

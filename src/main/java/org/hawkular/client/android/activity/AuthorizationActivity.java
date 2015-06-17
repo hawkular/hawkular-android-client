@@ -1,5 +1,6 @@
 package org.hawkular.client.android.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -89,7 +90,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private void setUpBackendAuthorization() {
         try {
-            BackendClient.getInstance().setServerUrl(getHost(), getPort());
+            BackendClient.getInstance().setUpBackend(getHost(), getPort());
 
             BackendClient.getInstance().authorize(this, this);
         } catch (RuntimeException e) {
@@ -104,7 +105,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
     }
 
     @Override
-    public void onSuccess(String authorizationToken) {
+    public void onSuccess(String authorization) {
         setUpTenant();
     }
 
@@ -125,6 +126,11 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
         Preferences.ofBackend(this).tenant().set(tenant.getId());
     }
 
+    private void succeed() {
+        setResult(Activity.RESULT_OK);
+        finish();
+    }
+
     private static final class TenantsCallback extends AbstractActivityCallback<List<Tenant>> {
         @Override
         public void onSuccess(List<Tenant> tenants) {
@@ -136,7 +142,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
             AuthorizationActivity activity = (AuthorizationActivity) getActivity();
 
             activity.saveBackendPreferences(tenants.get(0));
-            activity.finish();
+            activity.succeed();
         }
 
         @Override
