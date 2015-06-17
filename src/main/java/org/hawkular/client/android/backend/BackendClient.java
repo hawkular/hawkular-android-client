@@ -69,6 +69,10 @@ public final class BackendClient {
         setUpPipes();
     }
 
+    public void setServerUrl(@NonNull String serverHost, @NonNull String serverPort) {
+        setServerUrl(String.format("http://%s:%s", serverHost, serverPort));
+    }
+
     private void setUpAuthorization() {
         AuthorizationManager.config(BackendAuthorization.NAME, OAuth2AuthorizationConfiguration.class)
             .setBaseURL(getServerUrl(BackendAuthorization.Paths.BASE))

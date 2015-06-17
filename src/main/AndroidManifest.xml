@@ -53,6 +53,11 @@
     </activity>
 
     <activity
+      android:name=".activity.AuthorizationActivity"
+      android:label="@string/title_authorization">
+    </activity>
+
+    <activity
       android:name=".activity.ResourceTypesActivity"
       android:label="@string/title_resource_types">
     </activity>

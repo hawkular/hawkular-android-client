@@ -8,9 +8,6 @@ import info.metadude.android.typedpreferences.IntPreference;
 import info.metadude.android.typedpreferences.StringPreference;
 
 public final class Preferences {
-    private Preferences() {
-    }
-
     private static final class Locations {
         private Locations() {
         }

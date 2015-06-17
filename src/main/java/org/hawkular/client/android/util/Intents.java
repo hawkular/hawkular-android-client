@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.activity.AlertsActivity;
+import org.hawkular.client.android.activity.AuthorizationActivity;
 import org.hawkular.client.android.activity.MetricDataActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
 import org.hawkular.client.android.activity.ResourceTypesActivity;
@@ -53,6 +54,10 @@ public class Intents {
 
         private Builder(Context context) {
             this.context = context;
+        }
+
+        public Intent buildAuthorizationIntent() {
+            return new Intent(context, AuthorizationActivity.class);
         }
 
         public Intent buildResourceTypesIntent(@NonNull Tenant tenant) {
