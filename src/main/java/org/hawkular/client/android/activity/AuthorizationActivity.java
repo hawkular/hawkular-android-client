@@ -74,8 +74,8 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private void setUpDefaults() {
         if (Android.isDebugging()) {
-            hostEdit.append(BackendEndpoints.Community.HOST);
-            portEdit.append(BackendEndpoints.Community.PORT);
+            hostEdit.setText(BackendEndpoints.Community.HOST);
+            portEdit.setText(BackendEndpoints.Community.PORT);
         }
     }
 
