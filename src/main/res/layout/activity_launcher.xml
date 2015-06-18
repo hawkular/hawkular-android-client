@@ -34,7 +34,6 @@
     <Button
       android:id="@+id/button_tenants"
       android:text="Tenants"
-      android:textColor="@android:color/white"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"/>
 
@@ -45,7 +44,6 @@
     <Button
       android:id="@+id/button_alerts"
       android:text="Alerts"
-      android:textColor="@android:color/white"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"/>
 
