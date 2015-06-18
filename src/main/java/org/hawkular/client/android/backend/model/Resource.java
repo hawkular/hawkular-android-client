@@ -22,52 +22,25 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public final class Resource implements Parcelable {
-    public static final class Properties implements Parcelable {
-        @SerializedName("url")
-        private String url;
-
-        public String getUrl() {
-            return url;
-        }
-
-        public static Creator<Properties> CREATOR = new Creator<Properties>() {
-            @Override
-            public Properties createFromParcel(Parcel parcel) {
-                return new Properties(parcel);
-            }
-
-            @Override
-            public Properties[] newArray(int size) {
-                return new Properties[size];
-            }
-        };
-
-        private Properties(Parcel parcel) {
-            this.url = parcel.readString();
-        }
-
-        @Override
-        public void writeToParcel(Parcel parcel, int flags) {
-            parcel.writeString(url);
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-    }
 
     @SerializedName("id")
     private String id;
 
+    @SerializedName("type")
+    private ResourceType type;
+
     @SerializedName("properties")
-    private Properties properties;
+    private ResourceProperties properties;
 
     public String getId() {
         return id;
     }
 
-    public Properties getProperties() {
+    public ResourceType getType() {
+        return type;
+    }
+
+    public ResourceProperties getProperties() {
         return properties;
     }
 
@@ -85,12 +58,14 @@ public final class Resource implements Parcelable {
 
     private Resource(Parcel parcel) {
         this.id = parcel.readString();
-        this.properties = parcel.readParcelable(Properties.class.getClassLoader());
+        this.type = parcel.readParcelable(ResourceType.class.getClassLoader());
+        this.properties = parcel.readParcelable(ResourceProperties.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(id);
+        parcel.writeParcelable(type, flags);
         parcel.writeParcelable(properties, flags);
     }
 
