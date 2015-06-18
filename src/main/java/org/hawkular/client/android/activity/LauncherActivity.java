@@ -57,8 +57,8 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
     }
 
     private void setUpBackendClient() {
-        String backendHost = Preferences.ofBackend(this).host().get();
-        String backendPort = Preferences.ofBackend(this).port().get();
+        String backendHost = Preferences.of(this).host().get();
+        String backendPort = Preferences.of(this).port().get();
 
         if (backendHost.isEmpty() || backendPort.isEmpty()) {
             startAuthorizationActivity();
@@ -100,7 +100,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
     }
 
     private Tenant getTenant() {
-        return new Tenant(Preferences.ofBackend(this).tenant().get());
+        return new Tenant(Preferences.of(this).tenant().get());
     }
 
     @OnClick(R.id.button_alerts)

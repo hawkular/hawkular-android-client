@@ -150,10 +150,10 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
     }
 
     private void saveBackendPreferences(Tenant tenant, Environment environment) {
-        Preferences.ofBackend(this).host().set(getHost());
-        Preferences.ofBackend(this).port().set(getPort());
-        Preferences.ofBackend(this).tenant().set(tenant.getId());
-        Preferences.ofBackend(this).environment().set(environment.getId());
+        Preferences.of(this).host().set(getHost());
+        Preferences.of(this).port().set(getPort());
+        Preferences.of(this).tenant().set(tenant.getId());
+        Preferences.of(this).environment().set(environment.getId());
     }
 
     private static final class TenantsCallback extends AbstractActivityCallback<List<Tenant>> {

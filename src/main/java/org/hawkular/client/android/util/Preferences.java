@@ -43,7 +43,7 @@ public final class Preferences {
     private SharedPreferences serverPreferences;
 
     @NonNull
-    public static Preferences ofBackend(@NonNull Context context) {
+    public static Preferences of(@NonNull Context context) {
         return new Preferences(context, Locations.BACKEND);
     }
 
