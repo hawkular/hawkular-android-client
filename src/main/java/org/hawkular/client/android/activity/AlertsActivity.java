@@ -20,7 +20,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.adapter.AlertsAdapter;
@@ -35,7 +37,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public final class AlertsActivity extends AppCompatActivity {
+public final class AlertsActivity extends AppCompatActivity implements AlertsAdapter.AlertMenuListener {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -75,9 +77,40 @@ public final class AlertsActivity extends AppCompatActivity {
     }
 
     private void setUpAlerts(List<Alert> alerts) {
-        list.setAdapter(new AlertsAdapter(this, alerts));
+        list.setAdapter(new AlertsAdapter(this, this, alerts));
 
         hideProgress();
+    }
+
+    @Override
+    public void onAlertMenuClick(View alertView, int alertPosition) {
+        showAlertMenu(alertView, alertPosition);
+    }
+
+    private void showAlertMenu(final View alertView, final  int alertPosition) {
+        PopupMenu alertMenu = new PopupMenu(this, alertView);
+
+        alertMenu.getMenuInflater().inflate(R.menu.menu_alerts, alertMenu.getMenu());
+
+        alertMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.menu_resolve:
+                        Timber.d("Alert %d was not deleted intentionally.", alertPosition);
+                        return true;
+
+                    case R.id.menu_acknowledge:
+                        Timber.d("Alert %d was not deleted intentionally.", alertPosition);
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        alertMenu.show();
     }
 
     private void hideProgress() {

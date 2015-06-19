@@ -48,6 +48,8 @@
   <string name="menu_resources">@string/title_resources</string>
   <string name="menu_settings">Settings</string>
   <string name="menu_feedback">Help &amp; feedback</string>
+  <string name="menu_resolve">Resolve</string>
+  <string name="menu_acknowledge">Acknowledge</string>
 
 </resources>
 
