@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.backend.model.Alert;
+import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.backend.model.MetricType;
@@ -61,8 +62,8 @@ public final class BackendClient {
     private BackendClient() {
     }
 
-    public void setServerUrl(@NonNull String serverUrl) {
-        this.serverUrl = serverUrl;
+    public void setUpBackend(@NonNull String serverHost, @NonNull String serverPort) {
+        this.serverUrl = String.format("http://%s:%s", serverHost, serverPort);
 
         setUpAuthorization();
 
@@ -93,6 +94,7 @@ public final class BackendClient {
 
     private void setUpPipes() {
         setUpPipe(BackendPipes.Names.ALERTS, BackendPipes.Roots.ALERTS, Alert.class);
+        setUpPipe(BackendPipes.Names.ENVIRONMENTS, BackendPipes.Roots.INVENTORY, Environment.class);
         setUpPipe(BackendPipes.Names.METRICS, BackendPipes.Roots.INVENTORY, Metric.class);
         setUpPipe(BackendPipes.Names.METRIC_DATA, BackendPipes.Roots.METRICS, MetricData.class);
         setUpPipe(BackendPipes.Names.METRIC_TYPES, BackendPipes.Roots.INVENTORY, MetricType.class);
@@ -111,10 +113,6 @@ public final class BackendClient {
         return AuthorizationManager.getModule(BackendAuthorization.NAME);
     }
 
-    public boolean isAuthorized() {
-        return getAuthorizationModule().isAuthorized();
-    }
-
     public void authorize(@NonNull Activity activity, @NonNull Callback<String> callback) {
         getAuthorizationModule().requestAccess(activity, callback);
     }
@@ -128,6 +126,13 @@ public final class BackendClient {
         PipeManager.getPipe(BackendPipes.Names.TENANTS, activity)
             .read(getFilter(
                 BackendPipes.Paths.TENANTS), callback);
+    }
+
+    public void getEnvironments(@NonNull Tenant tenant,
+                                @NonNull Activity activity, @NonNull Callback<List<Environment>> callback) {
+        PipeManager.getPipe(BackendPipes.Names.ENVIRONMENTS, activity)
+            .read(getFilter(
+                String.format(BackendPipes.Paths.ENVIRONMENTS, tenant.getId())), callback);
     }
 
     public void getResourceTypes(@NonNull Tenant tenant,

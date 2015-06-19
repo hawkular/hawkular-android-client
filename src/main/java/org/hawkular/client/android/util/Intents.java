@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.activity.AlertsActivity;
+import org.hawkular.client.android.activity.AuthorizationActivity;
 import org.hawkular.client.android.activity.MetricDataActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
 import org.hawkular.client.android.activity.ResourceTypesActivity;
@@ -44,6 +45,13 @@ public class Intents {
         public static final String TENANT = "tenant";
     }
 
+    public static final class Requests {
+        private Requests() {
+        }
+
+        public static final int AUTHORIZATION = 42;
+    }
+
     public static final class Builder {
         private final Context context;
 
@@ -53,6 +61,10 @@ public class Intents {
 
         private Builder(Context context) {
             this.context = context;
+        }
+
+        public Intent buildAuthorizationIntent() {
+            return new Intent(context, AuthorizationActivity.class);
         }
 
         public Intent buildResourceTypesIntent(@NonNull Tenant tenant) {
