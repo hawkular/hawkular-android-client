@@ -22,46 +22,11 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public final class Metric implements Parcelable {
-    public static final class Properties implements Parcelable {
-        @SerializedName("description")
-        private String description;
-
-        public String getDescription() {
-            return description;
-        }
-
-        public static Creator<Properties> CREATOR = new Creator<Properties>() {
-            @Override
-            public Properties createFromParcel(Parcel parcel) {
-                return new Properties(parcel);
-            }
-
-            @Override
-            public Properties[] newArray(int size) {
-                return new Properties[size];
-            }
-        };
-
-        private Properties(Parcel parcel) {
-            this.description = parcel.readString();
-        }
-
-        @Override
-        public void writeToParcel(Parcel parcel, int flags) {
-            parcel.writeString(description);
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-    }
-
     @SerializedName("id")
     private String id;
 
     @SerializedName("properties")
-    private Properties properties;
+    private MetricProperties properties;
 
     @SerializedName("type")
     private MetricType type;
@@ -70,7 +35,7 @@ public final class Metric implements Parcelable {
         return id;
     }
 
-    public Properties getProperties() {
+    public MetricProperties getProperties() {
         return properties;
     }
 
@@ -92,7 +57,7 @@ public final class Metric implements Parcelable {
 
     private Metric(Parcel parcel) {
         this.id = parcel.readString();
-        this.properties = parcel.readParcelable(Properties.class.getClassLoader());
+        this.properties = parcel.readParcelable(MetricProperties.class.getClassLoader());
         this.type = parcel.readParcelable(MetricType.class.getClassLoader());
     }
 

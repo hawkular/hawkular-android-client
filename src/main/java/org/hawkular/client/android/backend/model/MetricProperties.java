@@ -21,52 +21,33 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public final class Resource implements Parcelable {
+public final class MetricProperties implements Parcelable {
+    @SerializedName("description")
+    private String description;
 
-    @SerializedName("id")
-    private String id;
-
-    @SerializedName("type")
-    private ResourceType type;
-
-    @SerializedName("properties")
-    private ResourceProperties properties;
-
-    public String getId() {
-        return id;
+    public String getDescription() {
+        return description;
     }
 
-    public ResourceType getType() {
-        return type;
-    }
-
-    public ResourceProperties getProperties() {
-        return properties;
-    }
-
-    public static Creator<Resource> CREATOR = new Creator<Resource>() {
+    public static Creator<MetricProperties> CREATOR = new Creator<MetricProperties>() {
         @Override
-        public Resource createFromParcel(Parcel parcel) {
-            return new Resource(parcel);
+        public MetricProperties createFromParcel(Parcel parcel) {
+            return new MetricProperties(parcel);
         }
 
         @Override
-        public Resource[] newArray(int size) {
-            return new Resource[size];
+        public MetricProperties[] newArray(int size) {
+            return new MetricProperties[size];
         }
     };
 
-    private Resource(Parcel parcel) {
-        this.id = parcel.readString();
-        this.type = parcel.readParcelable(ResourceType.class.getClassLoader());
-        this.properties = parcel.readParcelable(ResourceProperties.class.getClassLoader());
+    private MetricProperties(Parcel parcel) {
+        this.description = parcel.readString();
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeString(id);
-        parcel.writeParcelable(type, flags);
-        parcel.writeParcelable(properties, flags);
+        parcel.writeString(description);
     }
 
     @Override
