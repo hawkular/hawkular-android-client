@@ -67,7 +67,7 @@ public final class AlertsActivity extends AppCompatActivity {
     private void setUpAlerts() {
         showProgress();
 
-        BackendClient.getInstance().getAlerts(this, new AlertsCallback());
+        BackendClient.of(this).getAlerts(new AlertsCallback());
     }
 
     private void showProgress() {

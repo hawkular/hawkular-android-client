@@ -77,7 +77,7 @@ public final class ResourceTypesActivity extends AppCompatActivity implements Ad
     private void setUpResourceTypes() {
         showProgress();
 
-        BackendClient.getInstance().getResourceTypes(getTenant(), this, new ResourceTypesCallback());
+        BackendClient.of(this).getResourceTypes(getTenant(), new ResourceTypesCallback());
     }
 
     private void showProgress() {

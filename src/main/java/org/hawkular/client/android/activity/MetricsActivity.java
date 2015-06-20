@@ -78,7 +78,7 @@ public final class MetricsActivity extends AppCompatActivity implements AdapterV
     private void setUpMetrics() {
         showProgress();
 
-        BackendClient.getInstance().getMetrics(getTenant(), getResource(), this, new MetricsCallback());
+        BackendClient.of(this).getMetrics(getTenant(), getResource(), new MetricsCallback());
     }
 
     private void showProgress() {

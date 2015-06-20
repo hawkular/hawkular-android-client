@@ -80,7 +80,7 @@ public class MetricDataActivity extends AppCompatActivity {
     private void setUpMetricData() {
         showProgress();
 
-        BackendClient.getInstance().getMetricData(getTenant(), getMetric(), this, new MetricDataCallback());
+        BackendClient.of(this).getMetricData(getTenant(), getMetric(), new MetricDataCallback());
     }
 
     private void showProgress() {

@@ -78,7 +78,7 @@ public class ResourcesActivity extends AppCompatActivity implements AdapterView.
     private void setUpResources() {
         showProgress();
 
-        BackendClient.getInstance().getResources(getTenant(), getResourceType(), this, new ResourcesCallback());
+        BackendClient.of(this).getResources(getTenant(), getResourceType(), new ResourcesCallback());
     }
 
     private void showProgress() {

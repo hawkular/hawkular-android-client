@@ -108,9 +108,9 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private void setUpBackendAuthorization() {
         try {
-            BackendClient.getInstance().setUpBackend(getHost(), Integer.valueOf(getPort()));
+            BackendClient.of(this).configureBackend(getHost(), Integer.valueOf(getPort()));
 
-            BackendClient.getInstance().authorize(this, this);
+            BackendClient.of(this).authorize(this);
         } catch (RuntimeException e) {
             Timber.d(e, "Authorization failed.");
 
@@ -135,11 +135,11 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
     }
 
     private void setUpTenant() {
-        BackendClient.getInstance().getTenants(this, new TenantsCallback());
+        BackendClient.of(this).getTenants(new TenantsCallback());
     }
 
     private void setUpEnvironment(Tenant tenant) {
-        BackendClient.getInstance().getEnvironments(tenant, this, new EnvironmentsCallback(tenant));
+        BackendClient.of(this).getEnvironments(tenant, new EnvironmentsCallback(tenant));
     }
 
     private void succeed(Tenant tenant, Environment environment) {
