@@ -134,8 +134,6 @@ public class ResourcesActivity extends AppCompatActivity implements AdapterView.
     private static final class ResourcesCallback extends AbstractActivityCallback<List<Resource>> {
         @Override
         public void onSuccess(List<Resource> resources) {
-            Timber.d("Resources :: Success!");
-
             ResourcesActivity activity = (ResourcesActivity) getActivity();
 
             activity.setUpResources(resources);
@@ -143,7 +141,7 @@ public class ResourcesActivity extends AppCompatActivity implements AdapterView.
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d("Resources :: Failure...");
+            Timber.d("Resources fetching failed.");
         }
     }
 }

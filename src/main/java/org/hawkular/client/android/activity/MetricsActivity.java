@@ -134,8 +134,6 @@ public final class MetricsActivity extends AppCompatActivity implements AdapterV
     private static final class MetricsCallback extends AbstractActivityCallback<List<Metric>> {
         @Override
         public void onSuccess(List<Metric> metrics) {
-            Timber.d("Metric type :: Success!");
-
             MetricsActivity activity = (MetricsActivity) getActivity();
 
             activity.setUpMetrics(metrics);
@@ -143,7 +141,7 @@ public final class MetricsActivity extends AppCompatActivity implements AdapterV
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d("Metric type :: Failure...");
+            Timber.d(e, "Metrics fetching failed.");
         }
     }
 }

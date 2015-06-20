@@ -159,8 +159,6 @@ public class MetricDataActivity extends AppCompatActivity {
     private static final class MetricDataCallback extends AbstractActivityCallback<List<MetricData>> {
         @Override
         public void onSuccess(List<MetricData> metricDataList) {
-            Timber.d("Metric data :: Success!");
-
             MetricDataActivity activity = (MetricDataActivity) getActivity();
 
             activity.setUpMetricData(metricDataList);
@@ -168,7 +166,7 @@ public class MetricDataActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d("Metric data :: Failure...");
+            Timber.d(e, "Metric data fetching failed.");
         }
     }
 

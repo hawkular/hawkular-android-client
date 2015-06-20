@@ -84,7 +84,6 @@ public final class AlertsActivity extends AppCompatActivity {
         ViewDirector.of(this).using(R.id.animator).show(R.id.list);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -100,8 +99,6 @@ public final class AlertsActivity extends AppCompatActivity {
     private static final class AlertsCallback extends AbstractActivityCallback<List<Alert>> {
         @Override
         public void onSuccess(List<Alert> alerts) {
-            Timber.d("Alert :: Success!");
-
             AlertsActivity activity = (AlertsActivity) getActivity();
 
             activity.setUpAlerts(alerts);
@@ -109,7 +106,7 @@ public final class AlertsActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d("Alert :: Failure...");
+            Timber.d(e, "Alerts fetching failed.");
         }
     }
 }
