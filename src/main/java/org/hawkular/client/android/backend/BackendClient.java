@@ -73,11 +73,12 @@ public final class BackendClient {
     private void setUpAuthorization() {
         AuthorizationManager.config(BackendAuthorization.NAME, OAuth2AuthorizationConfiguration.class)
             .setBaseURL(getServerUrl(BackendAuthorization.Paths.BASE))
-            .setAccessTokenEndpoint(BackendAuthorization.Paths.ENDPOINT_ACCESS)
-            .setAuthzEndpoint(BackendAuthorization.Paths.ENDPOINT_AUTHZ)
-            .setRefreshEndpoint(BackendAuthorization.Paths.ENDPOINT_REFRESH)
+            .setRedirectURL(getServerUrl(BackendAuthorization.Paths.REDIRECT).toString())
+            .setAccessTokenEndpoint(BackendAuthorization.Endpoints.ACCESS)
+            .setAuthzEndpoint(BackendAuthorization.Endpoints.AUTHZ)
+            .setRefreshEndpoint(BackendAuthorization.Endpoints.REFRESH)
             .setAccountId(BackendAuthorization.Ids.ACCOUNT).setClientId(BackendAuthorization.Ids.CLIENT)
-            .setRedirectURL(getServerUrl(BackendAuthorization.Paths.REDIRECT).toString()).asModule();
+            .asModule();
     }
 
     private URL getServerUrl(String path) {
