@@ -70,6 +70,11 @@ public final class Intents {
         }
 
         @NonNull
+        public Intent buildAlertsIntent() {
+            return new Intent(context, AlertsActivity.class);
+        }
+
+        @NonNull
         public Intent buildResourceTypesIntent(@NonNull Tenant tenant) {
             Intent intent = new Intent(context, ResourceTypesActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
@@ -102,11 +107,6 @@ public final class Intents {
             intent.putExtra(Extras.METRIC, metric);
 
             return intent;
-        }
-
-        @NonNull
-        public Intent buildAlertsIntent() {
-            return new Intent(context, AlertsActivity.class);
         }
     }
 }
