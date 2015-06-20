@@ -24,7 +24,7 @@ import org.hawkular.client.android.util.Android;
 
 import timber.log.Timber;
 
-public class HawkularApplication extends Application {
+public final class HawkularApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();

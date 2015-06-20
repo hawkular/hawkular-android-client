@@ -19,6 +19,7 @@ public final class Urls {
         public static final String HTTP = "http";
     }
 
+    @NonNull
     public static URL getUrl(@NonNull String host, @IntRange(from = 0) int port) {
         try {
             return new URL(Protocols.HTTP, host, port, null);
@@ -27,6 +28,7 @@ public final class Urls {
         }
     }
 
+    @NonNull
     public static URL getUrl(@NonNull URL url, @NonNull String path) {
         return UrlUtils.appendToBaseURL(url, path);
     }

@@ -31,7 +31,7 @@ import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.ResourceType;
 import org.hawkular.client.android.backend.model.Tenant;
 
-public class Intents {
+public final class Intents {
     private Intents() {
     }
 
@@ -55,6 +55,7 @@ public class Intents {
     public static final class Builder {
         private final Context context;
 
+        @NonNull
         public static Builder of(@NonNull Context context) {
             return new Builder(context);
         }
@@ -63,10 +64,12 @@ public class Intents {
             this.context = context;
         }
 
+        @NonNull
         public Intent buildAuthorizationIntent() {
             return new Intent(context, AuthorizationActivity.class);
         }
 
+        @NonNull
         public Intent buildResourceTypesIntent(@NonNull Tenant tenant) {
             Intent intent = new Intent(context, ResourceTypesActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
@@ -74,6 +77,7 @@ public class Intents {
             return intent;
         }
 
+        @NonNull
         public Intent buildResourcesIntent(@NonNull Tenant tenant, @NonNull ResourceType resourceType) {
             Intent intent = new Intent(context, ResourcesActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
@@ -82,6 +86,7 @@ public class Intents {
             return intent;
         }
 
+        @NonNull
         public Intent buildMetricsIntent(@NonNull Tenant tenant, @NonNull Resource resource) {
             Intent intent = new Intent(context, MetricsActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
@@ -90,6 +95,7 @@ public class Intents {
             return intent;
         }
 
+        @NonNull
         public Intent buildMetricDataIntent(@NonNull Tenant tenant, @NonNull Metric metric) {
             Intent intent = new Intent(context, MetricDataActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
@@ -98,6 +104,7 @@ public class Intents {
             return intent;
         }
 
+        @NonNull
         public Intent buildAlertsIntent() {
             return new Intent(context, AlertsActivity.class);
         }

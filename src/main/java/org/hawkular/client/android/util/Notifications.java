@@ -45,6 +45,7 @@ public final class Notifications {
 
     private final Context context;
 
+    @NonNull
     public static Notifications of(@NonNull Context context) {
         return new Notifications(context);
     }

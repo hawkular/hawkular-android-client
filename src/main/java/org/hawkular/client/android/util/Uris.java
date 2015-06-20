@@ -27,6 +27,7 @@ public final class Uris {
     private Uris() {
     }
 
+    @NonNull
     public static URI getUri(@NonNull String path) {
         Uri uri = new Uri.Builder()
             .appendPath(path)
@@ -35,6 +36,7 @@ public final class Uris {
         return Uris.getUriFromString(uri.toString());
     }
 
+    @NonNull
     public static URI getUri(@NonNull String path, @NonNull Map<String, String> parameters) {
         Uri.Builder uriBuilder = new Uri.Builder();
 
