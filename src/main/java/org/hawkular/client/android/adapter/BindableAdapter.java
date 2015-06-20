@@ -26,7 +26,7 @@ import android.widget.BaseAdapter;
 abstract class BindableAdapter<T> extends BaseAdapter {
     private final LayoutInflater inflater;
 
-    public BindableAdapter(@NonNull Context context) {
+    protected BindableAdapter(@NonNull Context context) {
         this.inflater = LayoutInflater.from(context);
     }
 
@@ -36,16 +36,16 @@ abstract class BindableAdapter<T> extends BaseAdapter {
     @Override
     public final View getView(int position, View view, ViewGroup viewContainer) {
         if (view == null) {
-            view = newView(inflater, position, viewContainer);
+            view = newView(inflater, viewContainer);
         }
 
-        bindView(getItem(position), position, view);
+        bindView(getItem(position), view);
 
         return view;
     }
 
     @NonNull
-    public abstract View newView(LayoutInflater inflater, int position, ViewGroup viewContainer);
+    protected abstract View newView(LayoutInflater inflater, ViewGroup viewContainer);
 
-    public abstract void bindView(T item, int position, View view);
+    protected abstract void bindView(T item, View view);
 }

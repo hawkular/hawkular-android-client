@@ -66,7 +66,7 @@ public final class ResourceTypesAdapter extends BindableAdapter<ResourceType> {
 
     @NonNull
     @Override
-    public View newView(LayoutInflater inflater, int position, ViewGroup viewContainer) {
+    public View newView(LayoutInflater inflater, ViewGroup viewContainer) {
         View view = inflater.inflate(R.layout.layout_list_item, viewContainer, false);
 
         view.setTag(new ViewHolder(view));
@@ -75,7 +75,7 @@ public final class ResourceTypesAdapter extends BindableAdapter<ResourceType> {
     }
 
     @Override
-    public void bindView(ResourceType resourceType, int position, View view) {
+    public void bindView(ResourceType resourceType, View view) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         viewHolder.nameText.setText(resourceType.getId());

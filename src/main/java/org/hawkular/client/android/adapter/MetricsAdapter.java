@@ -66,7 +66,7 @@ public final class MetricsAdapter extends BindableAdapter<Metric> {
 
     @NonNull
     @Override
-    public View newView(LayoutInflater inflater, int position, ViewGroup viewContainer) {
+    public View newView(LayoutInflater inflater, ViewGroup viewContainer) {
         View view = inflater.inflate(R.layout.layout_list_item, viewContainer, false);
 
         view.setTag(new ViewHolder(view));
@@ -75,10 +75,9 @@ public final class MetricsAdapter extends BindableAdapter<Metric> {
     }
 
     @Override
-    public void bindView(Metric metric, int position, View view) {
+    public void bindView(Metric metric, View view) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        viewHolder.nameText.setText(String.format("%s: %s",
-            metric.getProperties().getDescription(), metric.getType().getId()));
+        viewHolder.nameText.setText(metric.getProperties().getDescription());
     }
 }

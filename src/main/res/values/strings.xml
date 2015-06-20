@@ -39,4 +39,7 @@
 
   <string name="notification_alert">Some metric is not in the mood.</string>
 
+  <string name="mask_alert_availability">Server was down for %1$d seconds (until %2$s).</string>
+  <string name="mask_alert_threshold">Response time was above the threshold (%1$.1f ms) for %2$d seconds (until %3$s). The average response time was %4$.1f ms.</string>
+
 </resources>

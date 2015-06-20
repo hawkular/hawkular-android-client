@@ -185,7 +185,7 @@ public final class ResourcesAdapter extends BaseAdapter {
             }
         }
 
-        return null;
+        throw new RuntimeException("Resource type was not found.");
     }
 
     @Override
