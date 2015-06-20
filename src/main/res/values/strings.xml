@@ -37,4 +37,6 @@
   <string name="error_empty">Should not be empty.</string>
   <string name="error_general">Something is wrong, please try again.</string>
 
+  <string name="notification_alert">Some metric is not in the mood.</string>
+
 </resources>
