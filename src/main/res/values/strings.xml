@@ -35,6 +35,7 @@
   <string name="hint_port">Port</string>
 
   <string name="error_authorization_host_port">Something is wrong with host or port.</string>
+  <string name="error_authorization_port">Should be a correct number.</string>
   <string name="error_empty">Should not be empty.</string>
   <string name="error_general">Something is wrong, please try again.</string>
 

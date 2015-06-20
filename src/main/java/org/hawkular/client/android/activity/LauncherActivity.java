@@ -59,14 +59,14 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 
     private void setUpBackendClient() {
         String backendHost = Preferences.of(this).host().get();
-        String backendPort = Preferences.of(this).port().get();
+        int backendPort = Preferences.of(this).port().get();
 
-        if (backendHost.isEmpty() || backendPort.isEmpty()) {
+        if (backendHost.isEmpty() || backendPort == Preferences.Defaults.BACKEND_PORT) {
             startAuthorizationActivity();
             return;
         }
 
-        BackendClient.of(this).configureBackend(backendHost, Integer.valueOf(backendPort));
+        BackendClient.of(this).configureBackend(backendHost, backendPort);
 
         BackendClient.of(this).authorize(this);
     }

@@ -91,6 +91,11 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
             return;
         }
 
+        if (!isPortCorrectNumber()) {
+            showError(portEdit, R.string.error_authorization_port);
+            return;
+        }
+
         setUpBackendAuthorization();
     }
 
@@ -100,6 +105,18 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private String getPort() {
         return portEdit.getText().toString().trim();
+    }
+
+    private boolean isPortCorrectNumber() {
+        try {
+            return getPortNumber() >= 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private int getPortNumber() {
+        return Integer.valueOf(getPort());
     }
 
     private void showError(EditText errorEdit, @StringRes int errorMessage) {
@@ -151,7 +168,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private void saveBackendPreferences(Tenant tenant, Environment environment) {
         Preferences.of(this).host().set(getHost());
-        Preferences.of(this).port().set(getPort());
+        Preferences.of(this).port().set(getPortNumber());
         Preferences.of(this).tenant().set(tenant.getId());
         Preferences.of(this).environment().set(environment.getId());
     }
