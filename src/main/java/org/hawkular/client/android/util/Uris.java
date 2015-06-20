@@ -16,16 +16,42 @@
  */
 package org.hawkular.client.android.util;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 public final class Uris {
     private Uris() {
     }
 
-    public static URI getUri(@NonNull String uri) {
+    public static URI getUri(@NonNull String path) {
+        Uri uri = new Uri.Builder()
+            .appendPath(path)
+            .build();
+
+        return Uris.getUriFromString(uri.toString());
+    }
+
+    public static URI getUri(@NonNull String path, @NonNull Map<String, String> parameters) {
+        Uri.Builder uriBuilder = new Uri.Builder();
+
+        uriBuilder.appendPath(path);
+
+        for (String parameterKey : parameters.keySet()) {
+            String parameterValue = parameters.get(parameterKey);
+
+            uriBuilder.appendQueryParameter(parameterKey, parameterValue);
+        }
+
+        Uri uri = uriBuilder.build();
+
+        return Uris.getUriFromString(uri.toString());
+    }
+
+    private static URI getUriFromString(@NonNull String uri) {
         try {
             return new URI(uri);
         } catch (URISyntaxException e) {

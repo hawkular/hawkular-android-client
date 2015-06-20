@@ -65,7 +65,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
             return;
         }
 
-        BackendClient.getInstance().setUpBackend(backendHost, backendPort);
+        BackendClient.getInstance().setUpBackend(backendHost, Integer.valueOf(backendPort));
 
         BackendClient.getInstance().authorize(this, this);
     }

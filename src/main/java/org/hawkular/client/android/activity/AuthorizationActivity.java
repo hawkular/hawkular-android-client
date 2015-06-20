@@ -108,7 +108,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private void setUpBackendAuthorization() {
         try {
-            BackendClient.getInstance().setUpBackend(getHost(), getPort());
+            BackendClient.getInstance().setUpBackend(getHost(), Integer.valueOf(getPort()));
 
             BackendClient.getInstance().authorize(this, this);
         } catch (RuntimeException e) {
