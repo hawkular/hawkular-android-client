@@ -37,8 +37,7 @@ import org.jboss.aerogear.android.pipe.rest.RestfulPipeConfiguration;
 
 import java.net.URI;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -137,18 +136,14 @@ public final class BackendClient {
     }
 
     public void getMetricData(@NonNull Tenant tenant, @NonNull Metric metric,
+                              @NonNull Date startTime, @NonNull Date finishTime,
                               @NonNull Callback<List<MetricData>> callback) {
-        Calendar startTime = GregorianCalendar.getInstance();
-        startTime.add(Calendar.MINUTE, -10);
-
-        Calendar finishTime = GregorianCalendar.getInstance();
-
-        Map<String, String> pipeParameters = new HashMap<>();
-        pipeParameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTimeInMillis()));
-        pipeParameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTimeInMillis()));
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTime()));
+        parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
 
         URI uri = Uris.getUri(
-            String.format(BackendPipes.Paths.METRIC_DATA, tenant.getId(), metric.getId()), pipeParameters);
+            String.format(BackendPipes.Paths.METRIC_DATA, tenant.getId(), metric.getId()), parameters);
 
         readPipe(BackendPipes.Names.METRIC_DATA, uri, callback);
     }

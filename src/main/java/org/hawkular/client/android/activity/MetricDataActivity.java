@@ -32,9 +32,11 @@ import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -80,7 +82,19 @@ public final class MetricDataActivity extends AppCompatActivity {
     private void setUpMetricData() {
         showProgress();
 
-        BackendClient.of(this).getMetricData(getTenant(), getMetric(), new MetricDataCallback());
+        BackendClient.of(this).getMetricData(
+            getTenant(), getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+    }
+
+    private Date getMetricStartTime() {
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.add(Calendar.MINUTE, -10);
+
+        return calendar.getTime();
+    }
+
+    private Date getMetricFinishTime() {
+        return GregorianCalendar.getInstance().getTime();
     }
 
     private void showProgress() {
