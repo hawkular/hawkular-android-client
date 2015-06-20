@@ -23,12 +23,13 @@
 
   <string name="title_alerts">Alerts</string>
   <string name="title_authorization">Authorization</string>
-  <string name="title_metric_data">Metric Data</string>
+  <string name="title_metric_data">Metric</string>
   <string name="title_metrics">Metrics</string>
-  <string name="title_resource_types">Resource Types</string>
   <string name="title_resources">Resources</string>
 
   <string name="button_authorize">Authorize</string>
+  <string name="button_resources">@string/title_resources</string>
+  <string name="button_alerts">@string/title_alerts</string>
 
   <string name="hint_host">Host</string>
   <string name="hint_port">Port</string>
