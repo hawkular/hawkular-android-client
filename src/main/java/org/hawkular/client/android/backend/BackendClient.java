@@ -97,7 +97,6 @@ public final class BackendClient {
         setUpPipe(BackendPipes.Names.ENVIRONMENTS, BackendPipes.Roots.INVENTORY, Environment.class);
         setUpPipe(BackendPipes.Names.METRICS, BackendPipes.Roots.INVENTORY, Metric.class);
         setUpPipe(BackendPipes.Names.METRIC_DATA, BackendPipes.Roots.METRICS, MetricData.class);
-        setUpPipe(BackendPipes.Names.METRIC_TYPES, BackendPipes.Roots.INVENTORY, MetricType.class);
         setUpPipe(BackendPipes.Names.RESOURCE_TYPES, BackendPipes.Roots.INVENTORY, ResourceType.class);
         setUpPipe(BackendPipes.Names.RESOURCES, BackendPipes.Roots.INVENTORY, Resource.class);
         setUpPipe(BackendPipes.Names.TENANTS, BackendPipes.Roots.INVENTORY, Tenant.class);
@@ -147,13 +146,6 @@ public final class BackendClient {
         PipeManager.getPipe(BackendPipes.Names.RESOURCES, activity)
             .read(getFilter(
                 String.format(BackendPipes.Paths.RESOURCES,tenant.getId(), resourceType.getId())), callback);
-    }
-
-    public void getMetricTypes(@NonNull Tenant tenant,
-                               @NonNull Activity activity, @NonNull Callback<List<MetricType>> callback) {
-        PipeManager.getPipe(BackendPipes.Names.METRIC_TYPES, activity)
-            .read(getFilter(
-                String.format(BackendPipes.Paths.METRIC_TYPES, tenant.getId())), callback);
     }
 
     public void getMetrics(@NonNull Tenant tenant, @NonNull Resource resource,
