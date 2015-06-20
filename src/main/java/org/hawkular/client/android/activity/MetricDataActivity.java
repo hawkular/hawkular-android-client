@@ -48,7 +48,7 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 import timber.log.Timber;
 
-public class MetricDataActivity extends AppCompatActivity {
+public final class MetricDataActivity extends AppCompatActivity {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 

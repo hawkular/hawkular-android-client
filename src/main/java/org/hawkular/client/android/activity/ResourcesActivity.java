@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public class ResourcesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public final class ResourcesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
