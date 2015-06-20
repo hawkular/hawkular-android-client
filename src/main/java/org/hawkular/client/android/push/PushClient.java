@@ -24,11 +24,15 @@ import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
 import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
 
+import java.util.Arrays;
+import java.util.List;
+
 import timber.log.Timber;
 
 public final class PushClient implements Callback<Void> {
     private final Context context;
 
+    @NonNull
     public static PushClient of(@NonNull Context context) {
         return new PushClient(context);
     }
@@ -38,7 +42,7 @@ public final class PushClient implements Callback<Void> {
     }
 
     public void setUpPush() {
-        if (!isPushServerUriCorrect()) {
+        if (!isPushAvailable()) {
             return;
         }
 
@@ -52,14 +56,20 @@ public final class PushClient implements Callback<Void> {
         RegistrarManager.getRegistrar(PushConfiguration.NAME).register(context, this);
     }
 
-    private boolean isPushServerUriCorrect() {
-        try {
-            Uris.getUri(PushConfiguration.Ups.URL);
+    private boolean isPushAvailable() {
+        List<String> pushConfigurationFields = Arrays.asList(
+            PushConfiguration.Ups.URL,
+            PushConfiguration.Ups.SECRET,
+            PushConfiguration.Ups.VARIANT,
+            PushConfiguration.Gcm.SENDER);
 
-            return true;
-        } catch (RuntimeException e) {
-            return false;
+        for (String pushConfigurationField : pushConfigurationFields) {
+            if (pushConfigurationField.isEmpty()) {
+                return false;
+            }
         }
+
+        return true;
     }
 
     public void onSuccess(Void ignored) {

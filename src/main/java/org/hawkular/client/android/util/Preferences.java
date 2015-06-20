@@ -40,7 +40,7 @@ public final class Preferences {
         public static final String BACKEND_ENVIRONMENT = "environment";
     }
 
-    private SharedPreferences serverPreferences;
+    private final SharedPreferences serverPreferences;
 
     @NonNull
     public static Preferences of(@NonNull Context context) {

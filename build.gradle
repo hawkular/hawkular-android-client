@@ -54,10 +54,10 @@ android {
             buildConfigField "String", "UPS_SECRET", formatStringField(serverProperties["ups.secret"])
             buildConfigField "String", "GCM_SENDER", formatStringField(serverProperties["gcm.sender"])
         } else {
-            buildConfigField "String", "UPS_URL", formatStringField("placeholder")
-            buildConfigField "String", "UPS_VARIANT", formatStringField("placeholder")
-            buildConfigField "String", "UPS_SECRET", formatStringField("placeholder")
-            buildConfigField "String", "GCM_SENDER", formatStringField("placeholder")
+            buildConfigField "String", "UPS_URL", formatStringField("")
+            buildConfigField "String", "UPS_VARIANT", formatStringField("")
+            buildConfigField "String", "UPS_SECRET", formatStringField("")
+            buildConfigField "String", "GCM_SENDER", formatStringField("")
         }
     }
 }
