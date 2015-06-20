@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Preferences;
@@ -93,14 +94,18 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
         }
     }
 
-    @OnClick(R.id.button_tenants)
-    public void setUpTenants() {
-        Intent intent = Intents.Builder.of(this).buildResourceTypesIntent(getTenant());
+    @OnClick(R.id.button_resources)
+    public void setUpResources() {
+        Intent intent = Intents.Builder.of(this).buildResourcesIntent(getTenant(), getEnvironment());
         startActivity(intent);
     }
 
     private Tenant getTenant() {
         return new Tenant(Preferences.of(this).tenant().get());
+    }
+
+    private Environment getEnvironment() {
+        return new Environment(Preferences.of(this).environment().get());
     }
 
     @OnClick(R.id.button_alerts)

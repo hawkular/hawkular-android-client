@@ -24,11 +24,10 @@ import org.hawkular.client.android.activity.AlertsActivity;
 import org.hawkular.client.android.activity.AuthorizationActivity;
 import org.hawkular.client.android.activity.MetricDataActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
-import org.hawkular.client.android.activity.ResourceTypesActivity;
 import org.hawkular.client.android.activity.ResourcesActivity;
+import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
-import org.hawkular.client.android.backend.model.ResourceType;
 import org.hawkular.client.android.backend.model.Tenant;
 
 public final class Intents {
@@ -39,10 +38,10 @@ public final class Intents {
         private Extras() {
         }
 
-        public static final String METRIC = "metric";
-        public static final String RESOURCE = "resource";
-        public static final String RESOURCE_TYPE = "resource-type";
         public static final String TENANT = "tenant";
+        public static final String ENVIRONMENT = "environment";
+        public static final String RESOURCE = "resource";
+        public static final String METRIC = "metric";
     }
 
     public static final class Requests {
@@ -75,26 +74,19 @@ public final class Intents {
         }
 
         @NonNull
-        public Intent buildResourceTypesIntent(@NonNull Tenant tenant) {
-            Intent intent = new Intent(context, ResourceTypesActivity.class);
-            intent.putExtra(Extras.TENANT, tenant);
-
-            return intent;
-        }
-
-        @NonNull
-        public Intent buildResourcesIntent(@NonNull Tenant tenant, @NonNull ResourceType resourceType) {
+        public Intent buildResourcesIntent(@NonNull Tenant tenant, @NonNull Environment environment) {
             Intent intent = new Intent(context, ResourcesActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
-            intent.putExtra(Extras.RESOURCE_TYPE, resourceType);
+            intent.putExtra(Extras.ENVIRONMENT, environment);
 
             return intent;
         }
 
         @NonNull
-        public Intent buildMetricsIntent(@NonNull Tenant tenant, @NonNull Resource resource) {
+        public Intent buildMetricsIntent(@NonNull Tenant tenant, @NonNull Environment environment, @NonNull Resource resource) {
             Intent intent = new Intent(context, MetricsActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
+            intent.putExtra(Extras.ENVIRONMENT, environment);
             intent.putExtra(Extras.RESOURCE, resource);
 
             return intent;

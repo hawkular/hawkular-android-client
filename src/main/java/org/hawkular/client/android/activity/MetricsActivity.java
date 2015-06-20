@@ -28,6 +28,7 @@ import android.widget.ListView;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.adapter.MetricsAdapter;
 import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Tenant;
@@ -78,7 +79,7 @@ public final class MetricsActivity extends AppCompatActivity implements AdapterV
     private void setUpMetrics() {
         showProgress();
 
-        BackendClient.of(this).getMetrics(getTenant(), getResource(), new MetricsCallback());
+        BackendClient.of(this).getMetrics(getTenant(), getEnvironment(),  getResource(), new MetricsCallback());
     }
 
     private void showProgress() {
@@ -87,6 +88,10 @@ public final class MetricsActivity extends AppCompatActivity implements AdapterV
 
     private Tenant getTenant() {
         return getIntent().getParcelableExtra(Intents.Extras.TENANT);
+    }
+
+    private Environment getEnvironment() {
+        return getIntent().getParcelableExtra(Intents.Extras.ENVIRONMENT);
     }
 
     private Resource getResource() {

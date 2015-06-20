@@ -24,7 +24,6 @@ import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.backend.model.Resource;
-import org.hawkular.client.android.backend.model.ResourceType;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Uris;
 import org.hawkular.client.android.util.Urls;
@@ -77,12 +76,11 @@ public final class BackendClient {
 
     private void configurePipes(URL backendUrl) {
         configurePipe(BackendPipes.Names.ALERTS, backendUrl, BackendPipes.Roots.ALERTS, Alert.class);
+        configurePipe(BackendPipes.Names.TENANTS, backendUrl, BackendPipes.Roots.INVENTORY, Tenant.class);
         configurePipe(BackendPipes.Names.ENVIRONMENTS, backendUrl, BackendPipes.Roots.INVENTORY, Environment.class);
+        configurePipe(BackendPipes.Names.RESOURCES, backendUrl, BackendPipes.Roots.INVENTORY, Resource.class);
         configurePipe(BackendPipes.Names.METRICS, backendUrl, BackendPipes.Roots.INVENTORY, Metric.class);
         configurePipe(BackendPipes.Names.METRIC_DATA, backendUrl, BackendPipes.Roots.METRICS, MetricData.class);
-        configurePipe(BackendPipes.Names.RESOURCE_TYPES, backendUrl, BackendPipes.Roots.INVENTORY, ResourceType.class);
-        configurePipe(BackendPipes.Names.RESOURCES, backendUrl, BackendPipes.Roots.INVENTORY, Resource.class);
-        configurePipe(BackendPipes.Names.TENANTS, backendUrl, BackendPipes.Roots.INVENTORY, Tenant.class);
     }
 
     private void configurePipe(String pipeName, URL pipeUrl, String pipePath, Class pipeClass) {
@@ -117,23 +115,17 @@ public final class BackendClient {
         readPipe(BackendPipes.Names.ENVIRONMENTS, uri, callback);
     }
 
-    public void getResourceTypes(@NonNull Tenant tenant,
-                                 @NonNull Callback<List<ResourceType>> callback) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.RESOURCE_TYPES, tenant.getId()));
-
-        readPipe(BackendPipes.Names.RESOURCE_TYPES, uri, callback);
-    }
-
-    public void getResources(@NonNull Tenant tenant, @NonNull ResourceType resourceType,
+    public void getResources(@NonNull Tenant tenant, @NonNull Environment environment,
                              @NonNull Callback<List<Resource>> callback) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.RESOURCES, tenant.getId(), resourceType.getId()));
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.RESOURCES, tenant.getId(), environment.getId()));
 
         readPipe(BackendPipes.Names.RESOURCES, uri, callback);
     }
 
-    public void getMetrics(@NonNull Tenant tenant, @NonNull Resource resource,
+    public void getMetrics(@NonNull Tenant tenant, @NonNull Environment environment, @NonNull Resource resource,
                            @NonNull Callback<List<Metric>> callback) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRICS, tenant.getId(), resource.getId()));
+        URI uri = Uris.getUri(
+            String.format(BackendPipes.Paths.METRICS, tenant.getId(), environment.getId(), resource.getId()));
 
         readPipe(BackendPipes.Names.METRICS, uri, callback);
     }
