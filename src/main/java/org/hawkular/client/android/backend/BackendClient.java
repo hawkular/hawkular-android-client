@@ -98,6 +98,12 @@ public final class BackendClient {
         getAuthorizationModule().requestAccess(activity, callback);
     }
 
+    public void deauthorize() {
+        if (getAuthorizationModule().hasCredentials()) {
+            getAuthorizationModule().deleteAccount();
+        }
+    }
+
     public void getAlerts(@NonNull Callback<List<Alert>> callback) {
         readPipe(BackendPipes.Names.ALERTS, null, callback);
     }

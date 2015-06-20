@@ -127,6 +127,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
         try {
             BackendClient.of(this).configureBackend(getHost(), Integer.valueOf(getPort()));
 
+            BackendClient.of(this).deauthorize();
             BackendClient.of(this).authorize(this);
         } catch (RuntimeException e) {
             Timber.d(e, "Authorization failed.");
