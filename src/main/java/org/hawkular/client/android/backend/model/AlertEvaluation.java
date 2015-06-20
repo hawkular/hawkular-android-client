@@ -28,9 +28,6 @@ public final class AlertEvaluation {
     @SerializedName("dataTimestamp")
     private long dataTimestamp;
 
-    @SerializedName("evalTimestamp")
-    private long evaluationTimestamp;
-
     public AlertEvaluationCondition getCondition() {
         return condition;
     }
@@ -41,9 +38,5 @@ public final class AlertEvaluation {
 
     public long getDataTimestamp() {
         return dataTimestamp;
-    }
-
-    public long getEvaluationTimestamp() {
-        return evaluationTimestamp;
     }
 }
