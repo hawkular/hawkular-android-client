@@ -82,7 +82,7 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.METRIC_DATA, backendUrl, BackendPipes.Roots.METRICS, MetricData.class);
     }
 
-    private void configurePipe(String pipeName, URL pipeUrl, String pipePath, Class pipeClass) {
+    private <T> void configurePipe(String pipeName, URL pipeUrl, String pipePath, Class<T> pipeClass) {
         PipeManager.config(pipeName, RestfulPipeConfiguration.class)
             .module(getAuthorizationModule())
             .withUrl(Urls.getUrl(pipeUrl, pipePath))

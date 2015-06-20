@@ -83,7 +83,8 @@ public final class Intents {
         }
 
         @NonNull
-        public Intent buildMetricsIntent(@NonNull Tenant tenant, @NonNull Environment environment, @NonNull Resource resource) {
+        public Intent buildMetricsIntent(@NonNull Tenant tenant, @NonNull Environment environment,
+                                         @NonNull Resource resource) {
             Intent intent = new Intent(context, MetricsActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
             intent.putExtra(Extras.ENVIRONMENT, environment);
