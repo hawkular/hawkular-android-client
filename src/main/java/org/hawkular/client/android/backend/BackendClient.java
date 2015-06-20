@@ -105,42 +105,41 @@ public final class BackendClient {
     }
 
     public void getAlerts(@NonNull Activity activity, @NonNull Callback<List<Alert>> callback) {
-        PipeManager.getPipe(BackendPipes.Names.ALERTS, activity)
-            .read(callback);
+        readPipe(BackendPipes.Names.ALERTS, null, activity, callback);
     }
 
     public void getTenants(@NonNull Activity activity, @NonNull Callback<List<Tenant>> callback) {
-        PipeManager.getPipe(BackendPipes.Names.TENANTS, activity)
-            .read(getFilter(
-                Uris.getUri(BackendPipes.Paths.TENANTS)), callback);
+        URI uri = Uris.getUri(BackendPipes.Paths.TENANTS);
+
+        readPipe(BackendPipes.Names.TENANTS, uri, activity, callback);
     }
 
     public void getEnvironments(@NonNull Tenant tenant,
                                 @NonNull Activity activity, @NonNull Callback<List<Environment>> callback) {
-        PipeManager.getPipe(BackendPipes.Names.ENVIRONMENTS, activity)
-            .read(getFilter(
-                Uris.getUri(String.format(BackendPipes.Paths.ENVIRONMENTS, tenant.getId()))), callback);
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.ENVIRONMENTS, tenant.getId()));
+
+        readPipe(BackendPipes.Names.ENVIRONMENTS, uri, activity, callback);
     }
 
     public void getResourceTypes(@NonNull Tenant tenant,
                                  @NonNull Activity activity, @NonNull Callback<List<ResourceType>> callback) {
-        PipeManager.getPipe(BackendPipes.Names.RESOURCE_TYPES, activity)
-            .read(getFilter(
-                Uris.getUri(String.format(BackendPipes.Paths.RESOURCE_TYPES, tenant.getId()))), callback);
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.RESOURCE_TYPES, tenant.getId()));
+
+        readPipe(BackendPipes.Names.RESOURCE_TYPES, uri, activity, callback);
     }
 
     public void getResources(@NonNull Tenant tenant, @NonNull ResourceType resourceType,
                              @NonNull Activity activity, @NonNull Callback<List<Resource>> callback) {
-        PipeManager.getPipe(BackendPipes.Names.RESOURCES, activity)
-            .read(getFilter(
-                Uris.getUri(String.format(BackendPipes.Paths.RESOURCES,tenant.getId(), resourceType.getId()))), callback);
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.RESOURCES, tenant.getId(), resourceType.getId()));
+
+        readPipe(BackendPipes.Names.RESOURCES, uri, activity, callback);
     }
 
     public void getMetrics(@NonNull Tenant tenant, @NonNull Resource resource,
                            @NonNull Activity activity, @NonNull Callback<List<Metric>> callback) {
-        PipeManager.getPipe(BackendPipes.Names.METRICS, activity)
-            .read(getFilter(
-                Uris.getUri(String.format(BackendPipes.Paths.METRICS, tenant.getId(), resource.getId()))), callback);
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRICS, tenant.getId(), resource.getId()));
+
+        readPipe(BackendPipes.Names.METRICS, uri, activity, callback);
     }
 
     public void getMetricData(@NonNull Tenant tenant, @NonNull Metric metric,
@@ -154,10 +153,14 @@ public final class BackendClient {
         pipeParameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTimeInMillis()));
         pipeParameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTimeInMillis()));
 
-        PipeManager.getPipe(BackendPipes.Names.METRIC_DATA, activity)
-            .read(getFilter(
-                Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA, tenant.getId(), metric.getId()),
-                pipeParameters)), callback);
+        URI uri = Uris.getUri(
+            String.format(BackendPipes.Paths.METRIC_DATA, tenant.getId(), metric.getId()), pipeParameters);
+
+        readPipe(BackendPipes.Names.METRIC_DATA, uri, activity, callback);
+    }
+
+    private <T> void readPipe(String pipeName, URI uri, Activity activity, Callback<List<T>> callback) {
+        PipeManager.getPipe(pipeName, activity).read(getFilter(uri), callback);
     }
 
     private ReadFilter getFilter(URI uri) {
