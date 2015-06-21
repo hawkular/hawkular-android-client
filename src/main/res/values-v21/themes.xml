@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <style name="Theme.Hawkular" parent="Base.Theme.Hawkular">
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="android:statusBarColor">@android:color/transparent</item>
+  </style>
+
+  <style name="Theme.Hawkular.NavigationView.Item">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">14sp</item>
+    <item name="android:textStyle">normal</item>
+  </style>
+
+</resources>

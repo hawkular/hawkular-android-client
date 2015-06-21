@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:auto="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/drawer"
+  android:fitsSystemWindows="true"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <include
+    layout="@layout/activity_list"/>
+
+  <android.support.design.widget.NavigationView
+    android:id="@+id/navigation"
+    auto:headerLayout="@layout/layout_drawer_header"
+    auto:menu="@menu/menu_drawer"
+    android:theme="@style/Theme.Hawkular.NavigationView"
+    android:fitsSystemWindows="true"
+    android:layout_gravity="left"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"/>
+
+</android.support.v4.widget.DrawerLayout>
