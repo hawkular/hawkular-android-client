@@ -26,12 +26,12 @@
     <item
       android:id="@+id/menu_resources"
       android:icon="@drawable/ic_resources"
-      android:title="Resources"/>
+      android:title="@string/title_resources"/>
 
     <item
       android:id="@+id/menu_alerts"
       android:icon="@drawable/ic_alerts"
-      android:title="Alerts"/>
+      android:title="@string/title_alerts"/>
 
   </group>
 
@@ -41,12 +41,12 @@
     <item
       android:id="@+id/menu_settings"
       android:icon="@drawable/ic_settings"
-      android:title="Settings"/>
+      android:title="@string/menu_settings"/>
 
     <item
       android:id="@+id/menu_feedback"
       android:icon="@drawable/ic_feedback"
-      android:title="Help &amp; feedback"/>
+      android:title="@string/menu_feedback"/>
 
   </group>
 
