@@ -39,7 +39,7 @@ abstract class BindableAdapter<T> extends BaseAdapter {
             view = newView(inflater, viewContainer);
         }
 
-        bindView(getItem(position), view);
+        bindView(getItem(position), position, view);
 
         return view;
     }
@@ -47,5 +47,5 @@ abstract class BindableAdapter<T> extends BaseAdapter {
     @NonNull
     protected abstract View newView(LayoutInflater inflater, ViewGroup viewContainer);
 
-    protected abstract void bindView(T item, View view);
+    protected abstract void bindView(T item, int position, View view);
 }

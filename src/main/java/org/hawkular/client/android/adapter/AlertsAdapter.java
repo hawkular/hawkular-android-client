@@ -93,13 +93,13 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
     }
 
     @Override
-    public void bindView(Alert alert, View view) {
+    public void bindView(Alert alert, int position, View view) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         viewHolder.titleText.setText(getAlertTitle(view.getContext(), alert));
         viewHolder.messageText.setText(getAlertMessage(view.getContext(), alert));
 
-        final int alertPosition = alerts.indexOf(alert);
+        final int alertPosition = position;
 
         view.findViewById(R.id.button_menu).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -75,7 +75,7 @@ public final class MetricsAdapter extends BindableAdapter<Metric> {
     }
 
     @Override
-    public void bindView(Metric metric, View view) {
+    public void bindView(Metric metric, int position, View view) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         viewHolder.nameText.setText(metric.getProperties().getDescription());
