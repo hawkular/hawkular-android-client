@@ -17,13 +17,15 @@
     limitations under the License.
 
 -->
-<resources>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <color name="background_primary">#f44336</color>
-  <color name="background_primary_dark">#d32f2f</color>
-  <color name="background_accent">@color/background_primary</color>
+  <item
+    android:id="@+id/menu_resolve"
+    android:title="@string/menu_resolve"/>
 
-  <color name="background_window">#fff5f5f5</color>
+  <item
+    android:id="@+id/menu_acknowledge"
+    android:title="@string/menu_acknowledge"/>
 
-</resources>
+</menu>
 

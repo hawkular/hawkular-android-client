@@ -38,6 +38,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public final class AlertsAdapter extends BindableAdapter<Alert> {
+    public interface AlertMenuListener {
+        void onAlertMenuClick(View alertView, int alertPosition);
+    }
+
     static final class ViewHolder {
         @InjectView(R.id.text_title)
         TextView titleText;
@@ -50,12 +54,17 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
         }
     }
 
+    private final AlertMenuListener alertMenuListener;
+
     private final List<Alert> alerts;
 
-    public AlertsAdapter(@NonNull Context context, @NonNull List<Alert> alerts) {
+    public AlertsAdapter(@NonNull Context context, @NonNull AlertMenuListener alertMenuListener,
+                         @NonNull List<Alert> alerts) {
         super(context);
 
-        this.alerts = alerts;
+        this.alertMenuListener = alertMenuListener;
+
+        this.alerts = new ArrayList<>(alerts);
     }
 
     @Override
@@ -89,6 +98,15 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
 
         viewHolder.titleText.setText(getAlertTitle(view.getContext(), alert));
         viewHolder.messageText.setText(getAlertMessage(view.getContext(), alert));
+
+        final int alertPosition = alerts.indexOf(alert);
+
+        view.findViewById(R.id.button_menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertMenuListener.onAlertMenuClick(view, alertPosition);
+            }
+        });
     }
 
     private String getAlertTitle(Context context, Alert alert) {
