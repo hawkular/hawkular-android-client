@@ -101,7 +101,7 @@ public final class AlertsActivity extends AppCompatActivity implements AlertsAda
                         return true;
 
                     case R.id.menu_acknowledge:
-                        Timber.d("Alert %d was not deleted intentionally.", alertPosition);
+                        Timber.d("Alert %d was not removed intentionally.", alertPosition);
                         return true;
 
                     default:
