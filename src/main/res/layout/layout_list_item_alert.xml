@@ -55,7 +55,7 @@
 
   <ImageView
     android:id="@+id/button_menu"
-    android:src="@drawable/ic_menu"
+    android:src="@drawable/ic_more"
     android:scaleType="center"
     android:background="?attr/selectableItemBackgroundBorderless"
     android:layout_width="48dp"
