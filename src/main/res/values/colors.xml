@@ -23,7 +23,11 @@
   <color name="background_primary_dark">#d32f2f</color>
   <color name="background_accent">@color/background_primary</color>
 
-  <color name="background_window">#fff5f5f5</color>
+  <color name="background_divider">#1e000000</color>
+  <color name="background_window">#fafafa</color>
+
+  <color name="text_primary">#de000000</color>
+  <color name="text_secondary">#8a000000</color>
 
 </resources>
 

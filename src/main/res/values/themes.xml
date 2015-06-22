@@ -27,7 +27,7 @@
     <item name="windowActionModeOverlay">true</item>
     <item name="actionModeBackground">@color/background_primary</item>
 
-    <item name="android:windowBackground">@android:color/white</item>
+    <item name="android:windowBackground">@color/background_window</item>
   </style>
 
   <style name="Theme.Hawkular.Drawer" parent="Theme.Hawkular">

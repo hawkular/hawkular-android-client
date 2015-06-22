@@ -49,6 +49,9 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
         @InjectView(R.id.text_message)
         TextView messageText;
 
+        @InjectView(R.id.button_menu)
+        View menuButton;
+
         public ViewHolder(@NonNull View view) {
             ButterKnife.inject(this, view);
         }
@@ -101,7 +104,7 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
 
         final int alertPosition = position;
 
-        view.findViewById(R.id.button_menu).setOnClickListener(new View.OnClickListener() {
+        viewHolder.menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertMenuListener.onAlertMenuClick(view, alertPosition);

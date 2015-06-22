@@ -52,6 +52,7 @@ public final class AlertsActivity extends AppCompatActivity implements AlertsAda
         setUpBindings();
 
         setUpToolbar();
+        setUpList();
 
         setUpAlerts();
     }
@@ -64,6 +65,10 @@ public final class AlertsActivity extends AppCompatActivity implements AlertsAda
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void setUpList() {
+        list.setSelector(android.R.color.transparent);
     }
 
     private void setUpAlerts() {
