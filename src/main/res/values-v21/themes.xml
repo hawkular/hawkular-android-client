@@ -19,25 +19,15 @@
 -->
 <resources>
 
-  <style name="Base.Theme.Hawkular" parent="@style/Theme.AppCompat.Light.NoActionBar">
-    <item name="colorPrimary">@color/background_primary</item>
-    <item name="colorPrimaryDark">@color/background_primary_dark</item>
-    <item name="colorAccent">@color/background_accent</item>
-
-    <item name="android:windowBackground">@android:color/white</item>
-  </style>
-
   <style name="Theme.Hawkular" parent="Base.Theme.Hawkular">
-  </style>
-
-  <style name="Theme.Hawkular.NavigationView" parent="Theme.Hawkular">
-    <item name="textAppearanceListItem">@style/Theme.Hawkular.NavigationView.Item</item>
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="android:statusBarColor">@android:color/transparent</item>
   </style>
 
   <style name="Theme.Hawkular.NavigationView.Item">
-    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
     <item name="android:textSize">14sp</item>
-    <item name="android:textStyle">bold</item>
+    <item name="android:textStyle">normal</item>
   </style>
 
 </resources>
