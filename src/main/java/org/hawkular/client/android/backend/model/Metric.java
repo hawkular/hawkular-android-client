@@ -28,19 +28,12 @@ public final class Metric implements Parcelable {
     @SerializedName("properties")
     private MetricProperties properties;
 
-    @SerializedName("type")
-    private MetricType type;
-
     public String getId() {
         return id;
     }
 
     public MetricProperties getProperties() {
         return properties;
-    }
-
-    public MetricType getType() {
-        return type;
     }
 
     public static Creator<Metric> CREATOR = new Creator<Metric>() {
@@ -58,14 +51,12 @@ public final class Metric implements Parcelable {
     private Metric(Parcel parcel) {
         this.id = parcel.readString();
         this.properties = parcel.readParcelable(MetricProperties.class.getClassLoader());
-        this.type = parcel.readParcelable(MetricType.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(id);
         parcel.writeParcelable(properties, flags);
-        parcel.writeParcelable(type, flags);
     }
 
     @Override

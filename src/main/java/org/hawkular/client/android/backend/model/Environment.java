@@ -16,11 +16,13 @@
  */
 package org.hawkular.client.android.backend.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
-public final class Environment {
+public final class Environment implements Parcelable {
     @SerializedName("id")
     private String id;
 
@@ -30,5 +32,31 @@ public final class Environment {
 
     public String getId() {
         return id;
+    }
+
+    public static Creator<Environment> CREATOR = new Creator<Environment>() {
+        @Override
+        public Environment createFromParcel(Parcel parcel) {
+            return new Environment(parcel);
+        }
+
+        @Override
+        public Environment[] newArray(int size) {
+            return new Environment[size];
+        }
+    };
+
+    private Environment(Parcel parcel) {
+        this.id = parcel.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(id);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }

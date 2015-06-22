@@ -23,18 +23,25 @@
 
   <string name="title_alerts">Alerts</string>
   <string name="title_authorization">Authorization</string>
-  <string name="title_metric_data">Metric Data</string>
+  <string name="title_metric_data">Metric</string>
   <string name="title_metrics">Metrics</string>
-  <string name="title_resource_types">Resource Types</string>
   <string name="title_resources">Resources</string>
 
   <string name="button_authorize">Authorize</string>
+  <string name="button_resources">@string/title_resources</string>
+  <string name="button_alerts">@string/title_alerts</string>
 
   <string name="hint_host">Host</string>
   <string name="hint_port">Port</string>
 
   <string name="error_authorization_host_port">Something is wrong with host or port.</string>
+  <string name="error_authorization_port">Should be a correct number.</string>
   <string name="error_empty">Should not be empty.</string>
   <string name="error_general">Something is wrong, please try again.</string>
+
+  <string name="notification_alert">Some metric is not in the mood.</string>
+
+  <string name="mask_alert_availability">Server was down for %1$d seconds (until %2$s).</string>
+  <string name="mask_alert_threshold">Response time was above the threshold (%1$.1f ms) for %2$d seconds (until %3$s). The average response time was %4$.1f ms.</string>
 
 </resources>

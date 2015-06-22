@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
+import info.metadude.android.typedpreferences.IntPreference;
 import info.metadude.android.typedpreferences.StringPreference;
 
 public final class Preferences {
@@ -40,7 +41,14 @@ public final class Preferences {
         public static final String BACKEND_ENVIRONMENT = "environment";
     }
 
-    private SharedPreferences serverPreferences;
+    public static final class Defaults {
+        private Defaults() {
+        }
+
+        public static final int BACKEND_PORT = Integer.MIN_VALUE;
+    }
+
+    private final SharedPreferences serverPreferences;
 
     @NonNull
     public static Preferences of(@NonNull Context context) {
@@ -57,8 +65,8 @@ public final class Preferences {
     }
 
     @NonNull
-    public StringPreference port() {
-        return new StringPreference(serverPreferences, Keys.BACKEND_PORT);
+    public IntPreference port() {
+        return new IntPreference(serverPreferences, Keys.BACKEND_PORT, Defaults.BACKEND_PORT);
     }
 
     @NonNull

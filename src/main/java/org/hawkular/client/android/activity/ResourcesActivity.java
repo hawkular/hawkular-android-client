@@ -28,8 +28,8 @@ import android.widget.ListView;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.adapter.ResourcesAdapter;
 import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Resource;
-import org.hawkular.client.android.backend.model.ResourceType;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
@@ -41,7 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public class ResourcesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public final class ResourcesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -78,7 +78,7 @@ public class ResourcesActivity extends AppCompatActivity implements AdapterView.
     private void setUpResources() {
         showProgress();
 
-        BackendClient.getInstance().getResources(getTenant(), getResourceType(), this, new ResourcesCallback());
+        BackendClient.of(this).getResources(getTenant(), getEnvironment(), new ResourcesCallback());
     }
 
     private void showProgress() {
@@ -89,8 +89,8 @@ public class ResourcesActivity extends AppCompatActivity implements AdapterView.
         return getIntent().getParcelableExtra(Intents.Extras.TENANT);
     }
 
-    private ResourceType getResourceType() {
-        return getIntent().getParcelableExtra(Intents.Extras.RESOURCE_TYPE);
+    private Environment getEnvironment() {
+        return getIntent().getParcelableExtra(Intents.Extras.ENVIRONMENT);
     }
 
     private void setUpResources(List<Resource> resources) {
@@ -115,7 +115,7 @@ public class ResourcesActivity extends AppCompatActivity implements AdapterView.
     }
 
     private void startMetricTypesActivity(Resource resource) {
-        Intent intent = Intents.Builder.of(this).buildMetricsIntent(getTenant(), resource);
+        Intent intent = Intents.Builder.of(this).buildMetricsIntent(getTenant(), getEnvironment(), resource);
         startActivity(intent);
     }
 
@@ -134,8 +134,6 @@ public class ResourcesActivity extends AppCompatActivity implements AdapterView.
     private static final class ResourcesCallback extends AbstractActivityCallback<List<Resource>> {
         @Override
         public void onSuccess(List<Resource> resources) {
-            Timber.d("Resources :: Success!");
-
             ResourcesActivity activity = (ResourcesActivity) getActivity();
 
             activity.setUpResources(resources);
@@ -143,7 +141,7 @@ public class ResourcesActivity extends AppCompatActivity implements AdapterView.
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d("Resources :: Failure...");
+            Timber.d("Resources fetching failed.");
         }
     }
 }

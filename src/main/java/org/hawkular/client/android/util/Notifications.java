@@ -45,6 +45,7 @@ public final class Notifications {
 
     private final Context context;
 
+    @NonNull
     public static Notifications of(@NonNull Context context) {
         return new Notifications(context);
     }
@@ -54,8 +55,11 @@ public final class Notifications {
     }
 
     public void sendAlertNotification() {
-        getNotificationManager().notify(Ids.ALERT, getAlertNotification(
-            "Hawkular", "Some metric is not in the mood.", new Date()));
+        String notificationTitle = context.getString(R.string.application_name);
+        String notificationText = context.getString(R.string.notification_alert);
+
+        getNotificationManager().notify(
+            Ids.ALERT, getAlertNotification(notificationTitle, notificationText, new Date()));
     }
 
     private NotificationManager getNotificationManager() {

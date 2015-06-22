@@ -18,7 +18,6 @@ package org.hawkular.client.android.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.backend.model.AlertEvaluation;
 import org.hawkular.client.android.backend.model.AlertType;
+import org.hawkular.client.android.util.Formatter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +75,7 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
 
     @NonNull
     @Override
-    public View newView(LayoutInflater inflater, int position, ViewGroup viewContainer) {
+    public View newView(LayoutInflater inflater, ViewGroup viewContainer) {
         View view = inflater.inflate(R.layout.layout_list_item_alert, viewContainer, false);
 
         view.setTag(new ViewHolder(view));
@@ -84,7 +84,7 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
     }
 
     @Override
-    public void bindView(Alert alert, int position, View view) {
+    public void bindView(Alert alert, View view) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         viewHolder.titleText.setText(getAlertTitle(view.getContext(), alert));
@@ -92,7 +92,11 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
     }
 
     private String getAlertTitle(Context context, Alert alert) {
-        return formatTimestamp(context, getAlertStartTimestamp(alert));
+        return getAlertTimestamp(context, getAlertStartTimestamp(alert));
+    }
+
+    private String getAlertTimestamp(Context context, long timestamp) {
+        return Formatter.formatTime(context, timestamp);
     }
 
     private String getAlertMessage(Context context, Alert alert) {
@@ -104,37 +108,8 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
                 return getThresholdAlertMessage(context, alert);
 
             default:
-                throw new RuntimeException("Alert is not supported");
+                throw new RuntimeException("Alert is not supported.");
         }
-    }
-
-    private String getAvailabilityAlertMessage(Context context, Alert alert) {
-        long alertStartTimestamp = getAlertStartTimestamp(alert);
-        long alertFinishTimestamp = getAlertFinishTimestamp(alert);
-
-        return String.format("Server was down for %d seconds (until %s).",
-            TimeUnit.MILLISECONDS.toSeconds(alertFinishTimestamp - alertStartTimestamp),
-            formatTimestamp(context, alertFinishTimestamp));
-    }
-
-    private String getThresholdAlertMessage(Context context, Alert alert) {
-        long alertStartTimestamp = getAlertStartTimestamp(alert);
-        long alertFinishTimestamp = getAlertFinishTimestamp(alert);
-
-        double alertAverage = getAlertAverageValue(alert);
-        double alertThreshold = getAlertThreshold(alert);
-
-        return String.format("Response time was above the threshold (%.1f ms) for %d seconds (until %s)." +
-                "The average response time was %.1f ms.",
-            alertThreshold,
-            TimeUnit.MILLISECONDS.toSeconds(alertFinishTimestamp - alertStartTimestamp),
-            formatTimestamp(context, alertFinishTimestamp),
-            alertAverage);
-    }
-
-    private String formatTimestamp(Context context, long timestamp) {
-        return DateUtils.formatDateTime(context, timestamp,
-            DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME);
     }
 
     private AlertType getAlertType(Alert alert) {
@@ -148,26 +123,53 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
             }
         }
 
-        throw new RuntimeException("No alert type found");
+        throw new RuntimeException("No alert type found.");
+    }
+
+    private String getAvailabilityAlertMessage(Context context, Alert alert) {
+        long alertStartTimestamp = getAlertStartTimestamp(alert);
+        long alertFinishTimestamp = getAlertFinishTimestamp(alert);
+
+        return context.getString(R.string.mask_alert_availability,
+            getAlertDuration(alertStartTimestamp, alertFinishTimestamp),
+            getAlertTimestamp(context, alertFinishTimestamp));
     }
 
     private long getAlertStartTimestamp(Alert alert) {
-        List<Long> alertStarts = new ArrayList<>();
+        List<Long> alertStartTimestamps = new ArrayList<>();
 
         for (List<AlertEvaluation> alertEvaluations : alert.getEvaluations()) {
             for (AlertEvaluation alertEvaluation : alertEvaluations) {
-                alertStarts.add(alertEvaluation.getDataTimestamp());
+                alertStartTimestamps.add(alertEvaluation.getDataTimestamp());
             }
         }
 
-        return Collections.min(alertStarts);
+        return Collections.min(alertStartTimestamps);
     }
 
     private long getAlertFinishTimestamp(Alert alert) {
         return alert.getTimestamp();
     }
 
-    private double getAlertAverageValue(Alert alert) {
+    private int getAlertDuration(long alertStartTimestamp, long alertFinishTimestamp) {
+        return (int) TimeUnit.MILLISECONDS.toSeconds(alertFinishTimestamp - alertStartTimestamp);
+    }
+
+    private String getThresholdAlertMessage(Context context, Alert alert) {
+        long alertStartTimestamp = getAlertStartTimestamp(alert);
+        long alertFinishTimestamp = getAlertFinishTimestamp(alert);
+
+        double alertAverage = getAlertAverage(alert);
+        double alertThreshold = getAlertThreshold(alert);
+
+        return context.getString(R.string.mask_alert_threshold,
+            alertThreshold,
+            getAlertDuration(alertStartTimestamp, alertFinishTimestamp),
+            getAlertTimestamp(context, alertFinishTimestamp),
+            alertAverage);
+    }
+
+    private double getAlertAverage(Alert alert) {
         double alertValuesSum = 0;
         long alertValuesCount = 0;
 
@@ -193,6 +195,6 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
             }
         }
 
-        throw new RuntimeException("No alert threshold found");
+        throw new RuntimeException("No alert threshold found.");
     }
 }

@@ -91,6 +91,11 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
             return;
         }
 
+        if (!isPortCorrectNumber()) {
+            showError(portEdit, R.string.error_authorization_port);
+            return;
+        }
+
         setUpBackendAuthorization();
     }
 
@@ -102,15 +107,28 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
         return portEdit.getText().toString().trim();
     }
 
+    private boolean isPortCorrectNumber() {
+        try {
+            return getPortNumber() >= 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private int getPortNumber() {
+        return Integer.valueOf(getPort());
+    }
+
     private void showError(EditText errorEdit, @StringRes int errorMessage) {
         errorEdit.setError(getString(errorMessage));
     }
 
     private void setUpBackendAuthorization() {
         try {
-            BackendClient.getInstance().setUpBackend(getHost(), getPort());
+            BackendClient.of(this).configureBackend(getHost(), Integer.valueOf(getPort()));
 
-            BackendClient.getInstance().authorize(this, this);
+            BackendClient.of(this).deauthorize();
+            BackendClient.of(this).authorize(this);
         } catch (RuntimeException e) {
             Timber.d(e, "Authorization failed.");
 
@@ -135,11 +153,11 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
     }
 
     private void setUpTenant() {
-        BackendClient.getInstance().getTenants(this, new TenantsCallback());
+        BackendClient.of(this).getTenants(new TenantsCallback());
     }
 
     private void setUpEnvironment(Tenant tenant) {
-        BackendClient.getInstance().getEnvironments(tenant, this, new EnvironmentsCallback(tenant));
+        BackendClient.of(this).getEnvironments(tenant, new EnvironmentsCallback(tenant));
     }
 
     private void succeed(Tenant tenant, Environment environment) {
@@ -151,7 +169,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private void saveBackendPreferences(Tenant tenant, Environment environment) {
         Preferences.of(this).host().set(getHost());
-        Preferences.of(this).port().set(getPort());
+        Preferences.of(this).port().set(getPortNumber());
         Preferences.of(this).tenant().set(tenant.getId());
         Preferences.of(this).environment().set(environment.getId());
     }

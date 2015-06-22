@@ -28,10 +28,12 @@ public final class ViewDirector {
 
     private int animatorId;
 
+    @NonNull
     public static ViewDirector of(@NonNull Activity activity) {
         return new ViewDirector(activity.getWindow().getDecorView());
     }
 
+    @NonNull
     public static ViewDirector of(@NonNull Fragment fragment) {
         return new ViewDirector(fragment.getView());
     }

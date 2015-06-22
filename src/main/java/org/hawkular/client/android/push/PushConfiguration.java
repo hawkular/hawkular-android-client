@@ -22,7 +22,7 @@ final class PushConfiguration {
     private PushConfiguration() {
     }
 
-    public static final String NAME = "Hawkular";
+    public static final String NAME = "hawkular";
 
     public static final class Ups {
         private Ups() {

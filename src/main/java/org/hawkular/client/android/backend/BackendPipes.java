@@ -25,13 +25,11 @@ final class BackendPipes {
         }
 
         public static final String ALERTS = "alerts";
+        public static final String TENANTS = "tenants";
         public static final String ENVIRONMENTS = "environments";
+        public static final String RESOURCES = "resources";
         public static final String METRICS = "metrics";
         public static final String METRIC_DATA = "metric-data";
-        public static final String METRIC_TYPES = "metric-types";
-        public static final String RESOURCE_TYPES = "resource-types";
-        public static final String RESOURCES = "resources";
-        public static final String TENANTS = "tenants";
     }
 
     public static final class Roots {
@@ -47,13 +45,11 @@ final class BackendPipes {
         private Paths() {
         }
 
-        public static final String ENVIRONMENTS = "%s/environments";
-        public static final String METRICS = "%s/test/resources/%s/metrics";
-        public static final String METRIC_DATA = "%s/metrics/numeric/%s/data";
-        public static final String METRIC_TYPES = "%s/metricTypes";
-        public static final String RESOURCE_TYPES = "%s/resourceTypes";
-        public static final String RESOURCES = "%s/resourceTypes/%s/resources";
         public static final String TENANTS = "tenant";
+        public static final String ENVIRONMENTS = "%s/environments";
+        public static final String RESOURCES = "%s/%s/resources";
+        public static final String METRICS = "%s/%s/resources/%s/metrics";
+        public static final String METRIC_DATA = "%s/metrics/numeric/%s/data";
     }
 
     public static final class Parameters {

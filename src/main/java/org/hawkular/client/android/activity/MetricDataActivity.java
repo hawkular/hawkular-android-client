@@ -32,9 +32,11 @@ import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -48,7 +50,7 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 import timber.log.Timber;
 
-public class MetricDataActivity extends AppCompatActivity {
+public final class MetricDataActivity extends AppCompatActivity {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -80,7 +82,19 @@ public class MetricDataActivity extends AppCompatActivity {
     private void setUpMetricData() {
         showProgress();
 
-        BackendClient.getInstance().getMetricData(getTenant(), getMetric(), this, new MetricDataCallback());
+        BackendClient.of(this).getMetricData(
+            getTenant(), getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+    }
+
+    private Date getMetricStartTime() {
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.add(Calendar.MINUTE, -10);
+
+        return calendar.getTime();
+    }
+
+    private Date getMetricFinishTime() {
+        return GregorianCalendar.getInstance().getTime();
     }
 
     private void showProgress() {
@@ -159,8 +173,6 @@ public class MetricDataActivity extends AppCompatActivity {
     private static final class MetricDataCallback extends AbstractActivityCallback<List<MetricData>> {
         @Override
         public void onSuccess(List<MetricData> metricDataList) {
-            Timber.d("Metric data :: Success!");
-
             MetricDataActivity activity = (MetricDataActivity) getActivity();
 
             activity.setUpMetricData(metricDataList);
@@ -168,7 +180,7 @@ public class MetricDataActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d("Metric data :: Failure...");
+            Timber.d(e, "Metric data fetching failed.");
         }
     }
 
