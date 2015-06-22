@@ -19,7 +19,7 @@
 -->
 <resources>
 
-  <style name="Theme.Hawkular" parent="Base.Theme.Hawkular">
+  <style name="Theme.Hawkular.Drawer" parent="Theme.Hawkular">
     <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     <item name="android:statusBarColor">@android:color/transparent</item>
   </style>

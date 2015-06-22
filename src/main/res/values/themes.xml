@@ -19,15 +19,18 @@
 -->
 <resources>
 
-  <style name="Base.Theme.Hawkular" parent="@style/Theme.AppCompat.Light.NoActionBar">
+  <style name="Theme.Hawkular" parent="@style/Theme.AppCompat.Light.NoActionBar">
     <item name="colorPrimary">@color/background_primary</item>
     <item name="colorPrimaryDark">@color/background_primary_dark</item>
     <item name="colorAccent">@color/background_accent</item>
 
+    <item name="windowActionModeOverlay">true</item>
+    <item name="actionModeBackground">@color/background_primary</item>
+
     <item name="android:windowBackground">@android:color/white</item>
   </style>
 
-  <style name="Theme.Hawkular" parent="Base.Theme.Hawkular">
+  <style name="Theme.Hawkular.Drawer" parent="Theme.Hawkular">
   </style>
 
   <style name="Theme.Hawkular.NavigationView" parent="Theme.Hawkular">
