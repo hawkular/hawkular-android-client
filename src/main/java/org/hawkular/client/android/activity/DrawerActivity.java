@@ -40,8 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public final class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-    Callback<String>
-{
+    Callback<String> {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
