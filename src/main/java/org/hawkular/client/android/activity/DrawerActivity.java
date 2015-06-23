@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
@@ -49,6 +50,9 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     @InjectView(R.id.navigation)
     NavigationView navigation;
+
+    @InjectView(R.id.text_title)
+    TextView navigationTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,11 +98,17 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     @Override
     public void onSuccess(String authorization) {
-        setUpDefaults();
+        setUpNavigationDefaults();
+
+        setUpNavigationTitle();
     }
 
-    private void setUpDefaults() {
+    private void setUpNavigationDefaults() {
         showNavigation(R.id.menu_resources);
+    }
+
+    private void setUpNavigationTitle() {
+        navigationTitle.setText(Preferences.of(this).host().get());
     }
 
     private void showNavigation(@IdRes int navigationId) {

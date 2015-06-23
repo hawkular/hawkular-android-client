@@ -24,7 +24,8 @@
   android:layout_height="168dp">
 
   <TextView
-    android:text="hawkular.org"
+    android:id="@+id/text_title"
+    android:text="@string/application_name"
     android:textSize="14sp"
     android:textColor="@android:color/white"
     android:fontFamily="sans-serif-medium"
