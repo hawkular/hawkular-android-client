@@ -17,36 +17,24 @@
     limitations under the License.
 
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
+<ViewAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/animator"
+  android:inAnimation="@android:anim/fade_in"
+  android:outAnimation="@android:anim/fade_out"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <include
-    layout="@layout/layout_toolbar"/>
+  <ProgressBar
+    android:id="@+id/progress"
+    android:layout_gravity="center"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
 
-  <LinearLayout
-    android:orientation="vertical"
-    android:padding="16dp"
+  <ListView
+    android:id="@+id/list"
+    android:divider="@color/background_divider"
+    android:dividerHeight="0.5dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"/>
 
-    <Button
-      android:id="@+id/button_resources"
-      android:text="Resources"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
-
-    <Space
-      android:layout_width="match_parent"
-      android:layout_height="16dp"/>
-
-    <Button
-      android:id="@+id/button_alerts"
-      android:text="Alerts"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
-
-  </LinearLayout>
-
-</LinearLayout>
+</ViewAnimator>

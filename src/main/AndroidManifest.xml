@@ -43,7 +43,8 @@
     android:theme="@style/Theme.Hawkular">
 
     <activity
-      android:name=".activity.LauncherActivity">
+      android:name=".activity.DrawerActivity"
+      android:theme="@style/Theme.Hawkular.Drawer">
 
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -58,11 +59,6 @@
     </activity>
 
     <activity
-      android:name=".activity.ResourcesActivity"
-      android:label="@string/title_resources">
-    </activity>
-
-    <activity
       android:name=".activity.MetricsActivity"
       android:label="@string/title_metrics">
     </activity>
@@ -70,11 +66,6 @@
     <activity
       android:name=".activity.MetricDataActivity"
       android:label="@string/title_metric_data">
-    </activity>
-
-    <activity
-      android:name=".activity.AlertsActivity"
-      android:label="@string/title_alerts">
     </activity>
 
     <service

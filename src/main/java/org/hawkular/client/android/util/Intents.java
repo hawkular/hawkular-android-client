@@ -18,13 +18,12 @@ package org.hawkular.client.android.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import org.hawkular.client.android.activity.AlertsActivity;
 import org.hawkular.client.android.activity.AuthorizationActivity;
 import org.hawkular.client.android.activity.MetricDataActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
-import org.hawkular.client.android.activity.ResourcesActivity;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
@@ -69,20 +68,6 @@ public final class Intents {
         }
 
         @NonNull
-        public Intent buildAlertsIntent() {
-            return new Intent(context, AlertsActivity.class);
-        }
-
-        @NonNull
-        public Intent buildResourcesIntent(@NonNull Tenant tenant, @NonNull Environment environment) {
-            Intent intent = new Intent(context, ResourcesActivity.class);
-            intent.putExtra(Extras.TENANT, tenant);
-            intent.putExtra(Extras.ENVIRONMENT, environment);
-
-            return intent;
-        }
-
-        @NonNull
         public Intent buildMetricsIntent(@NonNull Tenant tenant, @NonNull Environment environment,
                                          @NonNull Resource resource) {
             Intent intent = new Intent(context, MetricsActivity.class);
@@ -100,6 +85,16 @@ public final class Intents {
             intent.putExtra(Extras.METRIC, metric);
 
             return intent;
+        }
+
+        @NonNull
+        public Intent buildFeedbackIntent() {
+            String feedbackAddress = "hawkular-dev@lists.jboss.org";
+            String feedbackSubject = "Android Client";
+
+            String feedbackUri = String.format("mailto:%s?subject=%s", feedbackAddress, feedbackSubject);
+
+            return new Intent(Intent.ACTION_SENDTO, Uri.parse(feedbackUri));
         }
     }
 }

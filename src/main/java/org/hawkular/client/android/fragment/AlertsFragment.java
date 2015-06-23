@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.client.android.activity;
+package org.hawkular.client.android.fragment;
 
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 
@@ -29,7 +31,7 @@ import org.hawkular.client.android.adapter.AlertsAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
+import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
 import java.util.List;
 
@@ -37,34 +39,29 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public final class AlertsActivity extends AppCompatActivity implements AlertsAdapter.AlertMenuListener {
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
-
+public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertMenuListener {
     @InjectView(R.id.list)
     ListView list;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle state) {
-        super.onCreate(state);
-        setContentView(R.layout.activity_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
+        return inflater.inflate(R.layout.fragment_list, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle state) {
+        super.onActivityCreated(state);
 
         setUpBindings();
 
-        setUpToolbar();
         setUpList();
 
         setUpAlerts();
     }
 
     private void setUpBindings() {
-        ButterKnife.inject(this);
-    }
-
-    private void setUpToolbar() {
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ButterKnife.inject(this, getView());
     }
 
     private void setUpList() {
@@ -82,7 +79,7 @@ public final class AlertsActivity extends AppCompatActivity implements AlertsAda
     }
 
     private void setUpAlerts(List<Alert> alerts) {
-        list.setAdapter(new AlertsAdapter(this, this, alerts));
+        list.setAdapter(new AlertsAdapter(getActivity(), this, alerts));
 
         hideProgress();
     }
@@ -93,7 +90,7 @@ public final class AlertsActivity extends AppCompatActivity implements AlertsAda
     }
 
     private void showAlertMenu(final View alertView, final  int alertPosition) {
-        PopupMenu alertMenu = new PopupMenu(this, alertView);
+        PopupMenu alertMenu = new PopupMenu(getActivity(), alertView);
 
         alertMenu.getMenuInflater().inflate(R.menu.menu_alerts, alertMenu.getMenu());
 
@@ -123,23 +120,22 @@ public final class AlertsActivity extends AppCompatActivity implements AlertsAda
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
+    public void onDestroyView() {
+        super.onDestroyView();
 
-            default:
-                return super.onOptionsItemSelected(menuItem);
-        }
+        tearDownBindings();
     }
 
-    private static final class AlertsCallback extends AbstractActivityCallback<List<Alert>> {
+    private void tearDownBindings() {
+        ButterKnife.reset(this);
+    }
+
+    private static final class AlertsCallback extends AbstractFragmentCallback<List<Alert>> {
         @Override
         public void onSuccess(List<Alert> alerts) {
-            AlertsActivity activity = (AlertsActivity) getActivity();
+            AlertsFragment fragment = (AlertsFragment) getFragment();
 
-            activity.setUpAlerts(alerts);
+            fragment.setUpAlerts(alerts);
         }
 
         @Override

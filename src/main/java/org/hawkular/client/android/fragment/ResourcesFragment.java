@@ -14,14 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.client.android.activity;
+package org.hawkular.client.android.fragment;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -31,9 +32,10 @@ import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Tenant;
+import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
+import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
 import java.util.List;
 
@@ -41,34 +43,29 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public final class ResourcesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
-
+public final class ResourcesFragment extends Fragment implements AdapterView.OnItemClickListener {
     @InjectView(R.id.list)
     ListView list;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle state) {
-        super.onCreate(state);
-        setContentView(R.layout.activity_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
+        return inflater.inflate(R.layout.fragment_list, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle state) {
+        super.onActivityCreated(state);
 
         setUpBindings();
 
-        setUpToolbar();
         setUpList();
 
         setUpResources();
     }
 
     private void setUpBindings() {
-        ButterKnife.inject(this);
-    }
-
-    private void setUpToolbar() {
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ButterKnife.inject(this, getView());
     }
 
     private void setUpList() {
@@ -86,15 +83,15 @@ public final class ResourcesActivity extends AppCompatActivity implements Adapte
     }
 
     private Tenant getTenant() {
-        return getIntent().getParcelableExtra(Intents.Extras.TENANT);
+        return getArguments().getParcelable(Fragments.Arguments.TENANT);
     }
 
     private Environment getEnvironment() {
-        return getIntent().getParcelableExtra(Intents.Extras.ENVIRONMENT);
+        return getArguments().getParcelable(Fragments.Arguments.ENVIRONMENT);
     }
 
     private void setUpResources(List<Resource> resources) {
-        list.setAdapter(new ResourcesAdapter(this, resources));
+        list.setAdapter(new ResourcesAdapter(getActivity(), resources));
 
         hideProgress();
     }
@@ -115,28 +112,27 @@ public final class ResourcesActivity extends AppCompatActivity implements Adapte
     }
 
     private void startMetricTypesActivity(Resource resource) {
-        Intent intent = Intents.Builder.of(this).buildMetricsIntent(getTenant(), getEnvironment(), resource);
+        Intent intent = Intents.Builder.of(getActivity()).buildMetricsIntent(getTenant(), getEnvironment(), resource);
         startActivity(intent);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
+    public void onDestroyView() {
+        super.onDestroyView();
 
-            default:
-                return super.onOptionsItemSelected(menuItem);
-        }
+        tearDownBindings();
     }
 
-    private static final class ResourcesCallback extends AbstractActivityCallback<List<Resource>> {
+    private void tearDownBindings() {
+         ButterKnife.reset(this);
+    }
+
+    private static final class ResourcesCallback extends AbstractFragmentCallback<List<Resource>> {
         @Override
         public void onSuccess(List<Resource> resources) {
-            ResourcesActivity activity = (ResourcesActivity) getActivity();
+            ResourcesFragment fragment = (ResourcesFragment) getFragment();
 
-            activity.setUpResources(resources);
+            fragment.setUpResources(resources);
         }
 
         @Override
