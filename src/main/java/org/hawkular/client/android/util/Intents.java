@@ -20,11 +20,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import org.hawkular.client.android.activity.AlertsActivity;
 import org.hawkular.client.android.activity.AuthorizationActivity;
 import org.hawkular.client.android.activity.MetricDataActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
-import org.hawkular.client.android.activity.ResourcesActivity;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
@@ -66,20 +64,6 @@ public final class Intents {
         @NonNull
         public Intent buildAuthorizationIntent() {
             return new Intent(context, AuthorizationActivity.class);
-        }
-
-        @NonNull
-        public Intent buildAlertsIntent() {
-            return new Intent(context, AlertsActivity.class);
-        }
-
-        @NonNull
-        public Intent buildResourcesIntent(@NonNull Tenant tenant, @NonNull Environment environment) {
-            Intent intent = new Intent(context, ResourcesActivity.class);
-            intent.putExtra(Extras.TENANT, tenant);
-            intent.putExtra(Extras.ENVIRONMENT, environment);
-
-            return intent;
         }
 
         @NonNull

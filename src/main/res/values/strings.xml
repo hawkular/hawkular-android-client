@@ -28,8 +28,6 @@
   <string name="title_resources">Resources</string>
 
   <string name="button_authorize">Authorize</string>
-  <string name="button_resources">@string/title_resources</string>
-  <string name="button_alerts">@string/title_alerts</string>
 
   <string name="hint_host">Host</string>
   <string name="hint_port">Port</string>
