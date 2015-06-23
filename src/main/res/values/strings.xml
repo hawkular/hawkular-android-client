@@ -48,6 +48,10 @@
   <string name="menu_feedback">Help &amp; feedback</string>
   <string name="menu_resolve">Resolve</string>
   <string name="menu_acknowledge">Acknowledge</string>
+  <string name="description_authorization">You need to register with the Hawkular server. Please provide the server
+    location. In the next step you will then need to provide the credentials.
+  </string>
+  <string name="description_authorization2">Please note that the account needs to already exist.</string>
 
 </resources>
 
