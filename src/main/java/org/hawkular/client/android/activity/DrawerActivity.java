@@ -145,6 +145,10 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
                 showAlertsFragment();
                 break;
 
+            case R.id.menu_feedback:
+                startFeedbackActivity();
+                break;
+
             default:
                 break;
         }
@@ -174,6 +178,11 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         Fragment fragment = Fragments.Builder.buildAlertsFragment();
 
         Fragments.Operator.of(this).reset(R.id.layout_container, fragment);
+    }
+
+    private void startFeedbackActivity() {
+        Intent intent = Intents.Builder.of(this).buildFeedbackIntent();
+        startActivity(intent);
     }
 
     @Override

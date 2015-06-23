@@ -18,6 +18,7 @@ package org.hawkular.client.android.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.activity.AuthorizationActivity;
@@ -84,6 +85,16 @@ public final class Intents {
             intent.putExtra(Extras.METRIC, metric);
 
             return intent;
+        }
+
+        @NonNull
+        public Intent buildFeedbackIntent() {
+            String feedbackAddress = "hawkular-dev@lists.jboss.org";
+            String feedbackSubject = "Android Client";
+
+            String feedbackUri = String.format("mailto:%s?subject=%s", feedbackAddress, feedbackSubject);
+
+            return new Intent(Intent.ACTION_SENDTO, Uri.parse(feedbackUri));
         }
     }
 }
