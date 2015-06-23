@@ -17,6 +17,7 @@
 package org.hawkular.client.android.backend;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.backend.model.Alert;
@@ -32,6 +33,7 @@ import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthorizationConfiguration;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.core.ReadFilter;
+import org.jboss.aerogear.android.pipe.LoaderPipe;
 import org.jboss.aerogear.android.pipe.PipeManager;
 import org.jboss.aerogear.android.pipe.rest.RestfulPipeConfiguration;
 
@@ -44,14 +46,21 @@ import java.util.Map;
 
 public final class BackendClient {
     private final Activity activity;
+    private final Fragment fragment;
 
     @NonNull
     public static BackendClient of(@NonNull Activity activity) {
-        return new BackendClient(activity);
+        return new BackendClient(activity, null);
     }
 
-    private BackendClient(Activity activity) {
+    @NonNull
+    public static BackendClient of(@NonNull Fragment fragment) {
+        return new BackendClient(null, fragment);
+    }
+
+    private BackendClient(Activity activity, Fragment fragment) {
         this.activity = activity;
+        this.fragment = fragment;
     }
 
     public void configureBackend(@NonNull String serverHost, int port) {
@@ -93,7 +102,7 @@ public final class BackendClient {
         return AuthorizationManager.getModule(BackendAuthorization.NAME);
     }
 
-    public void authorize(@NonNull Callback<String> callback) {
+    public void authorize(@NonNull Activity activity, @NonNull Callback<String> callback) {
         getAuthorizationModule().requestAccess(activity, callback);
     }
 
@@ -150,7 +159,15 @@ public final class BackendClient {
 
     @SuppressWarnings("unchecked")
     private <T> void readPipe(String pipeName, URI uri, Callback<List<T>> callback) {
-        PipeManager.getPipe(pipeName, activity).read(getFilter(uri), callback);
+        getPipe(pipeName).read(getFilter(uri), callback);
+    }
+
+    private LoaderPipe getPipe(String pipeName) {
+        if (activity != null) {
+            return PipeManager.getPipe(pipeName, activity);
+        } else {
+            return PipeManager.getPipe(pipeName, fragment, fragment.getActivity().getApplicationContext());
+        }
     }
 
     private ReadFilter getFilter(URI uri) {

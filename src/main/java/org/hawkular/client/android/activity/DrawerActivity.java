@@ -16,7 +16,10 @@
  */
 package org.hawkular.client.android.activity;
 
+import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -25,11 +28,20 @@ import android.view.Gravity;
 import android.view.MenuItem;
 
 import org.hawkular.client.android.R;
+import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.Environment;
+import org.hawkular.client.android.backend.model.Tenant;
+import org.hawkular.client.android.util.Fragments;
+import org.hawkular.client.android.util.Intents;
+import org.hawkular.client.android.util.Preferences;
+import org.jboss.aerogear.android.core.Callback;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public final class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public final class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+    Callback<String>
+{
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -47,8 +59,9 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         setUpBindings();
 
         setUpToolbar();
-
         setUpNavigation();
+
+        setUpBackendClient();
     }
 
     private void setUpBindings() {
@@ -66,13 +79,92 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         navigation.setNavigationItemSelectedListener(this);
     }
 
+    private void setUpBackendClient() {
+        String backendHost = Preferences.of(this).host().get();
+        int backendPort = Preferences.of(this).port().get();
+
+        if (backendHost.isEmpty() || backendPort == Preferences.Defaults.BACKEND_PORT) {
+            startAuthorizationActivity();
+            return;
+        }
+
+        BackendClient.of(this).configureBackend(backendHost, backendPort);
+
+        BackendClient.of(this).authorize(this, this);
+    }
+
+    @Override
+    public void onSuccess(String authorization) {
+        setUpDefaults();
+    }
+
+    private void setUpDefaults() {
+        showNavigation(R.id.menu_resources);
+    }
+
+    private void showNavigation(@IdRes int navigationId) {
+        onNavigationItemSelected(navigation.getMenu().findItem(navigationId));
+    }
+
+    @Override
+    public void onFailure(Exception e) {
+        startAuthorizationActivity();
+    }
+
+    private void startAuthorizationActivity() {
+        Intent intent = Intents.Builder.of(this).buildAuthorizationIntent();
+        startActivityForResult(intent, Intents.Requests.AUTHORIZATION);
+    }
+
+    @Override
+    protected void onActivityResult(int request, int result, Intent intent) {
+        super.onActivityResult(request, result, intent);
+
+        if ((request == Intents.Requests.AUTHORIZATION) && (result != RESULT_OK)) {
+            finish();
+        }
+    }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.menu_resources:
+                showResourcesFragment();
+                break;
+
+            case R.id.menu_alerts:
+                showAlertsFragment();
+                break;
+
+            default:
+                break;
+        }
+
         drawer.closeDrawers();
 
         menuItem.setChecked(true);
 
         return true;
+    }
+
+    private void showResourcesFragment() {
+        Fragment fragment = Fragments.Builder.buildResourcesFragment(getTenant(), getEnvironment());
+
+        Fragments.Operator.of(this).reset(R.id.layout_container, fragment);
+    }
+
+    private Tenant getTenant() {
+        return new Tenant(Preferences.of(this).tenant().get());
+    }
+
+    private Environment getEnvironment() {
+        return new Environment(Preferences.of(this).environment().get());
+    }
+
+    private void showAlertsFragment() {
+        Fragment fragment = Fragments.Builder.buildAlertsFragment();
+
+        Fragments.Operator.of(this).reset(R.id.layout_container, fragment);
     }
 
     @Override

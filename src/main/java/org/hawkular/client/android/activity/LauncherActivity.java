@@ -68,7 +68,7 @@ public final class LauncherActivity extends AppCompatActivity implements Callbac
 
         BackendClient.of(this).configureBackend(backendHost, backendPort);
 
-        BackendClient.of(this).authorize(this);
+        BackendClient.of(this).authorize(this, this);
     }
 
     @Override
