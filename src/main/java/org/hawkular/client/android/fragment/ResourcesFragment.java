@@ -37,6 +37,8 @@ import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -91,9 +93,15 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     }
 
     private void setUpResources(List<Resource> resources) {
+        sortResources(resources);
+
         list.setAdapter(new ResourcesAdapter(getActivity(), resources));
 
         hideProgress();
+    }
+
+    private void sortResources(List<Resource> resources) {
+        Collections.sort(resources, new ResourcesComparator());
     }
 
     private void hideProgress() {
@@ -138,6 +146,23 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
         @Override
         public void onFailure(Exception e) {
             Timber.d("Resources fetching failed.");
+        }
+    }
+
+    private static final class ResourcesComparator implements Comparator<Resource> {
+        @Override
+        public int compare(Resource leftResource, Resource rightResource) {
+            String leftResourceTypeId = leftResource.getType().getId();
+            String rightResourceTypeId = rightResource.getType().getId();
+
+            String leftResourceUrl = leftResource.getProperties().getUrl();
+            String rightResourceUrl = rightResource.getProperties().getUrl();
+
+            if (leftResourceTypeId.equals(rightResourceTypeId)) {
+                return leftResourceUrl.compareTo(rightResourceUrl);
+            } else {
+                return leftResourceTypeId.compareTo(rightResourceTypeId);
+            }
         }
     }
 }

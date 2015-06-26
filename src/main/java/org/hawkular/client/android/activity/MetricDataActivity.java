@@ -187,18 +187,10 @@ public final class MetricDataActivity extends AppCompatActivity {
     private static final class MetricDataComparator implements Comparator<MetricData> {
         @Override
         public int compare(MetricData leftMetricData, MetricData rightMetricData) {
-            long leftTimestamp = leftMetricData.getTimestamp();
-            long rightTimestamp = rightMetricData.getTimestamp();
+            Date leftMetricDataTimestamp = new Date(leftMetricData.getTimestamp());
+            Date rightMetricDataTimestamp = new Date(rightMetricData.getTimestamp());
 
-            if (leftTimestamp == rightTimestamp) {
-                return 0;
-            }
-
-            if (leftTimestamp < rightTimestamp) {
-                return -1;
-            } else {
-                return 1;
-            }
+            return leftMetricDataTimestamp.compareTo(rightMetricDataTimestamp);
         }
     }
 }

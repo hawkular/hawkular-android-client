@@ -33,6 +33,9 @@ import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -79,9 +82,15 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private void setUpAlerts(List<Alert> alerts) {
+        sortAlerts(alerts);
+
         list.setAdapter(new AlertsAdapter(getActivity(), this, alerts));
 
         hideProgress();
+    }
+
+    private void sortAlerts(List<Alert> alerts) {
+        Collections.sort(alerts, new AlertsComparator());
     }
 
     @Override
@@ -141,6 +150,16 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         @Override
         public void onFailure(Exception e) {
             Timber.d(e, "Alerts fetching failed.");
+        }
+    }
+
+    private static final class AlertsComparator implements Comparator<Alert> {
+        @Override
+        public int compare(Alert leftAlert, Alert rightAlert) {
+            Date leftAlertTimestamp = new Date(leftAlert.getTimestamp());
+            Date righAlerttTimestamp = new Date(rightAlert.getTimestamp());
+
+            return leftAlertTimestamp.compareTo(righAlerttTimestamp);
         }
     }
 }

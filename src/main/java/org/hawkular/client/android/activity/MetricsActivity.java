@@ -36,6 +36,8 @@ import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -99,9 +101,15 @@ public final class MetricsActivity extends AppCompatActivity implements AdapterV
     }
 
     private void setUpMetrics(List<Metric> metrics) {
+        sortMetrics(metrics);
+
         list.setAdapter(new MetricsAdapter(this, metrics));
 
         hideProgress();
+    }
+
+    private void sortMetrics(List<Metric> metrics) {
+        Collections.sort(metrics, new MetricsComparator());
     }
 
     private void hideProgress() {
@@ -147,6 +155,16 @@ public final class MetricsActivity extends AppCompatActivity implements AdapterV
         @Override
         public void onFailure(Exception e) {
             Timber.d(e, "Metrics fetching failed.");
+        }
+    }
+
+    private static final class MetricsComparator implements Comparator<Metric> {
+        @Override
+        public int compare(Metric leftMetric, Metric rightMetric) {
+            String leftMetricDescription = leftMetric.getProperties().getDescription();
+            String rightMetricDescription = rightMetric.getProperties().getDescription();
+
+            return leftMetricDescription.compareTo(rightMetricDescription);
         }
     }
 }
