@@ -28,6 +28,15 @@ public final class Uris {
     }
 
     @NonNull
+    public static URI getUriFromString(@NonNull String uri) {
+        try {
+            return new URI(uri);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @NonNull
     public static URI getUri(@NonNull String path) {
         Uri uri = new Uri.Builder()
             .appendPath(path)
@@ -51,13 +60,5 @@ public final class Uris {
         Uri uri = uriBuilder.build();
 
         return Uris.getUriFromString(uri.toString());
-    }
-
-    private static URI getUriFromString(@NonNull String uri) {
-        try {
-            return new URI(uri);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

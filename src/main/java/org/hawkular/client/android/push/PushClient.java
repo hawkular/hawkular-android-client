@@ -47,7 +47,7 @@ public final class PushClient implements Callback<Void> {
         }
 
         RegistrarManager.config(PushConfiguration.NAME, AeroGearGCMPushConfiguration.class)
-            .setPushServerURI(Uris.getUri(PushConfiguration.Ups.URL))
+            .setPushServerURI(Uris.getUriFromString(PushConfiguration.Ups.URL))
             .setSecret(PushConfiguration.Ups.SECRET)
             .setVariantID(PushConfiguration.Ups.VARIANT)
             .setSenderIds(PushConfiguration.Gcm.SENDER)
