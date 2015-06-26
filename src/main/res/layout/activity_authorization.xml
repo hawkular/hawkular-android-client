@@ -33,24 +33,33 @@
 
     <LinearLayout
       android:orientation="vertical"
+      android:layout_gravity="center"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <TextView android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/description_authorization"
-                android:textSize="16sp"
-          />
+      <TextView
+        android:text="@string/label_authorization_title"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/text_primary"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-      <Space android:layout_width="match_parent" android:layout_height="4dp"/>
+      <Space
+        android:layout_width="match_parent"
+        android:layout_height="8dp"/>
 
-      <TextView android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/description_authorization2"
-                android:textSize="16sp"
-          />
+      <TextView
+        android:text="@string/label_authorization_description"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_secondary"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-      <Space android:layout_width="match_parent" android:layout_height="4dp"/>
+      <Space
+        android:layout_width="match_parent"
+        android:layout_height="16dp"/>
 
       <LinearLayout
         android:orientation="horizontal"
