@@ -17,6 +17,7 @@
 package org.hawkular.client.android.activity;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -41,6 +42,8 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.Icepick;
+import icepick.Icicle;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Line;
@@ -57,16 +60,26 @@ public final class MetricDataActivity extends AppCompatActivity {
     @InjectView(R.id.chart)
     LineChartView chart;
 
+    @Icicle
+    @Nullable
+    ArrayList<MetricData> metricData;
+
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
         setContentView(R.layout.activity_chart);
+
+        setUpState(state);
 
         setUpBindings();
 
         setUpToolbar();
 
         setUpMetricData();
+    }
+
+    private void setUpState(Bundle state) {
+        Icepick.restoreInstanceState(this, state);
     }
 
     private void setUpBindings() {
@@ -80,10 +93,14 @@ public final class MetricDataActivity extends AppCompatActivity {
     }
 
     private void setUpMetricData() {
-        showProgress();
+        if (metricData == null) {
+            showProgress();
 
-        BackendClient.of(this).getMetricData(
-            getTenant(), getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+            BackendClient.of(this).getMetricData(
+                getTenant(), getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+        } else {
+            setUpMetricData(metricData);
+        }
     }
 
     private Date getMetricStartTime() {
@@ -110,6 +127,8 @@ public final class MetricDataActivity extends AppCompatActivity {
     }
 
     private void setUpMetricData(List<MetricData> metricDataList) {
+        this.metricData = new ArrayList<>(metricDataList);
+
         sortMetricData(metricDataList);
 
         List<PointValue> chartPoints = new ArrayList<>();
@@ -168,6 +187,17 @@ public final class MetricDataActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(menuItem);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        tearDownState(state);
+    }
+
+    private void tearDownState(Bundle state) {
+        Icepick.saveInstanceState(this, state);
     }
 
     private static final class MetricDataCallback extends AbstractActivityCallback<List<MetricData>> {

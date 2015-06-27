@@ -33,6 +33,7 @@ import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -40,11 +41,17 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.Icepick;
+import icepick.Icicle;
 import timber.log.Timber;
 
 public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertMenuListener {
     @InjectView(R.id.list)
     ListView list;
+
+    @Icicle
+    @Nullable
+    ArrayList<Alert> alerts;
 
     @Nullable
     @Override
@@ -56,11 +63,17 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     public void onActivityCreated(Bundle state) {
         super.onActivityCreated(state);
 
+        setUpState(state);
+
         setUpBindings();
 
         setUpList();
 
         setUpAlerts();
+    }
+
+    private void setUpState(Bundle state) {
+        Icepick.restoreInstanceState(this, state);
     }
 
     private void setUpBindings() {
@@ -72,9 +85,13 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private void setUpAlerts() {
-        showProgress();
+        if (alerts == null) {
+            showProgress();
 
-        BackendClient.of(this).getAlerts(new AlertsCallback());
+            BackendClient.of(this).getAlerts(new AlertsCallback());
+        } else {
+            setUpAlerts(alerts);
+        }
     }
 
     private void showProgress() {
@@ -82,6 +99,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private void setUpAlerts(List<Alert> alerts) {
+        this.alerts = new ArrayList<>(alerts);
+
         sortAlerts(alerts);
 
         list.setAdapter(new AlertsAdapter(getActivity(), this, alerts));
@@ -126,6 +145,17 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
 
     private void hideProgress() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.list);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        tearDownState(state);
+    }
+
+    private void tearDownState(Bundle state) {
+        Icepick.saveInstanceState(this, state);
     }
 
     @Override

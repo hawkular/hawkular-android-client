@@ -18,6 +18,8 @@ package org.hawkular.client.android.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -36,12 +38,15 @@ import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.Icepick;
+import icepick.Icicle;
 import timber.log.Timber;
 
 public final class MetricsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -51,10 +56,16 @@ public final class MetricsActivity extends AppCompatActivity implements AdapterV
     @InjectView(R.id.list)
     ListView list;
 
+    @Icicle
+    @Nullable
+    ArrayList<Metric> metrics;
+
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
         setContentView(R.layout.activity_list);
+
+        setUpState(state);
 
         setUpBindings();
 
@@ -79,9 +90,13 @@ public final class MetricsActivity extends AppCompatActivity implements AdapterV
     }
 
     private void setUpMetrics() {
-        showProgress();
+        if (metrics == null) {
+            showProgress();
 
-        BackendClient.of(this).getMetrics(getTenant(), getEnvironment(),  getResource(), new MetricsCallback());
+            BackendClient.of(this).getMetrics(getTenant(), getEnvironment(), getResource(), new MetricsCallback());
+        } else {
+            setUpMetrics(metrics);
+        }
     }
 
     private void showProgress() {
@@ -101,6 +116,8 @@ public final class MetricsActivity extends AppCompatActivity implements AdapterV
     }
 
     private void setUpMetrics(List<Metric> metrics) {
+        this.metrics = new ArrayList<>(metrics);
+
         sortMetrics(metrics);
 
         list.setAdapter(new MetricsAdapter(this, metrics));
@@ -142,6 +159,28 @@ public final class MetricsActivity extends AppCompatActivity implements AdapterV
             default:
                 return super.onOptionsItemSelected(menuItem);
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle state) {
+        super.onRestoreInstanceState(state);
+
+        setUpState(state);
+    }
+
+    private void setUpState(Bundle state) {
+        Icepick.restoreInstanceState(this, state);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        tearDownState(state);
+    }
+
+    private void tearDownState(Bundle state) {
+        Icepick.saveInstanceState(this, state);
     }
 
     private static final class MetricsCallback extends AbstractActivityCallback<List<Metric>> {

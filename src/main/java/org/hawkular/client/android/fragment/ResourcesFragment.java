@@ -37,17 +37,24 @@ import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.Icepick;
+import icepick.Icicle;
 import timber.log.Timber;
 
 public final class ResourcesFragment extends Fragment implements AdapterView.OnItemClickListener {
     @InjectView(R.id.list)
     ListView list;
+
+    @Icicle
+    @Nullable
+    ArrayList<Resource> resources;
 
     @Nullable
     @Override
@@ -59,11 +66,17 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     public void onActivityCreated(Bundle state) {
         super.onActivityCreated(state);
 
+        setUpState(state);
+
         setUpBindings();
 
         setUpList();
 
         setUpResources();
+    }
+
+    private void setUpState(Bundle state) {
+        Icepick.restoreInstanceState(this, state);
     }
 
     private void setUpBindings() {
@@ -75,9 +88,13 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     }
 
     private void setUpResources() {
-        showProgress();
+        if (resources == null) {
+            showProgress();
 
-        BackendClient.of(this).getResources(getTenant(), getEnvironment(), new ResourcesCallback());
+            BackendClient.of(this).getResources(getTenant(), getEnvironment(), new ResourcesCallback());
+        } else {
+            setUpResources(resources);
+        }
     }
 
     private void showProgress() {
@@ -93,6 +110,8 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     }
 
     private void setUpResources(List<Resource> resources) {
+        this.resources = new ArrayList<>(resources);
+
         sortResources(resources);
 
         list.setAdapter(new ResourcesAdapter(getActivity(), resources));
@@ -122,6 +141,17 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     private void startMetricTypesActivity(Resource resource) {
         Intent intent = Intents.Builder.of(getActivity()).buildMetricsIntent(getTenant(), getEnvironment(), resource);
         startActivity(intent);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        tearDownState(state);
+    }
+
+    private void tearDownState(Bundle state) {
+        Icepick.saveInstanceState(this, state);
     }
 
     @Override
