@@ -14,22 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.client.android.activity;
+package org.hawkular.client.android.fragment;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.backend.model.Tenant;
-import org.hawkular.client.android.util.Intents;
+import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
+import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -53,10 +54,7 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 import timber.log.Timber;
 
-public final class MetricDataActivity extends AppCompatActivity {
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
-
+public final class MetricFragment extends Fragment {
     @InjectView(R.id.chart)
     LineChartView chart;
 
@@ -64,16 +62,19 @@ public final class MetricDataActivity extends AppCompatActivity {
     @Nullable
     ArrayList<MetricData> metricData;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle state) {
-        super.onCreate(state);
-        setContentView(R.layout.activity_chart);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
+        return inflater.inflate(R.layout.activity_chart, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle state) {
+        super.onActivityCreated(state);
 
         setUpState(state);
 
         setUpBindings();
-
-        setUpToolbar();
 
         setUpMetricData();
     }
@@ -83,13 +84,7 @@ public final class MetricDataActivity extends AppCompatActivity {
     }
 
     private void setUpBindings() {
-        ButterKnife.inject(this);
-    }
-
-    private void setUpToolbar() {
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ButterKnife.inject(this, getView());
     }
 
     private void setUpMetricData() {
@@ -119,11 +114,11 @@ public final class MetricDataActivity extends AppCompatActivity {
     }
 
     private Tenant getTenant() {
-        return getIntent().getParcelableExtra(Intents.Extras.TENANT);
+        return getArguments().getParcelable(Fragments.Arguments.TENANT);
     }
 
     private Metric getMetric() {
-        return getIntent().getParcelableExtra(Intents.Extras.METRIC);
+        return getArguments().getParcelable(Fragments.Arguments.METRIC);
     }
 
     private void setUpMetricData(List<MetricData> metricDataList) {
@@ -178,19 +173,7 @@ public final class MetricDataActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(menuItem);
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle state) {
+    public void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
 
         tearDownState(state);
@@ -200,10 +183,10 @@ public final class MetricDataActivity extends AppCompatActivity {
         Icepick.saveInstanceState(this, state);
     }
 
-    private static final class MetricDataCallback extends AbstractActivityCallback<List<MetricData>> {
+    private static final class MetricDataCallback extends AbstractFragmentCallback<List<MetricData>> {
         @Override
         public void onSuccess(List<MetricData> metricDataList) {
-            MetricDataActivity activity = (MetricDataActivity) getActivity();
+            MetricFragment activity = (MetricFragment) getFragment();
 
             activity.setUpMetricData(metricDataList);
         }

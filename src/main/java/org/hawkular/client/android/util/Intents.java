@@ -23,7 +23,7 @@ import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.activity.AuthorizationActivity;
-import org.hawkular.client.android.activity.MetricDataActivity;
+import org.hawkular.client.android.activity.MetricActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
@@ -88,7 +88,7 @@ public final class Intents {
 
         @NonNull
         public Intent buildMetricDataIntent(@NonNull Tenant tenant, @NonNull Metric metric) {
-            Intent intent = new Intent(context, MetricDataActivity.class);
+            Intent intent = new Intent(context, MetricActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
             intent.putExtra(Extras.METRIC, metric);
 

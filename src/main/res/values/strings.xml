@@ -23,7 +23,7 @@
 
   <string name="title_alerts">Alerts</string>
   <string name="title_authorization">Authorization</string>
-  <string name="title_metric_data">Metric</string>
+  <string name="title_metric">Metric</string>
   <string name="title_metrics">Metrics</string>
   <string name="title_resources">Resources</string>
 

@@ -21,7 +21,7 @@
 
   <string name="title_alerts">Alarme</string>
   <string name="title_authorization">Anmeldung</string>
-  <string name="title_metric_data">Metrik-Daten</string>
+  <string name="title_metric">Metrik-Daten</string>
   <string name="title_metrics">Metriken</string>
   <string name="title_resources">Ressourcen</string>
 
