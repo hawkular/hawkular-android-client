@@ -50,6 +50,18 @@
         android:layout_height="8dp"/>
 
       <TextView
+        android:text="@string/label_authorization_support"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_secondary"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+      <Space
+        android:layout_width="match_parent"
+        android:layout_height="8dp"/>
+
+      <TextView
         android:text="@string/label_authorization_description"
         android:textColor="@color/text_secondary"
         android:textSize="@dimen/text_secondary"

@@ -108,11 +108,11 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.menu_resolve:
-                        Timber.d("Alert %d was not deleted intentionally.", alertPosition);
+                        Timber.d("Alert %d was not resolved intentionally.", alertPosition);
                         return true;
 
                     case R.id.menu_acknowledge:
-                        Timber.d("Alert %d was not removed intentionally.", alertPosition);
+                        Timber.d("Alert %d was not acknowledged intentionally.", alertPosition);
                         return true;
 
                     default:
