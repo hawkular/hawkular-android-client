@@ -64,7 +64,8 @@ public final class Fragments {
         }
 
         @NonNull
-        public static Fragment buildMetricsFragment(@NonNull Tenant tenant, @NonNull Environment environment, @NonNull Resource resource) {
+        public static Fragment buildMetricsFragment(@NonNull Tenant tenant, @NonNull Environment environment,
+                                                    @NonNull Resource resource) {
             Fragment fragment = new MetricsFragment();
 
             Bundle arguments = new Bundle();

@@ -87,7 +87,7 @@ public final class Intents {
         }
 
         @NonNull
-        public Intent buildMetricDataIntent(@NonNull Tenant tenant, @NonNull Metric metric) {
+        public Intent buildMetricIntent(@NonNull Tenant tenant, @NonNull Metric metric) {
             Intent intent = new Intent(context, MetricActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
             intent.putExtra(Extras.METRIC, metric);

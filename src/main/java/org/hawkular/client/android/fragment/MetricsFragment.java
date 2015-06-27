@@ -154,7 +154,7 @@ public final class MetricsFragment extends Fragment implements AdapterView.OnIte
     }
 
     private void startMetricDataActivity(Metric metric) {
-        Intent intent = Intents.Builder.of(getActivity()).buildMetricDataIntent(getTenant(), metric);
+        Intent intent = Intents.Builder.of(getActivity()).buildMetricIntent(getTenant(), metric);
         startActivity(intent);
     }
 
