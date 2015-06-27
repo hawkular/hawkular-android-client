@@ -99,12 +99,12 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     @Override
     public void onSuccess(String authorization) {
         setUpNavigationDefaults();
-
-        setUpNavigationTitle();
     }
 
     private void setUpNavigationDefaults() {
         showNavigation(R.id.menu_resources);
+
+        setUpNavigationTitle();
     }
 
     private void setUpNavigationTitle() {
@@ -129,7 +129,13 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     protected void onActivityResult(int request, int result, Intent intent) {
         super.onActivityResult(request, result, intent);
 
-        if ((request == Intents.Requests.AUTHORIZATION) && (result != RESULT_OK)) {
+        if (request != Intents.Requests.AUTHORIZATION) {
+            return;
+        }
+
+        if (result == RESULT_OK) {
+            setUpNavigationDefaults();
+        } else {
             finish();
         }
     }
