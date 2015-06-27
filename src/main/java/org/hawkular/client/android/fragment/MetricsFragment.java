@@ -45,6 +45,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.Icicle;
 import timber.log.Timber;
@@ -88,7 +89,8 @@ public final class MetricsFragment extends Fragment implements AdapterView.OnIte
         list.setOnItemClickListener(this);
     }
 
-    private void setUpMetrics() {
+    @OnClick(R.id.button_retry)
+    public void setUpMetrics() {
         if (metrics == null) {
             showProgress();
 
@@ -117,19 +119,27 @@ public final class MetricsFragment extends Fragment implements AdapterView.OnIte
     private void setUpMetrics(List<Metric> metrics) {
         this.metrics = new ArrayList<>(metrics);
 
-        sortMetrics(metrics);
+        sortMetrics(this.metrics);
 
-        list.setAdapter(new MetricsAdapter(getActivity(), metrics));
+        list.setAdapter(new MetricsAdapter(getActivity(), this.metrics));
 
-        hideProgress();
+        showList();
     }
 
     private void sortMetrics(List<Metric> metrics) {
         Collections.sort(metrics, new MetricsComparator());
     }
 
-    private void hideProgress() {
+    private void showList() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.list);
+    }
+
+    private void showMessage() {
+        ViewDirector.of(this).using(R.id.animator).show(R.id.error);
+    }
+
+    private void showError() {
+        ViewDirector.of(this).using(R.id.animator).show(R.id.error);
     }
 
     @Override
@@ -173,14 +183,22 @@ public final class MetricsFragment extends Fragment implements AdapterView.OnIte
     private static final class MetricsCallback extends AbstractFragmentCallback<List<Metric>> {
         @Override
         public void onSuccess(List<Metric> metrics) {
-            MetricsFragment activity = (MetricsFragment) getFragment();
-
-            activity.setUpMetrics(metrics);
+            if (!metrics.isEmpty()) {
+                getMetricsFragment().setUpMetrics(metrics);
+            } else {
+                getMetricsFragment().showMessage();
+            }
         }
 
         @Override
         public void onFailure(Exception e) {
             Timber.d(e, "Metrics fetching failed.");
+
+            getMetricsFragment().showError();
+        }
+
+        private MetricsFragment getMetricsFragment() {
+            return (MetricsFragment) getFragment();
         }
     }
 

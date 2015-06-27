@@ -44,6 +44,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.Icicle;
 import timber.log.Timber;
@@ -87,7 +88,8 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
         list.setOnItemClickListener(this);
     }
 
-    private void setUpResources() {
+    @OnClick(R.id.button_retry)
+    public void setUpResources() {
         if (resources == null) {
             showProgress();
 
@@ -112,19 +114,27 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     private void setUpResources(List<Resource> resources) {
         this.resources = new ArrayList<>(resources);
 
-        sortResources(resources);
+        sortResources(this.resources);
 
-        list.setAdapter(new ResourcesAdapter(getActivity(), resources));
+        list.setAdapter(new ResourcesAdapter(getActivity(), this.resources));
 
-        hideProgress();
+        showList();
     }
 
     private void sortResources(List<Resource> resources) {
         Collections.sort(resources, new ResourcesComparator());
     }
 
-    private void hideProgress() {
+    private void showList() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.list);
+    }
+
+    private void showMessage() {
+        ViewDirector.of(this).using(R.id.animator).show(R.id.message);
+    }
+
+    private void showError() {
+        ViewDirector.of(this).using(R.id.animator).show(R.id.error);
     }
 
     @Override
@@ -168,14 +178,22 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     private static final class ResourcesCallback extends AbstractFragmentCallback<List<Resource>> {
         @Override
         public void onSuccess(List<Resource> resources) {
-            ResourcesFragment fragment = (ResourcesFragment) getFragment();
-
-            fragment.setUpResources(resources);
+            if (!resources.isEmpty()) {
+                getResourcesFragment().setUpResources(resources);
+            } else {
+                getResourcesFragment().showMessage();
+            }
         }
 
         @Override
         public void onFailure(Exception e) {
             Timber.d("Resources fetching failed.");
+
+            getResourcesFragment().showError();
+        }
+
+        private ResourcesFragment getResourcesFragment() {
+            return (ResourcesFragment) getFragment();
         }
     }
 

@@ -43,6 +43,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.Icicle;
 import lecho.lib.hellocharts.model.Axis;
@@ -65,7 +66,7 @@ public final class MetricFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
-        return inflater.inflate(R.layout.activity_chart, container, false);
+        return inflater.inflate(R.layout.fragment_chart, container, false);
     }
 
     @Override
@@ -87,7 +88,8 @@ public final class MetricFragment extends Fragment {
         ButterKnife.inject(this, getView());
     }
 
-    private void setUpMetricData() {
+    @OnClick(R.id.button_retry)
+    public void setUpMetricData() {
         if (metricData == null) {
             showProgress();
 
@@ -161,15 +163,23 @@ public final class MetricFragment extends Fragment {
         chart.setMaximumViewport(chartViewport);
         chart.setCurrentViewport(chartViewport);
 
-        hideProgress();
+        showChart();
     }
 
     private void sortMetricData(List<MetricData> metricDataList) {
         Collections.sort(metricDataList, new MetricDataComparator());
     }
 
-    private void hideProgress() {
+    private void showChart() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.chart);
+    }
+
+    private void showMessage() {
+        ViewDirector.of(this).using(R.id.animator).show(R.id.message);
+    }
+
+    private void showError() {
+        ViewDirector.of(this).using(R.id.animator).show(R.id.error);
     }
 
     @Override
@@ -185,15 +195,23 @@ public final class MetricFragment extends Fragment {
 
     private static final class MetricDataCallback extends AbstractFragmentCallback<List<MetricData>> {
         @Override
-        public void onSuccess(List<MetricData> metricDataList) {
-            MetricFragment activity = (MetricFragment) getFragment();
-
-            activity.setUpMetricData(metricDataList);
+        public void onSuccess(List<MetricData> metricData) {
+            if (!metricData.isEmpty()) {
+                getMetricFragment().setUpMetricData(metricData);
+            } else {
+                getMetricFragment().showMessage();
+            }
         }
 
         @Override
         public void onFailure(Exception e) {
             Timber.d(e, "Metric data fetching failed.");
+
+            getMetricFragment().showError();
+        }
+
+        private MetricFragment getMetricFragment() {
+            return (MetricFragment) getFragment();
         }
     }
 

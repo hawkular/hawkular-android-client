@@ -41,6 +41,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.Icicle;
 import timber.log.Timber;
@@ -84,7 +85,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         list.setSelector(android.R.color.transparent);
     }
 
-    private void setUpAlerts() {
+    @OnClick(R.id.button_retry)
+    public void setUpAlerts() {
         if (alerts == null) {
             showProgress();
 
@@ -101,11 +103,11 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     private void setUpAlerts(List<Alert> alerts) {
         this.alerts = new ArrayList<>(alerts);
 
-        sortAlerts(alerts);
+        sortAlerts(this.alerts);
 
-        list.setAdapter(new AlertsAdapter(getActivity(), this, alerts));
+        list.setAdapter(new AlertsAdapter(getActivity(), this, this.alerts));
 
-        hideProgress();
+        showList();
     }
 
     private void sortAlerts(List<Alert> alerts) {
@@ -143,8 +145,16 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         alertMenu.show();
     }
 
-    private void hideProgress() {
+    private void showList() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.list);
+    }
+
+    private void showMessage() {
+        ViewDirector.of(this).using(R.id.animator).show(R.id.message);
+    }
+
+    private void showError() {
+        ViewDirector.of(this).using(R.id.animator).show(R.id.error);
     }
 
     @Override
@@ -172,14 +182,35 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     private static final class AlertsCallback extends AbstractFragmentCallback<List<Alert>> {
         @Override
         public void onSuccess(List<Alert> alerts) {
-            AlertsFragment fragment = (AlertsFragment) getFragment();
+            if (!alerts.isEmpty() && !areAlertsEmpty(alerts)) {
+                getAlertsFragment().setUpAlerts(alerts);
+            } else {
+                getAlertsFragment().showMessage();
+            }
+        }
 
-            fragment.setUpAlerts(alerts);
+        private boolean areAlertsEmpty(List<Alert> alerts) {
+            // Workaround for AeroGear and Hawkular API.
+            // Revisit after AeroGear Pipe 2.2.0 release.
+
+            for (Alert alert : alerts) {
+                if (alert == null) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         @Override
         public void onFailure(Exception e) {
             Timber.d(e, "Alerts fetching failed.");
+
+            getAlertsFragment().showError();
+        }
+
+        private AlertsFragment getAlertsFragment() {
+            return (AlertsFragment) getFragment();
         }
     }
 
