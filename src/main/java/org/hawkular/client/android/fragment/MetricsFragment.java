@@ -27,9 +27,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.hawkular.client.android.R;
-import org.hawkular.client.android.adapter.ResourcesAdapter;
+import org.hawkular.client.android.adapter.MetricsAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
+import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
@@ -49,13 +50,13 @@ import icepick.Icepick;
 import icepick.Icicle;
 import timber.log.Timber;
 
-public final class ResourcesFragment extends Fragment implements AdapterView.OnItemClickListener {
+public final class MetricsFragment extends Fragment implements AdapterView.OnItemClickListener {
     @InjectView(R.id.list)
     ListView list;
 
     @Icicle
     @Nullable
-    ArrayList<Resource> resources;
+    ArrayList<Metric> metrics;
 
     @Nullable
     @Override
@@ -73,7 +74,7 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
 
         setUpList();
 
-        setUpResources();
+        setUpMetrics();
     }
 
     private void setUpState(Bundle state) {
@@ -89,13 +90,13 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     }
 
     @OnClick(R.id.button_retry)
-    public void setUpResources() {
-        if (resources == null) {
+    public void setUpMetrics() {
+        if (metrics == null) {
             showProgress();
 
-            BackendClient.of(this).getResources(getTenant(), getEnvironment(), new ResourcesCallback());
+            BackendClient.of(this).getMetrics(getTenant(), getEnvironment(), getResource(), new MetricsCallback());
         } else {
-            setUpResources(resources);
+            setUpMetrics(metrics);
         }
     }
 
@@ -111,18 +112,22 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
         return getArguments().getParcelable(Fragments.Arguments.ENVIRONMENT);
     }
 
-    private void setUpResources(List<Resource> resources) {
-        this.resources = new ArrayList<>(resources);
+    private Resource getResource() {
+        return getArguments().getParcelable(Fragments.Arguments.RESOURCE);
+    }
 
-        sortResources(this.resources);
+    private void setUpMetrics(List<Metric> metrics) {
+        this.metrics = new ArrayList<>(metrics);
 
-        list.setAdapter(new ResourcesAdapter(getActivity(), this.resources));
+        sortMetrics(this.metrics);
+
+        list.setAdapter(new MetricsAdapter(getActivity(), this.metrics));
 
         showList();
     }
 
-    private void sortResources(List<Resource> resources) {
-        Collections.sort(resources, new ResourcesComparator());
+    private void sortMetrics(List<Metric> metrics) {
+        Collections.sort(metrics, new MetricsComparator());
     }
 
     private void showList() {
@@ -130,7 +135,7 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     }
 
     private void showMessage() {
-        ViewDirector.of(this).using(R.id.animator).show(R.id.message);
+        ViewDirector.of(this).using(R.id.animator).show(R.id.error);
     }
 
     private void showError() {
@@ -139,17 +144,17 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        Resource resource = getResourcesAdapter().getItem(position);
+        Metric metric = getMetricsAdapter().getItem(position);
 
-        startMetricTypesActivity(resource);
+        startMetricDataActivity(metric);
     }
 
-    private ResourcesAdapter getResourcesAdapter() {
-        return (ResourcesAdapter) list.getAdapter();
+    private MetricsAdapter getMetricsAdapter() {
+        return (MetricsAdapter) list.getAdapter();
     }
 
-    private void startMetricTypesActivity(Resource resource) {
-        Intent intent = Intents.Builder.of(getActivity()).buildMetricsIntent(getTenant(), getEnvironment(), resource);
+    private void startMetricDataActivity(Metric metric) {
+        Intent intent = Intents.Builder.of(getActivity()).buildMetricIntent(getTenant(), metric);
         startActivity(intent);
     }
 
@@ -172,45 +177,38 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     }
 
     private void tearDownBindings() {
-         ButterKnife.reset(this);
+        ButterKnife.reset(this);
     }
 
-    private static final class ResourcesCallback extends AbstractFragmentCallback<List<Resource>> {
+    private static final class MetricsCallback extends AbstractFragmentCallback<List<Metric>> {
         @Override
-        public void onSuccess(List<Resource> resources) {
-            if (!resources.isEmpty()) {
-                getResourcesFragment().setUpResources(resources);
+        public void onSuccess(List<Metric> metrics) {
+            if (!metrics.isEmpty()) {
+                getMetricsFragment().setUpMetrics(metrics);
             } else {
-                getResourcesFragment().showMessage();
+                getMetricsFragment().showMessage();
             }
         }
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d("Resources fetching failed.");
+            Timber.d(e, "Metrics fetching failed.");
 
-            getResourcesFragment().showError();
+            getMetricsFragment().showError();
         }
 
-        private ResourcesFragment getResourcesFragment() {
-            return (ResourcesFragment) getFragment();
+        private MetricsFragment getMetricsFragment() {
+            return (MetricsFragment) getFragment();
         }
     }
 
-    private static final class ResourcesComparator implements Comparator<Resource> {
+    private static final class MetricsComparator implements Comparator<Metric> {
         @Override
-        public int compare(Resource leftResource, Resource rightResource) {
-            String leftResourceTypeId = leftResource.getType().getId();
-            String rightResourceTypeId = rightResource.getType().getId();
+        public int compare(Metric leftMetric, Metric rightMetric) {
+            String leftMetricDescription = leftMetric.getProperties().getDescription();
+            String rightMetricDescription = rightMetric.getProperties().getDescription();
 
-            String leftResourceUrl = leftResource.getProperties().getUrl();
-            String rightResourceUrl = rightResource.getProperties().getUrl();
-
-            if (leftResourceTypeId.equals(rightResourceTypeId)) {
-                return leftResourceUrl.compareTo(rightResourceUrl);
-            } else {
-                return leftResourceTypeId.compareTo(rightResourceTypeId);
-            }
+            return leftMetricDescription.compareTo(rightMetricDescription);
         }
     }
 }

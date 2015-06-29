@@ -23,11 +23,12 @@
 
   <string name="title_alerts">Alerts</string>
   <string name="title_authorization">Authorization</string>
-  <string name="title_metric_data">Metric</string>
+  <string name="title_metric">Metric</string>
   <string name="title_metrics">Metrics</string>
   <string name="title_resources">Resources</string>
 
   <string name="button_authorize">Authorize</string>
+  <string name="button_retry">Try again</string>
 
   <string name="hint_host">Host</string>
   <string name="hint_port">Port</string>
@@ -36,6 +37,10 @@
   <string name="error_authorization_port">Should be a correct number.</string>
   <string name="error_empty">Should not be empty.</string>
   <string name="error_general">Something is wrong, please try again.</string>
+
+  <string name="message_empty">Nothing here</string>
+  <string name="message_empty_tip">Well, not yet. Visit the web interface to produce some.</string>
+  <string name="message_general">Oops, something went wrong.</string>
 
   <string name="notification_alert">Some metric is not in the mood.</string>
 
@@ -50,6 +55,7 @@
   <string name="menu_acknowledge">Acknowledge</string>
 
   <string name="label_authorization_title">Authorization using a Hawkular server is necessary.</string>
+  <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 1.</string>
   <string name="label_authorization_description">Please provide the server location. The next step will require the credentials.</string>
 
 </resources>

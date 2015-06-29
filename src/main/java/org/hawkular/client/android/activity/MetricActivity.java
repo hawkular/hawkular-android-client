@@ -23,8 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import org.hawkular.client.android.R;
-import org.hawkular.client.android.backend.model.Environment;
-import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
@@ -32,7 +31,7 @@ import org.hawkular.client.android.util.Intents;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public final class MetricsActivity extends AppCompatActivity {
+public final class MetricActivity extends AppCompatActivity {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -45,7 +44,7 @@ public final class MetricsActivity extends AppCompatActivity {
 
         setUpToolbar();
 
-        setUpMetrics();
+        setUpMetric();
     }
 
     private void setUpBindings() {
@@ -58,8 +57,8 @@ public final class MetricsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void setUpMetrics() {
-        Fragment fragment = Fragments.Builder.buildMetricsFragment(getTenant(), getEnvironment(), getResource());
+    private void setUpMetric() {
+        Fragment fragment = Fragments.Builder.buildMetricFragment(getTenant(), getMetric());
 
         Fragments.Operator.of(this).set(R.id.layout_container, fragment);
     }
@@ -68,12 +67,8 @@ public final class MetricsActivity extends AppCompatActivity {
         return getIntent().getParcelableExtra(Intents.Extras.TENANT);
     }
 
-    private Environment getEnvironment() {
-        return getIntent().getParcelableExtra(Intents.Extras.ENVIRONMENT);
-    }
-
-    private Resource getResource() {
-        return getIntent().getParcelableExtra(Intents.Extras.RESOURCE);
+    private Metric getMetric() {
+        return getIntent().getParcelableExtra(Intents.Extras.METRIC);
     }
 
     @Override

@@ -16,12 +16,37 @@
  */
 package org.hawkular.client.android.backend.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public enum AlertType {
+public enum AlertType implements Parcelable {
     @SerializedName("THRESHOLD")
     THRESHOLD,
 
     @SerializedName("AVAILABILITY")
-    AVAILABILITY
+    AVAILABILITY;
+
+    public static Creator<AlertType> CREATOR = new Creator<AlertType>() {
+        @Override
+        public AlertType createFromParcel(Parcel parcel) {
+            return AlertType.valueOf(parcel.readString());
+        }
+
+        @Override
+        public AlertType[] newArray(int size) {
+            return new AlertType[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(name());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }

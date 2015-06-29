@@ -33,15 +33,26 @@ import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
+import icepick.Icepick;
+import icepick.Icicle;
 import timber.log.Timber;
 
 public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertMenuListener {
     @InjectView(R.id.list)
     ListView list;
+
+    @Icicle
+    @Nullable
+    ArrayList<Alert> alerts;
 
     @Nullable
     @Override
@@ -53,11 +64,17 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     public void onActivityCreated(Bundle state) {
         super.onActivityCreated(state);
 
+        setUpState(state);
+
         setUpBindings();
 
         setUpList();
 
         setUpAlerts();
+    }
+
+    private void setUpState(Bundle state) {
+        Icepick.restoreInstanceState(this, state);
     }
 
     private void setUpBindings() {
@@ -68,10 +85,15 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         list.setSelector(android.R.color.transparent);
     }
 
-    private void setUpAlerts() {
-        showProgress();
+    @OnClick(R.id.button_retry)
+    public void setUpAlerts() {
+        if (alerts == null) {
+            showProgress();
 
-        BackendClient.of(this).getAlerts(new AlertsCallback());
+            BackendClient.of(this).getAlerts(new AlertsCallback());
+        } else {
+            setUpAlerts(alerts);
+        }
     }
 
     private void showProgress() {
@@ -79,9 +101,17 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private void setUpAlerts(List<Alert> alerts) {
-        list.setAdapter(new AlertsAdapter(getActivity(), this, alerts));
+        this.alerts = new ArrayList<>(alerts);
 
-        hideProgress();
+        sortAlerts(this.alerts);
+
+        list.setAdapter(new AlertsAdapter(getActivity(), this, this.alerts));
+
+        showList();
+    }
+
+    private void sortAlerts(List<Alert> alerts) {
+        Collections.sort(alerts, new AlertsComparator());
     }
 
     @Override
@@ -99,11 +129,11 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.menu_resolve:
-                        Timber.d("Alert %d was not deleted intentionally.", alertPosition);
+                        Timber.d("Alert %d was not resolved intentionally.", alertPosition);
                         return true;
 
                     case R.id.menu_acknowledge:
-                        Timber.d("Alert %d was not removed intentionally.", alertPosition);
+                        Timber.d("Alert %d was not acknowledged intentionally.", alertPosition);
                         return true;
 
                     default:
@@ -115,8 +145,27 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         alertMenu.show();
     }
 
-    private void hideProgress() {
+    private void showList() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.list);
+    }
+
+    private void showMessage() {
+        ViewDirector.of(this).using(R.id.animator).show(R.id.message);
+    }
+
+    private void showError() {
+        ViewDirector.of(this).using(R.id.animator).show(R.id.error);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        tearDownState(state);
+    }
+
+    private void tearDownState(Bundle state) {
+        Icepick.saveInstanceState(this, state);
     }
 
     @Override
@@ -133,14 +182,45 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     private static final class AlertsCallback extends AbstractFragmentCallback<List<Alert>> {
         @Override
         public void onSuccess(List<Alert> alerts) {
-            AlertsFragment fragment = (AlertsFragment) getFragment();
+            if (!alerts.isEmpty() && !areAlertsEmpty(alerts)) {
+                getAlertsFragment().setUpAlerts(alerts);
+            } else {
+                getAlertsFragment().showMessage();
+            }
+        }
 
-            fragment.setUpAlerts(alerts);
+        private boolean areAlertsEmpty(List<Alert> alerts) {
+            // Workaround for AeroGear and Hawkular API.
+            // Revisit after AeroGear Pipe 2.2.0 release.
+
+            for (Alert alert : alerts) {
+                if (alert == null) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         @Override
         public void onFailure(Exception e) {
             Timber.d(e, "Alerts fetching failed.");
+
+            getAlertsFragment().showError();
+        }
+
+        private AlertsFragment getAlertsFragment() {
+            return (AlertsFragment) getFragment();
+        }
+    }
+
+    private static final class AlertsComparator implements Comparator<Alert> {
+        @Override
+        public int compare(Alert leftAlert, Alert rightAlert) {
+            Date leftAlertTimestamp = new Date(leftAlert.getTimestamp());
+            Date righAlerttTimestamp = new Date(rightAlert.getTimestamp());
+
+            return leftAlertTimestamp.compareTo(righAlerttTimestamp);
         }
     }
 }

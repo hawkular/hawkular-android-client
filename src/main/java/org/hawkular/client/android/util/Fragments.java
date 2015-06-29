@@ -24,8 +24,12 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.backend.model.Environment;
+import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.fragment.AlertsFragment;
+import org.hawkular.client.android.fragment.MetricFragment;
+import org.hawkular.client.android.fragment.MetricsFragment;
 import org.hawkular.client.android.fragment.ResourcesFragment;
 
 public final class Fragments {
@@ -38,6 +42,8 @@ public final class Fragments {
 
         public static final String TENANT = "tenant";
         public static final String ENVIRONMENT = "environment";
+        public static final String METRIC = "metric";
+        public static final String RESOURCE = "resource";
     }
 
     public static final class Builder {
@@ -51,6 +57,34 @@ public final class Fragments {
             Bundle arguments = new Bundle();
             arguments.putParcelable(Arguments.TENANT, tenant);
             arguments.putParcelable(Arguments.ENVIRONMENT, environment);
+
+            fragment.setArguments(arguments);
+
+            return fragment;
+        }
+
+        @NonNull
+        public static Fragment buildMetricsFragment(@NonNull Tenant tenant, @NonNull Environment environment,
+                                                    @NonNull Resource resource) {
+            Fragment fragment = new MetricsFragment();
+
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(Arguments.TENANT, tenant);
+            arguments.putParcelable(Arguments.ENVIRONMENT, environment);
+            arguments.putParcelable(Arguments.RESOURCE, resource);
+
+            fragment.setArguments(arguments);
+
+            return fragment;
+        }
+
+        @NonNull
+        public static Fragment buildMetricFragment(@NonNull Tenant tenant, @NonNull Metric metric) {
+            Fragment fragment = new MetricFragment();
+
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(Arguments.TENANT, tenant);
+            arguments.putParcelable(Arguments.METRIC, metric);
 
             fragment.setArguments(arguments);
 
@@ -72,6 +106,17 @@ public final class Fragments {
 
         private Operator(Activity activity) {
             this.fragmentManager = activity.getFragmentManager();
+        }
+
+        public void set(@IdRes int fragmentContainerId, @NonNull Fragment fragment) {
+            if (fragmentManager.findFragmentById(fragmentContainerId) != null) {
+                return;
+            }
+
+            fragmentManager
+                .beginTransaction()
+                .add(fragmentContainerId, fragment)
+                .commit();
         }
 
         public void reset(@IdRes int fragmentContainerId, @NonNull Fragment fragment) {

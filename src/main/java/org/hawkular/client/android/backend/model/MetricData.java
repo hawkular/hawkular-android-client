@@ -16,9 +16,12 @@
  */
 package org.hawkular.client.android.backend.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public final class MetricData {
+public final class MetricData implements Parcelable {
     @SerializedName("value")
     private long value;
 
@@ -36,5 +39,33 @@ public final class MetricData {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public static Creator<MetricData> CREATOR = new Creator<MetricData>() {
+        @Override
+        public MetricData createFromParcel(Parcel parcel) {
+            return new MetricData(parcel);
+        }
+
+        @Override
+        public MetricData[] newArray(int size) {
+            return new MetricData[size];
+        }
+    };
+
+    private MetricData(Parcel parcel) {
+        this.value = parcel.readLong();
+        this.timestamp = parcel.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeLong(value);
+        parcel.writeLong(timestamp);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }

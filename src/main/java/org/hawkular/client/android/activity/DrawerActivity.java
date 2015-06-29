@@ -21,10 +21,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -39,6 +39,8 @@ import org.jboss.aerogear.android.core.Callback;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.Icepick;
+import icepick.Icicle;
 
 public final class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
     Callback<String> {
@@ -54,10 +56,16 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     @InjectView(R.id.text_title)
     TextView navigationTitle;
 
+    @Icicle
+    @IdRes
+    int currentNavigationId;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle state) {
+        super.onCreate(state);
         setContentView(R.layout.activity_drawer);
+
+        setUpState(state);
 
         setUpBindings();
 
@@ -65,6 +73,10 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         setUpNavigation();
 
         setUpBackendClient();
+    }
+
+    private void setUpState(Bundle state) {
+        Icepick.restoreInstanceState(this, state);
     }
 
     private void setUpBindings() {
@@ -99,20 +111,26 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     @Override
     public void onSuccess(String authorization) {
         setUpNavigationDefaults();
+    }
+
+    private void setUpNavigationDefaults() {
+        if (currentNavigationId == 0) {
+            showNavigation(R.id.menu_resources);
+
+            showResourcesFragment();
+        } else {
+            showNavigation(currentNavigationId);
+        }
 
         setUpNavigationTitle();
     }
 
-    private void setUpNavigationDefaults() {
-        showNavigation(R.id.menu_resources);
+    private void showNavigation(@IdRes int navigationId) {
+        navigation.getMenu().findItem(navigationId).setChecked(true);
     }
 
     private void setUpNavigationTitle() {
         navigationTitle.setText(Preferences.of(this).host().get());
-    }
-
-    private void showNavigation(@IdRes int navigationId) {
-        onNavigationItemSelected(navigation.getMenu().findItem(navigationId));
     }
 
     @Override
@@ -129,7 +147,13 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     protected void onActivityResult(int request, int result, Intent intent) {
         super.onActivityResult(request, result, intent);
 
-        if ((request == Intents.Requests.AUTHORIZATION) && (result != RESULT_OK)) {
+        if (request != Intents.Requests.AUTHORIZATION) {
+            return;
+        }
+
+        if (result == RESULT_OK) {
+            setUpNavigationDefaults();
+        } else {
             finish();
         }
     }
@@ -153,9 +177,11 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
                 break;
         }
 
-        drawer.closeDrawers();
+        currentNavigationId = menuItem.getItemId();
 
         menuItem.setChecked(true);
+
+        drawer.closeDrawers();
 
         return true;
     }
@@ -189,11 +215,22 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
-                drawer.openDrawer(Gravity.LEFT);
+                drawer.openDrawer(GravityCompat.START);
                 return true;
 
             default:
                 return super.onOptionsItemSelected(menuItem);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        tearDownState(state);
+    }
+
+    private void tearDownState(Bundle state) {
+        Icepick.saveInstanceState(this, state);
     }
 }

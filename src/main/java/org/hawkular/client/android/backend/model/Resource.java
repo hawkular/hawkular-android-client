@@ -22,7 +22,6 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public final class Resource implements Parcelable {
-
     @SerializedName("id")
     private String id;
 

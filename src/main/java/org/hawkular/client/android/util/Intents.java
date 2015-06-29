@@ -21,8 +21,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import org.hawkular.client.android.R;
 import org.hawkular.client.android.activity.AuthorizationActivity;
-import org.hawkular.client.android.activity.MetricDataActivity;
+import org.hawkular.client.android.activity.MetricActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
@@ -48,6 +49,13 @@ public final class Intents {
         }
 
         public static final int AUTHORIZATION = 42;
+    }
+
+    private static final class Uris {
+        private Uris() {
+        }
+
+        public static final String EMAIL = "mailto:%s?subject=%s";
     }
 
     public static final class Builder {
@@ -79,8 +87,8 @@ public final class Intents {
         }
 
         @NonNull
-        public Intent buildMetricDataIntent(@NonNull Tenant tenant, @NonNull Metric metric) {
-            Intent intent = new Intent(context, MetricDataActivity.class);
+        public Intent buildMetricIntent(@NonNull Tenant tenant, @NonNull Metric metric) {
+            Intent intent = new Intent(context, MetricActivity.class);
             intent.putExtra(Extras.TENANT, tenant);
             intent.putExtra(Extras.METRIC, metric);
 
@@ -89,10 +97,10 @@ public final class Intents {
 
         @NonNull
         public Intent buildFeedbackIntent() {
-            String feedbackAddress = "hawkular-dev@lists.jboss.org";
-            String feedbackSubject = "Android Client";
+            String feedbackAddress = context.getString(R.string.feedback_address);
+            String feedbackSubject = context.getString(R.string.feedback_subject);
 
-            String feedbackUri = String.format("mailto:%s?subject=%s", feedbackAddress, feedbackSubject);
+            String feedbackUri = String.format(Uris.EMAIL, feedbackAddress, feedbackSubject);
 
             return new Intent(Intent.ACTION_SENDTO, Uri.parse(feedbackUri));
         }

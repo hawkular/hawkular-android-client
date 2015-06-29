@@ -14,21 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.client.android.activity;
+package org.hawkular.client.android.fragment;
 
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.backend.model.Tenant;
-import org.hawkular.client.android.util.Intents;
+import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
+import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -41,6 +43,9 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
+import icepick.Icepick;
+import icepick.Icicle;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Line;
@@ -50,40 +55,49 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 import timber.log.Timber;
 
-public final class MetricDataActivity extends AppCompatActivity {
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
-
+public final class MetricFragment extends Fragment {
     @InjectView(R.id.chart)
     LineChartView chart;
 
+    @Icicle
+    @Nullable
+    ArrayList<MetricData> metricData;
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle state) {
-        super.onCreate(state);
-        setContentView(R.layout.activity_chart);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
+        return inflater.inflate(R.layout.fragment_chart, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle state) {
+        super.onActivityCreated(state);
+
+        setUpState(state);
 
         setUpBindings();
-
-        setUpToolbar();
 
         setUpMetricData();
     }
 
+    private void setUpState(Bundle state) {
+        Icepick.restoreInstanceState(this, state);
+    }
+
     private void setUpBindings() {
-        ButterKnife.inject(this);
+        ButterKnife.inject(this, getView());
     }
 
-    private void setUpToolbar() {
-        setSupportActionBar(toolbar);
+    @OnClick(R.id.button_retry)
+    public void setUpMetricData() {
+        if (metricData == null) {
+            showProgress();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    private void setUpMetricData() {
-        showProgress();
-
-        BackendClient.of(this).getMetricData(
-            getTenant(), getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+            BackendClient.of(this).getMetricData(
+                getTenant(), getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+        } else {
+            setUpMetricData(metricData);
+        }
     }
 
     private Date getMetricStartTime() {
@@ -102,14 +116,16 @@ public final class MetricDataActivity extends AppCompatActivity {
     }
 
     private Tenant getTenant() {
-        return getIntent().getParcelableExtra(Intents.Extras.TENANT);
+        return getArguments().getParcelable(Fragments.Arguments.TENANT);
     }
 
     private Metric getMetric() {
-        return getIntent().getParcelableExtra(Intents.Extras.METRIC);
+        return getArguments().getParcelable(Fragments.Arguments.METRIC);
     }
 
     private void setUpMetricData(List<MetricData> metricDataList) {
+        this.metricData = new ArrayList<>(metricDataList);
+
         sortMetricData(metricDataList);
 
         List<PointValue> chartPoints = new ArrayList<>();
@@ -147,58 +163,65 @@ public final class MetricDataActivity extends AppCompatActivity {
         chart.setMaximumViewport(chartViewport);
         chart.setCurrentViewport(chartViewport);
 
-        hideProgress();
+        showChart();
     }
 
     private void sortMetricData(List<MetricData> metricDataList) {
         Collections.sort(metricDataList, new MetricDataComparator());
     }
 
-    private void hideProgress() {
+    private void showChart() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.chart);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(menuItem);
-        }
+    private void showMessage() {
+        ViewDirector.of(this).using(R.id.animator).show(R.id.message);
     }
 
-    private static final class MetricDataCallback extends AbstractActivityCallback<List<MetricData>> {
-        @Override
-        public void onSuccess(List<MetricData> metricDataList) {
-            MetricDataActivity activity = (MetricDataActivity) getActivity();
+    private void showError() {
+        ViewDirector.of(this).using(R.id.animator).show(R.id.error);
+    }
 
-            activity.setUpMetricData(metricDataList);
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        tearDownState(state);
+    }
+
+    private void tearDownState(Bundle state) {
+        Icepick.saveInstanceState(this, state);
+    }
+
+    private static final class MetricDataCallback extends AbstractFragmentCallback<List<MetricData>> {
+        @Override
+        public void onSuccess(List<MetricData> metricData) {
+            if (!metricData.isEmpty()) {
+                getMetricFragment().setUpMetricData(metricData);
+            } else {
+                getMetricFragment().showMessage();
+            }
         }
 
         @Override
         public void onFailure(Exception e) {
             Timber.d(e, "Metric data fetching failed.");
+
+            getMetricFragment().showError();
+        }
+
+        private MetricFragment getMetricFragment() {
+            return (MetricFragment) getFragment();
         }
     }
 
     private static final class MetricDataComparator implements Comparator<MetricData> {
         @Override
         public int compare(MetricData leftMetricData, MetricData rightMetricData) {
-            long leftTimestamp = leftMetricData.getTimestamp();
-            long rightTimestamp = rightMetricData.getTimestamp();
+            Date leftMetricDataTimestamp = new Date(leftMetricData.getTimestamp());
+            Date rightMetricDataTimestamp = new Date(rightMetricData.getTimestamp());
 
-            if (leftTimestamp == rightTimestamp) {
-                return 0;
-            }
-
-            if (leftTimestamp < rightTimestamp) {
-                return -1;
-            } else {
-                return 1;
-            }
+            return leftMetricDataTimestamp.compareTo(rightMetricDataTimestamp);
         }
     }
 }

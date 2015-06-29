@@ -16,9 +16,12 @@
  */
 package org.hawkular.client.android.backend.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public final class AlertEvaluationCondition {
+public final class AlertEvaluationCondition implements Parcelable {
     @SerializedName("threshold")
     private double threshold;
 
@@ -31,5 +34,33 @@ public final class AlertEvaluationCondition {
 
     public AlertType getType() {
         return type;
+    }
+
+    public static Creator<AlertEvaluationCondition> CREATOR = new Creator<AlertEvaluationCondition>() {
+        @Override
+        public AlertEvaluationCondition createFromParcel(Parcel parcel) {
+            return new AlertEvaluationCondition(parcel);
+        }
+
+        @Override
+        public AlertEvaluationCondition[] newArray(int size) {
+            return new AlertEvaluationCondition[size];
+        }
+    };
+
+    private AlertEvaluationCondition(Parcel parcel) {
+        this.threshold = parcel.readDouble();
+        this.type = parcel.readParcelable(AlertType.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeDouble(threshold);
+        parcel.writeParcelable(type, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }

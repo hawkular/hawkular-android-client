@@ -17,15 +17,9 @@
     limitations under the License.
 
 -->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/text"
-  android:singleLine="true"
-  android:textColor="@color/text_secondary"
-  android:textSize="@dimen/text_secondary"
-  android:textStyle="bold"
-  android:gravity="center_vertical"
-  android:paddingLeft="16dp"
-  android:paddingRight="16dp"
-  android:layout_width="match_parent"
-  android:layout_height="48dp"/>
+<resources>
 
+  <string name="feedback_address" translatable="false">hawkular-dev@lists.jboss.org</string>
+  <string name="feedback_subject" translatable="false">Hawkular Android Client</string>
+
+</resources>

@@ -64,8 +64,8 @@
     </activity>
 
     <activity
-      android:name=".activity.MetricDataActivity"
-      android:label="@string/title_metric_data">
+      android:name=".activity.MetricActivity"
+      android:label="@string/title_metric">
     </activity>
 
     <service

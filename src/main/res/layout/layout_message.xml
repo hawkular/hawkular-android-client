@@ -19,39 +19,29 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
+  android:gravity="center"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <include
-    layout="@layout/layout_toolbar"/>
+  <TextView
+    android:text="@string/message_empty"
+    android:textColor="@color/text_primary"
+    android:textSize="@dimen/text_primary"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
 
-  <FrameLayout
-    android:foreground="?android:windowContentOverlay"
+  <Space
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="8dp"/>
 
-    <ViewAnimator
-      android:id="@+id/animator"
-      android:inAnimation="@android:anim/fade_in"
-      android:outAnimation="@android:anim/fade_out"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
-
-      <ProgressBar
-        android:id="@+id/progress"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-      <ListView
-        android:id="@+id/list"
-        android:divider="@color/background_divider"
-        android:dividerHeight="0.5dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    </ViewAnimator>
-
-  </FrameLayout>
+  <TextView
+    android:text="@string/message_empty_tip"
+    android:textColor="@color/text_secondary"
+    android:textSize="@dimen/text_secondary"
+    android:gravity="center"
+    android:paddingLeft="60dp"
+    android:paddingRight="60dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
 
 </LinearLayout>
