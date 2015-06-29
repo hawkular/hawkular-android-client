@@ -28,6 +28,7 @@
   <string name="title_resources">Resources</string>
 
   <string name="button_authorize">Authorize</string>
+  <string name="button_deauthorize">Deauthorize</string>
   <string name="button_retry">Try again</string>
 
   <string name="hint_host">Host</string>

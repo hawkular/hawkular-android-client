@@ -26,6 +26,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import org.hawkular.client.android.R;
@@ -35,10 +36,12 @@ import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Preferences;
+import org.hawkular.client.android.util.ViewTransformer;
 import org.jboss.aerogear.android.core.Callback;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.Icicle;
 
@@ -55,6 +58,9 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     @Bind(R.id.text_title)
     TextView navigationTitle;
+
+    @Bind(R.id.layout_accounts)
+    View navigationAccounts;
 
     @Icicle
     @IdRes
@@ -104,7 +110,6 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         }
 
         BackendClient.of(this).configureBackend(backendHost, backendPort);
-
         BackendClient.of(this).authorize(this, this);
     }
 
@@ -209,6 +214,31 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     private void startFeedbackActivity() {
         Intent intent = Intents.Builder.of(this).buildFeedbackIntent();
         startActivity(intent);
+    }
+
+    @OnClick(R.id.layout_header)
+    public void showNavigationAccounts() {
+        if (navigationAccounts.getVisibility() == View.GONE) {
+            ViewTransformer.of(navigationAccounts).expand();
+        } else {
+            ViewTransformer.of(navigationAccounts).collapse();
+        }
+
+        ViewTransformer.of(findViewById(R.id.image_title)).rotate();
+    }
+
+    @OnClick(R.id.button_deauthorize)
+    public void tearDownAuthorization() {
+        showNavigationAccounts();
+
+        Preferences.of(this).host().delete();
+        Preferences.of(this).port().delete();
+        Preferences.of(this).tenant().delete();
+        Preferences.of(this).environment().delete();
+
+        BackendClient.of(this).deauthorize();
+
+        setUpBackendClient();
     }
 
     @Override
