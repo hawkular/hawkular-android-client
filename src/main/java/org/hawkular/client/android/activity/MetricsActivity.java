@@ -29,11 +29,11 @@ import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public final class MetricsActivity extends AppCompatActivity {
-    @InjectView(R.id.toolbar)
+    @Bind(R.id.toolbar)
     Toolbar toolbar;
 
     @Override
@@ -49,7 +49,7 @@ public final class MetricsActivity extends AppCompatActivity {
     }
 
     private void setUpBindings() {
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     private void setUpToolbar() {

@@ -37,19 +37,19 @@ import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
 public final class AuthorizationActivity extends AppCompatActivity implements Callback<String> {
-    @InjectView(R.id.toolbar)
+    @Bind(R.id.toolbar)
     Toolbar toolbar;
 
-    @InjectView(R.id.edit_host)
+    @Bind(R.id.edit_host)
     EditText hostEdit;
 
-    @InjectView(R.id.edit_port)
+    @Bind(R.id.edit_port)
     EditText portEdit;
 
     @Override
@@ -65,7 +65,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
     }
 
     private void setUpBindings() {
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     private void setUpToolbar() {

@@ -39,15 +39,15 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.Icicle;
 import timber.log.Timber;
 
 public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertMenuListener {
-    @InjectView(R.id.list)
+    @Bind(R.id.list)
     ListView list;
 
     @Icicle
@@ -78,7 +78,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private void setUpBindings() {
-        ButterKnife.inject(this, getView());
+        ButterKnife.bind(this, getView());
     }
 
     private void setUpList() {
@@ -176,7 +176,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private void tearDownBindings() {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     private static final class AlertsCallback extends AbstractFragmentCallback<List<Alert>> {

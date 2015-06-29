@@ -41,8 +41,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.Icicle;
@@ -56,7 +56,7 @@ import lecho.lib.hellocharts.view.LineChartView;
 import timber.log.Timber;
 
 public final class MetricFragment extends Fragment {
-    @InjectView(R.id.chart)
+    @Bind(R.id.chart)
     LineChartView chart;
 
     @Icicle
@@ -85,7 +85,7 @@ public final class MetricFragment extends Fragment {
     }
 
     private void setUpBindings() {
-        ButterKnife.inject(this, getView());
+        ButterKnife.bind(this, getView());
     }
 
     @OnClick(R.id.button_retry)

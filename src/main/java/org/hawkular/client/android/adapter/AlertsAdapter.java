@@ -34,8 +34,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public final class AlertsAdapter extends BindableAdapter<Alert> {
     public interface AlertMenuListener {
@@ -43,17 +43,17 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
     }
 
     static final class ViewHolder {
-        @InjectView(R.id.text_title)
+        @Bind(R.id.text_title)
         TextView titleText;
 
-        @InjectView(R.id.text_message)
+        @Bind(R.id.text_message)
         TextView messageText;
 
-        @InjectView(R.id.button_menu)
+        @Bind(R.id.button_menu)
         View menuButton;
 
         public ViewHolder(@NonNull View view) {
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
         }
     }
 

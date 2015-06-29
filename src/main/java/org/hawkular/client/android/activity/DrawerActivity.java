@@ -37,23 +37,23 @@ import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Preferences;
 import org.jboss.aerogear.android.core.Callback;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import icepick.Icepick;
 import icepick.Icicle;
 
 public final class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
     Callback<String> {
-    @InjectView(R.id.toolbar)
+    @Bind(R.id.toolbar)
     Toolbar toolbar;
 
-    @InjectView(R.id.drawer)
+    @Bind(R.id.drawer)
     DrawerLayout drawer;
 
-    @InjectView(R.id.navigation)
+    @Bind(R.id.navigation)
     NavigationView navigation;
 
-    @InjectView(R.id.text_title)
+    @Bind(R.id.text_title)
     TextView navigationTitle;
 
     @Icicle
@@ -80,7 +80,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void setUpBindings() {
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     private void setUpToolbar() {

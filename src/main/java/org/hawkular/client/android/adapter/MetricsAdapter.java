@@ -28,16 +28,16 @@ import org.hawkular.client.android.backend.model.Metric;
 
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public final class MetricsAdapter extends BindableAdapter<Metric> {
     static final class ViewHolder {
-        @InjectView(R.id.text)
+        @Bind(R.id.text)
         public TextView nameText;
 
         public ViewHolder(@NonNull View view) {
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
         }
     }
 

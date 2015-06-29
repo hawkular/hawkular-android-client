@@ -33,8 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public final class ResourcesAdapter extends BaseAdapter {
     private static final class Types {
@@ -46,20 +46,20 @@ public final class ResourcesAdapter extends BaseAdapter {
     }
 
     static final class ResourceViewHolder {
-        @InjectView(R.id.text)
+        @Bind(R.id.text)
         TextView nameText;
 
         public ResourceViewHolder(@NonNull View view) {
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
         }
     }
 
     static final class ResourceTypeViewHolder {
-        @InjectView(R.id.text)
+        @Bind(R.id.text)
         TextView nameText;
 
         public ResourceTypeViewHolder(@NonNull View view) {
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
         }
     }
 

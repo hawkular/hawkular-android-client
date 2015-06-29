@@ -42,15 +42,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.Icicle;
 import timber.log.Timber;
 
 public final class ResourcesFragment extends Fragment implements AdapterView.OnItemClickListener {
-    @InjectView(R.id.list)
+    @Bind(R.id.list)
     ListView list;
 
     @Icicle
@@ -81,7 +81,7 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     }
 
     private void setUpBindings() {
-        ButterKnife.inject(this, getView());
+        ButterKnife.bind(this, getView());
     }
 
     private void setUpList() {
@@ -172,7 +172,7 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     }
 
     private void tearDownBindings() {
-         ButterKnife.reset(this);
+         ButterKnife.unbind(this);
     }
 
     private static final class ResourcesCallback extends AbstractFragmentCallback<List<Resource>> {
