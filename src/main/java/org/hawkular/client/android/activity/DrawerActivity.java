@@ -26,6 +26,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.hawkular.client.android.R;
@@ -35,10 +37,12 @@ import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Preferences;
+import org.hawkular.client.android.util.ViewTransformer;
 import org.jboss.aerogear.android.core.Callback;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.Icicle;
 
@@ -55,6 +59,12 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     @Bind(R.id.text_title)
     TextView navigationTitle;
+
+    @Bind(R.id.image_title)
+    ImageView navigationImage;
+
+    @Bind(R.id.layout_accounts)
+    View navigationAccounts;
 
     @Icicle
     @IdRes
@@ -104,7 +114,6 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         }
 
         BackendClient.of(this).configureBackend(backendHost, backendPort);
-
         BackendClient.of(this).authorize(this, this);
     }
 
@@ -181,7 +190,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
         menuItem.setChecked(true);
 
-        drawer.closeDrawers();
+        closeDrawer();
 
         return true;
     }
@@ -211,16 +220,51 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         startActivity(intent);
     }
 
+    private void closeDrawer() {
+        drawer.closeDrawers();
+    }
+
+    @OnClick(R.id.layout_header)
+    public void showNavigationAccounts() {
+        if (navigationAccounts.getVisibility() == View.GONE) {
+            ViewTransformer.of(navigationAccounts).expand();
+        } else {
+            ViewTransformer.of(navigationAccounts).collapse();
+        }
+
+        ViewTransformer.of(navigationImage).rotate();
+    }
+
+    @OnClick(R.id.button_deauthorize)
+    public void tearDownAuthorization() {
+        closeDrawer();
+
+        showNavigationAccounts();
+
+        Preferences.of(this).host().delete();
+        Preferences.of(this).port().delete();
+        Preferences.of(this).tenant().delete();
+        Preferences.of(this).environment().delete();
+
+        BackendClient.of(this).deauthorize();
+
+        setUpBackendClient();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
-                drawer.openDrawer(GravityCompat.START);
+                openDrawer();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(menuItem);
         }
+    }
+
+    private void openDrawer() {
+        drawer.openDrawer(GravityCompat.START);
     }
 
     @Override

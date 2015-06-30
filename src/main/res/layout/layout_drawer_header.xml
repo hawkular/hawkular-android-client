@@ -17,20 +17,69 @@
     limitations under the License.
 
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:background="?attr/colorPrimaryDark"
-  android:padding="16dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:theme="@style/ThemeOverlay.AppCompat.Dark"
   android:layout_width="match_parent"
-  android:layout_height="168dp">
+  android:layout_height="wrap_content">
 
-  <TextView
-    android:id="@+id/text_title"
-    android:text="@string/application_name"
-    android:textSize="14sp"
-    android:textColor="@android:color/white"
-    android:fontFamily="sans-serif-medium"
-    android:layout_alignParentBottom="true"
+  <FrameLayout
+    android:id="@+id/layout_header"
+    android:background="?attr/colorPrimaryDark"
+    android:foreground="?attr/selectableItemBackground"
+    android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="168dp">
 
-</RelativeLayout>
+    <LinearLayout
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      android:layout_gravity="bottom"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <TextView
+        android:id="@+id/text_title"
+        android:text="@string/application_name"
+        android:textSize="@dimen/text_secondary"
+        android:textColor="@android:color/white"
+        android:fontFamily="sans-serif-medium"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
+
+      <ImageView
+        android:id="@+id/image_title"
+        android:src="@drawable/ic_expand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+  </FrameLayout>
+
+  <LinearLayout
+    android:visibility="gone"
+    android:id="@+id/layout_accounts"
+    android:background="@color/background_context"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      android:id="@+id/button_deauthorize"
+      android:text="@string/button_deauthorize"
+      android:textColor="@android:color/white"
+      android:textSize="@dimen/text_secondary"
+      android:singleLine="true"
+      android:fontFamily="sans-serif-medium"
+      android:background="?attr/selectableItemBackground"
+      android:gravity="center_vertical"
+      android:paddingLeft="16dp"
+      android:paddingRight="16dp"
+      android:layout_width="match_parent"
+      android:layout_height="48dp"/>
+
+  </LinearLayout>
+
+</LinearLayout>

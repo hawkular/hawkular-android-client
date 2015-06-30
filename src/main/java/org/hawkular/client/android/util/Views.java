@@ -16,17 +16,18 @@
  */
 package org.hawkular.client.android.util;
 
-import android.content.Context;
-import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
-import android.text.format.DateUtils;
+import android.view.View;
 
-public final class Formatter {
-    private Formatter() {
+public final class Views {
+    private Views() {
     }
 
-    @NonNull
-    public static String formatTime(@NonNull Context context, @IntRange(from = 0) long millis) {
-        return DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME);
+    public static int measureHeight(@NonNull View view) {
+        view.measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+
+        return view.getMeasuredHeight();
     }
 }
