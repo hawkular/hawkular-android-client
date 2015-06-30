@@ -27,6 +27,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.hawkular.client.android.R;
@@ -58,6 +59,9 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     @Bind(R.id.text_title)
     TextView navigationTitle;
+
+    @Bind(R.id.image_title)
+    ImageView navigationImage;
 
     @Bind(R.id.layout_accounts)
     View navigationAccounts;
@@ -186,7 +190,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
         menuItem.setChecked(true);
 
-        drawer.closeDrawers();
+        closeDrawer();
 
         return true;
     }
@@ -216,6 +220,10 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         startActivity(intent);
     }
 
+    private void closeDrawer() {
+        drawer.closeDrawers();
+    }
+
     @OnClick(R.id.layout_header)
     public void showNavigationAccounts() {
         if (navigationAccounts.getVisibility() == View.GONE) {
@@ -224,11 +232,13 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
             ViewTransformer.of(navigationAccounts).collapse();
         }
 
-        ViewTransformer.of(findViewById(R.id.image_title)).rotate();
+        ViewTransformer.of(navigationImage).rotate();
     }
 
     @OnClick(R.id.button_deauthorize)
     public void tearDownAuthorization() {
+        closeDrawer();
+
         showNavigationAccounts();
 
         Preferences.of(this).host().delete();
@@ -245,12 +255,16 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
-                drawer.openDrawer(GravityCompat.START);
+                openDrawer();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(menuItem);
         }
+    }
+
+    private void openDrawer() {
+        drawer.openDrawer(GravityCompat.START);
     }
 
     @Override
