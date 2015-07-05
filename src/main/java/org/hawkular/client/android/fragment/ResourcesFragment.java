@@ -112,13 +112,28 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     }
 
     private void setUpResources(List<Resource> resources) {
-        this.resources = new ArrayList<>(resources);
+        this.resources = new ArrayList<>(filterResources(resources));
 
         sortResources(this.resources);
 
         list.setAdapter(new ResourcesAdapter(getActivity(), this.resources));
 
         showList();
+    }
+
+    private List<Resource> filterResources(List<Resource> resources) {
+        // Filter resources without properties set.
+        // This is mostly a hack at this point because of not standardized properties.
+
+        List<Resource> filteredResources = new ArrayList<>();
+
+        for (Resource resource : resources) {
+            if ((resource.getProperties() != null) && (resource.getProperties().getUrl() != null)) {
+                filteredResources.add(resource);
+            }
+        }
+
+        return filteredResources;
     }
 
     private void sortResources(List<Resource> resources) {
