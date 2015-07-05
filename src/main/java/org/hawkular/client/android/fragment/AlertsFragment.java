@@ -182,24 +182,11 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     private static final class AlertsCallback extends AbstractFragmentCallback<List<Alert>> {
         @Override
         public void onSuccess(List<Alert> alerts) {
-            if (!alerts.isEmpty() && !areAlertsEmpty(alerts)) {
+            if (!alerts.isEmpty()) {
                 getAlertsFragment().setUpAlerts(alerts);
             } else {
                 getAlertsFragment().showMessage();
             }
-        }
-
-        private boolean areAlertsEmpty(List<Alert> alerts) {
-            // Workaround for AeroGear and Hawkular API.
-            // Revisit after AeroGear Pipe 2.2.0 release.
-
-            for (Alert alert : alerts) {
-                if (alert == null) {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         @Override
@@ -218,9 +205,9 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         @Override
         public int compare(Alert leftAlert, Alert rightAlert) {
             Date leftAlertTimestamp = new Date(leftAlert.getTimestamp());
-            Date righAlerttTimestamp = new Date(rightAlert.getTimestamp());
+            Date rightAlertTimestamp = new Date(rightAlert.getTimestamp());
 
-            return leftAlertTimestamp.compareTo(righAlerttTimestamp);
+            return leftAlertTimestamp.compareTo(rightAlertTimestamp);
         }
     }
 }
