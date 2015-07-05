@@ -135,7 +135,7 @@ public final class MetricsFragment extends Fragment implements AdapterView.OnIte
     }
 
     private void showMessage() {
-        ViewDirector.of(this).using(R.id.animator).show(R.id.error);
+        ViewDirector.of(this).using(R.id.animator).show(R.id.message);
     }
 
     private void showError() {
