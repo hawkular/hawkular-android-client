@@ -93,7 +93,7 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
         if (resources == null) {
             showProgress();
 
-            BackendClient.of(this).getResources(getTenant(), getEnvironment(), new ResourcesCallback());
+            BackendClient.of(this).getResources(getEnvironment(), new ResourcesCallback());
         } else {
             setUpResources(resources);
         }

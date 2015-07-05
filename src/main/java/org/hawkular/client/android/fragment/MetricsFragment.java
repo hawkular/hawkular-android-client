@@ -94,7 +94,7 @@ public final class MetricsFragment extends Fragment implements AdapterView.OnIte
         if (metrics == null) {
             showProgress();
 
-            BackendClient.of(this).getMetrics(getTenant(), getEnvironment(), getResource(), new MetricsCallback());
+            BackendClient.of(this).getMetrics(getEnvironment(), getResource(), new MetricsCallback());
         } else {
             setUpMetrics(metrics);
         }

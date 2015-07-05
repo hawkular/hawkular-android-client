@@ -122,29 +122,28 @@ public final class BackendClient {
         readPipe(BackendPipes.Names.TENANTS, uri, callback);
     }
 
-    public void getEnvironments(@NonNull Tenant tenant,
-                                @NonNull Callback<List<Environment>> callback) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.ENVIRONMENTS, tenant.getId()));
+    public void getEnvironments(@NonNull Callback<List<Environment>> callback) {
+        URI uri = Uris.getUri(BackendPipes.Paths.ENVIRONMENTS);
 
         readPipe(BackendPipes.Names.ENVIRONMENTS, uri, callback);
     }
 
-    public void getResources(@NonNull Tenant tenant, @NonNull Environment environment,
+    public void getResources(@NonNull Environment environment,
                              @NonNull Callback<List<Resource>> callback) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.RESOURCES, tenant.getId(), environment.getId()));
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.RESOURCES, environment.getId()));
 
         readPipe(BackendPipes.Names.RESOURCES, uri, callback);
     }
 
-    public void getMetrics(@NonNull Tenant tenant, @NonNull Environment environment, @NonNull Resource resource,
+    public void getMetrics(@NonNull Environment environment, @NonNull Resource resource,
                            @NonNull Callback<List<Metric>> callback) {
         URI uri = Uris.getUri(
-            String.format(BackendPipes.Paths.METRICS, tenant.getId(), environment.getId(), resource.getId()));
+            String.format(BackendPipes.Paths.METRICS, environment.getId(), resource.getId()));
 
         readPipe(BackendPipes.Names.METRICS, uri, callback);
     }
 
-    public void getMetricData(@NonNull Tenant tenant, @NonNull Metric metric,
+    public void getMetricData(@NonNull Metric metric,
                               @NonNull Date startTime, @NonNull Date finishTime,
                               @NonNull Callback<List<MetricData>> callback) {
         Map<String, String> parameters = new HashMap<>();
@@ -152,7 +151,7 @@ public final class BackendClient {
         parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
 
         URI uri = Uris.getUri(
-            String.format(BackendPipes.Paths.METRIC_DATA, tenant.getId(), metric.getId()), parameters);
+            String.format(BackendPipes.Paths.METRIC_DATA, metric.getId()), parameters);
 
         readPipe(BackendPipes.Names.METRIC_DATA, uri, callback);
     }

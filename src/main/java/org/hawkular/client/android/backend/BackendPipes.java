@@ -38,7 +38,7 @@ final class BackendPipes {
 
         public static final String ALERTS = "hawkular/alerts";
         public static final String INVENTORY = "hawkular/inventory";
-        public static final String METRICS = "hawkular-metrics";
+        public static final String METRICS = "hawkular/metrics";
     }
 
     public static final class Paths {
@@ -46,10 +46,10 @@ final class BackendPipes {
         }
 
         public static final String TENANTS = "tenant";
-        public static final String ENVIRONMENTS = "%s/environments";
-        public static final String RESOURCES = "%s/%s/resources";
-        public static final String METRICS = "%s/%s/resources/%s/metrics";
-        public static final String METRIC_DATA = "%s/metrics/numeric/%s/data";
+        public static final String ENVIRONMENTS = "environments";
+        public static final String RESOURCES = "%s/resources";
+        public static final String METRICS = "%s/resources/%s/metrics";
+        public static final String METRIC_DATA = "gauges/%s/data";
     }
 
     public static final class Parameters {

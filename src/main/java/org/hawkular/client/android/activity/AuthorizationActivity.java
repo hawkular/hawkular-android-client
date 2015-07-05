@@ -157,7 +157,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
     }
 
     private void setUpEnvironment(Tenant tenant) {
-        BackendClient.of(this).getEnvironments(tenant, new EnvironmentsCallback(tenant));
+        BackendClient.of(this).getEnvironments(new EnvironmentsCallback(tenant));
     }
 
     private void succeed(Tenant tenant, Environment environment) {
