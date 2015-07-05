@@ -68,13 +68,16 @@ public final class BackendClient {
     public void configureBackend(@NonNull String host) {
         URL backendUrl = Urls.getUrl(host);
 
-        configureAuthorization(backendUrl);
-        configurePipes(backendUrl);
+        configureBackend(backendUrl);
     }
 
     public void configureBackend(@NonNull String host, @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port) {
         URL backendUrl = Urls.getUrl(host, port);
 
+        configureBackend(backendUrl);
+    }
+
+    private void configureBackend(URL backendUrl) {
         configureAuthorization(backendUrl);
         configurePipes(backendUrl);
     }
@@ -92,18 +95,20 @@ public final class BackendClient {
     }
 
     private void configurePipes(URL backendUrl) {
-        configurePipe(BackendPipes.Names.ALERTS, backendUrl, BackendPipes.Roots.ALERTS, Alert.class);
-        configurePipe(BackendPipes.Names.TENANTS, backendUrl, BackendPipes.Roots.INVENTORY, Tenant.class);
-        configurePipe(BackendPipes.Names.ENVIRONMENTS, backendUrl, BackendPipes.Roots.INVENTORY, Environment.class);
-        configurePipe(BackendPipes.Names.RESOURCES, backendUrl, BackendPipes.Roots.INVENTORY, Resource.class);
-        configurePipe(BackendPipes.Names.METRICS, backendUrl, BackendPipes.Roots.INVENTORY, Metric.class);
-        configurePipe(BackendPipes.Names.METRIC_DATA, backendUrl, BackendPipes.Roots.METRICS, MetricData.class);
+        URL pipeUrl = Urls.getUrl(backendUrl, BackendPipes.Paths.ROOT);
+
+        configurePipe(BackendPipes.Names.ALERTS, pipeUrl, Alert.class);
+        configurePipe(BackendPipes.Names.TENANTS, pipeUrl, Tenant.class);
+        configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, Environment.class);
+        configurePipe(BackendPipes.Names.RESOURCES, pipeUrl, Resource.class);
+        configurePipe(BackendPipes.Names.METRICS, pipeUrl, Metric.class);
+        configurePipe(BackendPipes.Names.METRIC_DATA, pipeUrl, MetricData.class);
     }
 
-    private <T> void configurePipe(String pipeName, URL pipeUrl, String pipePath, Class<T> pipeClass) {
+    private <T> void configurePipe(String pipeName, URL pipeUrl, Class<T> pipeClass) {
         PipeManager.config(pipeName, RestfulPipeConfiguration.class)
             .module(getAuthorizationModule())
-            .withUrl(Urls.getUrl(pipeUrl, pipePath))
+            .withUrl(pipeUrl)
             .forClass(pipeClass);
     }
 
@@ -122,7 +127,9 @@ public final class BackendClient {
     }
 
     public void getAlerts(@NonNull Callback<List<Alert>> callback) {
-        readPipe(BackendPipes.Names.ALERTS, null, callback);
+        URI uri = Uris.getUri(BackendPipes.Paths.ALERTS);
+
+        readPipe(BackendPipes.Names.ALERTS, uri, callback);
     }
 
     public void getTenants(@NonNull Callback<List<Tenant>> callback) {
