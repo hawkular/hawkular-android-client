@@ -26,7 +26,7 @@ public final class AlertEvaluation implements Parcelable {
     private AlertEvaluationCondition condition;
 
     @SerializedName("value")
-    private double value;
+    private String value;
 
     @SerializedName("dataTimestamp")
     private long dataTimestamp;
@@ -35,7 +35,7 @@ public final class AlertEvaluation implements Parcelable {
         return condition;
     }
 
-    public double getValue() {
+    public String getValue() {
         return value;
     }
 
@@ -57,14 +57,14 @@ public final class AlertEvaluation implements Parcelable {
 
     private AlertEvaluation(Parcel parcel) {
         this.condition = parcel.readParcelable(AlertEvaluationCondition.class.getClassLoader());
-        this.value = parcel.readDouble();
+        this.value = parcel.readString();
         this.dataTimestamp = parcel.readLong();
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeParcelable(condition, flags);
-        parcel.writeDouble(value);
+        parcel.writeString(value);
         parcel.writeLong(dataTimestamp);
     }
 
