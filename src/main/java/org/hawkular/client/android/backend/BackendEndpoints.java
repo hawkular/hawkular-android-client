@@ -20,11 +20,11 @@ public final class BackendEndpoints {
     private BackendEndpoints() {
     }
 
-    public static final class Community {
-        private Community() {
+    public static final class Demo {
+        private Demo() {
         }
 
-        public static final String HOST = "209.132.179.82";
-        public static final String PORT = "18080";
+        public static final String HOST = "demo.hawkular.org";
+        public static final String PORT = "";
     }
 }

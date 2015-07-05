@@ -36,7 +36,16 @@ public final class Urls {
     }
 
     @NonNull
-    public static URL getUrl(@NonNull String host, @IntRange(from = 0) int port) {
+    public static URL getUrl(@NonNull String host) {
+        try {
+            return new URL(Protocols.HTTP, host, "");
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @NonNull
+    public static URL getUrl(@NonNull String host, @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port) {
         try {
             return new URL(Protocols.HTTP, host, port, "");
         } catch (MalformedURLException e) {

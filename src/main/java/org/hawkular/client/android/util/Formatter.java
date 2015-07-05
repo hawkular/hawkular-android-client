@@ -25,6 +25,7 @@ public final class Formatter {
     private Formatter() {
     }
 
+    @NonNull
     public static String formatTime(@NonNull Context context, @IntRange(from = 0) long millis) {
         return DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME);
     }

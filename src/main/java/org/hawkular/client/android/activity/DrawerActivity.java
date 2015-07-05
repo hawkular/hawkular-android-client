@@ -95,17 +95,26 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void setUpBackendClient() {
-        String backendHost = Preferences.of(this).host().get();
-        int backendPort = Preferences.of(this).port().get();
-
-        if (backendHost.isEmpty() || backendPort == Preferences.Defaults.BACKEND_PORT) {
+        if (!isHostAvailable()) {
             startAuthorizationActivity();
             return;
         }
 
-        BackendClient.of(this).configureBackend(backendHost, backendPort);
+        if (!isPortAvailable()) {
+            BackendClient.of(this).configureBackend(Preferences.of(this).host().get());
+        } else {
+            BackendClient.of(this).configureBackend(Preferences.of(this).host().get(), Preferences.of(this).port().get());
+        }
 
         BackendClient.of(this).authorize(this, this);
+    }
+
+    private boolean isHostAvailable() {
+        return !Preferences.of(this).host().get().isEmpty();
+    }
+
+    private boolean isPortAvailable() {
+        return Preferences.of(this).port().get() != Preferences.Defaults.BACKEND_PORT;
     }
 
     @Override

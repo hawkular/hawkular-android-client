@@ -18,6 +18,7 @@ package org.hawkular.client.android.backend;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.backend.model.Alert;
@@ -26,6 +27,7 @@ import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Tenant;
+import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Uris;
 import org.hawkular.client.android.util.Urls;
 import org.jboss.aerogear.android.authorization.AuthorizationManager;
@@ -63,8 +65,15 @@ public final class BackendClient {
         this.fragment = fragment;
     }
 
-    public void configureBackend(@NonNull String serverHost, int port) {
-        URL backendUrl = Urls.getUrl(serverHost, port);
+    public void configureBackend(@NonNull String host) {
+        URL backendUrl = Urls.getUrl(host);
+
+        configureAuthorization(backendUrl);
+        configurePipes(backendUrl);
+    }
+
+    public void configureBackend(@NonNull String host, @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port) {
+        URL backendUrl = Urls.getUrl(host, port);
 
         configureAuthorization(backendUrl);
         configurePipes(backendUrl);
