@@ -28,7 +28,6 @@ import org.hawkular.client.android.activity.MetricsActivity;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
-import org.hawkular.client.android.backend.model.Tenant;
 
 public final class Intents {
     private Intents() {
@@ -38,7 +37,6 @@ public final class Intents {
         private Extras() {
         }
 
-        public static final String TENANT = "tenant";
         public static final String ENVIRONMENT = "environment";
         public static final String RESOURCE = "resource";
         public static final String METRIC = "metric";
@@ -76,10 +74,8 @@ public final class Intents {
         }
 
         @NonNull
-        public Intent buildMetricsIntent(@NonNull Tenant tenant, @NonNull Environment environment,
-                                         @NonNull Resource resource) {
+        public Intent buildMetricsIntent(@NonNull Environment environment, @NonNull Resource resource) {
             Intent intent = new Intent(context, MetricsActivity.class);
-            intent.putExtra(Extras.TENANT, tenant);
             intent.putExtra(Extras.ENVIRONMENT, environment);
             intent.putExtra(Extras.RESOURCE, resource);
 
@@ -87,9 +83,8 @@ public final class Intents {
         }
 
         @NonNull
-        public Intent buildMetricIntent(@NonNull Tenant tenant, @NonNull Metric metric) {
+        public Intent buildMetricIntent(@NonNull Metric metric) {
             Intent intent = new Intent(context, MetricActivity.class);
-            intent.putExtra(Extras.TENANT, tenant);
             intent.putExtra(Extras.METRIC, metric);
 
             return intent;

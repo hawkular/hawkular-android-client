@@ -32,7 +32,6 @@ import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
-import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
@@ -104,10 +103,6 @@ public final class MetricsFragment extends Fragment implements AdapterView.OnIte
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
     }
 
-    private Tenant getTenant() {
-        return getArguments().getParcelable(Fragments.Arguments.TENANT);
-    }
-
     private Environment getEnvironment() {
         return getArguments().getParcelable(Fragments.Arguments.ENVIRONMENT);
     }
@@ -146,15 +141,15 @@ public final class MetricsFragment extends Fragment implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Metric metric = getMetricsAdapter().getItem(position);
 
-        startMetricDataActivity(metric);
+        startMetricActivity(metric);
     }
 
     private MetricsAdapter getMetricsAdapter() {
         return (MetricsAdapter) list.getAdapter();
     }
 
-    private void startMetricDataActivity(Metric metric) {
-        Intent intent = Intents.Builder.of(getActivity()).buildMetricIntent(getTenant(), metric);
+    private void startMetricActivity(Metric metric) {
+        Intent intent = Intents.Builder.of(getActivity()).buildMetricIntent(metric);
         startActivity(intent);
     }
 

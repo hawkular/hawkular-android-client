@@ -31,7 +31,6 @@ import org.hawkular.client.android.adapter.ResourcesAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Resource;
-import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
@@ -103,10 +102,6 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
     }
 
-    private Tenant getTenant() {
-        return getArguments().getParcelable(Fragments.Arguments.TENANT);
-    }
-
     private Environment getEnvironment() {
         return getArguments().getParcelable(Fragments.Arguments.ENVIRONMENT);
     }
@@ -164,7 +159,7 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     }
 
     private void startMetricTypesActivity(Resource resource) {
-        Intent intent = Intents.Builder.of(getActivity()).buildMetricsIntent(getTenant(), getEnvironment(), resource);
+        Intent intent = Intents.Builder.of(getActivity()).buildMetricsIntent(getEnvironment(), resource);
         startActivity(intent);
     }
 

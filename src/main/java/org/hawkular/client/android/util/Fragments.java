@@ -26,7 +26,6 @@ import android.support.annotation.NonNull;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
-import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.fragment.AlertsFragment;
 import org.hawkular.client.android.fragment.MetricFragment;
 import org.hawkular.client.android.fragment.MetricsFragment;
@@ -40,7 +39,6 @@ public final class Fragments {
         private Arguments() {
         }
 
-        public static final String TENANT = "tenant";
         public static final String ENVIRONMENT = "environment";
         public static final String METRIC = "metric";
         public static final String RESOURCE = "resource";
@@ -51,11 +49,10 @@ public final class Fragments {
         }
 
         @NonNull
-        public static Fragment buildResourcesFragment(@NonNull Tenant tenant, @NonNull Environment environment) {
+        public static Fragment buildResourcesFragment(@NonNull Environment environment) {
             Fragment fragment = new ResourcesFragment();
 
             Bundle arguments = new Bundle();
-            arguments.putParcelable(Arguments.TENANT, tenant);
             arguments.putParcelable(Arguments.ENVIRONMENT, environment);
 
             fragment.setArguments(arguments);
@@ -64,12 +61,10 @@ public final class Fragments {
         }
 
         @NonNull
-        public static Fragment buildMetricsFragment(@NonNull Tenant tenant, @NonNull Environment environment,
-                                                    @NonNull Resource resource) {
+        public static Fragment buildMetricsFragment(@NonNull Environment environment, @NonNull Resource resource) {
             Fragment fragment = new MetricsFragment();
 
             Bundle arguments = new Bundle();
-            arguments.putParcelable(Arguments.TENANT, tenant);
             arguments.putParcelable(Arguments.ENVIRONMENT, environment);
             arguments.putParcelable(Arguments.RESOURCE, resource);
 
@@ -79,11 +74,10 @@ public final class Fragments {
         }
 
         @NonNull
-        public static Fragment buildMetricFragment(@NonNull Tenant tenant, @NonNull Metric metric) {
+        public static Fragment buildMetricFragment(@NonNull Metric metric) {
             Fragment fragment = new MetricFragment();
 
             Bundle arguments = new Bundle();
-            arguments.putParcelable(Arguments.TENANT, tenant);
             arguments.putParcelable(Arguments.METRIC, metric);
 
             fragment.setArguments(arguments);

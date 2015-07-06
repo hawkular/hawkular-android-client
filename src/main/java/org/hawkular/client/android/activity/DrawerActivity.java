@@ -31,7 +31,6 @@ import android.widget.TextView;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
-import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Ports;
@@ -197,13 +196,9 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void showResourcesFragment() {
-        Fragment fragment = Fragments.Builder.buildResourcesFragment(getTenant(), getEnvironment());
+        Fragment fragment = Fragments.Builder.buildResourcesFragment(getEnvironment());
 
         Fragments.Operator.of(this).reset(R.id.layout_container, fragment);
-    }
-
-    private Tenant getTenant() {
-        return new Tenant(Preferences.of(this).tenant().get());
     }
 
     private Environment getEnvironment() {
