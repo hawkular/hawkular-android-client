@@ -95,16 +95,12 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
         setUpBackendAuthorization();
     }
 
-    private String getHost() {
-        return hostEdit.getText().toString().trim();
-    }
-
     private boolean isHostAvailable() {
         return !getHost().isEmpty();
     }
 
-    private String getPort() {
-        return portEdit.getText().toString().trim();
+    private String getHost() {
+        return hostEdit.getText().toString().trim();
     }
 
     private boolean isPortAvailable() {
@@ -121,6 +117,10 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private int getPortNumber() {
         return Integer.valueOf(getPort());
+    }
+
+    private String getPort() {
+        return portEdit.getText().toString().trim();
     }
 
     private void showError(EditText errorEdit, @StringRes int errorMessage) {

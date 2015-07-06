@@ -153,8 +153,7 @@ public final class BackendClient {
 
     public void getMetrics(@NonNull Environment environment, @NonNull Resource resource,
                            @NonNull Callback<List<Metric>> callback) {
-        URI uri = Uris.getUri(
-            String.format(BackendPipes.Paths.METRICS, environment.getId(), resource.getId()));
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRICS, environment.getId(), resource.getId()));
 
         readPipe(BackendPipes.Names.METRICS, uri, callback);
     }
@@ -166,8 +165,7 @@ public final class BackendClient {
         parameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTime()));
         parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
 
-        URI uri = Uris.getUri(
-            String.format(BackendPipes.Paths.METRIC_DATA, metric.getId()), parameters);
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA, metric.getId()), parameters);
 
         readPipe(BackendPipes.Names.METRIC_DATA, uri, callback);
     }

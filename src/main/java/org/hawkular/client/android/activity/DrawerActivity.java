@@ -95,7 +95,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void setUpBackendClient() {
-        if (!isHostAvailable()) {
+        if (!isHostAvailable() && !isPortAvailable()) {
             startAuthorizationActivity();
             return;
         }
@@ -161,7 +161,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         }
 
         if (result == RESULT_OK) {
-            setUpNavigationDefaults();
+            setUpBackendClient();
         } else {
             finish();
         }
