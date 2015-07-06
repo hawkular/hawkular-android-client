@@ -35,10 +35,17 @@ public final class Urls {
         public static final String HTTP = "http";
     }
 
+    private static final class Files {
+        private Files() {
+        }
+
+        public static final String EMPTY = "";
+    }
+
     @NonNull
     public static URL getUrl(@NonNull String host) {
         try {
-            return new URL(Protocols.HTTP, host, "");
+            return new URL(Protocols.HTTP, host, Files.EMPTY);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -47,7 +54,7 @@ public final class Urls {
     @NonNull
     public static URL getUrl(@NonNull String host, @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port) {
         try {
-            return new URL(Protocols.HTTP, host, port, "");
+            return new URL(Protocols.HTTP, host, port, Files.EMPTY);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

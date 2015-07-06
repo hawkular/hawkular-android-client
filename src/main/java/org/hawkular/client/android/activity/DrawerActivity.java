@@ -34,6 +34,7 @@ import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
+import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Preferences;
 import org.jboss.aerogear.android.core.Callback;
 
@@ -114,7 +115,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private boolean isPortAvailable() {
-        return Preferences.of(this).port().get() != Preferences.Defaults.BACKEND_PORT;
+        return Ports.isCorrect(Preferences.of(this).port().get());
     }
 
     @Override
