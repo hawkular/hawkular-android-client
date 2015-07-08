@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:auto="http://schemas.android.com/apk/res-auto">
+
+  <item
+    android:icon="@drawable/ic_time"
+    android:title="@string/menu_time"
+    auto:showAsAction="always">
+
+    <menu>
+      <group android:checkableBehavior="single">
+
+        <item
+          android:id="@+id/menu_time_hour"
+          android:title="@string/menu_time_hour"/>
+
+        <item
+          android:id="@+id/menu_time_day"
+          android:title="@string/menu_time_day"/>
+
+        <item
+          android:id="@+id/menu_time_week"
+          android:title="@string/menu_time_week"/>
+
+        <item
+          android:id="@+id/menu_time_month"
+          android:title="@string/menu_time_month"/>
+
+        <item
+          android:id="@+id/menu_time_year"
+          android:title="@string/menu_time_year"/>
+
+      </group>
+    </menu>
+
+  </item>
+
+</menu>

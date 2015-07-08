@@ -20,6 +20,8 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +71,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         setUpBindings();
 
         setUpList();
+        setUpMenu();
 
         setUpAlerts();
     }
@@ -83,6 +86,10 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
 
     private void setUpList() {
         list.setSelector(android.R.color.transparent);
+    }
+
+    private void setUpMenu() {
+        setHasOptionsMenu(true);
     }
 
     @OnClick(R.id.button_retry)
@@ -119,10 +126,10 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         showAlertMenu(alertView, alertPosition);
     }
 
-    private void showAlertMenu(final View alertView, final  int alertPosition) {
+    private void showAlertMenu(final View alertView, final int alertPosition) {
         PopupMenu alertMenu = new PopupMenu(getActivity(), alertView);
 
-        alertMenu.getMenuInflater().inflate(R.menu.menu_alerts, alertMenu.getMenu());
+        alertMenu.getMenuInflater().inflate(R.menu.popup_alerts, alertMenu.getMenu());
 
         alertMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -143,6 +150,38 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         });
 
         alertMenu.show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        super.onCreateOptionsMenu(menu, menuInflater);
+
+        menuInflater.inflate(R.menu.toolbar_alerts, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        menuItem.setChecked(!menuItem.isChecked());
+
+        switch (menuItem.getItemId()) {
+            case R.id.menu_time_hour:
+                return true;
+
+            case R.id.menu_time_day:
+                return true;
+
+            case R.id.menu_time_week:
+                return true;
+
+            case R.id.menu_time_month:
+                return true;
+
+            case R.id.menu_time_year:
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(menuItem);
+        }
     }
 
     private void showList() {
