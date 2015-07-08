@@ -107,6 +107,10 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
         return !getPort().isEmpty();
     }
 
+    private String getPort() {
+        return portEdit.getText().toString().trim();
+    }
+
     private boolean isPortCorrect() {
         try {
             return Ports.isCorrect(getPortNumber());
@@ -117,10 +121,6 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private int getPortNumber() {
         return Integer.valueOf(getPort());
-    }
-
-    private String getPort() {
-        return portEdit.getText().toString().trim();
     }
 
     private void showError(EditText errorEdit, @StringRes int errorMessage) {
@@ -150,9 +150,21 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     @Override
     public void onSuccess(String authorization) {
-        setUpBackendCommunication(new Tenant(""));
+        setUpBackendCommunication(getMockTenant());
 
         setUpTenant();
+    }
+
+    private void setUpBackendCommunication(Tenant tenant) {
+        if (!isPortAvailable()) {
+            BackendClient.of(this).configureCommunication(getHost(), tenant);
+        } else {
+            BackendClient.of(this).configureCommunication(getHost(), getPortNumber(), tenant);
+        }
+    }
+
+    private Tenant getMockTenant() {
+        return new Tenant("");
     }
 
     @Override
@@ -164,14 +176,6 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private void setUpTenant() {
         BackendClient.of(this).getTenants(new TenantsCallback());
-    }
-
-    private void setUpBackendCommunication(Tenant tenant) {
-        if (!isPortAvailable()) {
-            BackendClient.of(this).configureCommunication(getHost(), tenant);
-        } else {
-            BackendClient.of(this).configureCommunication(getHost(), getPortNumber(), tenant);
-        }
     }
 
     private void setUpEnvironment(Tenant tenant) {

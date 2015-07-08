@@ -101,6 +101,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
         if (backendHost.isEmpty() && !Ports.isCorrect(backendPort)) {
             startAuthorizationActivity();
+            return;
         }
 
         if (!Ports.isCorrect(backendPort)) {
