@@ -74,7 +74,8 @@ public final class BackendClient {
         configureAuthorization(backendUrl);
     }
 
-    public void configureAuthorization(@NonNull String host, @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port) {
+    public void configureAuthorization(@NonNull String host,
+                                       @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port) {
         URL backendUrl = Urls.getUrl(host, port);
 
         configureAuthorization(backendUrl);
@@ -98,7 +99,9 @@ public final class BackendClient {
         configurePipes(backendUrl, tenant);
     }
 
-    public void configureCommunication(@NonNull String host, @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port, @NonNull Tenant tenant) {
+    public void configureCommunication(@NonNull String host,
+                                       @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port,
+                                       @NonNull Tenant tenant) {
         URL backendUrl = Urls.getUrl(host, port);
 
         configurePipes(backendUrl, tenant);
@@ -127,6 +130,7 @@ public final class BackendClient {
         return new BackendAccountant(tenant);
     }
 
+    @SuppressWarnings("unchecked")
     private <T> void configurePipe(String pipeName, URL pipeUrl, List<PipeModule> pipeModules, Class<T> pipeClass) {
         PipeConfiguration pipeConfiguration = PipeManager.config(pipeName, RestfulPipeConfiguration.class)
             .withUrl(pipeUrl);
