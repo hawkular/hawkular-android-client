@@ -36,11 +36,14 @@ import org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthorizationConfig
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.core.ReadFilter;
 import org.jboss.aerogear.android.pipe.LoaderPipe;
+import org.jboss.aerogear.android.pipe.PipeConfiguration;
 import org.jboss.aerogear.android.pipe.PipeManager;
+import org.jboss.aerogear.android.pipe.module.PipeModule;
 import org.jboss.aerogear.android.pipe.rest.RestfulPipeConfiguration;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -65,21 +68,16 @@ public final class BackendClient {
         this.fragment = fragment;
     }
 
-    public void configureBackend(@NonNull String host) {
+    public void configureAuthorization(@NonNull String host) {
         URL backendUrl = Urls.getUrl(host);
 
-        configureBackend(backendUrl);
+        configureAuthorization(backendUrl);
     }
 
-    public void configureBackend(@NonNull String host, @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port) {
+    public void configureAuthorization(@NonNull String host, @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port) {
         URL backendUrl = Urls.getUrl(host, port);
 
-        configureBackend(backendUrl);
-    }
-
-    private void configureBackend(URL backendUrl) {
         configureAuthorization(backendUrl);
-        configurePipes(backendUrl);
     }
 
     private void configureAuthorization(URL backendUrl) {
@@ -94,26 +92,50 @@ public final class BackendClient {
             .asModule();
     }
 
-    private void configurePipes(URL backendUrl) {
-        URL pipeUrl = Urls.getUrl(backendUrl, BackendPipes.Paths.ROOT);
+    public void configureCommunication(@NonNull String host, @NonNull Tenant tenant) {
+        URL backendUrl = Urls.getUrl(host);
 
-        configurePipe(BackendPipes.Names.ALERTS, pipeUrl, Alert.class);
-        configurePipe(BackendPipes.Names.TENANTS, pipeUrl, Tenant.class);
-        configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, Environment.class);
-        configurePipe(BackendPipes.Names.RESOURCES, pipeUrl, Resource.class);
-        configurePipe(BackendPipes.Names.METRICS, pipeUrl, Metric.class);
-        configurePipe(BackendPipes.Names.METRIC_DATA, pipeUrl, MetricData.class);
+        configurePipes(backendUrl, tenant);
     }
 
-    private <T> void configurePipe(String pipeName, URL pipeUrl, Class<T> pipeClass) {
-        PipeManager.config(pipeName, RestfulPipeConfiguration.class)
-            .module(getAuthorizationModule())
-            .withUrl(pipeUrl)
-            .forClass(pipeClass);
+    public void configureCommunication(@NonNull String host, @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port, @NonNull Tenant tenant) {
+        URL backendUrl = Urls.getUrl(host, port);
+
+        configurePipes(backendUrl, tenant);
+    }
+
+    private void configurePipes(URL backendUrl, Tenant tenant) {
+        URL pipeUrl = Urls.getUrl(backendUrl, BackendPipes.Paths.ROOT);
+
+        List<PipeModule> pipeModules = Arrays.asList(
+            getAuthorizationModule(),
+            getAccountModule(tenant));
+
+        configurePipe(BackendPipes.Names.ALERTS, pipeUrl, pipeModules, Alert.class);
+        configurePipe(BackendPipes.Names.TENANTS, pipeUrl, pipeModules, Tenant.class);
+        configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
+        configurePipe(BackendPipes.Names.RESOURCES, pipeUrl, pipeModules, Resource.class);
+        configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
+        configurePipe(BackendPipes.Names.METRIC_DATA, pipeUrl, pipeModules, MetricData.class);
     }
 
     private AuthzModule getAuthorizationModule() {
         return AuthorizationManager.getModule(BackendAuthorization.NAME);
+    }
+
+    private PipeModule getAccountModule(Tenant tenant) {
+        return new BackendAccountant(tenant);
+    }
+
+    private <T> void configurePipe(String pipeName, URL pipeUrl, List<PipeModule> pipeModules, Class<T> pipeClass) {
+        PipeConfiguration pipeConfiguration = PipeManager.config(pipeName, RestfulPipeConfiguration.class)
+            .withUrl(pipeUrl);
+
+        for (PipeModule pipeModule : pipeModules) {
+            pipeConfiguration.module(pipeModule);
+        }
+
+        pipeConfiguration.forClass(pipeClass);
     }
 
     public void authorize(@NonNull Activity activity, @NonNull Callback<String> callback) {
@@ -121,8 +143,10 @@ public final class BackendClient {
     }
 
     public void deauthorize() {
-        if (getAuthorizationModule().hasCredentials()) {
-            getAuthorizationModule().deleteAccount();
+        AuthzModule authorizationModule = getAuthorizationModule();
+
+        if (authorizationModule.hasCredentials()) {
+            authorizationModule.deleteAccount();
         }
     }
 

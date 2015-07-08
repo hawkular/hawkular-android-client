@@ -130,9 +130,9 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
     private void setUpBackendAuthorization() {
         try {
             if (!isPortAvailable()) {
-                BackendClient.of(this).configureBackend(getHost());
+                BackendClient.of(this).configureAuthorization(getHost());
             } else {
-                BackendClient.of(this).configureBackend(getHost(), Integer.valueOf(getPort()));
+                BackendClient.of(this).configureAuthorization(getHost(), getPortNumber());
             }
 
             BackendClient.of(this).deauthorize();
@@ -150,6 +150,8 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     @Override
     public void onSuccess(String authorization) {
+        setUpBackendCommunication(new Tenant(""));
+
         setUpTenant();
     }
 
@@ -162,6 +164,14 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private void setUpTenant() {
         BackendClient.of(this).getTenants(new TenantsCallback());
+    }
+
+    private void setUpBackendCommunication(Tenant tenant) {
+        if (!isPortAvailable()) {
+            BackendClient.of(this).configureCommunication(getHost(), tenant);
+        } else {
+            BackendClient.of(this).configureCommunication(getHost(), getPortNumber(), tenant);
+        }
     }
 
     private void setUpEnvironment(Tenant tenant) {
@@ -198,6 +208,8 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
             Tenant tenant = tenants.get(0);
 
             AuthorizationActivity activity = (AuthorizationActivity) getActivity();
+
+            activity.setUpBackendCommunication(tenant);
 
             activity.setUpEnvironment(tenant);
         }

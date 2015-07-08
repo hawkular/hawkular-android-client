@@ -31,6 +31,7 @@ import android.widget.TextView;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
+import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Ports;
@@ -95,26 +96,26 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void setUpBackendClient() {
-        if (!isHostAvailable() && !isPortAvailable()) {
+        String backendHost = Preferences.of(this).host().get();
+        int backendPort = Preferences.of(this).port().get();
+
+        if (backendHost.isEmpty() && !Ports.isCorrect(backendPort)) {
             startAuthorizationActivity();
-            return;
         }
 
-        if (!isPortAvailable()) {
-            BackendClient.of(this).configureBackend(Preferences.of(this).host().get());
+        if (!Ports.isCorrect(backendPort)) {
+            BackendClient.of(this).configureAuthorization(backendHost);
+            BackendClient.of(this).configureCommunication(backendHost, getTenant());
         } else {
-            BackendClient.of(this).configureBackend(Preferences.of(this).host().get(), Preferences.of(this).port().get());
+            BackendClient.of(this).configureAuthorization(backendHost, backendPort);
+            BackendClient.of(this).configureCommunication(backendHost, backendPort, getTenant());
         }
 
         BackendClient.of(this).authorize(this, this);
     }
 
-    private boolean isHostAvailable() {
-        return !Preferences.of(this).host().get().isEmpty();
-    }
-
-    private boolean isPortAvailable() {
-        return Ports.isCorrect(Preferences.of(this).port().get());
+    private Tenant getTenant() {
+        return new Tenant(Preferences.of(this).tenant().get());
     }
 
     @Override
