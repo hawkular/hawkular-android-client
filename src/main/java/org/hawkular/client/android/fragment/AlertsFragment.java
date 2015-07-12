@@ -18,6 +18,7 @@ package org.hawkular.client.android.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,6 +33,7 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.adapter.AlertsAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Alert;
+import org.hawkular.client.android.util.Time;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
@@ -55,6 +57,10 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     @Icicle
     @Nullable
     ArrayList<Alert> alerts;
+
+    @Icicle
+    @IdRes
+    int alertsTimeMenu;
 
     @Nullable
     @Override
@@ -95,12 +101,18 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     @OnClick(R.id.button_retry)
     public void setUpAlerts() {
         if (alerts == null) {
-            showProgress();
+            alertsTimeMenu = R.id.menu_time_hour;
 
-            BackendClient.of(this).getAlerts(new AlertsCallback());
+            setUpAlerts(Time.hourAgo());
         } else {
             setUpAlerts(alerts);
         }
+    }
+
+    private void setUpAlerts(Date startTime) {
+        showProgress();
+
+        BackendClient.of(this).getAlerts(startTime, Time.current(), new AlertsCallback());
     }
 
     private void showProgress() {
@@ -160,23 +172,39 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        menu.findItem(alertsTimeMenu).setChecked(true);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        menuItem.setChecked(!menuItem.isChecked());
+        if (menuItem.getItemId() != R.id.menu_time) {
+            alertsTimeMenu = menuItem.getItemId();
+
+            menuItem.setChecked(!menuItem.isChecked());
+        }
 
         switch (menuItem.getItemId()) {
             case R.id.menu_time_hour:
+                setUpAlerts(Time.hourAgo());
                 return true;
 
             case R.id.menu_time_day:
+                setUpAlerts(Time.dayAgo());
                 return true;
 
             case R.id.menu_time_week:
+                setUpAlerts(Time.weekAgo());
                 return true;
 
             case R.id.menu_time_month:
+                setUpAlerts(Time.monthAgo());
                 return true;
 
             case R.id.menu_time_year:
+                setUpAlerts(Time.yearAgo());
                 return true;
 
             default:
