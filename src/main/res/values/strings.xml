@@ -53,6 +53,12 @@
   <string name="menu_feedback">Help &amp; feedback</string>
   <string name="menu_resolve">Resolve</string>
   <string name="menu_acknowledge">Acknowledge</string>
+  <string name="menu_time">Time</string>
+  <string name="menu_time_hour">Hour</string>
+  <string name="menu_time_day">Day</string>
+  <string name="menu_time_week">Week</string>
+  <string name="menu_time_month">Month</string>
+  <string name="menu_time_year">Year</string>
 
   <string name="label_authorization_title">Authorization using a Hawkular server is necessary.</string>
   <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 2.</string>

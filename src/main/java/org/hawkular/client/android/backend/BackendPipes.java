@@ -52,6 +52,9 @@ final class BackendPipes {
 
         public static final String START = "start";
         public static final String FINISH = "end";
+
+        public static final String START_TIME = "startTime";
+        public static final String FINISH_TIME = "finishTime";
     }
 
     public static final class Headers {

@@ -30,7 +30,7 @@
   <android.support.design.widget.NavigationView
     android:id="@+id/navigation"
     auto:headerLayout="@layout/layout_drawer_header"
-    auto:menu="@menu/menu_drawer"
+    auto:menu="@menu/drawer_navigation"
     android:theme="@style/Theme.Hawkular.NavigationView"
     android:fitsSystemWindows="true"
     android:layout_gravity="left"

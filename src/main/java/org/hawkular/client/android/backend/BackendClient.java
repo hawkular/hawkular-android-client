@@ -154,8 +154,13 @@ public final class BackendClient {
         }
     }
 
-    public void getAlerts(@NonNull Callback<List<Alert>> callback) {
-        URI uri = Uris.getUri(BackendPipes.Paths.ALERTS);
+    public void getAlerts(@NonNull Date startTime, @NonNull Date finishTime,
+                          @NonNull Callback<List<Alert>> callback) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(BackendPipes.Parameters.START_TIME, String.valueOf(startTime.getTime()));
+        parameters.put(BackendPipes.Parameters.FINISH_TIME, String.valueOf(finishTime.getTime()));
+
+        URI uri = Uris.getUri(BackendPipes.Paths.ALERTS, parameters);
 
         readPipe(BackendPipes.Names.ALERTS, uri, callback);
     }
