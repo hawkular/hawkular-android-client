@@ -25,7 +25,6 @@ import android.view.MenuItem;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Resource;
-import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 
@@ -59,13 +58,9 @@ public final class MetricsActivity extends AppCompatActivity {
     }
 
     private void setUpMetrics() {
-        Fragment fragment = Fragments.Builder.buildMetricsFragment(getTenant(), getEnvironment(), getResource());
+        Fragment fragment = Fragments.Builder.buildMetricsFragment(getEnvironment(), getResource());
 
         Fragments.Operator.of(this).set(R.id.layout_container, fragment);
-    }
-
-    private Tenant getTenant() {
-        return getIntent().getParcelableExtra(Intents.Extras.TENANT);
     }
 
     private Environment getEnvironment() {

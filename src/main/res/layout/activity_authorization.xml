@@ -94,7 +94,7 @@
         <EditText
           android:id="@+id/edit_port"
           android:hint="@string/hint_port"
-          android:inputType="numberDecimal"
+          android:inputType="number"
           android:singleLine="true"
           android:layout_weight="1"
           android:layout_width="0dp"

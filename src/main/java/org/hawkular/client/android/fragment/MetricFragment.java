@@ -27,7 +27,6 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
-import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
@@ -94,7 +93,7 @@ public final class MetricFragment extends Fragment {
             showProgress();
 
             BackendClient.of(this).getMetricData(
-                getTenant(), getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+                getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
         } else {
             setUpMetricData(metricData);
         }
@@ -113,10 +112,6 @@ public final class MetricFragment extends Fragment {
 
     private void showProgress() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
-    }
-
-    private Tenant getTenant() {
-        return getArguments().getParcelable(Fragments.Arguments.TENANT);
     }
 
     private Metric getMetric() {

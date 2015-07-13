@@ -16,17 +16,16 @@
  */
 package org.hawkular.client.android.util;
 
-import android.content.Context;
 import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-import android.text.format.DateUtils;
 
-public final class Formatter {
-    private Formatter() {
+public final class Ports {
+    private Ports() {
     }
 
-    @NonNull
-    public static String formatTime(@NonNull Context context, @IntRange(from = 0) long millis) {
-        return DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME);
+    public static final int MINIMUM = 0;
+    public static final int MAXIMUM = 0xFFFF;
+
+    public static boolean isCorrect(@IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port) {
+        return (port >= MINIMUM) && (port <= MAXIMUM);
     }
 }

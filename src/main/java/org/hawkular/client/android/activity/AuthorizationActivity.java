@@ -31,6 +31,7 @@ import org.hawkular.client.android.backend.BackendEndpoints;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Android;
+import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Preferences;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
@@ -74,24 +75,19 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private void setUpDefaults() {
         if (Android.isDebugging()) {
-            hostEdit.setText(BackendEndpoints.Community.HOST);
-            portEdit.setText(BackendEndpoints.Community.PORT);
+            hostEdit.setText(BackendEndpoints.Demo.HOST);
+            portEdit.setText(BackendEndpoints.Demo.PORT);
         }
     }
 
     @OnClick(R.id.button_authorize)
     public void setUpAuthorization() {
-        if (getHost().isEmpty()) {
+        if (!isHostAvailable()) {
             showError(hostEdit, R.string.error_empty);
             return;
         }
 
-        if (getPort().isEmpty()) {
-            showError(portEdit, R.string.error_empty);
-            return;
-        }
-
-        if (!isPortCorrectNumber()) {
+        if (isPortAvailable() && !isPortCorrect()) {
             showError(portEdit, R.string.error_authorization_port);
             return;
         }
@@ -99,17 +95,25 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
         setUpBackendAuthorization();
     }
 
+    private boolean isHostAvailable() {
+        return !getHost().isEmpty();
+    }
+
     private String getHost() {
         return hostEdit.getText().toString().trim();
+    }
+
+    private boolean isPortAvailable() {
+        return !getPort().isEmpty();
     }
 
     private String getPort() {
         return portEdit.getText().toString().trim();
     }
 
-    private boolean isPortCorrectNumber() {
+    private boolean isPortCorrect() {
         try {
-            return getPortNumber() >= 0;
+            return Ports.isCorrect(getPortNumber());
         } catch (NumberFormatException e) {
             return false;
         }
@@ -125,7 +129,11 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private void setUpBackendAuthorization() {
         try {
-            BackendClient.of(this).configureBackend(getHost(), Integer.valueOf(getPort()));
+            if (!isPortAvailable()) {
+                BackendClient.of(this).configureAuthorization(getHost());
+            } else {
+                BackendClient.of(this).configureAuthorization(getHost(), getPortNumber());
+            }
 
             BackendClient.of(this).deauthorize();
             BackendClient.of(this).authorize(this, this);
@@ -142,7 +150,21 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     @Override
     public void onSuccess(String authorization) {
+        setUpBackendCommunication(getMockTenant());
+
         setUpTenant();
+    }
+
+    private void setUpBackendCommunication(Tenant tenant) {
+        if (!isPortAvailable()) {
+            BackendClient.of(this).configureCommunication(getHost(), tenant);
+        } else {
+            BackendClient.of(this).configureCommunication(getHost(), getPortNumber(), tenant);
+        }
+    }
+
+    private Tenant getMockTenant() {
+        return new Tenant("");
     }
 
     @Override
@@ -157,7 +179,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
     }
 
     private void setUpEnvironment(Tenant tenant) {
-        BackendClient.of(this).getEnvironments(tenant, new EnvironmentsCallback(tenant));
+        BackendClient.of(this).getEnvironments(new EnvironmentsCallback(tenant));
     }
 
     private void succeed(Tenant tenant, Environment environment) {
@@ -169,7 +191,10 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private void saveBackendPreferences(Tenant tenant, Environment environment) {
         Preferences.of(this).host().set(getHost());
-        Preferences.of(this).port().set(getPortNumber());
+        if (isPortAvailable()) {
+            Preferences.of(this).port().set(getPortNumber());
+        }
+
         Preferences.of(this).tenant().set(tenant.getId());
         Preferences.of(this).environment().set(environment.getId());
     }
@@ -187,6 +212,8 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
             Tenant tenant = tenants.get(0);
 
             AuthorizationActivity activity = (AuthorizationActivity) getActivity();
+
+            activity.setUpBackendCommunication(tenant);
 
             activity.setUpEnvironment(tenant);
         }

@@ -18,6 +18,7 @@ package org.hawkular.client.android.backend;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.backend.model.Alert;
@@ -26,6 +27,7 @@ import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Tenant;
+import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Uris;
 import org.hawkular.client.android.util.Urls;
 import org.jboss.aerogear.android.authorization.AuthorizationManager;
@@ -34,11 +36,14 @@ import org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthorizationConfig
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.core.ReadFilter;
 import org.jboss.aerogear.android.pipe.LoaderPipe;
+import org.jboss.aerogear.android.pipe.PipeConfiguration;
 import org.jboss.aerogear.android.pipe.PipeManager;
+import org.jboss.aerogear.android.pipe.module.PipeModule;
 import org.jboss.aerogear.android.pipe.rest.RestfulPipeConfiguration;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -63,11 +68,17 @@ public final class BackendClient {
         this.fragment = fragment;
     }
 
-    public void configureBackend(@NonNull String serverHost, int port) {
-        URL backendUrl = Urls.getUrl(serverHost, port);
+    public void configureAuthorization(@NonNull String host) {
+        URL backendUrl = Urls.getUrl(host);
 
         configureAuthorization(backendUrl);
-        configurePipes(backendUrl);
+    }
+
+    public void configureAuthorization(@NonNull String host,
+                                       @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port) {
+        URL backendUrl = Urls.getUrl(host, port);
+
+        configureAuthorization(backendUrl);
     }
 
     private void configureAuthorization(URL backendUrl) {
@@ -82,24 +93,53 @@ public final class BackendClient {
             .asModule();
     }
 
-    private void configurePipes(URL backendUrl) {
-        configurePipe(BackendPipes.Names.ALERTS, backendUrl, BackendPipes.Roots.ALERTS, Alert.class);
-        configurePipe(BackendPipes.Names.TENANTS, backendUrl, BackendPipes.Roots.INVENTORY, Tenant.class);
-        configurePipe(BackendPipes.Names.ENVIRONMENTS, backendUrl, BackendPipes.Roots.INVENTORY, Environment.class);
-        configurePipe(BackendPipes.Names.RESOURCES, backendUrl, BackendPipes.Roots.INVENTORY, Resource.class);
-        configurePipe(BackendPipes.Names.METRICS, backendUrl, BackendPipes.Roots.INVENTORY, Metric.class);
-        configurePipe(BackendPipes.Names.METRIC_DATA, backendUrl, BackendPipes.Roots.METRICS, MetricData.class);
+    public void configureCommunication(@NonNull String host, @NonNull Tenant tenant) {
+        URL backendUrl = Urls.getUrl(host);
+
+        configurePipes(backendUrl, tenant);
     }
 
-    private <T> void configurePipe(String pipeName, URL pipeUrl, String pipePath, Class<T> pipeClass) {
-        PipeManager.config(pipeName, RestfulPipeConfiguration.class)
-            .module(getAuthorizationModule())
-            .withUrl(Urls.getUrl(pipeUrl, pipePath))
-            .forClass(pipeClass);
+    public void configureCommunication(@NonNull String host,
+                                       @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port,
+                                       @NonNull Tenant tenant) {
+        URL backendUrl = Urls.getUrl(host, port);
+
+        configurePipes(backendUrl, tenant);
+    }
+
+    private void configurePipes(URL backendUrl, Tenant tenant) {
+        URL pipeUrl = Urls.getUrl(backendUrl, BackendPipes.Paths.ROOT);
+
+        List<PipeModule> pipeModules = Arrays.asList(
+            getAuthorizationModule(),
+            getAccountModule(tenant));
+
+        configurePipe(BackendPipes.Names.ALERTS, pipeUrl, pipeModules, Alert.class);
+        configurePipe(BackendPipes.Names.TENANTS, pipeUrl, pipeModules, Tenant.class);
+        configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
+        configurePipe(BackendPipes.Names.RESOURCES, pipeUrl, pipeModules, Resource.class);
+        configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
+        configurePipe(BackendPipes.Names.METRIC_DATA, pipeUrl, pipeModules, MetricData.class);
     }
 
     private AuthzModule getAuthorizationModule() {
         return AuthorizationManager.getModule(BackendAuthorization.NAME);
+    }
+
+    private PipeModule getAccountModule(Tenant tenant) {
+        return new BackendAccountant(tenant);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> void configurePipe(String pipeName, URL pipeUrl, List<PipeModule> pipeModules, Class<T> pipeClass) {
+        PipeConfiguration pipeConfiguration = PipeManager.config(pipeName, RestfulPipeConfiguration.class)
+            .withUrl(pipeUrl);
+
+        for (PipeModule pipeModule : pipeModules) {
+            pipeConfiguration.module(pipeModule);
+        }
+
+        pipeConfiguration.forClass(pipeClass);
     }
 
     public void authorize(@NonNull Activity activity, @NonNull Callback<String> callback) {
@@ -107,13 +147,17 @@ public final class BackendClient {
     }
 
     public void deauthorize() {
-        if (getAuthorizationModule().hasCredentials()) {
-            getAuthorizationModule().deleteAccount();
+        AuthzModule authorizationModule = getAuthorizationModule();
+
+        if (authorizationModule.hasCredentials()) {
+            authorizationModule.deleteAccount();
         }
     }
 
     public void getAlerts(@NonNull Callback<List<Alert>> callback) {
-        readPipe(BackendPipes.Names.ALERTS, null, callback);
+        URI uri = Uris.getUri(BackendPipes.Paths.ALERTS);
+
+        readPipe(BackendPipes.Names.ALERTS, uri, callback);
     }
 
     public void getTenants(@NonNull Callback<List<Tenant>> callback) {
@@ -122,37 +166,34 @@ public final class BackendClient {
         readPipe(BackendPipes.Names.TENANTS, uri, callback);
     }
 
-    public void getEnvironments(@NonNull Tenant tenant,
-                                @NonNull Callback<List<Environment>> callback) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.ENVIRONMENTS, tenant.getId()));
+    public void getEnvironments(@NonNull Callback<List<Environment>> callback) {
+        URI uri = Uris.getUri(BackendPipes.Paths.ENVIRONMENTS);
 
         readPipe(BackendPipes.Names.ENVIRONMENTS, uri, callback);
     }
 
-    public void getResources(@NonNull Tenant tenant, @NonNull Environment environment,
+    public void getResources(@NonNull Environment environment,
                              @NonNull Callback<List<Resource>> callback) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.RESOURCES, tenant.getId(), environment.getId()));
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.RESOURCES, environment.getId()));
 
         readPipe(BackendPipes.Names.RESOURCES, uri, callback);
     }
 
-    public void getMetrics(@NonNull Tenant tenant, @NonNull Environment environment, @NonNull Resource resource,
+    public void getMetrics(@NonNull Environment environment, @NonNull Resource resource,
                            @NonNull Callback<List<Metric>> callback) {
-        URI uri = Uris.getUri(
-            String.format(BackendPipes.Paths.METRICS, tenant.getId(), environment.getId(), resource.getId()));
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRICS, environment.getId(), resource.getId()));
 
         readPipe(BackendPipes.Names.METRICS, uri, callback);
     }
 
-    public void getMetricData(@NonNull Tenant tenant, @NonNull Metric metric,
+    public void getMetricData(@NonNull Metric metric,
                               @NonNull Date startTime, @NonNull Date finishTime,
                               @NonNull Callback<List<MetricData>> callback) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTime()));
         parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
 
-        URI uri = Uris.getUri(
-            String.format(BackendPipes.Paths.METRIC_DATA, tenant.getId(), metric.getId()), parameters);
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA, metric.getId()), parameters);
 
         readPipe(BackendPipes.Names.METRIC_DATA, uri, callback);
     }

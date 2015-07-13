@@ -55,7 +55,7 @@
   <string name="menu_acknowledge">Acknowledge</string>
 
   <string name="label_authorization_title">Authorization using a Hawkular server is necessary.</string>
-  <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 1.</string>
+  <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 2.</string>
   <string name="label_authorization_description">Please provide the server location. The next step will require the credentials.</string>
 
 </resources>

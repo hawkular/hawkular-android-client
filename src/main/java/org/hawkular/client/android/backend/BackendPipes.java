@@ -32,24 +32,18 @@ final class BackendPipes {
         public static final String METRIC_DATA = "metric-data";
     }
 
-    public static final class Roots {
-        private Roots() {
-        }
-
-        public static final String ALERTS = "hawkular/alerts";
-        public static final String INVENTORY = "hawkular/inventory";
-        public static final String METRICS = "hawkular-metrics";
-    }
-
     public static final class Paths {
         private Paths() {
         }
 
-        public static final String TENANTS = "tenant";
-        public static final String ENVIRONMENTS = "%s/environments";
-        public static final String RESOURCES = "%s/%s/resources";
-        public static final String METRICS = "%s/%s/resources/%s/metrics";
-        public static final String METRIC_DATA = "%s/metrics/numeric/%s/data";
+        public static final String ROOT = "hawkular";
+
+        public static final String ALERTS = "alerts";
+        public static final String TENANTS = "inventory/tenant";
+        public static final String ENVIRONMENTS = "inventory/environments";
+        public static final String RESOURCES = "inventory/%s/resources";
+        public static final String METRICS = "inventory/%s/resources/%s/metrics";
+        public static final String METRIC_DATA = "metrics/gauges/%s/data";
     }
 
     public static final class Parameters {
@@ -58,5 +52,13 @@ final class BackendPipes {
 
         public static final String START = "start";
         public static final String FINISH = "end";
+    }
+
+    public static final class Headers {
+        private Headers() {
+        }
+
+        public static final String PERSONA = "Hawkular-Persona";
+        public static final String TENANT = "Hawkular-Tenant";
     }
 }

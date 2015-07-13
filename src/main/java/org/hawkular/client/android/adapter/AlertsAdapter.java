@@ -196,7 +196,7 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
 
         for (List<AlertEvaluation> alertEvaluations : alert.getEvaluations()) {
             for (AlertEvaluation alertEvaluation : alertEvaluations) {
-                alertValuesSum += alertEvaluation.getValue();
+                alertValuesSum += Double.valueOf(alertEvaluation.getValue());
 
                 alertValuesCount++;
             }

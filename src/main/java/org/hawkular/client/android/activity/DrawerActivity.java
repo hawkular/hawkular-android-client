@@ -34,6 +34,7 @@ import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
+import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Preferences;
 import org.jboss.aerogear.android.core.Callback;
 
@@ -98,14 +99,24 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         String backendHost = Preferences.of(this).host().get();
         int backendPort = Preferences.of(this).port().get();
 
-        if (backendHost.isEmpty() || backendPort == Preferences.Defaults.BACKEND_PORT) {
+        if (backendHost.isEmpty() && !Ports.isCorrect(backendPort)) {
             startAuthorizationActivity();
             return;
         }
 
-        BackendClient.of(this).configureBackend(backendHost, backendPort);
+        if (!Ports.isCorrect(backendPort)) {
+            BackendClient.of(this).configureAuthorization(backendHost);
+            BackendClient.of(this).configureCommunication(backendHost, getTenant());
+        } else {
+            BackendClient.of(this).configureAuthorization(backendHost, backendPort);
+            BackendClient.of(this).configureCommunication(backendHost, backendPort, getTenant());
+        }
 
         BackendClient.of(this).authorize(this, this);
+    }
+
+    private Tenant getTenant() {
+        return new Tenant(Preferences.of(this).tenant().get());
     }
 
     @Override
@@ -152,7 +163,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         }
 
         if (result == RESULT_OK) {
-            setUpNavigationDefaults();
+            setUpBackendClient();
         } else {
             finish();
         }
@@ -187,13 +198,9 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void showResourcesFragment() {
-        Fragment fragment = Fragments.Builder.buildResourcesFragment(getTenant(), getEnvironment());
+        Fragment fragment = Fragments.Builder.buildResourcesFragment(getEnvironment());
 
         Fragments.Operator.of(this).reset(R.id.layout_container, fragment);
-    }
-
-    private Tenant getTenant() {
-        return new Tenant(Preferences.of(this).tenant().get());
     }
 
     private Environment getEnvironment() {

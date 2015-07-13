@@ -24,7 +24,6 @@ import android.view.MenuItem;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.model.Metric;
-import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 
@@ -58,13 +57,9 @@ public final class MetricActivity extends AppCompatActivity {
     }
 
     private void setUpMetric() {
-        Fragment fragment = Fragments.Builder.buildMetricFragment(getTenant(), getMetric());
+        Fragment fragment = Fragments.Builder.buildMetricFragment(getMetric());
 
         Fragments.Operator.of(this).set(R.id.layout_container, fragment);
-    }
-
-    private Tenant getTenant() {
-        return getIntent().getParcelableExtra(Intents.Extras.TENANT);
     }
 
     private Metric getMetric() {

@@ -31,7 +31,6 @@ import org.hawkular.client.android.adapter.ResourcesAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Resource;
-import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
@@ -93,7 +92,7 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
         if (resources == null) {
             showProgress();
 
-            BackendClient.of(this).getResources(getTenant(), getEnvironment(), new ResourcesCallback());
+            BackendClient.of(this).getResources(getEnvironment(), new ResourcesCallback());
         } else {
             setUpResources(resources);
         }
@@ -103,22 +102,33 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
     }
 
-    private Tenant getTenant() {
-        return getArguments().getParcelable(Fragments.Arguments.TENANT);
-    }
-
     private Environment getEnvironment() {
         return getArguments().getParcelable(Fragments.Arguments.ENVIRONMENT);
     }
 
     private void setUpResources(List<Resource> resources) {
-        this.resources = new ArrayList<>(resources);
+        this.resources = new ArrayList<>(filterResources(resources));
 
         sortResources(this.resources);
 
         list.setAdapter(new ResourcesAdapter(getActivity(), this.resources));
 
         showList();
+    }
+
+    private List<Resource> filterResources(List<Resource> resources) {
+        // Filter resources without properties set.
+        // This is mostly a hack at this point because of not standardized properties.
+
+        List<Resource> filteredResources = new ArrayList<>();
+
+        for (Resource resource : resources) {
+            if ((resource.getProperties() != null) && (resource.getProperties().getUrl() != null)) {
+                filteredResources.add(resource);
+            }
+        }
+
+        return filteredResources;
     }
 
     private void sortResources(List<Resource> resources) {
@@ -149,7 +159,7 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
     }
 
     private void startMetricTypesActivity(Resource resource) {
-        Intent intent = Intents.Builder.of(getActivity()).buildMetricsIntent(getTenant(), getEnvironment(), resource);
+        Intent intent = Intents.Builder.of(getActivity()).buildMetricsIntent(getEnvironment(), resource);
         startActivity(intent);
     }
 
