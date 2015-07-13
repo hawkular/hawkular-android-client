@@ -40,5 +40,17 @@
   <string name="menu_acknowledge">Bestätigen</string>
   <string name="menu_feedback">Hilfe und Rückmeldung</string>
   <string name="menu_resolve">Klären</string>
+  <string name="menu_time_day">Tag</string>
+  <string name="menu_time_hour">Stunde</string>
+  <string name="menu_time_month">Monat</string>
+  <string name="menu_time_week">Woche</string>
+  <string name="menu_time_year">Jahr</string>
+  <string name="menu_time">Zeit</string>
+  <string name="label_authorization_description">Bitte geben Sie den Ort des Servers an. Im nächsten Schritt müssen Sie
+    die Zugangsdaten angeben.
+  </string>
+  <string name="label_authorization_title">Sie müssen sich am Hawkular-Server anmelden.</string>
+  <string name="label_authorization_support">Die unterstützte Hawkular-Version ist 1.0.0 Alpha 2.</string>
+  <string name="button_retry">Nochmals versuchen</string>
 
 </resources>
