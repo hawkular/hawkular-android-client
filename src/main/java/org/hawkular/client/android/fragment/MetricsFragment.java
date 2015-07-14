@@ -24,7 +24,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.hawkular.client.android.R;
@@ -47,11 +46,12 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import icepick.Icepick;
 import icepick.Icicle;
 import timber.log.Timber;
 
-public final class MetricsFragment extends Fragment implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public final class MetricsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.list)
     ListView list;
 
@@ -76,8 +76,6 @@ public final class MetricsFragment extends Fragment implements AdapterView.OnIte
 
         setUpBindings();
 
-        setUpList();
-
         setUpRefreshing();
 
         setUpMetrics();
@@ -89,10 +87,6 @@ public final class MetricsFragment extends Fragment implements AdapterView.OnIte
 
     private void setUpBindings() {
         ButterKnife.bind(this, getView());
-    }
-
-    private void setUpList() {
-        list.setOnItemClickListener(this);
     }
 
     private void setUpRefreshing() {
@@ -164,8 +158,8 @@ public final class MetricsFragment extends Fragment implements AdapterView.OnIte
         ViewDirector.of(this).using(R.id.animator).show(R.id.error);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+    @OnItemClick(R.id.list)
+    public void setUpMetric(int position) {
         Metric metric = getMetricsAdapter().getItem(position);
 
         startMetricActivity(metric);

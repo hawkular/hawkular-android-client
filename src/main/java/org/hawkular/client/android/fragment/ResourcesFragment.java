@@ -24,7 +24,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.hawkular.client.android.R;
@@ -46,11 +45,12 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import icepick.Icepick;
 import icepick.Icicle;
 import timber.log.Timber;
 
-public final class ResourcesFragment extends Fragment implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public final class ResourcesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.list)
     ListView list;
 
@@ -75,8 +75,6 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
 
         setUpBindings();
 
-        setUpList();
-
         setUpRefreshing();
 
         setUpResources();
@@ -88,10 +86,6 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
 
     private void setUpBindings() {
         ButterKnife.bind(this, getView());
-    }
-
-    private void setUpList() {
-        list.setOnItemClickListener(this);
     }
 
     private void setUpRefreshing() {
@@ -174,8 +168,8 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
         ViewDirector.of(this).using(R.id.animator).show(R.id.error);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+    @OnItemClick(R.id.list)
+    public void setUpResource(int position) {
         Resource resource = getResourcesAdapter().getItem(position);
 
         startMetricTypesActivity(resource);
