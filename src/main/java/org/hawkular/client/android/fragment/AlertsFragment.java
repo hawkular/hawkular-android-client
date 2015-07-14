@@ -52,7 +52,8 @@ import icepick.Icepick;
 import icepick.Icicle;
 import timber.log.Timber;
 
-public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertMenuListener, SwipeRefreshLayout.OnRefreshListener {
+public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertMenuListener,
+    SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.list)
     ListView list;
 

@@ -20,8 +20,7 @@ import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.R;
 
-public final class ColorSchemer
-{
+public final class ColorSchemer {
     private ColorSchemer() {
     }
 
