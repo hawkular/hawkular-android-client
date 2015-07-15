@@ -19,6 +19,7 @@ package org.hawkular.client.android.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
+import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
@@ -54,9 +56,12 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 import timber.log.Timber;
 
-public final class MetricFragment extends Fragment {
+public final class MetricFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     @Bind(R.id.chart)
     LineChartView chart;
+
+    @Bind(R.id.content)
+    SwipeRefreshLayout contentLayout;
 
     @Icicle
     @Nullable
@@ -76,6 +81,8 @@ public final class MetricFragment extends Fragment {
 
         setUpBindings();
 
+        setUpRefreshing();
+
         setUpMetricData();
     }
 
@@ -85,6 +92,21 @@ public final class MetricFragment extends Fragment {
 
     private void setUpBindings() {
         ButterKnife.bind(this, getView());
+    }
+
+    private void setUpRefreshing() {
+        contentLayout.setOnRefreshListener(this);
+        contentLayout.setColorSchemeResources(ColorSchemer.getScheme());
+    }
+
+    @Override
+    public void onRefresh() {
+        setUpMetricDataRefreshed();
+    }
+
+    private void setUpMetricDataRefreshed() {
+        BackendClient.of(this).getMetricData(
+            getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
     }
 
     @OnClick(R.id.button_retry)
@@ -158,6 +180,8 @@ public final class MetricFragment extends Fragment {
         chart.setMaximumViewport(chartViewport);
         chart.setCurrentViewport(chartViewport);
 
+        hideRefreshing();
+
         showChart();
     }
 
@@ -165,8 +189,12 @@ public final class MetricFragment extends Fragment {
         Collections.sort(metricDataList, new MetricDataComparator());
     }
 
+    private void hideRefreshing() {
+        contentLayout.setRefreshing(false);
+    }
+
     private void showChart() {
-        ViewDirector.of(this).using(R.id.animator).show(R.id.chart);
+        ViewDirector.of(this).using(R.id.animator).show(R.id.content);
     }
 
     private void showMessage() {

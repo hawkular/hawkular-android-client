@@ -20,10 +20,10 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.hawkular.client.android.R;
@@ -31,6 +31,7 @@ import org.hawkular.client.android.adapter.ResourcesAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
@@ -44,13 +45,17 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import icepick.Icepick;
 import icepick.Icicle;
 import timber.log.Timber;
 
-public final class ResourcesFragment extends Fragment implements AdapterView.OnItemClickListener {
+public final class ResourcesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.list)
     ListView list;
+
+    @Bind(R.id.content)
+    SwipeRefreshLayout contentLayout;
 
     @Icicle
     @Nullable
@@ -70,7 +75,7 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
 
         setUpBindings();
 
-        setUpList();
+        setUpRefreshing();
 
         setUpResources();
     }
@@ -83,8 +88,18 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
         ButterKnife.bind(this, getView());
     }
 
-    private void setUpList() {
-        list.setOnItemClickListener(this);
+    private void setUpRefreshing() {
+        contentLayout.setOnRefreshListener(this);
+        contentLayout.setColorSchemeResources(ColorSchemer.getScheme());
+    }
+
+    @Override
+    public void onRefresh() {
+        setUpResourcesRefreshed();
+    }
+
+    private void setUpResourcesRefreshed() {
+        BackendClient.of(this).getResources(getEnvironment(), new ResourcesCallback());
     }
 
     @OnClick(R.id.button_retry)
@@ -113,6 +128,8 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
 
         list.setAdapter(new ResourcesAdapter(getActivity(), this.resources));
 
+        hideRefreshing();
+
         showList();
     }
 
@@ -135,8 +152,12 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
         Collections.sort(resources, new ResourcesComparator());
     }
 
+    private void hideRefreshing() {
+        contentLayout.setRefreshing(false);
+    }
+
     private void showList() {
-        ViewDirector.of(this).using(R.id.animator).show(R.id.list);
+        ViewDirector.of(this).using(R.id.animator).show(R.id.content);
     }
 
     private void showMessage() {
@@ -147,8 +168,8 @@ public final class ResourcesFragment extends Fragment implements AdapterView.OnI
         ViewDirector.of(this).using(R.id.animator).show(R.id.error);
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+    @OnItemClick(R.id.list)
+    public void setUpResource(int position) {
         Resource resource = getResourcesAdapter().getItem(position);
 
         startMetricTypesActivity(resource);

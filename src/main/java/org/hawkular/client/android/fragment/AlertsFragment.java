@@ -20,6 +20,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +34,7 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.adapter.AlertsAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Alert;
+import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Time;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
@@ -50,9 +52,13 @@ import icepick.Icepick;
 import icepick.Icicle;
 import timber.log.Timber;
 
-public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertMenuListener {
+public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertMenuListener,
+    SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.list)
     ListView list;
+
+    @Bind(R.id.content)
+    SwipeRefreshLayout contentLayout;
 
     @Icicle
     @Nullable
@@ -79,6 +85,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         setUpList();
         setUpMenu();
 
+        setUpRefreshing();
+
         setUpAlerts();
     }
 
@@ -98,21 +106,61 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         setHasOptionsMenu(true);
     }
 
+    private void setUpRefreshing() {
+        contentLayout.setOnRefreshListener(this);
+        contentLayout.setColorSchemeResources(ColorSchemer.getScheme());
+    }
+
+    @Override
+    public void onRefresh() {
+        setUpAlertsRefreshed();
+    }
+
     @OnClick(R.id.button_retry)
     public void setUpAlerts() {
         if (alerts == null) {
             alertsTimeMenu = R.id.menu_time_hour;
 
-            setUpAlerts(Time.hourAgo());
+            setUpAlertsForced();
         } else {
             setUpAlerts(alerts);
         }
     }
 
-    private void setUpAlerts(Date startTime) {
+    private void setUpAlertsRefreshed() {
+        setUpAlerts(getAlertsTime());
+    }
+
+    private void setUpAlertsForced() {
         showProgress();
 
+        setUpAlerts(getAlertsTime());
+    }
+
+    private void setUpAlerts(Date startTime) {
         BackendClient.of(this).getAlerts(startTime, Time.current(), new AlertsCallback());
+    }
+
+    private Date getAlertsTime() {
+        switch (alertsTimeMenu) {
+            case R.id.menu_time_hour:
+                return Time.hourAgo();
+
+            case R.id.menu_time_day:
+                return Time.dayAgo();
+
+            case R.id.menu_time_week:
+                return Time.weekAgo();
+
+            case R.id.menu_time_month:
+                return Time.monthAgo();
+
+            case R.id.menu_time_year:
+                return Time.yearAgo();
+
+            default:
+                return Time.hourAgo();
+        }
     }
 
     private void showProgress() {
@@ -125,6 +173,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         sortAlerts(this.alerts);
 
         list.setAdapter(new AlertsAdapter(getActivity(), this, this.alerts));
+
+        hideRefreshing();
 
         showList();
     }
@@ -180,31 +230,17 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        if (menuItem.getItemId() != R.id.menu_time) {
-            alertsTimeMenu = menuItem.getItemId();
-
-            menuItem.setChecked(!menuItem.isChecked());
-        }
-
         switch (menuItem.getItemId()) {
             case R.id.menu_time_hour:
-                setUpAlerts(Time.hourAgo());
-                return true;
-
             case R.id.menu_time_day:
-                setUpAlerts(Time.dayAgo());
-                return true;
-
             case R.id.menu_time_week:
-                setUpAlerts(Time.weekAgo());
-                return true;
-
             case R.id.menu_time_month:
-                setUpAlerts(Time.monthAgo());
-                return true;
-
             case R.id.menu_time_year:
-                setUpAlerts(Time.yearAgo());
+                alertsTimeMenu = menuItem.getItemId();
+                menuItem.setChecked(true);
+
+                setUpAlertsForced();
+
                 return true;
 
             default:
@@ -212,8 +248,12 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         }
     }
 
+    private void hideRefreshing() {
+        contentLayout.setRefreshing(false);
+    }
+
     private void showList() {
-        ViewDirector.of(this).using(R.id.animator).show(R.id.list);
+        ViewDirector.of(this).using(R.id.animator).show(R.id.content);
     }
 
     private void showMessage() {
