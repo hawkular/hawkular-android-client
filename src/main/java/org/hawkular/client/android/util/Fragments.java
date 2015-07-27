@@ -30,6 +30,7 @@ import org.hawkular.client.android.fragment.AlertsFragment;
 import org.hawkular.client.android.fragment.MetricFragment;
 import org.hawkular.client.android.fragment.MetricsFragment;
 import org.hawkular.client.android.fragment.ResourcesFragment;
+import org.hawkular.client.android.fragment.SettingsFragment;
 
 public final class Fragments {
     private Fragments() {
@@ -88,6 +89,11 @@ public final class Fragments {
         @NonNull
         public static Fragment buildAlertsFragment() {
             return new AlertsFragment();
+        }
+
+        @NonNull
+        public static Fragment buildSettingsFragment() {
+            return new SettingsFragment();
         }
     }
 

@@ -26,6 +26,7 @@
   <string name="title_metric">Metric</string>
   <string name="title_metrics">Metrics</string>
   <string name="title_resources">Resources</string>
+  <string name="title_settings">Settings</string>
 
   <string name="button_authorize">Authorize</string>
   <string name="button_retry">Try again</string>
@@ -63,6 +64,10 @@
   <string name="label_authorization_description">Please provide the server location. The next step will require the credentials.</string>
   <string name="label_authorization_title">Authorization using a Hawkular server is necessary.</string>
   <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 2.</string>
+
+  <string name="settings_category_account">Account</string>
+  <string name="settings_description_account_sign_out">Don’t you forget about me!</string>
+  <string name="settings_title_account_sign_out">Sign Out</string>
 
 </resources>
 

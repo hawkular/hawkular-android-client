@@ -25,6 +25,7 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.activity.AuthorizationActivity;
 import org.hawkular.client.android.activity.MetricActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
+import org.hawkular.client.android.activity.SettingsActivity;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
@@ -88,6 +89,11 @@ public final class Intents {
             intent.putExtra(Extras.METRIC, metric);
 
             return intent;
+        }
+
+        @NonNull
+        public Intent buildSettingsIntent() {
+            return new Intent(context, SettingsActivity.class);
         }
 
         @NonNull
