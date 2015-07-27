@@ -17,20 +17,77 @@
     limitations under the License.
 
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:background="?attr/colorPrimaryDark"
-  android:padding="16dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:theme="@style/ThemeOverlay.AppCompat.Dark"
   android:layout_width="match_parent"
-  android:layout_height="168dp">
+  android:layout_height="wrap_content">
 
-  <TextView
-    android:id="@+id/text_title"
-    android:text="@string/application_name"
-    android:textSize="14sp"
-    android:textColor="@android:color/white"
-    android:fontFamily="sans-serif-medium"
-    android:layout_alignParentBottom="true"
+  <FrameLayout
+    android:id="@+id/layout_header"
+    android:background="?attr/colorPrimaryDark"
+    android:foreground="?attr/selectableItemBackground"
+    android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="168dp">
 
-</RelativeLayout>
+    <LinearLayout
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      android:layout_gravity="bottom"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+          android:id="@+id/text_host"
+          style="@style/Theme.Hawkular.NavigationView.Item"
+          android:text="@string/application_name"
+          android:textColor="@android:color/white"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"/>
+
+        <Space
+          android:layout_width="match_parent"
+          android:layout_height="4dp"/>
+
+        <TextView
+          android:id="@+id/text_persona"
+          android:textColor="@android:color/white"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"/>
+
+      </LinearLayout>
+
+      <ImageView
+        android:id="@+id/image_header"
+        android:src="@drawable/ic_expand"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+  </FrameLayout>
+
+  <LinearLayout
+    android:visibility="gone"
+    android:id="@+id/layout_accounts"
+    android:background="@color/background_context"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ListView
+      android:id="@+id/list_personas"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
+  </LinearLayout>
+
+</LinearLayout>

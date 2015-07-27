@@ -67,7 +67,7 @@ public final class PersonasAdapter extends BindableAdapter<Persona> {
     @NonNull
     @Override
     protected View newView(LayoutInflater inflater, ViewGroup viewContainer) {
-        View view = inflater.inflate(R.layout.layout_list_item, viewContainer, false);
+        View view = inflater.inflate(R.layout.layout_list_item_persona, viewContainer, false);
 
         view.setTag(new ViewHolder(view));
 

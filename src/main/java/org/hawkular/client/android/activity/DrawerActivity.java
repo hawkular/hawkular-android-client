@@ -26,20 +26,30 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.hawkular.client.android.R;
+import org.hawkular.client.android.adapter.PersonasAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
+import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Preferences;
+import org.hawkular.client.android.util.ViewTransformer;
+import org.hawkular.client.android.util.Views;
 import org.jboss.aerogear.android.core.Callback;
+
+import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.Icicle;
 
@@ -54,8 +64,20 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     @Bind(R.id.navigation)
     NavigationView navigation;
 
-    @Bind(R.id.text_title)
-    TextView navigationTitle;
+    @Bind(R.id.text_host)
+    TextView host;
+
+    @Bind(R.id.text_persona)
+    TextView persona;
+
+    @Bind(R.id.list_personas)
+    ListView personas;
+
+    @Bind(R.id.layout_accounts)
+    ViewGroup accounts;
+
+    @Bind(R.id.image_header)
+    ImageView motionIcon;
 
     @Icicle
     @IdRes
@@ -133,15 +155,21 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
             showNavigation(currentNavigationId);
         }
 
-        setUpNavigationTitle();
+        setUpNavigationHeader();
     }
 
     private void showNavigation(@IdRes int navigationId) {
         navigation.getMenu().findItem(navigationId).setChecked(true);
     }
 
-    private void setUpNavigationTitle() {
-        navigationTitle.setText(Preferences.of(this).host().get());
+    private void setUpNavigationHeader() {
+        host.setText(Preferences.of(this).host().get());
+        persona.setText(Preferences.of(this).tenant().get());
+
+        personas.setAdapter(new PersonasAdapter(this, Arrays.asList(
+            new Persona("Boston"),
+            new Persona("Washington"),
+            new Persona("Indianapolis"))));
     }
 
     @Override
@@ -192,7 +220,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
         menuItem.setChecked(true);
 
-        drawer.closeDrawers();
+        closeDrawers();
 
         return true;
     }
@@ -218,16 +246,35 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         startActivity(intent);
     }
 
+    private void closeDrawers() {
+        drawer.closeDrawers();
+    }
+
+    @OnClick(R.id.layout_header)
+    public void showPersonas() {
+        if (Views.isVisible(accounts)) {
+            ViewTransformer.of(accounts).collapse();
+        } else {
+            ViewTransformer.of(accounts).expand();
+        }
+
+        ViewTransformer.of(motionIcon).rotate();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case android.R.id.home:
-                drawer.openDrawer(GravityCompat.START);
+                openDrawer();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(menuItem);
         }
+    }
+
+    private void openDrawer() {
+        drawer.openDrawer(GravityCompat.START);
     }
 
     @Override

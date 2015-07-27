@@ -18,12 +18,17 @@ package org.hawkular.client.android.backend.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 
 public final class Persona implements Parcelable {
     @SerializedName("name")
     private String name;
+
+    public Persona(@NonNull String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;
