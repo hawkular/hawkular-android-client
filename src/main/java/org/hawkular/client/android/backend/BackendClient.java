@@ -25,6 +25,7 @@ import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
+import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Ports;
@@ -175,6 +176,12 @@ public final class BackendClient {
         URI uri = Uris.getUri(BackendPipes.Paths.ENVIRONMENTS);
 
         readPipe(BackendPipes.Names.ENVIRONMENTS, uri, callback);
+    }
+
+    public void getPersonas(@NonNull Callback<List<Persona>> callback) {
+        URI uri = Uris.getUri(BackendPipes.Paths.PERSONAS);
+
+        readPipe(BackendPipes.Names.PERSONAS, uri, callback);
     }
 
     public void getResources(@NonNull Environment environment,
