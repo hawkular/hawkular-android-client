@@ -24,6 +24,7 @@ import android.view.View;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.util.Cookies;
 import org.hawkular.client.android.util.Preferences;
 
 import butterknife.BindString;
@@ -79,6 +80,9 @@ public final class SettingsFragment extends PreferenceFragment implements Prefer
         Preferences.of(activity).environment().delete();
 
         BackendClient.of(this).deauthorize();
+
+        // https://issues.jboss.org/browse/AGDROID-485
+        Cookies.clear();
 
         activity.setResult(Activity.RESULT_OK);
         activity.finish();

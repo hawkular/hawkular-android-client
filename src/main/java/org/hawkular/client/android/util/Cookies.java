@@ -16,26 +16,28 @@
  */
 package org.hawkular.client.android.util;
 
-import android.os.Build;
+import android.annotation.TargetApi;
+import android.webkit.CookieManager;
 
-import org.hawkular.client.android.BuildConfig;
+public final class Cookies {
+    private Cookies() {
+    }
 
-public final class Android {
-    public static class Versions {
-        private Versions() {
+    public static void clear() {
+        if (Android.isLollipopOrLater()) {
+            clearNewWay();
+        } else {
+            clearOldWay();
         }
-
-        public static final int TARGET = Build.VERSION_CODES.LOLLIPOP_MR1;
     }
 
-    private Android() {
+    @TargetApi(Android.Versions.TARGET)
+    private static void clearNewWay() {
+        CookieManager.getInstance().removeAllCookies(null);
     }
 
-    public static boolean isDebugging() {
-        return BuildConfig.DEBUG;
-    }
-
-    public static boolean isLollipopOrLater() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    @SuppressWarnings("deprecated")
+    private static void clearOldWay() {
+        CookieManager.getInstance().removeAllCookie();
     }
 }
