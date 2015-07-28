@@ -36,7 +36,7 @@ public final class Cookies {
         CookieManager.getInstance().removeAllCookies(null);
     }
 
-    @SuppressWarnings("deprecated")
+    @SuppressWarnings("deprecation")
     private static void clearOldWay() {
         CookieManager.getInstance().removeAllCookie();
     }
