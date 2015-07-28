@@ -48,6 +48,7 @@ public final class Intents {
         }
 
         public static final int AUTHORIZATION = 42;
+        public static final int DEAUTHORIZATION = 24;
     }
 
     private static final class Uris {

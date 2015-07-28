@@ -19,6 +19,6 @@
 -->
 <resources>
 
-  <string name="settings_key_account" translatable="false">sign_out</string>
+  <string name="settings_key_account_sign_out" translatable="false">sign_out</string>
 
 </resources>

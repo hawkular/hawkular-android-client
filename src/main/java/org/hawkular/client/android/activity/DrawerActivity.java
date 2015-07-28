@@ -16,6 +16,7 @@
  */
 package org.hawkular.client.android.activity;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -250,14 +251,18 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     protected void onActivityResult(int request, int result, Intent intent) {
         super.onActivityResult(request, result, intent);
 
-        if (request != Intents.Requests.AUTHORIZATION) {
-            return;
+        if (request == Intents.Requests.AUTHORIZATION) {
+            if (result == Activity.RESULT_OK) {
+                setUpBackendClient();
+            } else {
+                finish();
+            }
         }
 
-        if (result == RESULT_OK) {
-            setUpBackendClient();
-        } else {
-            finish();
+        if (request == Intents.Requests.DEAUTHORIZATION) {
+            if (result == Activity.RESULT_OK) {
+                setUpBackendClient();
+            }
         }
     }
 
@@ -311,7 +316,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     private void startSettingsActivity() {
         Intent intent = Intents.Builder.of(this).buildSettingsIntent();
-        startActivity(intent);
+        startActivityForResult(intent, Intents.Requests.DEAUTHORIZATION);
     }
 
     private void startFeedbackActivity() {

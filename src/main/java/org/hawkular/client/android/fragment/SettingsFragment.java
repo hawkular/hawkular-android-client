@@ -16,18 +16,21 @@
  */
 package org.hawkular.client.android.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.view.View;
 
 import org.hawkular.client.android.R;
+import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.util.Preferences;
 
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
 public final class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
-    @BindString(R.string.settings_key_account)
+    @BindString(R.string.settings_key_account_sign_out)
     String accountKey;
 
     @Override
@@ -67,7 +70,18 @@ public final class SettingsFragment extends PreferenceFragment implements Prefer
     }
 
     private void tearDownAuthorization() {
-        getActivity().finish();
+        Activity activity = getActivity();
+
+        Preferences.of(activity).host().delete();
+        Preferences.of(activity).port().delete();
+        Preferences.of(activity).personaId().delete();
+        Preferences.of(activity).personaName().delete();
+        Preferences.of(activity).environment().delete();
+
+        BackendClient.of(this).deauthorize();
+
+        activity.setResult(Activity.RESULT_OK);
+        activity.finish();
     }
 
     @Override

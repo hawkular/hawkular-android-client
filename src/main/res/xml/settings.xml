@@ -23,7 +23,7 @@
     android:title="@string/settings_category_account">
 
     <Preference
-      android:key="@string/settings_key_account"
+      android:key="@string/settings_key_account_sign_out"
       android:title="@string/settings_title_account_sign_out"
       android:summary="@string/settings_description_account_sign_out"/>
 
