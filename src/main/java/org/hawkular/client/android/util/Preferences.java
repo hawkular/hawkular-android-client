@@ -37,7 +37,8 @@ public final class Preferences {
 
         public static final String BACKEND_HOST = "host";
         public static final String BACKEND_PORT = "port";
-        public static final String BACKEND_TENANT = "tenant";
+        public static final String BACKEND_PERSONA_ID = "persona-id";
+        public static final String BACKEND_PERSONA_NAME = "persona-name";
         public static final String BACKEND_ENVIRONMENT = "environment";
     }
 
@@ -70,8 +71,13 @@ public final class Preferences {
     }
 
     @NonNull
-    public StringPreference tenant() {
-        return new StringPreference(serverPreferences, Keys.BACKEND_TENANT);
+    public StringPreference personaId() {
+        return new StringPreference(serverPreferences, Keys.BACKEND_PERSONA_ID);
+    }
+
+    @NonNull
+    public StringPreference personaName() {
+        return new StringPreference(serverPreferences, Keys.BACKEND_PERSONA_NAME);
     }
 
     @NonNull

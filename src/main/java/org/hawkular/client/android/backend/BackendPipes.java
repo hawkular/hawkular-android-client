@@ -27,6 +27,7 @@ final class BackendPipes {
         public static final String ALERTS = "alerts";
         public static final String TENANTS = "tenants";
         public static final String ENVIRONMENTS = "environments";
+        public static final String PERSONA = "persona";
         public static final String PERSONAS = "personas";
         public static final String RESOURCES = "resources";
         public static final String METRICS = "metrics";
@@ -42,6 +43,7 @@ final class BackendPipes {
         public static final String ALERTS = "alerts";
         public static final String TENANTS = "inventory/tenant";
         public static final String ENVIRONMENTS = "inventory/environments";
+        public static final String PERSONA = "hawkular-accounts/personas/current";
         public static final String PERSONAS = "hawkular-accounts/personas";
         public static final String RESOURCES = "inventory/%s/resources";
         public static final String METRICS = "inventory/%s/resources/%s/metrics";

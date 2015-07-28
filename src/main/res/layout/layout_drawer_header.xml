@@ -75,7 +75,7 @@
 
   </FrameLayout>
 
-  <LinearLayout
+  <FrameLayout
     android:visibility="gone"
     android:id="@+id/layout_accounts"
     android:background="@color/background_context"
@@ -89,6 +89,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"/>
 
-  </LinearLayout>
+  </FrameLayout>
 
 </LinearLayout>

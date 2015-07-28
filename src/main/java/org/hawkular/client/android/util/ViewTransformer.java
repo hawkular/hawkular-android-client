@@ -87,6 +87,22 @@ public final class ViewTransformer implements ValueAnimator.AnimatorUpdateListen
         animator.start();
     }
 
+    public void show() {
+        Animator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0, 1);
+        animator.setInterpolator(new FastOutSlowInInterpolator());
+        animator.setDuration(Durations.MEDIUM);
+
+        animator.start();
+    }
+
+    public void hide() {
+        Animator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 1, 0);
+        animator.setInterpolator(new FastOutSlowInInterpolator());
+        animator.setDuration(Durations.MEDIUM);
+
+        animator.start();
+    }
+
     @NonNull
     @Override
     public String toString() {

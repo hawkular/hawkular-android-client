@@ -36,7 +36,6 @@ import org.hawkular.client.android.adapter.PersonasAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Persona;
-import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Ports;
@@ -44,14 +43,18 @@ import org.hawkular.client.android.util.Preferences;
 import org.hawkular.client.android.util.ViewTransformer;
 import org.hawkular.client.android.util.Views;
 import org.jboss.aerogear.android.core.Callback;
+import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import icepick.Icepick;
 import icepick.Icicle;
+import timber.log.Timber;
 
 public final class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
     Callback<String> {
@@ -118,6 +121,10 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void setUpBackendClient() {
+        setUpBackendClient(getPersona());
+    }
+
+    private void setUpBackendClient(Persona persona) {
         String backendHost = Preferences.of(this).host().get();
         int backendPort = Preferences.of(this).port().get();
 
@@ -128,17 +135,19 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
         if (!Ports.isCorrect(backendPort)) {
             BackendClient.of(this).configureAuthorization(backendHost);
-            BackendClient.of(this).configureCommunication(backendHost, getTenant());
+            BackendClient.of(this).configureCommunication(backendHost, persona);
         } else {
             BackendClient.of(this).configureAuthorization(backendHost, backendPort);
-            BackendClient.of(this).configureCommunication(backendHost, backendPort, getTenant());
+            BackendClient.of(this).configureCommunication(backendHost, backendPort, persona);
         }
 
         BackendClient.of(this).authorize(this, this);
     }
 
-    private Tenant getTenant() {
-        return new Tenant(Preferences.of(this).tenant().get());
+    private Persona getPersona() {
+        return new Persona(
+            Preferences.of(this).personaId().get(),
+            Preferences.of(this).personaName().get());
     }
 
     @Override
@@ -164,18 +173,67 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     private void setUpNavigationHeader() {
         host.setText(Preferences.of(this).host().get());
-        persona.setText(Preferences.of(this).tenant().get());
+        persona.setText(Preferences.of(this).personaName().get());
 
-        personas.setAdapter(new PersonasAdapter(this, Arrays.asList(
-            new Persona("Boston"),
-            new Persona("Washington"),
-            new Persona("Indianapolis"))));
+        setUpPersonas();
+    }
 
+    private void setUpPersonas() {
+        BackendClient.of(this).getPersonas(new PersonasCallback());
+    }
+
+    private void setUpPersonas(List<Persona> personasList) {
+        personas.setAdapter(new PersonasAdapter(this, personasList));
+
+        setUpPersonasList();
+        setUpPersonasAction();
+    }
+
+    private void setUpPersonasList() {
         ViewGroup.LayoutParams personasParams = personas.getLayoutParams();
         personasParams.height = Views.measureHeight(personas);
 
         personas.setLayoutParams(personasParams);
         personas.requestLayout();
+    }
+
+    private void setUpPersonasAction() {
+        if (arePersonasAvailable()) {
+            showPersonasAction();
+        } else {
+            hidePersonasAction();
+        }
+    }
+
+    private static final class PersonasCallback extends AbstractActivityCallback<List<Persona>> {
+        @Override
+        public void onSuccess(List<Persona> personas) {
+            getDrawerActivity().setUpPersonas(personas);
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            Timber.d(e, "Personas fetching failed.");
+
+            getDrawerActivity().setUpPersonas(new ArrayList<Persona>());
+        }
+
+        private DrawerActivity getDrawerActivity() {
+            return (DrawerActivity) getActivity();
+        }
+    }
+
+    @OnItemClick(R.id.list_personas)
+    public void setUpPersona(int personaPosition) {
+        Persona persona = getPersonasAdapter().getItem(personaPosition);
+
+        setUpBackendClient(persona);
+
+        hidePersonas();
+    }
+
+    private PersonasAdapter getPersonasAdapter() {
+        return (PersonasAdapter) personas.getAdapter();
     }
 
     @Override
@@ -266,14 +324,40 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     @OnClick(R.id.layout_header)
-    public void showPersonas() {
-        if (Views.isVisible(accounts)) {
-            ViewTransformer.of(accounts).collapse();
-        } else {
-            ViewTransformer.of(accounts).expand();
+    public void triggerPersonas() {
+        if (!arePersonasAvailable()) {
+            return;
         }
 
+        if (Views.isVisible(accounts)) {
+            hidePersonas();
+        } else {
+            showPersonas();
+        }
+    }
+
+    private boolean arePersonasAvailable() {
+        return (getPersonasAdapter() != null) && (getPersonasAdapter().getCount() > 1);
+    }
+
+    private void showPersonas() {
+        ViewTransformer.of(accounts).expand();
+
         ViewTransformer.of(motionIcon).rotate();
+    }
+
+    private void hidePersonas() {
+        ViewTransformer.of(accounts).collapse();
+
+        ViewTransformer.of(motionIcon).rotate();
+    }
+
+    private void showPersonasAction() {
+        ViewTransformer.of(motionIcon).show();
+    }
+
+    private void hidePersonasAction() {
+        ViewTransformer.of(motionIcon).hide();
     }
 
     @Override
