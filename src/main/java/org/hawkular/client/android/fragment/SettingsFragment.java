@@ -19,10 +19,12 @@ package org.hawkular.client.android.fragment;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.view.View;
 
 import org.hawkular.client.android.R;
 
 import butterknife.BindString;
+import butterknife.ButterKnife;
 
 public final class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
     @BindString(R.string.settings_key_account)
@@ -32,9 +34,19 @@ public final class SettingsFragment extends PreferenceFragment implements Prefer
     public void onCreate(Bundle state) {
         super.onCreate(state);
 
+        setUpBindings();
+
         setUpSettings();
 
         setUpListeners();
+    }
+
+    private void setUpBindings() {
+        ButterKnife.bind(this, getParentView());
+    }
+
+    private View getParentView() {
+        return getActivity().getWindow().getDecorView();
     }
 
     private void setUpSettings() {
@@ -56,5 +68,16 @@ public final class SettingsFragment extends PreferenceFragment implements Prefer
 
     private void tearDownAuthorization() {
         getActivity().finish();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        tearDownBindings();
+    }
+
+    private void tearDownBindings() {
+        ButterKnife.unbind(this);
     }
 }
