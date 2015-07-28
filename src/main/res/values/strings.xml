@@ -66,7 +66,7 @@
   <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 2.</string>
 
   <string name="settings_category_account">Account</string>
-  <string name="settings_description_account_sign_out">Don’t you forget about me!</string>
+  <string name="settings_description_account_sign_out">Remove account and start from scratch.</string>
   <string name="settings_title_account_sign_out">Sign Out</string>
 
 </resources>
