@@ -18,6 +18,8 @@ package org.hawkular.client.android.util;
 
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 public final class Views {
     private Views() {
@@ -33,5 +35,16 @@ public final class Views {
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
 
         return view.getMeasuredHeight();
+    }
+
+    public static int measureHeight(@NonNull ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+
+        int listItemViewHeight = listAdapter.getView(0, null, listView).getMeasuredHeight();
+        int listDividerViewHeight = listView.getDividerHeight();
+
+        int listItemsCount = listAdapter.getCount();
+
+        return listItemViewHeight * listItemsCount + listDividerViewHeight * (listItemsCount - 1);
     }
 }

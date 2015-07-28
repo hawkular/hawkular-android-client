@@ -170,6 +170,12 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
             new Persona("Boston"),
             new Persona("Washington"),
             new Persona("Indianapolis"))));
+
+        ViewGroup.LayoutParams personasParams = personas.getLayoutParams();
+        personasParams.height = Views.measureHeight(personas);
+
+        personas.setLayoutParams(personasParams);
+        personas.requestLayout();
     }
 
     @Override

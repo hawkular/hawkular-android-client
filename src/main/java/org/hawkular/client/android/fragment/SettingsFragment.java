@@ -22,10 +22,10 @@ import android.preference.PreferenceFragment;
 
 import org.hawkular.client.android.R;
 
-import butterknife.Bind;
+import butterknife.BindString;
 
 public final class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
-    @Bind(R.string.settings_key_account)
+    @BindString(R.string.settings_key_account)
     String accountKey;
 
     @Override
