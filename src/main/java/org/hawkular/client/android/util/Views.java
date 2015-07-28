@@ -40,11 +40,22 @@ public final class Views {
     public static int measureHeight(@NonNull ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
 
-        int listItemViewHeight = listAdapter.getView(0, null, listView).getMeasuredHeight();
-        int listDividerViewHeight = listView.getDividerHeight();
+        if (listAdapter == null) {
+            return 0;
+        }
 
         int listItemsCount = listAdapter.getCount();
 
-        return listItemViewHeight * listItemsCount + listDividerViewHeight * (listItemsCount - 1);
+        int listItemViewsHeight = 0;
+
+        for (int listItemViewPosition = 0; listItemViewPosition < listItemsCount; listItemViewPosition++) {
+            View listItemView = listAdapter.getView(listItemViewPosition, null, listView);
+
+            listItemViewsHeight += Views.measureHeight(listItemView);
+        }
+
+        int listDividerViewsHeight = listView.getDividerHeight() * (listItemsCount - 1);
+
+        return listItemViewsHeight + listDividerViewsHeight;
     }
 }
