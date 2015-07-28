@@ -23,11 +23,18 @@ import android.support.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 
 public final class Persona implements Parcelable {
+    @SerializedName("id")
+    private String id;
+
     @SerializedName("name")
     private String name;
 
     public Persona(@NonNull String name) {
         this.name = name;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {
@@ -47,11 +54,13 @@ public final class Persona implements Parcelable {
     };
 
     private Persona(Parcel parcel) {
+        this.id = parcel.readString();
         this.name = parcel.readString();
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(id);
         parcel.writeString(name);
     }
 

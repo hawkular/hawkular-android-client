@@ -118,6 +118,7 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.ALERTS, pipeUrl, pipeModules, Alert.class);
         configurePipe(BackendPipes.Names.TENANTS, pipeUrl, pipeModules, Tenant.class);
         configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
+        configurePipe(BackendPipes.Names.PERSONAS, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
         configurePipe(BackendPipes.Names.METRIC_DATA, pipeUrl, pipeModules, MetricData.class);

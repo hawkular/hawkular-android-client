@@ -42,7 +42,7 @@ final class BackendPipes {
         public static final String ALERTS = "alerts";
         public static final String TENANTS = "inventory/tenant";
         public static final String ENVIRONMENTS = "inventory/environments";
-        public static final String PERSONAS = "/hawkular-accounts/personas";
+        public static final String PERSONAS = "hawkular-accounts/personas";
         public static final String RESOURCES = "inventory/%s/resources";
         public static final String METRICS = "inventory/%s/resources/%s/metrics";
         public static final String METRIC_DATA = "metrics/gauges/%s/data";
