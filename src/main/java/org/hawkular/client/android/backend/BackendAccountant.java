@@ -18,7 +18,7 @@ package org.hawkular.client.android.backend;
 
 import android.support.annotation.NonNull;
 
-import org.hawkular.client.android.backend.model.Tenant;
+import org.hawkular.client.android.backend.model.Persona;
 import org.jboss.aerogear.android.pipe.http.HttpException;
 import org.jboss.aerogear.android.pipe.module.ModuleFields;
 import org.jboss.aerogear.android.pipe.module.PipeModule;
@@ -26,18 +26,18 @@ import org.jboss.aerogear.android.pipe.module.PipeModule;
 import java.net.URI;
 
 final class BackendAccountant implements PipeModule {
-    private final Tenant tenant;
+    private final Persona persona;
 
-    public BackendAccountant(@NonNull Tenant tenant) {
-        this.tenant = tenant;
+    public BackendAccountant(@NonNull Persona persona) {
+        this.persona = persona;
     }
 
     @Override
     public ModuleFields loadModule(URI uri, String method, byte[] contents) {
         ModuleFields fields = new ModuleFields();
 
-        fields.addHeader(BackendPipes.Headers.PERSONA, tenant.getId());
-        fields.addHeader(BackendPipes.Headers.TENANT, tenant.getId());
+        fields.addHeader(BackendPipes.Headers.PERSONA, persona.getId());
+        fields.addHeader(BackendPipes.Headers.TENANT, persona.getId());
 
         return fields;
     }

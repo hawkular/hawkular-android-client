@@ -29,7 +29,7 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.BackendEndpoints;
 import org.hawkular.client.android.backend.model.Environment;
-import org.hawkular.client.android.backend.model.Tenant;
+import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.util.Android;
 import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Preferences;
@@ -150,21 +150,21 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     @Override
     public void onSuccess(String authorization) {
-        setUpBackendCommunication(getMockTenant());
+        setUpBackendCommunication(getMockPersona());
 
-        setUpTenant();
+        setUpPersona();
     }
 
-    private void setUpBackendCommunication(Tenant tenant) {
+    private void setUpBackendCommunication(Persona persona) {
         if (!isPortAvailable()) {
-            BackendClient.of(this).configureCommunication(getHost(), tenant);
+            BackendClient.of(this).configureCommunication(getHost(), persona);
         } else {
-            BackendClient.of(this).configureCommunication(getHost(), getPortNumber(), tenant);
+            BackendClient.of(this).configureCommunication(getHost(), getPortNumber(), persona);
         }
     }
 
-    private Tenant getMockTenant() {
-        return new Tenant("");
+    private Persona getMockPersona() {
+        return new Persona("", "");
     }
 
     @Override
@@ -174,61 +174,62 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
         showError(R.string.error_general);
     }
 
-    private void setUpTenant() {
-        BackendClient.of(this).getTenants(new TenantsCallback());
+    private void setUpPersona() {
+        BackendClient.of(this).getPersona(new PersonasCallback());
     }
 
-    private void setUpEnvironment(Tenant tenant) {
-        BackendClient.of(this).getEnvironments(new EnvironmentsCallback(tenant));
+    private void setUpEnvironment(Persona persona) {
+        BackendClient.of(this).getEnvironments(new EnvironmentsCallback(persona));
     }
 
-    private void succeed(Tenant tenant, Environment environment) {
-        saveBackendPreferences(tenant, environment);
+    private void succeed(Persona persona, Environment environment) {
+        saveBackendPreferences(persona, environment);
 
         setResult(Activity.RESULT_OK);
         finish();
     }
 
-    private void saveBackendPreferences(Tenant tenant, Environment environment) {
+    private void saveBackendPreferences(Persona persona, Environment environment) {
         Preferences.of(this).host().set(getHost());
         if (isPortAvailable()) {
             Preferences.of(this).port().set(getPortNumber());
         }
 
-        Preferences.of(this).tenant().set(tenant.getId());
+        Preferences.of(this).personaId().set(persona.getId());
+        Preferences.of(this).personaName().set(persona.getName());
+
         Preferences.of(this).environment().set(environment.getId());
     }
 
-    private static final class TenantsCallback extends AbstractActivityCallback<List<Tenant>> {
+    private static final class PersonasCallback extends AbstractActivityCallback<List<Persona>> {
         @Override
-        public void onSuccess(List<Tenant> tenants) {
-            if (tenants.isEmpty()) {
-                Timber.d("Tenants list is empty, this should not happen.");
-                return;
+        public void onSuccess(List<Persona> personas) {
+            if (personas.isEmpty()) {
+                Timber.d("Personas list it empty, this should not happen.");
             }
 
             // This is a potentially dangerous action.
             // AeroGear does not support single item fetching.
-            Tenant tenant = tenants.get(0);
+            Persona persona = personas.get(0);
 
             AuthorizationActivity activity = (AuthorizationActivity) getActivity();
 
-            activity.setUpBackendCommunication(tenant);
+            activity.setUpBackendCommunication(persona);
 
-            activity.setUpEnvironment(tenant);
+            activity.setUpEnvironment(persona);
         }
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d(e, "Tenants fetching failed.");
+            Timber.d(e, "Personas fetching failed.");
         }
     }
 
     private static final class EnvironmentsCallback extends AbstractActivityCallback<List<Environment>> {
-        private final Tenant tenant;
+        private final Persona persona;
 
-        public EnvironmentsCallback(@NonNull Tenant tenant) {
-            this.tenant = tenant;
+        public EnvironmentsCallback(@NonNull Persona persona) {
+            this.persona = persona;
         }
 
         @Override
@@ -244,7 +245,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
             AuthorizationActivity activity = (AuthorizationActivity) getActivity();
 
-            activity.succeed(tenant, environment);
+            activity.succeed(persona, environment);
         }
 
         @Override

@@ -21,8 +21,9 @@
 
   <color name="background_primary">#f44336</color>
   <color name="background_primary_dark">#d32f2f</color>
-  <color name="background_accent">@color/background_primary</color>
   <color name="background_secondary">#ffca28</color>
+  <color name="background_accent">@color/background_primary</color>
+  <color name="background_context">#424242</color>
 
   <color name="background_divider">#1e000000</color>
   <color name="background_window">#fafafa</color>

@@ -25,6 +25,7 @@ import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
+import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.util.Ports;
@@ -93,30 +94,32 @@ public final class BackendClient {
             .asModule();
     }
 
-    public void configureCommunication(@NonNull String host, @NonNull Tenant tenant) {
+    public void configureCommunication(@NonNull String host, @NonNull Persona persona) {
         URL backendUrl = Urls.getUrl(host);
 
-        configurePipes(backendUrl, tenant);
+        configurePipes(backendUrl, persona);
     }
 
     public void configureCommunication(@NonNull String host,
                                        @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port,
-                                       @NonNull Tenant tenant) {
+                                       @NonNull Persona persona) {
         URL backendUrl = Urls.getUrl(host, port);
 
-        configurePipes(backendUrl, tenant);
+        configurePipes(backendUrl, persona);
     }
 
-    private void configurePipes(URL backendUrl, Tenant tenant) {
+    private void configurePipes(URL backendUrl, Persona persona) {
         URL pipeUrl = Urls.getUrl(backendUrl, BackendPipes.Paths.ROOT);
 
         List<PipeModule> pipeModules = Arrays.asList(
             getAuthorizationModule(),
-            getAccountModule(tenant));
+            getAccountModule(persona));
 
         configurePipe(BackendPipes.Names.ALERTS, pipeUrl, pipeModules, Alert.class);
         configurePipe(BackendPipes.Names.TENANTS, pipeUrl, pipeModules, Tenant.class);
         configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
+        configurePipe(BackendPipes.Names.PERSONA, backendUrl, pipeModules, Persona.class);
+        configurePipe(BackendPipes.Names.PERSONAS, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
         configurePipe(BackendPipes.Names.METRIC_DATA, pipeUrl, pipeModules, MetricData.class);
@@ -126,8 +129,8 @@ public final class BackendClient {
         return AuthorizationManager.getModule(BackendAuthorization.NAME);
     }
 
-    private PipeModule getAccountModule(Tenant tenant) {
-        return new BackendAccountant(tenant);
+    private PipeModule getAccountModule(Persona persona) {
+        return new BackendAccountant(persona);
     }
 
     @SuppressWarnings("unchecked")
@@ -175,6 +178,18 @@ public final class BackendClient {
         URI uri = Uris.getUri(BackendPipes.Paths.ENVIRONMENTS);
 
         readPipe(BackendPipes.Names.ENVIRONMENTS, uri, callback);
+    }
+
+    public void getPersona(@NonNull Callback<List<Persona>> callback) {
+        URI uri = Uris.getUri(BackendPipes.Paths.PERSONA);
+
+        readPipe(BackendPipes.Names.PERSONA, uri, callback);
+    }
+
+    public void getPersonas(@NonNull Callback<List<Persona>> callback) {
+        URI uri = Uris.getUri(BackendPipes.Paths.PERSONAS);
+
+        readPipe(BackendPipes.Names.PERSONAS, uri, callback);
     }
 
     public void getResources(@NonNull Environment environment,
