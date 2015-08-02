@@ -48,7 +48,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import icepick.Icepick;
-import icepick.Icicle;
+import icepick.State;
 import timber.log.Timber;
 
 public final class MetricsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -58,7 +58,7 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
     @Bind(R.id.content)
     SwipeRefreshLayout contentLayout;
 
-    @Icicle
+    @State
     @Nullable
     ArrayList<Metric> metrics;
 

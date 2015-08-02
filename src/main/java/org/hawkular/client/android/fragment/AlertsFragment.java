@@ -49,7 +49,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import icepick.Icepick;
-import icepick.Icicle;
+import icepick.State;
 import timber.log.Timber;
 
 public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertMenuListener,
@@ -60,11 +60,11 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     @Bind(R.id.content)
     SwipeRefreshLayout contentLayout;
 
-    @Icicle
+    @State
     @Nullable
     ArrayList<Alert> alerts;
 
-    @Icicle
+    @State
     @IdRes
     int alertsTimeMenu;
 

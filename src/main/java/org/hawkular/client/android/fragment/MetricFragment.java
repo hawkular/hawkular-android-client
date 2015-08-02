@@ -46,7 +46,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import icepick.Icepick;
-import icepick.Icicle;
+import icepick.State;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Line;
@@ -63,7 +63,7 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
     @Bind(R.id.content)
     SwipeRefreshLayout contentLayout;
 
-    @Icicle
+    @State
     @Nullable
     ArrayList<MetricData> metricData;
 

@@ -54,7 +54,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import icepick.Icepick;
-import icepick.Icicle;
+import icepick.State;
 import timber.log.Timber;
 
 public final class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
@@ -83,7 +83,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     @Bind(R.id.image_header)
     ImageView motionIcon;
 
-    @Icicle
+    @State
     @IdRes
     int currentNavigationId;
 
