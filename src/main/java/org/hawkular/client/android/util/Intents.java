@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.R;
+import org.hawkular.client.android.activity.AlertsActivity;
 import org.hawkular.client.android.activity.AuthorizationActivity;
 import org.hawkular.client.android.activity.MetricActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
@@ -73,6 +74,14 @@ public final class Intents {
         @NonNull
         public Intent buildAuthorizationIntent() {
             return new Intent(context, AuthorizationActivity.class);
+        }
+
+        @NonNull
+        public Intent buildAlertsIntent(@NonNull Resource resource) {
+            Intent intent = new Intent(context, AlertsActivity.class);
+            intent.putExtra(Extras.RESOURCE, resource);
+
+            return intent;
         }
 
         @NonNull

@@ -17,7 +17,6 @@
 package org.hawkular.client.android.fragment;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,9 +30,10 @@ import org.hawkular.client.android.adapter.ResourcesAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.event.Events;
+import org.hawkular.client.android.event.ResourceSelectedEvent;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Fragments;
-import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
@@ -172,16 +172,11 @@ public final class ResourcesFragment extends Fragment implements SwipeRefreshLay
     public void setUpResource(int position) {
         Resource resource = getResourcesAdapter().getItem(position);
 
-        startMetricTypesActivity(resource);
+        Events.getBus().post(new ResourceSelectedEvent(resource));
     }
 
     private ResourcesAdapter getResourcesAdapter() {
         return (ResourcesAdapter) list.getAdapter();
-    }
-
-    private void startMetricTypesActivity(Resource resource) {
-        Intent intent = Intents.Builder.of(getActivity()).buildMetricsIntent(getEnvironment(), resource);
-        startActivity(intent);
     }
 
     @Override
