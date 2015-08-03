@@ -28,6 +28,7 @@ import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Tenant;
+import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Uris;
 import org.hawkular.client.android.util.Urls;
@@ -44,6 +45,7 @@ import org.jboss.aerogear.android.pipe.rest.RestfulPipeConfiguration;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -123,6 +125,7 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
         configurePipe(BackendPipes.Names.METRIC_DATA, pipeUrl, pipeModules, MetricData.class);
+        configurePipe(BackendPipes.Names.TRIGGERS, pipeUrl, pipeModules, Trigger.class);
     }
 
     private AuthzModule getAuthorizationModule() {
@@ -157,15 +160,26 @@ public final class BackendClient {
         }
     }
 
-    public void getAlerts(@NonNull Date startTime, @NonNull Date finishTime,
+    public void getAlerts(@NonNull Date startTime, @NonNull Date finishTime, @NonNull List<Trigger> triggers,
                           @NonNull Callback<List<Alert>> callback) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(BackendPipes.Parameters.START_TIME, String.valueOf(startTime.getTime()));
         parameters.put(BackendPipes.Parameters.FINISH_TIME, String.valueOf(finishTime.getTime()));
+        parameters.put(BackendPipes.Parameters.TRIGGERS, Uris.getParameter(getTriggerIds(triggers)));
 
         URI uri = Uris.getUri(BackendPipes.Paths.ALERTS, parameters);
 
         readPipe(BackendPipes.Names.ALERTS, uri, callback);
+    }
+
+    private List<String> getTriggerIds(List<Trigger> triggers) {
+        List<String> triggerIds = new ArrayList<>(triggers.size());
+
+        for (Trigger trigger : triggers) {
+            triggerIds.add(trigger.getId());
+        }
+
+        return triggerIds;
     }
 
     public void getTenants(@NonNull Callback<List<Tenant>> callback) {
@@ -216,6 +230,12 @@ public final class BackendClient {
         URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA, metric.getId()), parameters);
 
         readPipe(BackendPipes.Names.METRIC_DATA, uri, callback);
+    }
+
+    public void getTriggers(@NonNull Callback<List<Trigger>> callback) {
+        URI uri = Uris.getUri(BackendPipes.Paths.TRIGGERS);
+
+        readPipe(BackendPipes.Names.TRIGGERS, uri, callback);
     }
 
     @SuppressWarnings("unchecked")

@@ -32,11 +32,16 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.squareup.otto.Subscribe;
+
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.adapter.PersonasAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Persona;
+import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.event.Events;
+import org.hawkular.client.android.event.ResourceSelectedEvent;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Ports;
@@ -158,7 +163,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     private void setUpNavigationDefaults() {
         if (currentNavigationId == 0) {
-            showNavigation(R.id.menu_resources);
+            showNavigation(R.id.menu_metrics);
 
             showResourcesFragment();
         } else {
@@ -269,14 +274,6 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.menu_resources:
-                showResourcesFragment();
-                break;
-
-            case R.id.menu_alerts:
-                showAlertsFragment();
-                break;
-
             case R.id.menu_settings:
                 startSettingsActivity();
                 break;
@@ -306,12 +303,6 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     private Environment getEnvironment() {
         return new Environment(Preferences.of(this).environment().get());
-    }
-
-    private void showAlertsFragment() {
-        Fragment fragment = Fragments.Builder.buildAlertsFragment();
-
-        Fragments.Operator.of(this).reset(R.id.layout_container, fragment);
     }
 
     private void startSettingsActivity() {
@@ -379,6 +370,45 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     private void openDrawer() {
         drawer.openDrawer(GravityCompat.START);
+    }
+
+    @Subscribe
+    public void onResourceSelected(ResourceSelectedEvent event) {
+        Resource resource = event.getResource();
+
+        if (areMetricsCurrentNavigation()) {
+            startMetricsActivity(resource);
+        } else {
+            startAlertsActivity(resource);
+        }
+    }
+
+    private boolean areMetricsCurrentNavigation() {
+        return navigation.getMenu().findItem(R.id.menu_metrics).isChecked();
+    }
+
+    private void startMetricsActivity(Resource resource) {
+        Intent intent = Intents.Builder.of(this).buildMetricsIntent(getEnvironment(), resource);
+        startActivity(intent);
+    }
+
+    private void startAlertsActivity(Resource resource) {
+        Intent intent = Intents.Builder.of(this).buildAlertsIntent(resource);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Events.getBus().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Events.getBus().unregister(this);
     }
 
     @Override

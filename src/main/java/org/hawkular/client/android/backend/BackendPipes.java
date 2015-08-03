@@ -32,6 +32,7 @@ final class BackendPipes {
         public static final String RESOURCES = "resources";
         public static final String METRICS = "metrics";
         public static final String METRIC_DATA = "metric-data";
+        public static final String TRIGGERS = "triggers";
     }
 
     public static final class Paths {
@@ -48,6 +49,7 @@ final class BackendPipes {
         public static final String RESOURCES = "inventory/%s/resources";
         public static final String METRICS = "inventory/%s/resources/%s/metrics";
         public static final String METRIC_DATA = "metrics/gauges/%s/data";
+        public static final String TRIGGERS = "alerts/triggers";
     }
 
     public static final class Parameters {
@@ -59,6 +61,8 @@ final class BackendPipes {
 
         public static final String START_TIME = "startTime";
         public static final String FINISH_TIME = "finishTime";
+
+        public static final String TRIGGERS = "triggerIds";
     }
 
     public static final class Headers {

@@ -18,9 +18,11 @@ package org.hawkular.client.android.util;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 public final class Uris {
@@ -60,5 +62,10 @@ public final class Uris {
         Uri uri = uriBuilder.build();
 
         return Uris.getUriFromString(uri.toString());
+    }
+
+    @NonNull
+    public static String getParameter(@NonNull List<String> parameters) {
+        return TextUtils.join(",", parameters);
     }
 }

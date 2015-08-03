@@ -34,7 +34,10 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.adapter.AlertsAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Alert;
+import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.util.ColorSchemer;
+import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Time;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
@@ -59,6 +62,10 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
 
     @Bind(R.id.content)
     SwipeRefreshLayout contentLayout;
+
+    @State
+    @Nullable
+    ArrayList<Trigger> triggers;
 
     @State
     @Nullable
@@ -87,7 +94,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
 
         setUpRefreshing();
 
-        setUpAlerts();
+        setUpAlertsUi();
     }
 
     private void setUpState(Bundle state) {
@@ -117,7 +124,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     @OnClick(R.id.button_retry)
-    public void setUpAlerts() {
+    public void setUpAlertsUi() {
         if (alerts == null) {
             alertsTimeMenu = R.id.menu_time_hour;
 
@@ -128,17 +135,29 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private void setUpAlertsRefreshed() {
-        setUpAlerts(getAlertsTime());
+        setUpAlerts();
     }
 
     private void setUpAlertsForced() {
         showProgress();
 
-        setUpAlerts(getAlertsTime());
+        setUpAlerts();
     }
 
-    private void setUpAlerts(Date startTime) {
-        BackendClient.of(this).getAlerts(startTime, Time.current(), new AlertsCallback());
+    private void setUpAlerts() {
+        if (!areTriggersAvailable()) {
+            setUpTriggers();
+        } else {
+            BackendClient.of(this).getAlerts(getAlertsTime(), Time.current(), triggers, new AlertsCallback());
+        }
+    }
+
+    private boolean areTriggersAvailable() {
+        return (triggers != null) && !triggers.isEmpty();
+    }
+
+    private void setUpTriggers() {
+        BackendClient.of(this).getTriggers(new TriggersCallback());
     }
 
     private Date getAlertsTime() {
@@ -165,6 +184,33 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
 
     private void showProgress() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
+    }
+
+    private void setUpAlertsTriggers(List<Trigger> triggers) {
+        this.triggers = new ArrayList<>(filterTriggers(triggers));
+
+        setUpAlerts();
+    }
+
+    private List<Trigger> filterTriggers(List<Trigger> triggers) {
+        // This is mostly a hack, as trigger usage at all, actually.
+        // Caused by a lack of API connecting Inventory and Alerts components.
+
+        Resource resource = getResource();
+
+        List<Trigger> filteredTriggers = new ArrayList<>();
+
+        for (Trigger trigger : triggers) {
+            if (trigger.getId().startsWith(resource.getId())) {
+                filteredTriggers.add(trigger);
+            }
+        }
+
+        return filteredTriggers;
+    }
+
+    private Resource getResource() {
+        return getArguments().getParcelable(Fragments.Arguments.RESOURCE);
     }
 
     private void setUpAlerts(List<Alert> alerts) {
@@ -284,6 +330,31 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
 
     private void tearDownBindings() {
         ButterKnife.unbind(this);
+    }
+
+    private static final class TriggersCallback extends AbstractFragmentCallback<List<Trigger>> {
+        @Override
+        public void onSuccess(List<Trigger> triggers) {
+            if (triggers.isEmpty()) {
+                Timber.d("Triggers list is empty, this should not happen.");
+
+                getAlertsFragment().showError();
+                return;
+            }
+
+            getAlertsFragment().setUpAlertsTriggers(triggers);
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            Timber.d(e, "Triggers fetching failed.");
+
+            getAlertsFragment().showError();
+        }
+
+        private AlertsFragment getAlertsFragment() {
+            return (AlertsFragment) getFragment();
+        }
     }
 
     private static final class AlertsCallback extends AbstractFragmentCallback<List<Alert>> {

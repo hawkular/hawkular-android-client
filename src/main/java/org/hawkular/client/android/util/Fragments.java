@@ -87,8 +87,15 @@ public final class Fragments {
         }
 
         @NonNull
-        public static Fragment buildAlertsFragment() {
-            return new AlertsFragment();
+        public static Fragment buildAlertsFragment(@NonNull Resource resource) {
+            Fragment fragment = new AlertsFragment();
+
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(Arguments.RESOURCE, resource);
+
+            fragment.setArguments(arguments);
+
+            return fragment;
         }
 
         @NonNull
