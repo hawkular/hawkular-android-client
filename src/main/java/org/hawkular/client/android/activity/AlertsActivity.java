@@ -23,7 +23,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import org.hawkular.client.android.R;
-import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
@@ -58,13 +57,9 @@ public final class AlertsActivity extends AppCompatActivity {
     }
 
     private void setUpAlerts() {
-        Fragment fragment = Fragments.Builder.buildAlertsFragment();
+        Fragment fragment = Fragments.Builder.buildAlertsFragment(getResource());
 
         Fragments.Operator.of(this).set(R.id.layout_container, fragment);
-    }
-
-    private Environment getEnvironment() {
-        return getIntent().getParcelableExtra(Intents.Extras.ENVIRONMENT);
     }
 
     private Resource getResource() {
