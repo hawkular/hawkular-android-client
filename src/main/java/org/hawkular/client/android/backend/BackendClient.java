@@ -22,6 +22,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.backend.model.Alert;
+import org.hawkular.client.android.backend.model.AlertStatus;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
@@ -118,6 +119,8 @@ public final class BackendClient {
             getAccountModule(persona));
 
         configurePipe(BackendPipes.Names.ALERTS, pipeUrl, pipeModules, Alert.class);
+        configurePipe(BackendPipes.Names.ALERT_ACKNOWLEDGE, pipeUrl, pipeModules, String.class);
+        configurePipe(BackendPipes.Names.ALERT_RESOLVE, pipeUrl, pipeModules, String.class);
         configurePipe(BackendPipes.Names.TENANTS, pipeUrl, pipeModules, Tenant.class);
         configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
         configurePipe(BackendPipes.Names.PERSONA, backendUrl, pipeModules, Persona.class);
@@ -166,6 +169,7 @@ public final class BackendClient {
         parameters.put(BackendPipes.Parameters.START_TIME, String.valueOf(startTime.getTime()));
         parameters.put(BackendPipes.Parameters.FINISH_TIME, String.valueOf(finishTime.getTime()));
         parameters.put(BackendPipes.Parameters.TRIGGERS, Uris.getParameter(getTriggerIds(triggers)));
+        parameters.put(BackendPipes.Parameters.STATUS, String.valueOf(AlertStatus.OPEN));
 
         URI uri = Uris.getUri(BackendPipes.Paths.ALERTS, parameters);
 
@@ -180,6 +184,20 @@ public final class BackendClient {
         }
 
         return triggerIds;
+    }
+
+    public void acknowledgeAlert(@NonNull Alert alert,
+                                 @NonNull Callback<List<String>> callback) {
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.ALERT_ACKNOWLEDGE, alert.getId()));
+
+        readPipe(BackendPipes.Names.ALERT_ACKNOWLEDGE, uri, callback);
+    }
+
+    public void resolveAlert(@NonNull Alert alert,
+                             @NonNull Callback<List<String>> callback) {
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.ALERT_RESOLVE, alert.getId()));
+
+        readPipe(BackendPipes.Names.ALERT_RESOLVE, uri, callback);
     }
 
     public void getTenants(@NonNull Callback<List<Tenant>> callback) {

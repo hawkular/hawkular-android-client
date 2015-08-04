@@ -21,55 +21,31 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+public enum AlertStatus implements Parcelable {
+    @SerializedName("OPEN")
+    OPEN,
 
-public final class Alert implements Parcelable {
-    @SerializedName("alertId")
-    private String id;
+    @SerializedName("ACKNOWLEDGED")
+    ACKNOWLEDGED,
 
-    @SerializedName("ctime")
-    private long timestamp;
+    @SerializedName("RESOLVED")
+    RESOLVED;
 
-    @SerializedName("evalSets")
-    private List<List<AlertEvaluation>> evaluations;
-
-    public String getId() {
-        return id;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public List<List<AlertEvaluation>> getEvaluations() {
-        return evaluations;
-    }
-
-    public static Creator<Alert> CREATOR = new Creator<Alert>() {
+    public static Creator<AlertStatus> CREATOR = new Creator<AlertStatus>() {
         @Override
-        public Alert createFromParcel(Parcel parcel) {
-            return new Alert(parcel);
+        public AlertStatus createFromParcel(Parcel parcel) {
+            return AlertStatus.valueOf(parcel.readString());
         }
 
         @Override
-        public Alert[] newArray(int size) {
-            return new Alert[size];
+        public AlertStatus[] newArray(int size) {
+            return new AlertStatus[size];
         }
     };
 
-    private Alert(Parcel parcel) {
-        this.id = parcel.readString();
-        this.timestamp = parcel.readLong();
-
-        parcel.readList(evaluations, List.class.getClassLoader());
-    }
-
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeString(id);
-        parcel.writeLong(timestamp);
-
-        parcel.writeList(evaluations);
+        parcel.writeString(name());
     }
 
     @Override

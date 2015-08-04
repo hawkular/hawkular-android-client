@@ -20,12 +20,21 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
 public final class Uris {
+    private static final class Charsets {
+        private Charsets() {
+        }
+
+        public static final String UTF_8 = "UTF-8";
+    }
+
     private Uris() {
     }
 
@@ -41,7 +50,7 @@ public final class Uris {
     @NonNull
     public static URI getUri(@NonNull String path) {
         Uri uri = new Uri.Builder()
-            .appendPath(path)
+            .appendPath(Uris.getEncodedParameter(path))
             .build();
 
         return Uris.getUriFromString(uri.toString());
@@ -67,5 +76,14 @@ public final class Uris {
     @NonNull
     public static String getParameter(@NonNull List<String> parameters) {
         return TextUtils.join(",", parameters);
+    }
+
+    @NonNull
+    public static String getEncodedParameter(@NonNull String parameter) {
+        try {
+            return URLEncoder.encode(parameter, Charsets.UTF_8);
+        } catch (UnsupportedEncodingException e) {
+            return parameter;
+        }
     }
 }

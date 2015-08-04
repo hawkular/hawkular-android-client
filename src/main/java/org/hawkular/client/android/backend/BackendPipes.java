@@ -25,6 +25,8 @@ final class BackendPipes {
         }
 
         public static final String ALERTS = "alerts";
+        public static final String ALERT_ACKNOWLEDGE = "alert-acknowledge";
+        public static final String ALERT_RESOLVE = "alert-resolve";
         public static final String TENANTS = "tenants";
         public static final String ENVIRONMENTS = "environments";
         public static final String PERSONA = "persona";
@@ -42,6 +44,8 @@ final class BackendPipes {
         public static final String ROOT = "hawkular";
 
         public static final String ALERTS = "alerts";
+        public static final String ALERT_ACKNOWLEDGE ="alerts/ack/%s";
+        public static final String ALERT_RESOLVE = "alerts/resolve/%s";
         public static final String TENANTS = "inventory/tenant";
         public static final String ENVIRONMENTS = "inventory/environments";
         public static final String PERSONA = "hawkular-accounts/personas/current";
@@ -63,6 +67,8 @@ final class BackendPipes {
         public static final String FINISH_TIME = "finishTime";
 
         public static final String TRIGGERS = "triggerIds";
+
+        public static final String STATUS = "statuses";
     }
 
     public static final class Headers {
