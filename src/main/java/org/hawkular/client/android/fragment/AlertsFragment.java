@@ -266,21 +266,6 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         return (AlertsAdapter) list.getAdapter();
     }
 
-    private static final class AlertActionCallback extends AbstractFragmentCallback<List<String>> {
-        @Override
-        public void onSuccess(List<String> result) {
-            getAlertsFragment().setUpAlertsRefreshed();
-        }
-
-        @Override
-        public void onFailure(Exception e) {
-        }
-
-        private AlertsFragment getAlertsFragment() {
-            return (AlertsFragment) getFragment();
-        }
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu, menuInflater);
@@ -393,6 +378,21 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
             Timber.d(e, "Alerts fetching failed.");
 
             getAlertsFragment().showError();
+        }
+
+        private AlertsFragment getAlertsFragment() {
+            return (AlertsFragment) getFragment();
+        }
+    }
+
+    private static final class AlertActionCallback extends AbstractFragmentCallback<List<String>> {
+        @Override
+        public void onSuccess(List<String> result) {
+            getAlertsFragment().setUpAlertsRefreshed();
+        }
+
+        @Override
+        public void onFailure(Exception e) {
         }
 
         private AlertsFragment getAlertsFragment() {

@@ -21,14 +21,14 @@ import android.support.annotation.NonNull;
 import com.squareup.otto.Bus;
 
 public final class Events {
-    private static final class EventsBusHolder {
-        public static final Bus BUS = new Bus();
-
-        private EventsBusHolder() {
-        }
+    private Events() {
     }
 
-    private Events() {
+    private static final class EventsBusHolder {
+        private EventsBusHolder() {
+        }
+
+        public static final Bus BUS = new Bus();
     }
 
     @NonNull

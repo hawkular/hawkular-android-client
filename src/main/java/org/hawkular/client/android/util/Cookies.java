@@ -25,19 +25,19 @@ public final class Cookies {
 
     public static void clear() {
         if (Android.isLollipopOrLater()) {
-            clearNewWay();
+            clearModernWay();
         } else {
-            clearOldWay();
+            clearLegacyWay();
         }
     }
 
     @TargetApi(Android.Versions.TARGET)
-    private static void clearNewWay() {
+    private static void clearModernWay() {
         CookieManager.getInstance().removeAllCookies(null);
     }
 
     @SuppressWarnings("deprecation")
-    private static void clearOldWay() {
+    private static void clearLegacyWay() {
         CookieManager.getInstance().removeAllCookie();
     }
 }

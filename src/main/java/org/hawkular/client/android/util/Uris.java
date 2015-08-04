@@ -28,14 +28,14 @@ import java.util.List;
 import java.util.Map;
 
 public final class Uris {
+    private Uris() {
+    }
+
     private static final class Charsets {
         private Charsets() {
         }
 
         public static final String UTF_8 = "UTF-8";
-    }
-
-    private Uris() {
     }
 
     @NonNull
@@ -79,7 +79,7 @@ public final class Uris {
     }
 
     @NonNull
-    public static String getEncodedParameter(@NonNull String parameter) {
+    private static String getEncodedParameter(@NonNull String parameter) {
         try {
             return URLEncoder.encode(parameter, Charsets.UTF_8);
         } catch (UnsupportedEncodingException e) {

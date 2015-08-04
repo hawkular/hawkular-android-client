@@ -82,11 +82,11 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     @Bind(R.id.list_personas)
     ListView personas;
 
-    @Bind(R.id.layout_accounts)
-    ViewGroup accounts;
+    @Bind(R.id.layout_personas)
+    ViewGroup personasLayout;
 
-    @Bind(R.id.image_header)
-    ImageView motionIcon;
+    @Bind(R.id.image_personas_action)
+    ImageView personasActionIcon;
 
     @State
     @IdRes
@@ -131,8 +131,8 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void setUpBackendClient(Persona persona) {
-        String backendHost = Preferences.of(this).host().get();
-        int backendPort = Preferences.of(this).port().get();
+        String backendHost = getBackendHost();
+        int backendPort = getBackendPort();
 
         if (backendHost.isEmpty() && !Ports.isCorrect(backendPort)) {
             startAuthorizationActivity();
@@ -148,6 +148,14 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         }
 
         BackendClient.of(this).authorize(this, this);
+    }
+
+    private String getBackendHost() {
+        return Preferences.of(this).host().get();
+    }
+
+    private int getBackendPort() {
+        return Preferences.of(this).port().get();
     }
 
     private Persona getPersona() {
@@ -177,9 +185,19 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         navigation.getMenu().findItem(navigationId).setChecked(true);
     }
 
+    private void showResourcesFragment() {
+        Fragment fragment = Fragments.Builder.buildResourcesFragment(getEnvironment());
+
+        Fragments.Operator.of(this).reset(R.id.layout_container, fragment);
+    }
+
+    private Environment getEnvironment() {
+        return new Environment(Preferences.of(this).environment().get());
+    }
+
     private void setUpNavigationHeader() {
-        host.setText(Preferences.of(this).host().get());
-        persona.setText(Preferences.of(this).personaName().get());
+        host.setText(getBackendHost());
+        persona.setText(getBackendPort());
 
         setUpPersonas();
     }
@@ -211,22 +229,20 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         }
     }
 
-    private static final class PersonasCallback extends AbstractActivityCallback<List<Persona>> {
-        @Override
-        public void onSuccess(List<Persona> personas) {
-            getDrawerActivity().setUpPersonas(personas);
-        }
+    private boolean arePersonasAvailable() {
+        return (getPersonasAdapter() != null) && (getPersonasAdapter().getCount() > 1);
+    }
 
-        @Override
-        public void onFailure(Exception e) {
-            Timber.d(e, "Personas fetching failed.");
+    private PersonasAdapter getPersonasAdapter() {
+        return (PersonasAdapter) personas.getAdapter();
+    }
 
-            getDrawerActivity().setUpPersonas(new ArrayList<Persona>());
-        }
+    private void showPersonasAction() {
+        ViewTransformer.of(personasActionIcon).show();
+    }
 
-        private DrawerActivity getDrawerActivity() {
-            return (DrawerActivity) getActivity();
-        }
+    private void hidePersonasAction() {
+        ViewTransformer.of(personasActionIcon).hide();
     }
 
     @OnItemClick(R.id.list_personas)
@@ -236,10 +252,6 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         setUpBackendClient(persona);
 
         hidePersonas();
-    }
-
-    private PersonasAdapter getPersonasAdapter() {
-        return (PersonasAdapter) personas.getAdapter();
     }
 
     @Override
@@ -295,16 +307,6 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         return true;
     }
 
-    private void showResourcesFragment() {
-        Fragment fragment = Fragments.Builder.buildResourcesFragment(getEnvironment());
-
-        Fragments.Operator.of(this).reset(R.id.layout_container, fragment);
-    }
-
-    private Environment getEnvironment() {
-        return new Environment(Preferences.of(this).environment().get());
-    }
-
     private void startSettingsActivity() {
         Intent intent = Intents.Builder.of(this).buildSettingsIntent();
         startActivityForResult(intent, Intents.Requests.DEAUTHORIZATION);
@@ -325,35 +327,23 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
             return;
         }
 
-        if (Views.isVisible(accounts)) {
+        if (Views.isVisible(personasLayout)) {
             hidePersonas();
         } else {
             showPersonas();
         }
     }
 
-    private boolean arePersonasAvailable() {
-        return (getPersonasAdapter() != null) && (getPersonasAdapter().getCount() > 1);
-    }
-
     private void showPersonas() {
-        ViewTransformer.of(accounts).expand();
+        ViewTransformer.of(personasLayout).expand();
 
-        ViewTransformer.of(motionIcon).rotate();
+        ViewTransformer.of(personasActionIcon).rotate();
     }
 
     private void hidePersonas() {
-        ViewTransformer.of(accounts).collapse();
+        ViewTransformer.of(personasLayout).collapse();
 
-        ViewTransformer.of(motionIcon).rotate();
-    }
-
-    private void showPersonasAction() {
-        ViewTransformer.of(motionIcon).show();
-    }
-
-    private void hidePersonasAction() {
-        ViewTransformer.of(motionIcon).hide();
+        ViewTransformer.of(personasActionIcon).rotate();
     }
 
     @Override
@@ -420,5 +410,23 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     private void tearDownState(Bundle state) {
         Icepick.saveInstanceState(this, state);
+    }
+
+    private static final class PersonasCallback extends AbstractActivityCallback<List<Persona>> {
+        @Override
+        public void onSuccess(List<Persona> personas) {
+            getDrawerActivity().setUpPersonas(personas);
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            Timber.d(e, "Personas fetching failed.");
+
+            getDrawerActivity().setUpPersonas(new ArrayList<Persona>());
+        }
+
+        private DrawerActivity getDrawerActivity() {
+            return (DrawerActivity) getActivity();
+        }
     }
 }

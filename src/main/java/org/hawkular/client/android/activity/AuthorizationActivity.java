@@ -209,7 +209,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
             }
 
             // This is a potentially dangerous action.
-            // AeroGear does not support single item fetching.
+            // Unfortunately AeroGear does not support single item fetching.
             Persona persona = personas.get(0);
 
             AuthorizationActivity activity = (AuthorizationActivity) getActivity();
@@ -240,7 +240,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
             }
 
             // This is a potentially dangerous action.
-            // The first environment is picked and used as main, this should change in the future.
+            // The first environment is picked and used everywhere, this should change in the future.
             Environment environment = environments.get(0);
 
             AuthorizationActivity activity = (AuthorizationActivity) getActivity();

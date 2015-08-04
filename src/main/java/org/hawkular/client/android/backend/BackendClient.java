@@ -28,7 +28,6 @@ import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
-import org.hawkular.client.android.backend.model.Tenant;
 import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Uris;
@@ -116,18 +115,17 @@ public final class BackendClient {
 
         List<PipeModule> pipeModules = Arrays.asList(
             getAuthorizationModule(),
-            getAccountModule(persona));
+            getPersonnelModule(persona));
 
         configurePipe(BackendPipes.Names.ALERTS, pipeUrl, pipeModules, Alert.class);
         configurePipe(BackendPipes.Names.ALERT_ACKNOWLEDGE, pipeUrl, pipeModules, String.class);
         configurePipe(BackendPipes.Names.ALERT_RESOLVE, pipeUrl, pipeModules, String.class);
-        configurePipe(BackendPipes.Names.TENANTS, pipeUrl, pipeModules, Tenant.class);
         configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
+        configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
+        configurePipe(BackendPipes.Names.METRIC_DATA, pipeUrl, pipeModules, MetricData.class);
         configurePipe(BackendPipes.Names.PERSONA, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.PERSONAS, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.RESOURCES, pipeUrl, pipeModules, Resource.class);
-        configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
-        configurePipe(BackendPipes.Names.METRIC_DATA, pipeUrl, pipeModules, MetricData.class);
         configurePipe(BackendPipes.Names.TRIGGERS, pipeUrl, pipeModules, Trigger.class);
     }
 
@@ -135,8 +133,8 @@ public final class BackendClient {
         return AuthorizationManager.getModule(BackendAuthorization.NAME);
     }
 
-    private PipeModule getAccountModule(Persona persona) {
-        return new BackendAccountant(persona);
+    private PipeModule getPersonnelModule(Persona persona) {
+        return new BackendPersonnel(persona);
     }
 
     @SuppressWarnings("unchecked")
@@ -169,7 +167,7 @@ public final class BackendClient {
         parameters.put(BackendPipes.Parameters.START_TIME, String.valueOf(startTime.getTime()));
         parameters.put(BackendPipes.Parameters.FINISH_TIME, String.valueOf(finishTime.getTime()));
         parameters.put(BackendPipes.Parameters.TRIGGERS, Uris.getParameter(getTriggerIds(triggers)));
-        parameters.put(BackendPipes.Parameters.STATUS, String.valueOf(AlertStatus.OPEN));
+        parameters.put(BackendPipes.Parameters.STATUSES, String.valueOf(AlertStatus.OPEN));
 
         URI uri = Uris.getUri(BackendPipes.Paths.ALERTS, parameters);
 
@@ -200,35 +198,10 @@ public final class BackendClient {
         readPipe(BackendPipes.Names.ALERT_RESOLVE, uri, callback);
     }
 
-    public void getTenants(@NonNull Callback<List<Tenant>> callback) {
-        URI uri = Uris.getUri(BackendPipes.Paths.TENANTS);
-
-        readPipe(BackendPipes.Names.TENANTS, uri, callback);
-    }
-
     public void getEnvironments(@NonNull Callback<List<Environment>> callback) {
         URI uri = Uris.getUri(BackendPipes.Paths.ENVIRONMENTS);
 
         readPipe(BackendPipes.Names.ENVIRONMENTS, uri, callback);
-    }
-
-    public void getPersona(@NonNull Callback<List<Persona>> callback) {
-        URI uri = Uris.getUri(BackendPipes.Paths.PERSONA);
-
-        readPipe(BackendPipes.Names.PERSONA, uri, callback);
-    }
-
-    public void getPersonas(@NonNull Callback<List<Persona>> callback) {
-        URI uri = Uris.getUri(BackendPipes.Paths.PERSONAS);
-
-        readPipe(BackendPipes.Names.PERSONAS, uri, callback);
-    }
-
-    public void getResources(@NonNull Environment environment,
-                             @NonNull Callback<List<Resource>> callback) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.RESOURCES, environment.getId()));
-
-        readPipe(BackendPipes.Names.RESOURCES, uri, callback);
     }
 
     public void getMetrics(@NonNull Environment environment, @NonNull Resource resource,
@@ -248,6 +221,25 @@ public final class BackendClient {
         URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA, metric.getId()), parameters);
 
         readPipe(BackendPipes.Names.METRIC_DATA, uri, callback);
+    }
+
+    public void getPersona(@NonNull Callback<List<Persona>> callback) {
+        URI uri = Uris.getUri(BackendPipes.Paths.PERSONA);
+
+        readPipe(BackendPipes.Names.PERSONA, uri, callback);
+    }
+
+    public void getPersonas(@NonNull Callback<List<Persona>> callback) {
+        URI uri = Uris.getUri(BackendPipes.Paths.PERSONAS);
+
+        readPipe(BackendPipes.Names.PERSONAS, uri, callback);
+    }
+
+    public void getResources(@NonNull Environment environment,
+                             @NonNull Callback<List<Resource>> callback) {
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.RESOURCES, environment.getId()));
+
+        readPipe(BackendPipes.Names.RESOURCES, uri, callback);
     }
 
     public void getTriggers(@NonNull Callback<List<Trigger>> callback) {

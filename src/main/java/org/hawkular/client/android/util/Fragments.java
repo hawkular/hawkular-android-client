@@ -107,6 +107,7 @@ public final class Fragments {
     public static final class Operator {
         private final FragmentManager fragmentManager;
 
+        @NonNull
         public static Operator of(@NonNull Activity activity) {
             return new Operator(activity);
         }

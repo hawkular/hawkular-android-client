@@ -25,10 +25,10 @@ import org.jboss.aerogear.android.pipe.module.PipeModule;
 
 import java.net.URI;
 
-final class BackendAccountant implements PipeModule {
+final class BackendPersonnel implements PipeModule {
     private final Persona persona;
 
-    public BackendAccountant(@NonNull Persona persona) {
+    public BackendPersonnel(@NonNull Persona persona) {
         this.persona = persona;
     }
 

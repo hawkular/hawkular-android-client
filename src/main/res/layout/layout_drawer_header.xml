@@ -65,7 +65,7 @@
       </LinearLayout>
 
       <ImageView
-        android:id="@+id/image_header"
+        android:id="@+id/image_personas_action"
         android:src="@drawable/ic_expand"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
 
   <FrameLayout
     android:visibility="gone"
-    android:id="@+id/layout_accounts"
+    android:id="@+id/layout_personas"
     android:background="@color/background_context"
     android:orientation="horizontal"
     android:layout_width="match_parent"

@@ -27,13 +27,12 @@ final class BackendPipes {
         public static final String ALERTS = "alerts";
         public static final String ALERT_ACKNOWLEDGE = "alert-acknowledge";
         public static final String ALERT_RESOLVE = "alert-resolve";
-        public static final String TENANTS = "tenants";
         public static final String ENVIRONMENTS = "environments";
+        public static final String METRICS = "metrics";
+        public static final String METRIC_DATA = "metric-data";
         public static final String PERSONA = "persona";
         public static final String PERSONAS = "personas";
         public static final String RESOURCES = "resources";
-        public static final String METRICS = "metrics";
-        public static final String METRIC_DATA = "metric-data";
         public static final String TRIGGERS = "triggers";
     }
 
@@ -46,13 +45,12 @@ final class BackendPipes {
         public static final String ALERTS = "alerts";
         public static final String ALERT_ACKNOWLEDGE ="alerts/ack/%s";
         public static final String ALERT_RESOLVE = "alerts/resolve/%s";
-        public static final String TENANTS = "inventory/tenant";
         public static final String ENVIRONMENTS = "inventory/environments";
+        public static final String METRICS = "inventory/%s/resources/%s/metrics";
+        public static final String METRIC_DATA = "metrics/gauges/%s/data";
         public static final String PERSONA = "hawkular-accounts/personas/current";
         public static final String PERSONAS = "hawkular-accounts/personas";
         public static final String RESOURCES = "inventory/%s/resources";
-        public static final String METRICS = "inventory/%s/resources/%s/metrics";
-        public static final String METRIC_DATA = "metrics/gauges/%s/data";
         public static final String TRIGGERS = "alerts/triggers";
     }
 
@@ -66,9 +64,8 @@ final class BackendPipes {
         public static final String START_TIME = "startTime";
         public static final String FINISH_TIME = "finishTime";
 
+        public static final String STATUSES = "statuses";
         public static final String TRIGGERS = "triggerIds";
-
-        public static final String STATUS = "statuses";
     }
 
     public static final class Headers {
