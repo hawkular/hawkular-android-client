@@ -242,13 +242,15 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         alertMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
+                Alert alert = getAlertsAdapter().getItem(alertPosition);
+
                 switch (menuItem.getItemId()) {
                     case R.id.menu_resolve:
-                        Timber.d("Alert %d was not resolved intentionally.", alertPosition);
+                        BackendClient.of(AlertsFragment.this).resolveAlert(alert, new AlertActionCallback());
                         return true;
 
                     case R.id.menu_acknowledge:
-                        Timber.d("Alert %d was not acknowledged intentionally.", alertPosition);
+                        BackendClient.of(AlertsFragment.this).acknowledgeAlert(alert, new AlertActionCallback());
                         return true;
 
                     default:
@@ -258,6 +260,25 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         });
 
         alertMenu.show();
+    }
+
+    private AlertsAdapter getAlertsAdapter() {
+        return (AlertsAdapter) list.getAdapter();
+    }
+
+    private static final class AlertActionCallback extends AbstractFragmentCallback<List<String>> {
+        @Override
+        public void onSuccess(List<String> result) {
+            getAlertsFragment().setUpAlertsRefreshed();
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+        }
+
+        private AlertsFragment getAlertsFragment() {
+            return (AlertsFragment) getFragment();
+        }
     }
 
     @Override
