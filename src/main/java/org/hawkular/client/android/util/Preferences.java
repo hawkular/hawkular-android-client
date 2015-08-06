@@ -61,13 +61,13 @@ public final class Preferences {
     }
 
     @NonNull
-    public StringPreference host() {
-        return new StringPreference(serverPreferences, Keys.BACKEND_HOST);
+    public StringPreference environment() {
+        return new StringPreference(serverPreferences, Keys.BACKEND_ENVIRONMENT);
     }
 
     @NonNull
-    public IntPreference port() {
-        return new IntPreference(serverPreferences, Keys.BACKEND_PORT, Defaults.BACKEND_PORT);
+    public StringPreference host() {
+        return new StringPreference(serverPreferences, Keys.BACKEND_HOST);
     }
 
     @NonNull
@@ -81,7 +81,7 @@ public final class Preferences {
     }
 
     @NonNull
-    public StringPreference environment() {
-        return new StringPreference(serverPreferences, Keys.BACKEND_ENVIRONMENT);
+    public IntPreference port() {
+        return new IntPreference(serverPreferences, Keys.BACKEND_PORT, Defaults.BACKEND_PORT);
     }
 }

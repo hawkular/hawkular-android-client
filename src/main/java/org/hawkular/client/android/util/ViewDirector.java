@@ -42,6 +42,7 @@ public final class ViewDirector {
         this.sceneView = sceneView;
     }
 
+    @NonNull
     public ViewDirector using(@IdRes int animatorId) {
         this.animatorId = animatorId;
 

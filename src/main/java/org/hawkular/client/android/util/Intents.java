@@ -72,14 +72,32 @@ public final class Intents {
         }
 
         @NonNull
+        public Intent buildAlertsIntent(@NonNull Resource resource) {
+            Intent intent = new Intent(context, AlertsActivity.class);
+            intent.putExtra(Extras.RESOURCE, resource);
+
+            return intent;
+        }
+
+        @NonNull
         public Intent buildAuthorizationIntent() {
             return new Intent(context, AuthorizationActivity.class);
         }
 
         @NonNull
-        public Intent buildAlertsIntent(@NonNull Resource resource) {
-            Intent intent = new Intent(context, AlertsActivity.class);
-            intent.putExtra(Extras.RESOURCE, resource);
+        public Intent buildFeedbackIntent() {
+            String feedbackAddress = context.getString(R.string.feedback_address);
+            String feedbackSubject = context.getString(R.string.feedback_subject);
+
+            String feedbackUri = String.format(Uris.EMAIL, feedbackAddress, feedbackSubject);
+
+            return new Intent(Intent.ACTION_SENDTO, Uri.parse(feedbackUri));
+        }
+
+        @NonNull
+        public Intent buildMetricIntent(@NonNull Metric metric) {
+            Intent intent = new Intent(context, MetricActivity.class);
+            intent.putExtra(Extras.METRIC, metric);
 
             return intent;
         }
@@ -94,26 +112,8 @@ public final class Intents {
         }
 
         @NonNull
-        public Intent buildMetricIntent(@NonNull Metric metric) {
-            Intent intent = new Intent(context, MetricActivity.class);
-            intent.putExtra(Extras.METRIC, metric);
-
-            return intent;
-        }
-
-        @NonNull
         public Intent buildSettingsIntent() {
             return new Intent(context, SettingsActivity.class);
-        }
-
-        @NonNull
-        public Intent buildFeedbackIntent() {
-            String feedbackAddress = context.getString(R.string.feedback_address);
-            String feedbackSubject = context.getString(R.string.feedback_subject);
-
-            String feedbackUri = String.format(Uris.EMAIL, feedbackAddress, feedbackSubject);
-
-            return new Intent(Intent.ACTION_SENDTO, Uri.parse(feedbackUri));
         }
     }
 }

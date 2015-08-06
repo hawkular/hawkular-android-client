@@ -50,23 +50,10 @@ public final class Fragments {
         }
 
         @NonNull
-        public static Fragment buildResourcesFragment(@NonNull Environment environment) {
-            Fragment fragment = new ResourcesFragment();
+        public static Fragment buildAlertsFragment(@NonNull Resource resource) {
+            Fragment fragment = new AlertsFragment();
 
             Bundle arguments = new Bundle();
-            arguments.putParcelable(Arguments.ENVIRONMENT, environment);
-
-            fragment.setArguments(arguments);
-
-            return fragment;
-        }
-
-        @NonNull
-        public static Fragment buildMetricsFragment(@NonNull Environment environment, @NonNull Resource resource) {
-            Fragment fragment = new MetricsFragment();
-
-            Bundle arguments = new Bundle();
-            arguments.putParcelable(Arguments.ENVIRONMENT, environment);
             arguments.putParcelable(Arguments.RESOURCE, resource);
 
             fragment.setArguments(arguments);
@@ -87,11 +74,24 @@ public final class Fragments {
         }
 
         @NonNull
-        public static Fragment buildAlertsFragment(@NonNull Resource resource) {
-            Fragment fragment = new AlertsFragment();
+        public static Fragment buildMetricsFragment(@NonNull Environment environment, @NonNull Resource resource) {
+            Fragment fragment = new MetricsFragment();
 
             Bundle arguments = new Bundle();
+            arguments.putParcelable(Arguments.ENVIRONMENT, environment);
             arguments.putParcelable(Arguments.RESOURCE, resource);
+
+            fragment.setArguments(arguments);
+
+            return fragment;
+        }
+
+        @NonNull
+        public static Fragment buildResourcesFragment(@NonNull Environment environment) {
+            Fragment fragment = new ResourcesFragment();
+
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(Arguments.ENVIRONMENT, environment);
 
             fragment.setArguments(arguments);
 
