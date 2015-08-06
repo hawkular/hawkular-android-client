@@ -16,16 +16,16 @@
  */
 package org.hawkular.client.android.util;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import org.hawkular.client.android.R;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-
-import org.hawkular.client.android.R;
-
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public final class Notifications {
     private static final class Ids {

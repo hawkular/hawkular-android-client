@@ -16,13 +16,14 @@
  */
 package org.hawkular.client.android.fragment;
 
-import android.app.Fragment;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
@@ -33,14 +34,13 @@ import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import android.app.Fragment;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -56,7 +56,7 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 import timber.log.Timber;
 
-public final class MetricFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public final class MetricFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.chart)
     LineChartView chart;
 
@@ -155,7 +155,8 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
             chartPoints.add(new PointValue(metricDataPosition, metricData.getValue()));
 
             chartAxisPoints.add(new AxisValue(metricDataPosition)
-                .setLabel(DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(metricData.getTimestamp()))));
+                .setLabel(
+                    DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(metricData.getTimestamp()))));
         }
 
         Line chartLine = new Line(chartPoints)

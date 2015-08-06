@@ -43,7 +43,7 @@ final class BackendPipes {
         public static final String ROOT = "hawkular";
 
         public static final String ALERTS = "alerts";
-        public static final String ALERT_ACKNOWLEDGE ="alerts/ack/%s";
+        public static final String ALERT_ACKNOWLEDGE = "alerts/ack/%s";
         public static final String ALERT_RESOLVE = "alerts/resolve/%s";
         public static final String ENVIRONMENTS = "inventory/environments";
         public static final String METRICS = "inventory/%s/resources/%s/metrics";

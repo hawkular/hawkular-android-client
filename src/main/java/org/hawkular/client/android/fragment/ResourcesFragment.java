@@ -16,14 +16,10 @@
  */
 package org.hawkular.client.android.fragment;
 
-import android.app.Fragment;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.adapter.ResourcesAdapter;
@@ -37,10 +33,14 @@ import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import android.app.Fragment;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -198,7 +198,7 @@ public final class ResourcesFragment extends Fragment implements SwipeRefreshLay
     }
 
     private void tearDownBindings() {
-         ButterKnife.unbind(this);
+        ButterKnife.unbind(this);
     }
 
     private static final class ResourcesCallback extends AbstractFragmentCallback<List<Resource>> {

@@ -16,10 +16,10 @@
  */
 package org.hawkular.client.android.util;
 
-import android.support.annotation.NonNull;
-
 import java.util.Calendar;
 import java.util.Date;
+
+import android.support.annotation.NonNull;
 
 public final class Time {
     private Time() {

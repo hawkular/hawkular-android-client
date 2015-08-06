@@ -16,9 +16,9 @@
  */
 package org.hawkular.client.android.event;
 
-import android.support.annotation.NonNull;
-
 import com.squareup.otto.Bus;
+
+import android.support.annotation.NonNull;
 
 public final class Events {
     private Events() {

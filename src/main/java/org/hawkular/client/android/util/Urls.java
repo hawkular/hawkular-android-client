@@ -16,13 +16,13 @@
  */
 package org.hawkular.client.android.util;
 
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.jboss.aerogear.android.pipe.util.UrlUtils;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 
 public final class Urls {
     private Urls() {

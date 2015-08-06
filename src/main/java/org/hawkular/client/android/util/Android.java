@@ -16,9 +16,9 @@
  */
 package org.hawkular.client.android.util;
 
-import android.os.Build;
-
 import org.hawkular.client.android.BuildConfig;
+
+import android.os.Build;
 
 public final class Android {
     public static class Versions {

@@ -16,9 +16,9 @@
  */
 package org.hawkular.client.android.util;
 
-import android.support.annotation.NonNull;
-
 import org.hawkular.client.android.R;
+
+import android.support.annotation.NonNull;
 
 public final class ColorSchemer {
     private ColorSchemer() {

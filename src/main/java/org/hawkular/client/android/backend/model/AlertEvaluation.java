@@ -16,10 +16,10 @@
  */
 package org.hawkular.client.android.backend.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.gson.annotations.SerializedName;
 
 public final class AlertEvaluation implements Parcelable {
     @SerializedName("condition")

@@ -16,14 +16,7 @@
  */
 package org.hawkular.client.android.activity;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.widget.EditText;
+import java.util.List;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
@@ -36,7 +29,14 @@ import org.hawkular.client.android.util.Preferences;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
-import java.util.List;
+import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.widget.EditText;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

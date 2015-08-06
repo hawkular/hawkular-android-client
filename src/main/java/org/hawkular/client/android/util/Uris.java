@@ -16,16 +16,16 @@
  */
 package org.hawkular.client.android.util;
 
-import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
+
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 public final class Uris {
     private Uris() {
