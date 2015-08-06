@@ -16,13 +16,10 @@
  */
 package org.hawkular.client.android.fragment;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.hawkular.client.android.R;
@@ -30,7 +27,9 @@ import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.util.ColorSchemer;
+import org.hawkular.client.android.util.Formatter;
 import org.hawkular.client.android.util.Fragments;
+import org.hawkular.client.android.util.Time;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
@@ -122,14 +121,11 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
     }
 
     private Date getMetricStartTime() {
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.add(Calendar.MINUTE, -10);
-
-        return calendar.getTime();
+        return Time.hourAgo();
     }
 
     private Date getMetricFinishTime() {
-        return GregorianCalendar.getInstance().getTime();
+        return Time.current();
     }
 
     private void showProgress() {
@@ -155,8 +151,7 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
             chartPoints.add(new PointValue(metricDataPosition, metricData.getValue()));
 
             chartAxisPoints.add(new AxisValue(metricDataPosition)
-                .setLabel(
-                    DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(metricData.getTimestamp()))));
+                .setLabel(Formatter.formatTime(metricData.getTimestamp())));
         }
 
         Line chartLine = new Line(chartPoints)
@@ -173,13 +168,21 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
 
         chart.setLineChartData(chartData);
 
-        Viewport chartViewport = new Viewport(chart.getMaximumViewport());
+        Viewport maximumViewport = new Viewport(chart.getMaximumViewport());
 
-        chartViewport.bottom = chart.getMaximumViewport().bottom - 50;
-        chartViewport.top = chart.getMaximumViewport().top + 50;
+        maximumViewport.bottom = 0;
+        maximumViewport.top = (float) (maximumViewport.top * 1.1);
 
-        chart.setMaximumViewport(chartViewport);
-        chart.setCurrentViewport(chartViewport);
+        chart.setMaximumViewport(maximumViewport);
+
+        Viewport currentViewport = new Viewport(chart.getMaximumViewport());
+
+        currentViewport.left = (float) (chart.getMaximumViewport().left * 1.9);
+        currentViewport.right = (float) (chart.getMaximumViewport().right * 0.1);
+
+        chart.setCurrentViewport(currentViewport);
+
+        chart.setZoomEnabled(false);
 
         hideRefreshing();
 

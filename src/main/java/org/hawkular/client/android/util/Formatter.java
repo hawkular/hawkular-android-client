@@ -16,6 +16,9 @@
  */
 package org.hawkular.client.android.util;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import android.content.Context;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -26,7 +29,12 @@ public final class Formatter {
     }
 
     @NonNull
-    public static String formatTime(@NonNull Context context, @IntRange(from = 0) long millis) {
+    public static String formatDateTime(@NonNull Context context, @IntRange(from = 0) long millis) {
         return DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME);
+    }
+
+    @NonNull
+    public static String formatTime(@IntRange(from = 0) long millis) {
+        return DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(millis));
     }
 }
