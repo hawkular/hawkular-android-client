@@ -16,11 +16,6 @@
  */
 package org.hawkular.client.android.util;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.support.annotation.NonNull;
-
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.activity.AlertsActivity;
 import org.hawkular.client.android.activity.AuthorizationActivity;
@@ -30,6 +25,11 @@ import org.hawkular.client.android.activity.SettingsActivity;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 
 public final class Intents {
     private Intents() {

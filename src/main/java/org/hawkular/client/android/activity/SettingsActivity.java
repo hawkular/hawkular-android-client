@@ -16,14 +16,14 @@
  */
 package org.hawkular.client.android.activity;
 
+import org.hawkular.client.android.R;
+import org.hawkular.client.android.util.Fragments;
+
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-
-import org.hawkular.client.android.R;
-import org.hawkular.client.android.util.Fragments;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

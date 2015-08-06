@@ -16,14 +16,14 @@
  */
 package org.hawkular.client.android.backend;
 
-import android.support.annotation.NonNull;
+import java.net.URI;
 
 import org.hawkular.client.android.backend.model.Persona;
 import org.jboss.aerogear.android.pipe.http.HttpException;
 import org.jboss.aerogear.android.pipe.module.ModuleFields;
 import org.jboss.aerogear.android.pipe.module.PipeModule;
 
-import java.net.URI;
+import android.support.annotation.NonNull;
 
 final class BackendPersonnel implements PipeModule {
     private final Persona persona;

@@ -16,6 +16,15 @@
  */
 package org.hawkular.client.android.adapter;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hawkular.client.android.R;
+import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.backend.model.ResourceType;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -23,15 +32,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import org.hawkular.client.android.R;
-import org.hawkular.client.android.backend.model.Resource;
-import org.hawkular.client.android.backend.model.ResourceType;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

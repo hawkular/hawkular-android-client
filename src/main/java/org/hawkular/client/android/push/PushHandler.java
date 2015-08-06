@@ -16,11 +16,11 @@
  */
 package org.hawkular.client.android.push;
 
-import android.content.Context;
-import android.os.Bundle;
-
 import org.hawkular.client.android.util.Notifications;
 import org.jboss.aerogear.android.unifiedpush.MessageHandler;
+
+import android.content.Context;
+import android.os.Bundle;
 
 import timber.log.Timber;
 

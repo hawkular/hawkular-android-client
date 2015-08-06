@@ -16,16 +16,16 @@
  */
 package org.hawkular.client.android.fragment;
 
+import org.hawkular.client.android.R;
+import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.util.Cookies;
+import org.hawkular.client.android.util.Preferences;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.view.View;
-
-import org.hawkular.client.android.R;
-import org.hawkular.client.android.backend.BackendClient;
-import org.hawkular.client.android.util.Cookies;
-import org.hawkular.client.android.util.Preferences;
 
 import butterknife.BindString;
 import butterknife.ButterKnife;

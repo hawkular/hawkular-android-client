@@ -16,17 +16,17 @@
  */
 package org.hawkular.client.android.adapter;
 
+import java.util.List;
+
+import org.hawkular.client.android.R;
+import org.hawkular.client.android.backend.model.Metric;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import org.hawkular.client.android.R;
-import org.hawkular.client.android.backend.model.Metric;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

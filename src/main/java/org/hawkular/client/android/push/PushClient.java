@@ -16,16 +16,16 @@
  */
 package org.hawkular.client.android.push;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
+import java.util.Arrays;
+import java.util.List;
 
 import org.hawkular.client.android.util.Uris;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
 import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
 
-import java.util.Arrays;
-import java.util.List;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
 import timber.log.Timber;
 

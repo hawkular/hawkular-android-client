@@ -16,10 +16,14 @@
  */
 package org.hawkular.client.android.backend;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.backend.model.AlertStatus;
@@ -43,14 +47,10 @@ import org.jboss.aerogear.android.pipe.PipeManager;
 import org.jboss.aerogear.android.pipe.module.PipeModule;
 import org.jboss.aerogear.android.pipe.rest.RestfulPipeConfiguration;
 
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import android.app.Activity;
+import android.app.Fragment;
+import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 
 public final class BackendClient {
     private final Activity activity;

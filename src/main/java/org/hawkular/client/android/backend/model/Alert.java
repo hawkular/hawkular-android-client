@@ -16,12 +16,12 @@
  */
 package org.hawkular.client.android.backend.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 public final class Alert implements Parcelable {
     @SerializedName("alertId")

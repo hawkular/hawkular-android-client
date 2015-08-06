@@ -16,9 +16,9 @@
  */
 package org.hawkular.client.android.event;
 
-import android.support.annotation.NonNull;
-
 import org.hawkular.client.android.backend.model.Resource;
+
+import android.support.annotation.NonNull;
 
 public class ResourceSelectedEvent {
     private final Resource resource;

@@ -16,12 +16,10 @@
  */
 package org.hawkular.client.android.adapter;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.model.Alert;
@@ -29,10 +27,12 @@ import org.hawkular.client.android.backend.model.AlertEvaluation;
 import org.hawkular.client.android.backend.model.AlertType;
 import org.hawkular.client.android.util.Formatter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
