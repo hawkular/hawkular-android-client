@@ -8,6 +8,7 @@ android:
     - android-22
     - build-tools-22.0.1
     - extra-android-m2repository
+    - extra-google-m2repository
 
 script:
   - mvn --settings maven.settings.xml license:check checkstyle:check && ./gradlew clean assembleDebug
