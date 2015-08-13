@@ -1,19 +1,3 @@
-/*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
- * and other contributors as indicated by the @author tags.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.hawkular.client.android.fragment;
 
 import java.util.ArrayList;
@@ -27,6 +11,7 @@ import java.util.List;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.MetricAvailability;
 import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Formatter;
@@ -37,6 +22,9 @@ import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
+import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -50,14 +38,14 @@ import icepick.Icepick;
 import icepick.State;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
-import lecho.lib.hellocharts.model.Line;
-import lecho.lib.hellocharts.model.LineChartData;
-import lecho.lib.hellocharts.model.PointValue;
+import lecho.lib.hellocharts.model.Column;
+import lecho.lib.hellocharts.model.ColumnChartData;
+import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.model.Viewport;
-import lecho.lib.hellocharts.view.LineChartView;
+import lecho.lib.hellocharts.view.ColumnChartView;
 import timber.log.Timber;
 
-public final class MetricFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public final class MetricAvailabilityFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final class Defaults {
         private Defaults() {
         }
@@ -66,7 +54,7 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
     }
 
     @Bind(R.id.chart)
-    LineChartView chart;
+    ColumnChartView chart;
 
     @Bind(R.id.content)
     SwipeRefreshLayout contentLayout;
@@ -150,7 +138,7 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
 
         sortMetricData(metricData);
 
-        setUpChartLine();
+        setUpChartColumns();
         setUpChartArea();
 
         hideRefreshing();
@@ -162,36 +150,67 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
         Collections.sort(metricDataList, new MetricDataComparator());
     }
 
-    private void setUpChartLine() {
-        List<PointValue> chartPoints = getChartPoints();
+    private void setUpChartColumns() {
+        List<Column> chartColumns = getChartColumns();
         List<AxisValue> chartAxisPoints = getChartAxisPoints();
+        List<AxisValue> chartAxisValues = getChartAxisValues();
 
-        Line chartLine = new Line(chartPoints)
-            .setColor(getResources().getColor(R.color.background_primary_dark))
-            .setCubic(true)
-            .setHasPoints(false);
-
-        LineChartData chartData = new LineChartData()
-            .setLines(Collections.singletonList(chartLine));
+        ColumnChartData chartData = new ColumnChartData()
+            .setColumns(chartColumns);
         chartData.setAxisXBottom(new Axis()
             .setValues(chartAxisPoints));
         chartData.setAxisYLeft(new Axis()
-            .setHasLines(true));
+            .setValues(chartAxisValues));
 
-        chart.setLineChartData(chartData);
+        chart.setColumnChartData(chartData);
     }
 
-    private List<PointValue> getChartPoints() {
-        List<PointValue> chartPoints = new ArrayList<>(metricData.size());
+    private List<Column> getChartColumns() {
+        List<Column> chartColumns = new ArrayList<>(metricData.size());
 
         for (MetricData metricData : this.metricData) {
-            float chartPointHorizontal = getChartRelativeTimestamp(metricData.getTimestamp());
-            float chartPointVertical = metricData.getValue();
+            MetricAvailability metricAvailability = MetricAvailability.from("UP");
 
-            chartPoints.add(new PointValue(chartPointHorizontal, chartPointVertical));
+            float columnValue = getColumnValue(metricAvailability);
+            int columnColor = getColumnColor(metricAvailability);
+
+            chartColumns.add(new Column(Collections.singletonList(new SubcolumnValue(columnValue, columnColor))));
         }
 
-        return chartPoints;
+        return chartColumns;
+    }
+
+    @FloatRange(from = -1.0, to = 1.0)
+    private float getColumnValue(MetricAvailability metricAvailability) {
+        switch (metricAvailability) {
+            case UP:
+                return 1;
+
+            case DOWN:
+                return -1;
+
+            default:
+                return 0;
+        }
+    }
+
+    @ColorInt
+    private int getColumnColor(MetricAvailability metricAvailability) {
+        return getResources().getColor(getColumnColorRes(metricAvailability));
+    }
+
+    @ColorRes
+    private int getColumnColorRes(MetricAvailability metricAvailability) {
+        switch (metricAvailability) {
+            case UP:
+                return R.color.background_primary_dark;
+
+            case DOWN:
+                return R.color.background_secondary;
+
+            default:
+                return R.color.background_context;
+        }
     }
 
     private List<AxisValue> getChartAxisPoints() {
@@ -221,6 +240,17 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
 
     private long getChartRelativeTimestamp(long timestamp) {
         return timestamp - getMetricStartTime().getTime();
+    }
+
+    private List<AxisValue> getChartAxisValues() {
+        List<AxisValue> chartAxisValues = new ArrayList<>();
+
+        chartAxisValues.add(new AxisValue(getColumnValue(MetricAvailability.UP) / 2)
+            .setLabel(MetricAvailability.UP.getName()));
+        chartAxisValues.add(new AxisValue(getColumnValue(MetricAvailability.DOWN) / 2)
+            .setLabel(MetricAvailability.DOWN.getName()));
+
+        return chartAxisValues;
     }
 
     private void setUpChartArea() {
@@ -285,8 +315,8 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
             getMetricFragment().showError();
         }
 
-        private MetricFragment getMetricFragment() {
-            return (MetricFragment) getFragment();
+        private MetricAvailabilityFragment getMetricFragment() {
+            return (MetricAvailabilityFragment) getFragment();
         }
     }
 
