@@ -23,17 +23,12 @@ import android.os.Parcelable;
 
 public final class MetricData implements Parcelable {
     @SerializedName("value")
-    private long value;
+    private String value;
 
     @SerializedName("timestamp")
     private long timestamp;
 
-    public MetricData(long timestamp, long value) {
-        this.value = value;
-        this.timestamp = timestamp;
-    }
-
-    public long getValue() {
+    public String getValue() {
         return value;
     }
 
@@ -54,13 +49,13 @@ public final class MetricData implements Parcelable {
     };
 
     private MetricData(Parcel parcel) {
-        this.value = parcel.readLong();
+        this.value = parcel.readString();
         this.timestamp = parcel.readLong();
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeLong(value);
+        parcel.writeString(value);
         parcel.writeLong(timestamp);
     }
 
