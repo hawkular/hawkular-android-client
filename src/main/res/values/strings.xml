@@ -64,6 +64,8 @@
   <string name="label_authorization_description">Please provide the server location. The next step will require the credentials.</string>
   <string name="label_authorization_title">Authorization using a Hawkular server is necessary.</string>
   <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 3.</string>
+  <string name="label_availability_up">Up</string>
+  <string name="label_availability_down">Down</string>
 
   <string name="settings_category_account">Account</string>
   <string name="settings_description_account_sign_out">Remove account and start from scratch.</string>

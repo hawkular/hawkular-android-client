@@ -10,9 +10,9 @@ import java.util.List;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
-import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricAvailability;
 import org.hawkular.client.android.backend.model.MetricData;
+import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Formatter;
 import org.hawkular.client.android.util.Fragments;
@@ -50,7 +50,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         private Defaults() {
         }
 
-        public static final int AXIS_INTERVAL_IN_MINUTES = 1;
+        public static final int AXIS_INTERVAL = 3;
     }
 
     @Bind(R.id.chart)
@@ -66,7 +66,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
-        return inflater.inflate(R.layout.fragment_chart, container, false);
+        return inflater.inflate(R.layout.fragment_chart_column, container, false);
     }
 
     @Override
@@ -101,8 +101,8 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     }
 
     private void setUpMetricDataRefreshed() {
-        BackendClient.of(this).getMetricData(
-            getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+        BackendClient.of(this).getMetricDataAvailability(
+            getResource(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
     }
 
     @OnClick(R.id.button_retry)
@@ -110,8 +110,8 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         if (metricData == null) {
             showProgress();
 
-            BackendClient.of(this).getMetricData(
-                getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+            BackendClient.of(this).getMetricDataAvailability(
+                getResource(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
         } else {
             setUpMetricData(metricData);
         }
@@ -129,8 +129,8 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
     }
 
-    private Metric getMetric() {
-        return getArguments().getParcelable(Fragments.Arguments.METRIC);
+    private Resource getResource() {
+        return getArguments().getParcelable(Fragments.Arguments.RESOURCE);
     }
 
     private void setUpMetricData(List<MetricData> metricDataList) {
@@ -169,7 +169,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         List<Column> chartColumns = new ArrayList<>(metricData.size());
 
         for (MetricData metricData : this.metricData) {
-            MetricAvailability metricAvailability = MetricAvailability.from("UP");
+            MetricAvailability metricAvailability = MetricAvailability.from(metricData.getValue());
 
             float columnValue = getColumnValue(metricAvailability);
             int columnColor = getColumnColor(metricAvailability);
@@ -203,10 +203,10 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     private int getColumnColorRes(MetricAvailability metricAvailability) {
         switch (metricAvailability) {
             case UP:
-                return R.color.background_primary_dark;
+                return R.color.background_secondary;
 
             case DOWN:
-                return R.color.background_secondary;
+                return R.color.background_primary;
 
             default:
                 return R.color.background_context;
@@ -216,51 +216,29 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     private List<AxisValue> getChartAxisPoints() {
         List<AxisValue> chartAxisPoints = new ArrayList<>();
 
-        Date chartStartTime = getMetricStartTime();
-        Date chartFinishTime = getMetricFinishTime();
-
-        Calendar chartCalendar = GregorianCalendar.getInstance();
-        chartCalendar.setTime(chartStartTime);
-        chartCalendar.set(Calendar.MINUTE, 0);
-        chartCalendar.set(Calendar.SECOND, 0);
-        chartCalendar.set(Calendar.MILLISECOND, 0);
-
-        while (chartCalendar.getTime().before(chartFinishTime)) {
-            float chartAxisPointHorizontal = getChartRelativeTimestamp(chartCalendar.getTime().getTime());
-            String chartAxisPointHorizontalLabel = Formatter.formatTime(chartCalendar.getTime().getTime());
+        for (int metricDataPosition = 0; metricDataPosition < metricData.size(); metricDataPosition += Defaults.AXIS_INTERVAL) {
+            float chartAxisPointHorizontal = metricDataPosition;
+            String chartAxisPointLabel = Formatter.formatTime(metricData.get(metricDataPosition).getTimestamp());
 
             chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal)
-                .setLabel(chartAxisPointHorizontalLabel));
-
-            chartCalendar.add(Calendar.MINUTE, Defaults.AXIS_INTERVAL_IN_MINUTES);
+                .setLabel(chartAxisPointLabel));
         }
 
         return chartAxisPoints;
-    }
-
-    private long getChartRelativeTimestamp(long timestamp) {
-        return timestamp - getMetricStartTime().getTime();
     }
 
     private List<AxisValue> getChartAxisValues() {
         List<AxisValue> chartAxisValues = new ArrayList<>();
 
         chartAxisValues.add(new AxisValue(getColumnValue(MetricAvailability.UP) / 2)
-            .setLabel(MetricAvailability.UP.getName()));
+            .setLabel(getString(R.string.label_availability_up)));
         chartAxisValues.add(new AxisValue(getColumnValue(MetricAvailability.DOWN) / 2)
-            .setLabel(MetricAvailability.DOWN.getName()));
+            .setLabel(getString(R.string.label_availability_down)));
 
         return chartAxisValues;
     }
 
     private void setUpChartArea() {
-        Viewport maximumViewport = new Viewport(chart.getMaximumViewport());
-
-        maximumViewport.bottom = 0;
-        maximumViewport.top = (float) (maximumViewport.top * 1.1);
-
-        chart.setMaximumViewport(maximumViewport);
-
         Viewport currentViewport = new Viewport(chart.getMaximumViewport());
 
         currentViewport.left = (float) (chart.getMaximumViewport().left * 1.9);

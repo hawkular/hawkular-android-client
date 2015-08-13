@@ -57,7 +57,7 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 import timber.log.Timber;
 
-public final class MetricFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public final class MetricGaugeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final class Defaults {
         private Defaults() {
         }
@@ -78,7 +78,7 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
-        return inflater.inflate(R.layout.fragment_chart, container, false);
+        return inflater.inflate(R.layout.fragment_chart_line, container, false);
     }
 
     @Override
@@ -113,7 +113,7 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
     }
 
     private void setUpMetricDataRefreshed() {
-        BackendClient.of(this).getMetricData(
+        BackendClient.of(this).getMetricDataGauge(
             getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
     }
 
@@ -122,7 +122,7 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
         if (metricData == null) {
             showProgress();
 
-            BackendClient.of(this).getMetricData(
+            BackendClient.of(this).getMetricDataGauge(
                 getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
         } else {
             setUpMetricData(metricData);
@@ -186,7 +186,7 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
 
         for (MetricData metricData : this.metricData) {
             float chartPointHorizontal = getChartRelativeTimestamp(metricData.getTimestamp());
-            float chartPointVertical = metricData.getValue();
+            float chartPointVertical = Float.valueOf(metricData.getValue());
 
             chartPoints.add(new PointValue(chartPointHorizontal, chartPointVertical));
         }
@@ -285,8 +285,8 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
             getMetricFragment().showError();
         }
 
-        private MetricFragment getMetricFragment() {
-            return (MetricFragment) getFragment();
+        private MetricGaugeFragment getMetricFragment() {
+            return (MetricGaugeFragment) getFragment();
         }
     }
 

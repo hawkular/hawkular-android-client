@@ -20,7 +20,8 @@ import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.fragment.AlertsFragment;
-import org.hawkular.client.android.fragment.MetricFragment;
+import org.hawkular.client.android.fragment.MetricAvailabilityFragment;
+import org.hawkular.client.android.fragment.MetricGaugeFragment;
 import org.hawkular.client.android.fragment.MetricsFragment;
 import org.hawkular.client.android.fragment.ResourcesFragment;
 import org.hawkular.client.android.fragment.SettingsFragment;
@@ -62,8 +63,20 @@ public final class Fragments {
         }
 
         @NonNull
-        public static Fragment buildMetricFragment(@NonNull Metric metric) {
-            Fragment fragment = new MetricFragment();
+        public static Fragment buildMetricAvailabilityFragment(@NonNull Resource resource) {
+            Fragment fragment = new MetricAvailabilityFragment();
+
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(Arguments.RESOURCE, resource);
+
+            fragment.setArguments(arguments);
+
+            return fragment;
+        }
+
+        @NonNull
+        public static Fragment buildMetricGaugeFragment(@NonNull Metric metric) {
+            Fragment fragment = new MetricGaugeFragment();
 
             Bundle arguments = new Bundle();
             arguments.putParcelable(Arguments.METRIC, metric);
