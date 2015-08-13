@@ -17,9 +17,11 @@
 package org.hawkular.client.android.fragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.hawkular.client.android.R;
@@ -56,6 +58,13 @@ import lecho.lib.hellocharts.view.LineChartView;
 import timber.log.Timber;
 
 public final class MetricFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+    private static final class Defaults {
+        private Defaults() {
+        }
+
+        public static final int AXIS_INTERVAL_IN_MINUTES = 1;
+    }
+
     @Bind(R.id.chart)
     LineChartView chart;
 
@@ -141,18 +150,21 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
 
         sortMetricData(metricDataList);
 
-        List<PointValue> chartPoints = new ArrayList<>();
+        setUpChartLine();
+        setUpChartArea();
 
-        List<AxisValue> chartAxisPoints = new ArrayList<>();
+        hideRefreshing();
 
-        for (int metricDataPosition = 0; metricDataPosition < metricDataList.size(); metricDataPosition++) {
-            MetricData metricData = metricDataList.get(metricDataPosition);
+        showChart();
+    }
 
-            chartPoints.add(new PointValue(metricDataPosition, metricData.getValue()));
+    private void sortMetricData(List<MetricData> metricDataList) {
+        Collections.sort(metricDataList, new MetricDataComparator());
+    }
 
-            chartAxisPoints.add(new AxisValue(metricDataPosition)
-                .setLabel(Formatter.formatTime(metricData.getTimestamp())));
-        }
+    private void setUpChartLine() {
+        List<PointValue> chartPoints = getChartPoints();
+        List<AxisValue> chartAxisPoints = getChartAxisPoints();
 
         Line chartLine = new Line(chartPoints)
             .setColor(getResources().getColor(R.color.background_primary_dark))
@@ -167,7 +179,50 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
             .setHasLines(true));
 
         chart.setLineChartData(chartData);
+    }
 
+    private List<PointValue> getChartPoints() {
+        List<PointValue> chartPoints = new ArrayList<>();
+
+        for (MetricData metricData : this.metricData) {
+            float chartPointHorizontal = getChartRelativeTimestamp(metricData.getTimestamp());
+            float chartPointVertical = metricData.getValue();
+
+            chartPoints.add(new PointValue(chartPointHorizontal, chartPointVertical));
+        }
+
+        return chartPoints;
+    }
+
+    private List<AxisValue> getChartAxisPoints() {
+        List<AxisValue> chartAxisPoints = new ArrayList<>();
+
+        Date chartStartTime = getMetricStartTime();
+        Date chartFinishTime = getMetricFinishTime();
+
+        Calendar chartCalendar = GregorianCalendar.getInstance();
+        chartCalendar.setTime(chartStartTime);
+        chartCalendar.set(Calendar.MINUTE, 0);
+        chartCalendar.set(Calendar.SECOND, 0);
+        chartCalendar.set(Calendar.MILLISECOND, 0);
+
+        while (chartCalendar.getTime().before(chartFinishTime)) {
+            float chartAxisPointHorizontal = getChartRelativeTimestamp(chartCalendar.getTime().getTime());
+            String chartAxisPointHorizontalLabel = Formatter.formatTime(chartCalendar.getTime().getTime());
+
+            chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal).setLabel(chartAxisPointHorizontalLabel));
+
+            chartCalendar.add(Calendar.MINUTE, Defaults.AXIS_INTERVAL_IN_MINUTES);
+        }
+
+        return chartAxisPoints;
+    }
+
+    private long getChartRelativeTimestamp(long timestamp) {
+        return timestamp - getMetricStartTime().getTime();
+    }
+
+    private void setUpChartArea() {
         Viewport maximumViewport = new Viewport(chart.getMaximumViewport());
 
         maximumViewport.bottom = 0;
@@ -183,14 +238,6 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
         chart.setCurrentViewport(currentViewport);
 
         chart.setZoomEnabled(false);
-
-        hideRefreshing();
-
-        showChart();
-    }
-
-    private void sortMetricData(List<MetricData> metricDataList) {
-        Collections.sort(metricDataList, new MetricDataComparator());
     }
 
     private void hideRefreshing() {
