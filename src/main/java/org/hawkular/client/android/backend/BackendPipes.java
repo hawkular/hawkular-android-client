@@ -29,7 +29,8 @@ final class BackendPipes {
         public static final String ALERT_RESOLVE = "alert-resolve";
         public static final String ENVIRONMENTS = "environments";
         public static final String METRICS = "metrics";
-        public static final String METRIC_DATA = "metric-data";
+        public static final String METRIC_DATA_AVAILABILITY = "metric-data-availability";
+        public static final String METRIC_DATA_GAUGE = "metric-data-gauge";
         public static final String PERSONA = "persona";
         public static final String PERSONAS = "personas";
         public static final String RESOURCES = "resources";
@@ -47,7 +48,8 @@ final class BackendPipes {
         public static final String ALERT_RESOLVE = "alerts/resolve/%s";
         public static final String ENVIRONMENTS = "inventory/environments";
         public static final String METRICS = "inventory/%s/resources/%s/metrics";
-        public static final String METRIC_DATA = "metrics/gauges/%s/data";
+        public static final String METRIC_DATA_AVAILABILITY= "metrics/availability/%s/data";
+        public static final String METRIC_DATA_GAUGE = "metrics/gauges/%s/data";
         public static final String PERSONA = "hawkular-accounts/personas/current";
         public static final String PERSONAS = "hawkular-accounts/personas";
         public static final String RESOURCES = "inventory/%s/resources";

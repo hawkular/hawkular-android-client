@@ -21,42 +21,33 @@ import com.google.gson.annotations.SerializedName;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public final class MetricData implements Parcelable {
-    @SerializedName("value")
-    private String value;
+public final class MetricConfiguration implements Parcelable {
+    @SerializedName("type")
+    private MetricType type;
 
-    @SerializedName("timestamp")
-    private long timestamp;
-
-    public String getValue() {
-        return value;
+    public MetricType getType() {
+        return type;
     }
 
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public static Creator<MetricData> CREATOR = new Creator<MetricData>() {
+    public static Creator<MetricConfiguration> CREATOR = new Creator<MetricConfiguration>() {
         @Override
-        public MetricData createFromParcel(Parcel parcel) {
-            return new MetricData(parcel);
+        public MetricConfiguration createFromParcel(Parcel parcel) {
+            return new MetricConfiguration(parcel);
         }
 
         @Override
-        public MetricData[] newArray(int size) {
-            return new MetricData[size];
+        public MetricConfiguration[] newArray(int size) {
+            return new MetricConfiguration[size];
         }
     };
 
-    private MetricData(Parcel parcel) {
-        this.value = parcel.readString();
-        this.timestamp = parcel.readLong();
+    private MetricConfiguration(Parcel parcel) {
+        this.type = parcel.readParcelable(MetricType.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeString(value);
-        parcel.writeLong(timestamp);
+        parcel.writeParcelable(type, flags);
     }
 
     @Override

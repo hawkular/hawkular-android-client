@@ -117,7 +117,7 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
     }
 
     private String getAlertTimestamp(Context context, long timestamp) {
-        return Formatter.formatTime(context, timestamp);
+        return Formatter.formatDateTime(context, timestamp);
     }
 
     private String getAlertMessage(Context context, Alert alert) {

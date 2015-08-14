@@ -122,7 +122,8 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.ALERT_RESOLVE, pipeUrl, pipeModules, String.class);
         configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
         configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
-        configurePipe(BackendPipes.Names.METRIC_DATA, pipeUrl, pipeModules, MetricData.class);
+        configurePipe(BackendPipes.Names.METRIC_DATA_AVAILABILITY, pipeUrl, pipeModules, MetricData.class);
+        configurePipe(BackendPipes.Names.METRIC_DATA_GAUGE, pipeUrl, pipeModules, MetricData.class);
         configurePipe(BackendPipes.Names.PERSONA, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.PERSONAS, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.RESOURCES, pipeUrl, pipeModules, Resource.class);
@@ -211,16 +212,28 @@ public final class BackendClient {
         readPipe(BackendPipes.Names.METRICS, uri, callback);
     }
 
-    public void getMetricData(@NonNull Metric metric,
-                              @NonNull Date startTime, @NonNull Date finishTime,
-                              @NonNull Callback<List<MetricData>> callback) {
+    public void getMetricDataAvailability(@NonNull Resource resource,
+                                          @NonNull Date startTime, @NonNull Date finishTime,
+                                          @NonNull Callback<List<MetricData>> callback) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTime()));
         parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
 
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA, metric.getId()), parameters);
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA_AVAILABILITY, resource.getId()), parameters);
 
-        readPipe(BackendPipes.Names.METRIC_DATA, uri, callback);
+        readPipe(BackendPipes.Names.METRIC_DATA_AVAILABILITY, uri, callback);
+    }
+
+    public void getMetricDataGauge(@NonNull Metric metric,
+                                   @NonNull Date startTime, @NonNull Date finishTime,
+                                   @NonNull Callback<List<MetricData>> callback) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTime()));
+        parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
+
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA_GAUGE, metric.getId()), parameters);
+
+        readPipe(BackendPipes.Names.METRIC_DATA_GAUGE, uri, callback);
     }
 
     public void getPersona(@NonNull Callback<List<Persona>> callback) {

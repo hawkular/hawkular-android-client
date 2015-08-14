@@ -197,7 +197,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     private void setUpNavigationHeader() {
         host.setText(getBackendHost());
-        persona.setText(getBackendPort());
+        persona.setText(getPersona().getName());
 
         setUpPersonas();
     }

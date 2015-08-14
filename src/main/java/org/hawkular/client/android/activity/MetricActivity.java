@@ -18,6 +18,7 @@ package org.hawkular.client.android.activity;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 
@@ -57,9 +58,24 @@ public final class MetricActivity extends AppCompatActivity {
     }
 
     private void setUpMetric() {
-        Fragment fragment = Fragments.Builder.buildMetricFragment(getMetric());
+        Fragments.Operator.of(this).set(R.id.layout_container, getMetricFragment());
+    }
 
-        Fragments.Operator.of(this).set(R.id.layout_container, fragment);
+    private Fragment getMetricFragment() {
+        switch (getMetric().getConfiguration().getType()) {
+            case AVAILABILITY:
+                return Fragments.Builder.buildMetricAvailabilityFragment(getResource());
+
+            case GAUGE:
+                return Fragments.Builder.buildMetricGaugeFragment(getMetric());
+
+            default:
+                return Fragments.Builder.buildMetricGaugeFragment(getMetric());
+        }
+    }
+
+    private Resource getResource() {
+        return getIntent().getParcelableExtra(Intents.Extras.RESOURCE);
     }
 
     private Metric getMetric() {

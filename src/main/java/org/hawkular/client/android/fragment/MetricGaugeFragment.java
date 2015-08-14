@@ -16,7 +16,6 @@
  */
 package org.hawkular.client.android.fragment;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -30,7 +29,9 @@ import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.util.ColorSchemer;
+import org.hawkular.client.android.util.Formatter;
 import org.hawkular.client.android.util.Fragments;
+import org.hawkular.client.android.util.Time;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
@@ -56,7 +57,14 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 import timber.log.Timber;
 
-public final class MetricFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public final class MetricGaugeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+    private static final class Defaults {
+        private Defaults() {
+        }
+
+        public static final int AXIS_INTERVAL_IN_MINUTES = 1;
+    }
+
     @Bind(R.id.chart)
     LineChartView chart;
 
@@ -64,13 +72,12 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
     SwipeRefreshLayout contentLayout;
 
     @State
-    @Nullable
-    ArrayList<MetricData> metricData;
+    ArrayList<MetricData> metricData = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
-        return inflater.inflate(R.layout.fragment_chart, container, false);
+        return inflater.inflate(R.layout.fragment_chart_line, container, false);
     }
 
     @Override
@@ -105,7 +112,7 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
     }
 
     private void setUpMetricDataRefreshed() {
-        BackendClient.of(this).getMetricData(
+        BackendClient.of(this).getMetricDataGauge(
             getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
     }
 
@@ -114,7 +121,7 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
         if (metricData == null) {
             showProgress();
 
-            BackendClient.of(this).getMetricData(
+            BackendClient.of(this).getMetricDataGauge(
                 getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
         } else {
             setUpMetricData(metricData);
@@ -122,14 +129,11 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
     }
 
     private Date getMetricStartTime() {
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.add(Calendar.MINUTE, -10);
-
-        return calendar.getTime();
+        return Time.hourAgo();
     }
 
     private Date getMetricFinishTime() {
-        return GregorianCalendar.getInstance().getTime();
+        return Time.current();
     }
 
     private void showProgress() {
@@ -143,21 +147,23 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
     private void setUpMetricData(List<MetricData> metricDataList) {
         this.metricData = new ArrayList<>(metricDataList);
 
-        sortMetricData(metricDataList);
+        sortMetricData(metricData);
 
-        List<PointValue> chartPoints = new ArrayList<>();
+        setUpChartLine();
+        setUpChartArea();
 
-        List<AxisValue> chartAxisPoints = new ArrayList<>();
+        hideRefreshing();
 
-        for (int metricDataPosition = 0; metricDataPosition < metricDataList.size(); metricDataPosition++) {
-            MetricData metricData = metricDataList.get(metricDataPosition);
+        showChart();
+    }
 
-            chartPoints.add(new PointValue(metricDataPosition, metricData.getValue()));
+    private void sortMetricData(List<MetricData> metricDataList) {
+        Collections.sort(metricDataList, new MetricDataComparator());
+    }
 
-            chartAxisPoints.add(new AxisValue(metricDataPosition)
-                .setLabel(
-                    DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(metricData.getTimestamp()))));
-        }
+    private void setUpChartLine() {
+        List<PointValue> chartPoints = getChartPoints();
+        List<AxisValue> chartAxisPoints = getChartAxisPoints();
 
         Line chartLine = new Line(chartPoints)
             .setColor(getResources().getColor(R.color.background_primary_dark))
@@ -172,22 +178,66 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
             .setHasLines(true));
 
         chart.setLineChartData(chartData);
-
-        Viewport chartViewport = new Viewport(chart.getMaximumViewport());
-
-        chartViewport.bottom = chart.getMaximumViewport().bottom - 50;
-        chartViewport.top = chart.getMaximumViewport().top + 50;
-
-        chart.setMaximumViewport(chartViewport);
-        chart.setCurrentViewport(chartViewport);
-
-        hideRefreshing();
-
-        showChart();
     }
 
-    private void sortMetricData(List<MetricData> metricDataList) {
-        Collections.sort(metricDataList, new MetricDataComparator());
+    private List<PointValue> getChartPoints() {
+        List<PointValue> chartPoints = new ArrayList<>(metricData.size());
+
+        for (MetricData metricData : this.metricData) {
+            float chartPointHorizontal = getChartRelativeTimestamp(metricData.getTimestamp());
+            float chartPointVertical = Float.valueOf(metricData.getValue());
+
+            chartPoints.add(new PointValue(chartPointHorizontal, chartPointVertical));
+        }
+
+        return chartPoints;
+    }
+
+    private List<AxisValue> getChartAxisPoints() {
+        List<AxisValue> chartAxisPoints = new ArrayList<>();
+
+        Date chartStartTime = getMetricStartTime();
+        Date chartFinishTime = getMetricFinishTime();
+
+        Calendar chartCalendar = GregorianCalendar.getInstance();
+        chartCalendar.setTime(chartStartTime);
+        chartCalendar.set(Calendar.MINUTE, 0);
+        chartCalendar.set(Calendar.SECOND, 0);
+        chartCalendar.set(Calendar.MILLISECOND, 0);
+
+        while (chartCalendar.getTime().before(chartFinishTime)) {
+            float chartAxisPointHorizontal = getChartRelativeTimestamp(chartCalendar.getTime().getTime());
+            String chartAxisPointHorizontalLabel = Formatter.formatTime(chartCalendar.getTime().getTime());
+
+            chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal)
+                .setLabel(chartAxisPointHorizontalLabel));
+
+            chartCalendar.add(Calendar.MINUTE, Defaults.AXIS_INTERVAL_IN_MINUTES);
+        }
+
+        return chartAxisPoints;
+    }
+
+    private long getChartRelativeTimestamp(long timestamp) {
+        return timestamp - getMetricStartTime().getTime();
+    }
+
+    private void setUpChartArea() {
+        Viewport maximumViewport = new Viewport(chart.getMaximumViewport());
+
+        maximumViewport.bottom = 0;
+        maximumViewport.top = (float) (maximumViewport.top * 1.1);
+
+        chart.setMaximumViewport(maximumViewport);
+
+        Viewport currentViewport = new Viewport(chart.getMaximumViewport());
+
+        currentViewport.left = (float) (chart.getMaximumViewport().left * 1.9);
+        currentViewport.right = (float) (chart.getMaximumViewport().right * 0.1);
+
+        chart.setCurrentViewport(currentViewport);
+
+        chart.setZoomEnabled(false);
     }
 
     private void hideRefreshing() {
@@ -234,8 +284,8 @@ public final class MetricFragment extends Fragment implements SwipeRefreshLayout
             getMetricFragment().showError();
         }
 
-        private MetricFragment getMetricFragment() {
-            return (MetricFragment) getFragment();
+        private MetricGaugeFragment getMetricFragment() {
+            return (MetricGaugeFragment) getFragment();
         }
     }
 
