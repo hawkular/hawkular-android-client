@@ -66,6 +66,9 @@ public final class MetricActivity extends AppCompatActivity {
             case AVAILABILITY:
                 return Fragments.Builder.buildMetricAvailabilityFragment(getResource());
 
+            case GAUGE:
+                return Fragments.Builder.buildMetricGaugeFragment(getMetric());
+
             default:
                 return Fragments.Builder.buildMetricGaugeFragment(getMetric());
         }

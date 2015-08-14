@@ -72,8 +72,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
     SwipeRefreshLayout contentLayout;
 
     @State
-    @Nullable
-    ArrayList<MetricData> metricData;
+    ArrayList<MetricData> metricData = new ArrayList<>();
 
     @Nullable
     @Override

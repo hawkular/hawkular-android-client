@@ -1,11 +1,9 @@
 package org.hawkular.client.android.fragment;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.hawkular.client.android.R;
@@ -60,8 +58,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     SwipeRefreshLayout contentLayout;
 
     @State
-    @Nullable
-    ArrayList<MetricData> metricData;
+    ArrayList<MetricData> metricData = new ArrayList<>();
 
     @Nullable
     @Override
@@ -117,6 +114,10 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         }
     }
 
+    private Resource getResource() {
+        return getArguments().getParcelable(Fragments.Arguments.RESOURCE);
+    }
+
     private Date getMetricStartTime() {
         return Time.hourAgo();
     }
@@ -127,10 +128,6 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
 
     private void showProgress() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
-    }
-
-    private Resource getResource() {
-        return getArguments().getParcelable(Fragments.Arguments.RESOURCE);
     }
 
     private void setUpMetricData(List<MetricData> metricDataList) {
