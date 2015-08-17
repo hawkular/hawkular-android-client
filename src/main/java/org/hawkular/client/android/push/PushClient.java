@@ -24,8 +24,10 @@ import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
 import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
 
+import android.Manifest;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
 
 import timber.log.Timber;
 
@@ -33,6 +35,7 @@ public final class PushClient implements Callback<Void> {
     private final Context context;
 
     @NonNull
+    @RequiresPermission(Manifest.permission.WAKE_LOCK)
     public static PushClient of(@NonNull Context context) {
         return new PushClient(context);
     }

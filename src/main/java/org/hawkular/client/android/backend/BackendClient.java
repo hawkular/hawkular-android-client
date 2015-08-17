@@ -47,21 +47,25 @@ import org.jboss.aerogear.android.pipe.PipeManager;
 import org.jboss.aerogear.android.pipe.module.PipeModule;
 import org.jboss.aerogear.android.pipe.rest.RestfulPipeConfiguration;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
 
 public final class BackendClient {
     private final Activity activity;
     private final Fragment fragment;
 
     @NonNull
+    @RequiresPermission(Manifest.permission.INTERNET)
     public static BackendClient of(@NonNull Activity activity) {
         return new BackendClient(activity, null);
     }
 
     @NonNull
+    @RequiresPermission(Manifest.permission.INTERNET)
     public static BackendClient of(@NonNull Fragment fragment) {
         return new BackendClient(null, fragment);
     }

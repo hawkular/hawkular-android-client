@@ -53,13 +53,19 @@ public final class AlertsActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() == null) {
+            return;
+        }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setUpAlerts() {
-        Fragment fragment = Fragments.Builder.buildAlertsFragment(getResource());
+        Fragments.Operator.of(this).set(R.id.layout_container, getAlertsFragment());
+    }
 
-        Fragments.Operator.of(this).set(R.id.layout_container, fragment);
+    private Fragment getAlertsFragment() {
+        return Fragments.Builder.buildAlertsFragment(getResource());
     }
 
     private Resource getResource() {

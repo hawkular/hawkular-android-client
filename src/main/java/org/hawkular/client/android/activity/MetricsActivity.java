@@ -54,13 +54,19 @@ public final class MetricsActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() == null) {
+            return;
+        }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setUpMetrics() {
-        Fragment fragment = Fragments.Builder.buildMetricsFragment(getEnvironment(), getResource());
+        Fragments.Operator.of(this).set(R.id.layout_container, getMetricsFragment());
+    }
 
-        Fragments.Operator.of(this).set(R.id.layout_container, fragment);
+    private Fragment getMetricsFragment() {
+        return Fragments.Builder.buildMetricsFragment(getEnvironment(), getResource());
     }
 
     private Environment getEnvironment() {

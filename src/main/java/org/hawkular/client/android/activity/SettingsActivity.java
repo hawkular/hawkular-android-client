@@ -51,13 +51,19 @@ public final class SettingsActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() == null) {
+            return;
+        }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setUpSettings() {
-        Fragment fragment = Fragments.Builder.buildSettingsFragment();
+        Fragments.Operator.of(this).set(R.id.layout_container, getSettingsFragment());
+    }
 
-        Fragments.Operator.of(this).set(R.id.layout_container, fragment);
+    private Fragment getSettingsFragment() {
+        return Fragments.Builder.buildSettingsFragment();
     }
 
     @Override

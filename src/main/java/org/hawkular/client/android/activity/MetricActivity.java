@@ -54,6 +54,10 @@ public final class MetricActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() == null) {
+            return;
+        }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

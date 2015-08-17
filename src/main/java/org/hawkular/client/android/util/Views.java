@@ -17,6 +17,7 @@
 package org.hawkular.client.android.util;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -29,6 +30,7 @@ public final class Views {
         return view.getVisibility() == View.VISIBLE;
     }
 
+    @UiThread
     public static int measureHeight(@NonNull View view) {
         view.measure(
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -37,6 +39,7 @@ public final class Views {
         return view.getMeasuredHeight();
     }
 
+    @UiThread
     public static int measureHeight(@NonNull ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
 

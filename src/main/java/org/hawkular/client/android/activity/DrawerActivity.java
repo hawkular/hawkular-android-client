@@ -118,6 +118,10 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() == null) {
+            return;
+        }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
     }
@@ -186,9 +190,11 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void showResourcesFragment() {
-        Fragment fragment = Fragments.Builder.buildResourcesFragment(getEnvironment());
+        Fragments.Operator.of(this).reset(R.id.layout_container, getResourcesFragment());
+    }
 
-        Fragments.Operator.of(this).reset(R.id.layout_container, fragment);
+    private Fragment getResourcesFragment() {
+        return Fragments.Builder.buildResourcesFragment(getEnvironment());
     }
 
     private Environment getEnvironment() {

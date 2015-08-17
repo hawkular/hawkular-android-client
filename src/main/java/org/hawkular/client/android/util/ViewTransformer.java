@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.view.View;
@@ -44,6 +45,7 @@ public final class ViewTransformer implements ValueAnimator.AnimatorUpdateListen
         this.view = view;
     }
 
+    @UiThread
     public void expand() {
         view.setVisibility(View.VISIBLE);
 
@@ -56,6 +58,7 @@ public final class ViewTransformer implements ValueAnimator.AnimatorUpdateListen
         animator.start();
     }
 
+    @UiThread
     public void collapse() {
         ValueAnimator animator = ValueAnimator.ofInt(Views.measureHeight(view), 0);
         animator.setInterpolator(new LinearOutSlowInInterpolator());
@@ -79,6 +82,7 @@ public final class ViewTransformer implements ValueAnimator.AnimatorUpdateListen
         view.requestLayout();
     }
 
+    @UiThread
     public void rotate() {
         Animator animator = ObjectAnimator.ofFloat(view, View.ROTATION, view.getRotation(), view.getRotation() + 180);
         animator.setInterpolator(new FastOutSlowInInterpolator());
@@ -87,6 +91,7 @@ public final class ViewTransformer implements ValueAnimator.AnimatorUpdateListen
         animator.start();
     }
 
+    @UiThread
     public void show() {
         Animator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0, 1);
         animator.setInterpolator(new FastOutSlowInInterpolator());
@@ -95,6 +100,7 @@ public final class ViewTransformer implements ValueAnimator.AnimatorUpdateListen
         animator.start();
     }
 
+    @UiThread
     public void hide() {
         Animator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 1, 0);
         animator.setInterpolator(new FastOutSlowInInterpolator());

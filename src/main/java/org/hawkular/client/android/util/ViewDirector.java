@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.view.View;
 import android.widget.ViewAnimator;
 
@@ -49,6 +50,7 @@ public final class ViewDirector {
         return this;
     }
 
+    @UiThread
     public void show(@IdRes int viewId) {
         ViewAnimator animator = (ViewAnimator) sceneView.findViewById(animatorId);
         View view = sceneView.findViewById(viewId);

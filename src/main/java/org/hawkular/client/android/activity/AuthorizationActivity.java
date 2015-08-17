@@ -149,6 +149,13 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
     }
 
     @Override
+    public void onFailure(Exception e) {
+        Timber.d(e, "Authorization failed.");
+
+        showError(R.string.error_general);
+    }
+
+    @Override
     public void onSuccess(String authorization) {
         setUpBackendCommunication(getMockPersona());
 
@@ -165,13 +172,6 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
 
     private Persona getMockPersona() {
         return new Persona("", "");
-    }
-
-    @Override
-    public void onFailure(Exception e) {
-        Timber.d(e, "Authorization failed.");
-
-        showError(R.string.error_general);
     }
 
     private void setUpPersona() {
@@ -215,7 +215,6 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
             AuthorizationActivity activity = (AuthorizationActivity) getActivity();
 
             activity.setUpBackendCommunication(persona);
-
             activity.setUpEnvironment(persona);
         }
 
@@ -239,6 +238,7 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
                 return;
             }
 
+            // TODO
             // This is a potentially dangerous action.
             // The first environment is picked and used everywhere, this should change in the future.
             Environment environment = environments.get(0);

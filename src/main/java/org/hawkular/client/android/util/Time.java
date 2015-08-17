@@ -32,40 +32,32 @@ public final class Time {
 
     @NonNull
     public static Date hourAgo() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR_OF_DAY, -1);
-
-        return calendar.getTime();
+        return timeUnitAgo(Calendar.HOUR_OF_DAY);
     }
 
     @NonNull
     public static Date dayAgo() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, -1);
-
-        return calendar.getTime();
+        return timeUnitAgo(Calendar.DAY_OF_YEAR);
     }
 
     @NonNull
     public static Date weekAgo() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.WEEK_OF_YEAR, -1);
-
-        return calendar.getTime();
+        return timeUnitAgo(Calendar.WEEK_OF_YEAR);
     }
 
     @NonNull
     public static Date monthAgo() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -1);
-
-        return calendar.getTime();
+        return timeUnitAgo(Calendar.MONTH);
     }
 
     @NonNull
     public static Date yearAgo() {
+        return timeUnitAgo(Calendar.YEAR);
+    }
+
+    private static Date timeUnitAgo(int timeUnit) {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.YEAR, -1);
+        calendar.add(timeUnit, -1);
 
         return calendar.getTime();
     }
