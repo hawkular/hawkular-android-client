@@ -81,6 +81,7 @@ public final class SettingsFragment extends PreferenceFragment implements Prefer
 
         BackendClient.of(this).deauthorize();
 
+        // TODO: remove after upstream fix.
         // https://issues.jboss.org/browse/AGDROID-485
         Cookies.clear();
 

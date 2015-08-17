@@ -205,10 +205,10 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
         @Override
         public void onSuccess(List<Persona> personas) {
             if (personas.isEmpty()) {
-                Timber.d("Personas list it empty, this should not happen.");
+                onFailure(new RuntimeException("Personas list is empty, this should not happen."));
+                return;
             }
 
-            // This is a potentially dangerous action.
             // Unfortunately AeroGear does not support single item fetching.
             Persona persona = personas.get(0);
 
@@ -234,12 +234,10 @@ public final class AuthorizationActivity extends AppCompatActivity implements Ca
         @Override
         public void onSuccess(List<Environment> environments) {
             if (environments.isEmpty()) {
-                Timber.d("Environments list is empty, this should not happen.");
+                onFailure(new RuntimeException("Environments list is empty, this should not happen."));
                 return;
             }
 
-            // TODO
-            // This is a potentially dangerous action.
             // The first environment is picked and used everywhere, this should change in the future.
             Environment environment = environments.get(0);
 

@@ -96,10 +96,10 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
-        setUpMetricsRefreshed();
+        setUpMetricsForced();
     }
 
-    private void setUpMetricsRefreshed() {
+    private void setUpMetricsForced() {
         BackendClient.of(this).getMetrics(getEnvironment(), getResource(), new MetricsCallback());
     }
 
@@ -108,7 +108,7 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
         if (metrics == null) {
             showProgress();
 
-            BackendClient.of(this).getMetrics(getEnvironment(), getResource(), new MetricsCallback());
+            setUpMetricsForced();
         } else {
             setUpMetrics(metrics);
         }

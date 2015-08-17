@@ -74,7 +74,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     SwipeRefreshLayout contentLayout;
 
     @State
-    ArrayList<MetricData> metricData = new ArrayList<>();
+    ArrayList<MetricData> metricData;
 
     @Nullable
     @Override
@@ -110,10 +110,10 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
 
     @Override
     public void onRefresh() {
-        setUpMetricDataRefreshed();
+        setUpMetricDataForced();
     }
 
-    private void setUpMetricDataRefreshed() {
+    private void setUpMetricDataForced() {
         BackendClient.of(this).getMetricDataAvailability(
             getResource(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
     }
@@ -123,8 +123,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         if (metricData == null) {
             showProgress();
 
-            BackendClient.of(this).getMetricDataAvailability(
-                getResource(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+            setUpMetricDataForced();
         } else {
             setUpMetricData(metricData);
         }

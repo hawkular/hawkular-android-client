@@ -95,10 +95,10 @@ public final class ResourcesFragment extends Fragment implements SwipeRefreshLay
 
     @Override
     public void onRefresh() {
-        setUpResourcesRefreshed();
+        setUpResourcesForced();
     }
 
-    private void setUpResourcesRefreshed() {
+    private void setUpResourcesForced() {
         BackendClient.of(this).getResources(getEnvironment(), new ResourcesCallback());
     }
 
@@ -107,7 +107,7 @@ public final class ResourcesFragment extends Fragment implements SwipeRefreshLay
         if (resources == null) {
             showProgress();
 
-            BackendClient.of(this).getResources(getEnvironment(), new ResourcesCallback());
+            setUpResourcesForced();
         } else {
             setUpResources(resources);
         }
@@ -134,6 +134,7 @@ public final class ResourcesFragment extends Fragment implements SwipeRefreshLay
     }
 
     private List<Resource> filterResources(List<Resource> resources) {
+        // TODO: think about better backend API.
         // Filter resources without properties set.
         // This is mostly a hack at this point because of not standardized properties.
 

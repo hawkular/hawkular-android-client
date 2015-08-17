@@ -193,6 +193,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private List<Trigger> filterTriggers(List<Trigger> triggers) {
+        // TODO: think about better backend API.
         // This is mostly a hack, as trigger usage at all, actually.
         // Caused by a lack of API connecting Inventory and Alerts components.
 
