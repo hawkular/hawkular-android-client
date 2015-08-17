@@ -20,6 +20,8 @@ import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 public final class AlertEvaluation implements Parcelable {
     @SerializedName("condition")
@@ -30,6 +32,13 @@ public final class AlertEvaluation implements Parcelable {
 
     @SerializedName("dataTimestamp")
     private long dataTimestamp;
+
+    @VisibleForTesting
+    public AlertEvaluation(@NonNull AlertEvaluationCondition condition, @NonNull String value, long dataTimestamp) {
+        this.condition = condition;
+        this.value = value;
+        this.dataTimestamp = dataTimestamp;
+    }
 
     public AlertEvaluationCondition getCondition() {
         return condition;

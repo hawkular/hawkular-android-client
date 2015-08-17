@@ -20,6 +20,8 @@ import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 public final class MetricData implements Parcelable {
     @SerializedName("value")
@@ -27,6 +29,12 @@ public final class MetricData implements Parcelable {
 
     @SerializedName("timestamp")
     private long timestamp;
+
+    @VisibleForTesting
+    public MetricData(@NonNull String value, long timestamp) {
+        this.value = value;
+        this.timestamp = timestamp;
+    }
 
     public String getValue() {
         return value;

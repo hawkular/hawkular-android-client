@@ -20,6 +20,8 @@ import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 public final class AlertEvaluationCondition implements Parcelable {
     @SerializedName("threshold")
@@ -27,6 +29,12 @@ public final class AlertEvaluationCondition implements Parcelable {
 
     @SerializedName("type")
     private AlertType type;
+
+    @VisibleForTesting
+    public AlertEvaluationCondition(double threshold, @NonNull AlertType type) {
+        this.threshold = threshold;
+        this.type = type;
+    }
 
     public double getThreshold() {
         return threshold;

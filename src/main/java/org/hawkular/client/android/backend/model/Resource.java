@@ -20,6 +20,8 @@ import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 public final class Resource implements Parcelable {
     @SerializedName("id")
@@ -30,6 +32,13 @@ public final class Resource implements Parcelable {
 
     @SerializedName("properties")
     private ResourceProperties properties;
+
+    @VisibleForTesting
+    public Resource(@NonNull String id, @NonNull ResourceType type, @NonNull ResourceProperties properties) {
+        this.id = id;
+        this.type = type;
+        this.properties = properties;
+    }
 
     public String getId() {
         return id;

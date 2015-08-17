@@ -20,10 +20,17 @@ import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 public final class ResourceType implements Parcelable {
     @SerializedName("id")
     private String id;
+
+    @VisibleForTesting
+    public ResourceType(@NonNull String id) {
+        this.id = id;
+    }
 
     public String getId() {
         return id;

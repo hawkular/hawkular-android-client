@@ -59,6 +59,8 @@ android {
             buildConfigField "String", "UPS_SECRET", formatStringField("")
             buildConfigField "String", "GCM_SENDER", formatStringField("")
         }
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 }
 
@@ -99,4 +101,9 @@ dependencies {
     compile "frankiesardo:icepick:3.1.0"
 
     provided "frankiesardo:icepick-processor:3.1.0"
+
+    androidTestCompile "com.android.support:support-annotations:22.2.1"
+    androidTestCompile "com.android.support.test:rules:0.3"
+    androidTestCompile "com.android.support.test:runner:0.3"
+    androidTestCompile "com.squareup.assertj:assertj-android:1.1.0"
 }

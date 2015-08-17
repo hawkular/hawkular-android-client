@@ -20,6 +20,8 @@ import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 public final class Trigger implements Parcelable {
     @SerializedName("id")
@@ -27,6 +29,11 @@ public final class Trigger implements Parcelable {
 
     public String getId() {
         return id;
+    }
+
+    @VisibleForTesting
+    public Trigger(@NonNull String id) {
+        this.id = id;
     }
 
     public static Creator<Trigger> CREATOR = new Creator<Trigger>() {

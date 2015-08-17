@@ -20,10 +20,17 @@ import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 public final class ResourceProperties implements Parcelable {
     @SerializedName("url")
     private String url;
+
+    @VisibleForTesting
+    public ResourceProperties(@NonNull String url) {
+        this.url = url;
+    }
 
     public String getUrl() {
         return url;

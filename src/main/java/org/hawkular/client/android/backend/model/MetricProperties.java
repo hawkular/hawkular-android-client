@@ -20,10 +20,17 @@ import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 public final class MetricProperties implements Parcelable {
     @SerializedName("description")
     private String description;
+
+    @VisibleForTesting
+    public MetricProperties(@NonNull String description) {
+        this.description = description;
+    }
 
     public String getDescription() {
         return description;
