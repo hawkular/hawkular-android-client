@@ -74,7 +74,10 @@ public final class AlertsAdapterTester {
     }
 
     private Alert generateAlert() {
-        return new Alert(Randomizer.generateString(), Randomizer.generateNumber(), new ArrayList<List<AlertEvaluation>>());
+        return new Alert(
+            Randomizer.generateString(),
+            Randomizer.generateNumber(),
+            new ArrayList<List<AlertEvaluation>>());
     }
 
     private static final class AlertMenuAdapter implements AlertsAdapter.AlertMenuListener {

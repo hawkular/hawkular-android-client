@@ -16,8 +16,6 @@
  */
 package org.hawkular.client.android.backend.model;
 
-import java.util.Random;
-
 import org.assertj.core.api.Assertions;
 import org.hawkular.client.android.util.Parceler;
 import org.hawkular.client.android.util.Randomizer;
