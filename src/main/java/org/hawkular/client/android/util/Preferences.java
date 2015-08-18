@@ -71,6 +71,11 @@ public final class Preferences {
     }
 
     @NonNull
+    public IntPreference port() {
+        return new IntPreference(serverPreferences, Keys.BACKEND_PORT, Defaults.BACKEND_PORT);
+    }
+
+    @NonNull
     public StringPreference personaId() {
         return new StringPreference(serverPreferences, Keys.BACKEND_PERSONA_ID);
     }
@@ -78,10 +83,5 @@ public final class Preferences {
     @NonNull
     public StringPreference personaName() {
         return new StringPreference(serverPreferences, Keys.BACKEND_PERSONA_NAME);
-    }
-
-    @NonNull
-    public IntPreference port() {
-        return new IntPreference(serverPreferences, Keys.BACKEND_PORT, Defaults.BACKEND_PORT);
     }
 }
