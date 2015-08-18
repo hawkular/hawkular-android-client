@@ -50,6 +50,12 @@ public final class MetricsAdapter extends BindableAdapter<Metric> {
     }
 
     @Override
+    public int getCount() {
+        return metrics.size();
+    }
+
+    @NonNull
+    @Override
     public Metric getItem(int position) {
         return metrics.get(position);
     }
@@ -57,11 +63,6 @@ public final class MetricsAdapter extends BindableAdapter<Metric> {
     @Override
     public long getItemId(int position) {
         return position;
-    }
-
-    @Override
-    public int getCount() {
-        return metrics.size();
     }
 
     @NonNull

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.hawkular.client.android.util.Parceler;
+import org.hawkular.client.android.util.Randomizer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -30,11 +31,8 @@ import android.support.test.runner.AndroidJUnit4;
 public final class AlertTester {
     @Test
     public void parcelable() {
-        String alertId = "id";
-        long alertTimestamp = 42;
-        List<List<AlertEvaluation>> alertEvaluations = new ArrayList<>();
-
-        Alert originalAlert = new Alert(alertId, alertTimestamp, alertEvaluations);
+        Alert originalAlert = new Alert(
+            Randomizer.generateString(), Randomizer.generateNumber(), new ArrayList<List<AlertEvaluation>>());
         Alert parceledAlert = Parceler.parcel(Alert.CREATOR, originalAlert);
 
         Assertions.assertThat(parceledAlert.getId()).isEqualTo(originalAlert.getId());

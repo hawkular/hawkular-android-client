@@ -18,6 +18,7 @@ package org.hawkular.client.android.backend.model;
 
 import org.assertj.core.api.Assertions;
 import org.hawkular.client.android.util.Parceler;
+import org.hawkular.client.android.util.Randomizer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,7 +28,7 @@ import android.support.test.runner.AndroidJUnit4;
 public final class ResourcePropertiesTester {
     @Test
     public void parcelable() {
-        ResourceProperties originalResourceProperties = new ResourceProperties("url");
+        ResourceProperties originalResourceProperties = new ResourceProperties(Randomizer.generateString());
         ResourceProperties parceledResourceProperties = Parceler.parcel(
             ResourceProperties.CREATOR, originalResourceProperties);
 

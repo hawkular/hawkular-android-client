@@ -18,6 +18,7 @@ package org.hawkular.client.android.backend.model;
 
 import org.assertj.core.api.Assertions;
 import org.hawkular.client.android.util.Parceler;
+import org.hawkular.client.android.util.Randomizer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,7 +29,8 @@ public final class AlertEvaluationTester {
     @Test
     public void parcelable() {
         AlertEvaluation originalAlertEvaluation = new AlertEvaluation(
-            new AlertEvaluationCondition(42, AlertType.THRESHOLD), "value", 42);
+            new AlertEvaluationCondition(Randomizer.generateNumber(), AlertType.THRESHOLD),
+            Randomizer.generateString(), Randomizer.generateNumber());
         AlertEvaluation parceledAlertEvaluation = Parceler.parcel
             (AlertEvaluation.CREATOR, originalAlertEvaluation);
 

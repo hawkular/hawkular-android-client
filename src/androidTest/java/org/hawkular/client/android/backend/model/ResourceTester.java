@@ -18,6 +18,7 @@ package org.hawkular.client.android.backend.model;
 
 import org.assertj.core.api.Assertions;
 import org.hawkular.client.android.util.Parceler;
+import org.hawkular.client.android.util.Randomizer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,7 +28,10 @@ import android.support.test.runner.AndroidJUnit4;
 public final class ResourceTester {
     @Test
     public void parcelable() {
-        Resource originalResource = new Resource("id", new ResourceType("id"), new ResourceProperties("url"));
+        Resource originalResource = new Resource(
+            Randomizer.generateString(),
+            new ResourceType(Randomizer.generateString()),
+            new ResourceProperties(Randomizer.generateString()));
         Resource parceledResource = Parceler.parcel(Resource.CREATOR, originalResource);
 
         Assertions.assertThat(parceledResource.getId()).isEqualTo(

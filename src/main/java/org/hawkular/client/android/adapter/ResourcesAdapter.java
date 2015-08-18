@@ -104,6 +104,7 @@ public final class ResourcesAdapter extends BaseAdapter {
         return false;
     }
 
+    @NonNull
     @Override
     public Resource getItem(int position) {
         return resources.get(getResourcePosition(position));

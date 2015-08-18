@@ -18,6 +18,7 @@ package org.hawkular.client.android.backend.model;
 
 import org.assertj.core.api.Assertions;
 import org.hawkular.client.android.util.Parceler;
+import org.hawkular.client.android.util.Randomizer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -28,7 +29,9 @@ public final class MetricTester {
     @Test
     public void parcelable() {
         Metric originalMetric = new Metric(
-            "id", new MetricProperties("description"), new MetricConfiguration(MetricType.AVAILABILITY));
+            Randomizer.generateString(),
+            new MetricProperties(Randomizer.generateString()),
+            new MetricConfiguration(MetricType.AVAILABILITY));
         Metric parceledMetric = Parceler.parcel(Metric.CREATOR, originalMetric);
 
         Assertions.assertThat(parceledMetric.getId()).isEqualTo(

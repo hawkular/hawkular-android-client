@@ -14,23 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.client.android.backend.model;
+package org.hawkular.client.android.util;
 
-import org.assertj.core.api.Assertions;
-import org.hawkular.client.android.util.Parceler;
-import org.hawkular.client.android.util.Randomizer;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.Random;
+import java.util.UUID;
 
-import android.support.test.runner.AndroidJUnit4;
+import android.support.annotation.NonNull;
 
-@RunWith(AndroidJUnit4.class)
-public final class TriggerTester {
-    @Test
-    public void parcelable() {
-        Trigger originalTrigger = new Trigger(Randomizer.generateString());
-        Trigger parceledTrigger = Parceler.parcel(Trigger.CREATOR, originalTrigger);
+public final class Randomizer {
+    private Randomizer() {
+    }
 
-        Assertions.assertThat(parceledTrigger.getId()).isEqualTo(originalTrigger.getId());
+    private static final class Limits {
+        private Limits() {
+        }
+
+        public static final int NUMBER = 42;
+    }
+
+    public static long generateNumber() {
+        return new Random().nextInt(Limits.NUMBER);
+    }
+
+    @NonNull
+    public static String generateString() {
+        return UUID.randomUUID().toString();
     }
 }

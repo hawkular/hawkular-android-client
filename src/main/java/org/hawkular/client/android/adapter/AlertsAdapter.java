@@ -71,6 +71,12 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
     }
 
     @Override
+    public int getCount() {
+        return alerts.size();
+    }
+
+    @NonNull
+    @Override
     public Alert getItem(int position) {
         return alerts.get(position);
     }
@@ -78,11 +84,6 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
     @Override
     public long getItemId(int position) {
         return position;
-    }
-
-    @Override
-    public int getCount() {
-        return alerts.size();
     }
 
     @NonNull

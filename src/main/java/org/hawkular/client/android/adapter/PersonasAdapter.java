@@ -50,6 +50,12 @@ public final class PersonasAdapter extends BindableAdapter<Persona> {
     }
 
     @Override
+    public int getCount() {
+        return personas.size();
+    }
+
+    @NonNull
+    @Override
     public Persona getItem(int position) {
         return personas.get(position);
     }
@@ -57,11 +63,6 @@ public final class PersonasAdapter extends BindableAdapter<Persona> {
     @Override
     public long getItemId(int position) {
         return position;
-    }
-
-    @Override
-    public int getCount() {
-        return personas.size();
     }
 
     @NonNull
