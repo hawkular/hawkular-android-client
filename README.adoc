@@ -19,3 +19,9 @@ Gradle, Android SDK and all dependencies will be downloaded automatically.
 ----
 $ ./gradlew clean assembleDebug
 ----
+
+== Reading
+
+There are some documents on the link:../../wiki[Wiki], including API overview, UI mockups
+and instructions on running necessary servers for using the client in common and
+push notifications specifically.
