@@ -23,6 +23,11 @@ import android.support.annotation.NonNull;
 import info.metadude.android.typedpreferences.IntPreference;
 import info.metadude.android.typedpreferences.StringPreference;
 
+/**
+ * Preference utilities.
+ *
+ * Configuration storage for simple objects, such as text and numbers.
+ */
 public final class Preferences {
     private static final class Locations {
         private Locations() {

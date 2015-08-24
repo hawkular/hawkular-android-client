@@ -50,6 +50,11 @@ import icepick.Icepick;
 import icepick.State;
 import timber.log.Timber;
 
+/**
+ * Resources fragment.
+ *
+ * Displays resources as a list.
+ */
 public final class ResourcesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.list)
     ListView list;

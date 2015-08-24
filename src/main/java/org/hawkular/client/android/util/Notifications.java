@@ -27,6 +27,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
+/**
+ * Notification utilities.
+ *
+ * Provides an ability to show notifications without any external configuration.
+ */
 public final class Notifications {
     private static final class Ids {
         private Ids() {

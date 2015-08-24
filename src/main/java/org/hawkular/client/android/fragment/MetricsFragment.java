@@ -51,6 +51,11 @@ import icepick.Icepick;
 import icepick.State;
 import timber.log.Timber;
 
+/**
+ * Metrics fragment.
+ *
+ * Displays metrics as a list.
+ */
 public final class MetricsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.list)
     ListView list;

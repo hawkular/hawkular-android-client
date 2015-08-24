@@ -57,6 +57,11 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
 import timber.log.Timber;
 
+/**
+ * Metric fragment.
+ *
+ * Displays metric gauge data as a line chart.
+ */
 public final class MetricGaugeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final class Defaults {
         private Defaults() {

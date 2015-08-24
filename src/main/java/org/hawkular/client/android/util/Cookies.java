@@ -19,6 +19,11 @@ package org.hawkular.client.android.util;
 import android.annotation.TargetApi;
 import android.webkit.CookieManager;
 
+/**
+ * Cookie utilities.
+ *
+ * The main goal at this point is clearing cookies the right way on all supported OS versions.
+ */
 public final class Cookies {
     private Cookies() {
     }

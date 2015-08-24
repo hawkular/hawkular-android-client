@@ -18,6 +18,11 @@ package org.hawkular.client.android.util;
 
 import android.support.annotation.IntRange;
 
+/**
+ * Port utilities.
+ *
+ * Provides port-related constants and checks a port for correctness.
+ */
 public final class Ports {
     private Ports() {
     }

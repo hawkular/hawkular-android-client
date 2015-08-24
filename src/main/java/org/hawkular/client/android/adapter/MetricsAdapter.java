@@ -31,6 +31,11 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Metrics adapter.
+ *
+ * Transforms a list of metrics to a human-readable interpretation.
+ */
 public final class MetricsAdapter extends BindableAdapter<Metric> {
     static final class ViewHolder {
         @Bind(R.id.text)

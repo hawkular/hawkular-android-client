@@ -24,6 +24,11 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 
+/**
+ * Format utilities.
+ *
+ * Formats time using locale-specific configurations used by OS itself.
+ */
 public final class Formatter {
     private Formatter() {
     }

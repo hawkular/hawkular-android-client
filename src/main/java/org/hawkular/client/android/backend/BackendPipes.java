@@ -16,6 +16,12 @@
  */
 package org.hawkular.client.android.backend;
 
+/**
+ * Backend {@link org.jboss.aerogear.android.pipe.Pipe} configuration constants.
+ *
+ * Contains common {@link org.jboss.aerogear.android.pipe.Pipe} parameters,
+ * including names, relative backend paths, parameters and headers.
+ */
 final class BackendPipes {
     private BackendPipes() {
     }

@@ -18,6 +18,11 @@ package org.hawkular.client.android.push;
 
 import org.hawkular.client.android.BuildConfig;
 
+/**
+ * Push constants.
+ *
+ * Contains constants used for push notifications configuration.
+ */
 final class PushConfiguration {
     private PushConfiguration() {
     }

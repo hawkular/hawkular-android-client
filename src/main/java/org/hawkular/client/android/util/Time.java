@@ -21,6 +21,11 @@ import java.util.Date;
 
 import android.support.annotation.NonNull;
 
+/**
+ * Time utilities.
+ *
+ * Provides easy-to-use milestone {@link java.util.Date} instances.
+ */
 public final class Time {
     private Time() {
     }

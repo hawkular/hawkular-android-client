@@ -37,6 +37,12 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Alerts adapter.
+ *
+ * Transforms a list of alerts to a human-readable interpretation, including proper formatting for alerts, based on
+ * Hawkular Web UI. Has an ability to attach a listener for alert-related operations menu.
+ */
 public final class AlertsAdapter extends BindableAdapter<Alert> {
     public interface AlertMenuListener {
         void onAlertMenuClick(View alertView, int alertPosition);

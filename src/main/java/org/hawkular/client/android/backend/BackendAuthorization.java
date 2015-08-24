@@ -16,6 +16,12 @@
  */
 package org.hawkular.client.android.backend;
 
+/**
+ * Backend authorization constants.
+ *
+ * Contains constants used for authorization configuration, especially useful
+ * for {@link org.jboss.aerogear.android.authorization.AuthzModule}.
+ */
 final class BackendAuthorization {
     private BackendAuthorization() {
     }

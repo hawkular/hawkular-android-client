@@ -31,6 +31,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+/**
+ * Intent utilities.
+ *
+ * {@link org.hawkular.client.android.util.Intents.Extras} contains extra-related constants.
+ * {@link org.hawkular.client.android.util.Intents.Builder} helps with building intents with right extras.
+ */
 public final class Intents {
     private Intents() {
     }

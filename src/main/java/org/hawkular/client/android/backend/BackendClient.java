@@ -54,6 +54,26 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 
+/**
+ * Backend client.
+ *
+ * A master controller for all backend-related operations.
+ *
+ * Configures proper {@link org.jboss.aerogear.android.pipe.module.PipeModule} instances for authorization
+ * using {@link org.jboss.aerogear.android.authorization.AuthorizationManager}. Configures used in the application
+ * {@link org.jboss.aerogear.android.pipe.Pipe} instances.
+ *
+ * Most of the configuration is stored using internal AeroGear long-lived objects. It is not necessary to handle
+ * this class objects as singletons, it is intended to be used as a short-lived object.
+ *
+ * As a rule of thumb, it is necessary to configure authorization using {@link #configureAuthorization(String)}
+ * or {@link #configureAuthorization(String, int)} in the beginning of the application lifecycle, most likely
+ * on the first screen. The next step is to configure {@link org.jboss.aerogear.android.pipe.Pipe} instances.
+ * The best time to to do so of course is after the authorization process.
+ *
+ * {@link org.jboss.aerogear.android.pipe.Pipe} instances are not exposed to class users, external API prefers
+ * {@link org.jboss.aerogear.android.core.Callback} over them.
+ */
 public final class BackendClient {
     private final Activity activity;
     private final Fragment fragment;

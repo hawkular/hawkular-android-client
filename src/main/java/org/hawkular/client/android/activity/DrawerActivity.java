@@ -62,6 +62,15 @@ import icepick.Icepick;
 import icepick.State;
 import timber.log.Timber;
 
+/**
+ * Drawer activity
+ *
+ * The very first and main from the navigation standpoint screen.
+ * Handles a {@link android.support.v4.widget.DrawerLayout}
+ * and {@link android.support.design.widget.NavigationView}.
+ * Manages personas and a current mode, i. e. Metrics and Alerts.
+ * Contains {@link org.hawkular.client.android.fragment.ResourcesFragment}
+ */
 public final class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
     Callback<String> {
     @Bind(R.id.toolbar)

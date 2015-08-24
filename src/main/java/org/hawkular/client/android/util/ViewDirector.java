@@ -24,6 +24,14 @@ import android.support.annotation.UiThread;
 import android.view.View;
 import android.widget.ViewAnimator;
 
+/**
+ * View director.
+ *
+ * Makes {@link android.widget.ViewAnimator} interaction better, automatically casting all necessary views
+ * and changing them only if necessary.
+ *
+ * It is necessary to call the {@link #using(int)} method before {@link #show(int)}.
+ */
 public final class ViewDirector {
     private final View sceneView;
 

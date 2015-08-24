@@ -33,6 +33,13 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 
+/**
+ * Fragment utilities.
+ *
+ * {@link org.hawkular.client.android.util.Fragments.Arguments} contains argument-related constants.
+ * {@link org.hawkular.client.android.util.Fragments.Builder} helps with building fragments with right arguments.
+ * {@link org.hawkular.client.android.util.Fragments.Operator} helps with setting fragments to right places.
+ */
 public final class Fragments {
     private Fragments() {
     }

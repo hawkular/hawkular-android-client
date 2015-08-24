@@ -55,6 +55,11 @@ import icepick.Icepick;
 import icepick.State;
 import timber.log.Timber;
 
+/**
+ * Alerts fragment.
+ *
+ * Displays alerts as a list with menus allowing some alert-related actions, such as acknowledgement and resolving.
+ */
 public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertMenuListener,
     SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.list)

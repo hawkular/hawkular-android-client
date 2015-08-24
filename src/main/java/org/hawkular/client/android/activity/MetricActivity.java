@@ -31,6 +31,13 @@ import android.view.MenuItem;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Metric activity.
+ *
+ * Can be considered as a wrapper for {@link org.hawkular.client.android.fragment.MetricAvailabilityFragment}
+ * and {@link org.hawkular.client.android.fragment.MetricGaugeFragment} depending
+ * on a passed {@link org.hawkular.client.android.backend.model.Resource}.
+ */
 public final class MetricActivity extends AppCompatActivity {
     @Bind(R.id.toolbar)
     Toolbar toolbar;

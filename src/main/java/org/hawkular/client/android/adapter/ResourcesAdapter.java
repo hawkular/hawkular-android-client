@@ -36,6 +36,12 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Resources adapter.
+ *
+ * Transforms a list of resources to a human-readable interpretation.
+ * This adapter splits resources to corresponding sections based on resource type.
+ */
 public final class ResourcesAdapter extends BaseAdapter {
     private static final class Types {
         private Types() {

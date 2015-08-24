@@ -30,6 +30,11 @@ import android.view.MenuItem;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Alerts activity.
+ *
+ * Can be considered as a wrapper for {@link org.hawkular.client.android.fragment.AlertsFragment}.
+ */
 public final class AlertsActivity extends AppCompatActivity {
     @Bind(R.id.toolbar)
     Toolbar toolbar;

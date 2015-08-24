@@ -31,11 +31,18 @@ import android.support.annotation.RequiresPermission;
 
 import timber.log.Timber;
 
+/**
+ * Push client.
+ *
+ * Serves as a configurator for push notifications. To use it properly it is necessary
+ * to call {@link #setUpPush()} method on the application startup. The registration will succeed
+ * only if {@link org.hawkular.client.android.push.PushConfiguration} has correct values.
+ */
 public final class PushClient implements Callback<Void> {
     private final Context context;
 
     @NonNull
-    @RequiresPermission(Manifest.permission.WAKE_LOCK)
+    @RequiresPermission(allOf = {Manifest.permission.INTERNET, Manifest.permission.WAKE_LOCK})
     public static PushClient of(@NonNull Context context) {
         return new PushClient(context);
     }

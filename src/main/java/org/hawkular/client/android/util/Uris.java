@@ -27,6 +27,11 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+/**
+ * URI utilities.
+ *
+ * Handles {@link java.net.URI} creation from various components.
+ */
 public final class Uris {
     private Uris() {
     }

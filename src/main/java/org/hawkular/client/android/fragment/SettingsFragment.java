@@ -30,6 +30,11 @@ import android.view.View;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
+/**
+ * Settings fragment.
+ *
+ * Displays settings, at this point contains only the logging out action.
+ */
 public final class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
     @BindString(R.string.settings_key_account_sign_out)
     String accountKey;

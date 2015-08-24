@@ -31,6 +31,11 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+/**
+ * Personas adapter.
+ *
+ * Transforms a list of personas to a human-readable interpretation.
+ */
 public final class PersonasAdapter extends BindableAdapter<Persona> {
     static final class ViewHolder {
         @Bind(R.id.text)

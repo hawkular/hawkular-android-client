@@ -23,6 +23,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+/**
+ * Bindable adapter.
+ *
+ * Abstract adapter helping with actual view creation splitting to creation itself and information binding.
+ * Based on {@link android.widget.CursorAdapter} API.
+ */
 abstract class BindableAdapter<T> extends BaseAdapter {
     private final LayoutInflater inflater;
 

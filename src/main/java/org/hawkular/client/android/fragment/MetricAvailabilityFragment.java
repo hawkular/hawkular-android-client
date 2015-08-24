@@ -59,6 +59,11 @@ import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
 import timber.log.Timber;
 
+/**
+ * Metric fragment.
+ *
+ * Displays metric availability data as a bar chart.
+ */
 public final class MetricAvailabilityFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final class Defaults {
         private Defaults() {

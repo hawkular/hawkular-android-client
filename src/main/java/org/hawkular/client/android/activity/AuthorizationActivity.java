@@ -43,6 +43,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
+/**
+ * Authorization activity.
+ *
+ * Performs all related to authorization user operations, including accepting server host and port information
+ * and triggering the OAuth flow.
+ */
 public final class AuthorizationActivity extends AppCompatActivity implements Callback<String> {
     @Bind(R.id.toolbar)
     Toolbar toolbar;

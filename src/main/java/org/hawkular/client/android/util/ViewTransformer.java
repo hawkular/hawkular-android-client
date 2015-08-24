@@ -26,6 +26,11 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.view.View;
 
+/**
+ * View transformer.
+ *
+ * Applies different animations to {@link android.view.View} instances.
+ */
 public final class ViewTransformer implements ValueAnimator.AnimatorUpdateListener {
     private static final class Durations {
         private Durations() {

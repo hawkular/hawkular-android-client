@@ -24,6 +24,11 @@ import org.jboss.aerogear.android.pipe.util.UrlUtils;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
+/**
+ * URL utilities.
+ *
+ * Handles {@link java.net.URL} creation from various components.
+ */
 public final class Urls {
     private Urls() {
     }

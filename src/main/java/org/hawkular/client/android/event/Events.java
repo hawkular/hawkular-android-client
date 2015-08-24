@@ -20,6 +20,15 @@ import com.squareup.otto.Bus;
 
 import android.support.annotation.NonNull;
 
+/**
+ * Events handler.
+ *
+ * Basically handles a {@link com.squareup.otto.Bus} reference.
+ *
+ * Use it carefully as a callbacks replacement for application components,
+ * such as {@link android.app.Activity}, {@link android.app.Fragment},
+ * {@link android.app.Service} and {@link android.content.BroadcastReceiver}.
+ */
 public final class Events {
     private Events() {
     }

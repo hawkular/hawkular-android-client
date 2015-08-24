@@ -24,6 +24,11 @@ import android.os.Bundle;
 
 import timber.log.Timber;
 
+/**
+ * Push handler.
+ *
+ * Receives push notifications. Is not used or instantiated directly, but needs to be declared at the manifest.
+ */
 public final class PushHandler implements MessageHandler {
     private static final class MessageFields {
         private MessageFields() {

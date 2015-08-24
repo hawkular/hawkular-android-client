@@ -22,6 +22,11 @@ import android.view.View;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+/**
+ * View utilities.
+ *
+ * The most useful ability at this point is measuring {@link android.view.View} instances.
+ */
 public final class Views {
     private Views() {
     }

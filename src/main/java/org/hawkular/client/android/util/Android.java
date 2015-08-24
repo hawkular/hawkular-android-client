@@ -20,6 +20,11 @@ import org.hawkular.client.android.BuildConfig;
 
 import android.os.Build;
 
+/**
+ * Android utilities.
+ *
+ * Provides basic OS-related information in the single place.
+ */
 public final class Android {
     public static class Versions {
         private Versions() {

@@ -16,6 +16,11 @@
  */
 package org.hawkular.client.android.backend;
 
+/**
+ * Backend endpoints.
+ *
+ * Default endpoint configurations, such as a demo server.
+ */
 public final class BackendEndpoints {
     private BackendEndpoints() {
     }

@@ -25,6 +25,12 @@ import org.jboss.aerogear.android.pipe.module.PipeModule;
 
 import android.support.annotation.NonNull;
 
+/**
+ * Backend personnel module.
+ *
+ * A {@link org.jboss.aerogear.android.pipe.module.PipeModule} handling persona
+ * manipulations, especially setting proper HTTP headers to outgoing requests.
+ */
 final class BackendPersonnel implements PipeModule {
     private final Persona persona;
 
