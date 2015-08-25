@@ -86,7 +86,8 @@
             <exclude>gradle/</exclude>
             <exclude>gradlew</exclude>
             <exclude>gradlew.bat</exclude>
-            <exclude>local.properties</exclude>
+            <exclude>**/*.pro</exclude>
+            <exclude>**/*.properties</exclude>
           </excludes>
         </configuration>
       </plugin>
