@@ -16,9 +16,20 @@ endif::[]
 You will need JDK 1.7+ installed.
 Gradle, Android SDK and all dependencies will be downloaded automatically.
 
-----
+=== Debug
+
+-----
 $ ./gradlew clean assembleDebug
-----
+-----
+
+=== Release
+
+-----
+$ cp properties/signing.properties .
+$ vi signing.properties
+
+$ ./gradlew clean assembleRelease
+-----
 
 == Reading
 

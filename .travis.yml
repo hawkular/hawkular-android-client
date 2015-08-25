@@ -12,3 +12,11 @@ android:
 
 script:
   - mvn --settings maven.settings.xml license:check checkstyle:check && ./gradlew clean assembleDebug
+
+cache:
+  directories:
+    - $HOME/.gradle
+    - $HOME/.m2
+
+sudo:
+  false

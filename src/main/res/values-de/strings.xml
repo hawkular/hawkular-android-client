@@ -19,21 +19,22 @@
 -->
 <resources>
 
-  <string name="title_alerts">Alarme</string>
-  <string name="title_authorization">Anmeldung</string>
-  <string name="title_metric">Metrik-Daten</string>
-  <string name="title_metrics">Metriken</string>
-  <string name="title_resources">Ressourcen</string>
-
   <string name="button_authorize">Autorisieren</string>
   <string name="button_retry">Nochmals versuchen</string>
 
-  <string name="menu_settings">Einstellungen</string>
-
   <string name="error_authorization_host_port">Host oder Port sind falsch</string>
-  <string name="error_authorization_port">Muss eine Zahl zwischen 1 und 65535 sein</string>
+  <string name="error_authorization_port">Sollte eine korrekte Zahl sein.</string>
   <string name="error_empty">Darf nicht leer sein</string>
   <string name="error_general">Etwas ist fehlgeschlagen. Bitte versuchen Sie es erneut.</string>
+
+  <string name="hint_host">Host</string>
+  <string name="hint_port">Port</string>
+
+  <string name="label_authorization_description">Bitte geben Sie den Ort des Servers an. Im nächsten Schritt müssen Sie die Zugangsdaten angeben.</string>
+  <string name="label_authorization_title">Sie müssen sich am Hawkular-Server anmelden.</string>
+  <string name="label_authorization_support">Die unterstützte Hawkular-Version ist 1.0.0 Alpha 2.</string>
+  <string name="label_availability_up">Bis</string>
+  <string name="label_availability_down">Unten</string>
 
   <string name="mask_alert_availability">Server war für %1$d Sekunden nicht erreichbar (bis %2$s).</string>
   <string name="mask_alert_threshold">Antwortzeit war über dem Schwellwert (%1$.1f ms) für %2$d Sekunden (bis %3$s). Die durchschnittliche Antwortzeit war %4$.1f ms.</string>
@@ -48,8 +49,21 @@
   <string name="menu_time_week">Woche</string>
   <string name="menu_time_year">Jahr</string>
 
-  <string name="label_authorization_description">Bitte geben Sie den Ort des Servers an. Im nächsten Schritt müssen Sie die Zugangsdaten angeben.</string>
-  <string name="label_authorization_title">Sie müssen sich am Hawkular-Server anmelden.</string>
-  <string name="label_authorization_support">Die unterstützte Hawkular-Version ist 1.0.0 Alpha 2.</string>
+  <string name="message_empty">Nichts hier</string>
+  <string name="message_empty_tip">Naja, noch nicht. Besuchen Sie die web-Schnittstelle zu produzieren.</string>
+  <string name="message_general">Hoppla, ging etwas schief.</string>
+
+  <string name="notification_alert">Einige Metrik ist nicht in der Stimmung.</string>
+
+  <string name="settings_category_account">Account</string>
+  <string name="settings_description_account_sign_out">Account löschen und von vorne zu beginnen.</string>
+  <string name="settings_title_account_sign_out">Abmelden</string>
+
+  <string name="title_alerts">Alarme</string>
+  <string name="title_authorization">Anmeldung</string>
+  <string name="title_metric">Metrik-Daten</string>
+  <string name="title_metrics">Metriken</string>
+  <string name="title_resources">Ressourcen</string>
+  <string name="title_settings">Einstellungen</string>
 
 </resources>

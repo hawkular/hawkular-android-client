@@ -21,29 +21,22 @@
 
   <string name="application_name" translatable="false">Hawkular</string>
 
-  <string name="title_alerts">Alerts</string>
-  <string name="title_authorization">Authorization</string>
-  <string name="title_metric">Metric</string>
-  <string name="title_metrics">Metrics</string>
-  <string name="title_resources">Resources</string>
-  <string name="title_settings">Settings</string>
-
   <string name="button_authorize">Authorize</string>
   <string name="button_retry">Try again</string>
-
-  <string name="hint_host">Host</string>
-  <string name="hint_port">Port</string>
 
   <string name="error_authorization_host_port">Something is wrong with host or port.</string>
   <string name="error_authorization_port">Should be a correct number.</string>
   <string name="error_empty">Should not be empty.</string>
   <string name="error_general">Something is wrong, please try again.</string>
 
-  <string name="message_empty">Nothing here</string>
-  <string name="message_empty_tip">Well, not yet. Visit the web interface to produce some.</string>
-  <string name="message_general">Oops, something went wrong.</string>
+  <string name="hint_host">Host</string>
+  <string name="hint_port">Port</string>
 
-  <string name="notification_alert">Some metric is not in the mood.</string>
+  <string name="label_authorization_description">Please provide the server location. The next step will require the credentials.</string>
+  <string name="label_authorization_title">Authorization using a Hawkular server is necessary.</string>
+  <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 3.</string>
+  <string name="label_availability_up">Up</string>
+  <string name="label_availability_down">Down</string>
 
   <string name="mask_alert_availability">Server was down for %1$d seconds (until %2$s).</string>
   <string name="mask_alert_threshold">Response time was above the threshold (%1$.1f ms) for %2$d seconds (until %3$s). The average response time was %4$.1f ms.</string>
@@ -53,7 +46,7 @@
   <string name="menu_feedback">Help &amp; feedback</string>
   <string name="menu_metrics" translatable="false">@string/title_metrics</string>
   <string name="menu_resolve">Resolve</string>
-  <string name="menu_settings">Settings</string>
+  <string name="menu_settings" translatable="false">@string/title_settings</string>
   <string name="menu_time">Time</string>
   <string name="menu_time_day">Day</string>
   <string name="menu_time_hour">Hour</string>
@@ -61,15 +54,21 @@
   <string name="menu_time_week">Week</string>
   <string name="menu_time_year">Year</string>
 
-  <string name="label_authorization_description">Please provide the server location. The next step will require the credentials.</string>
-  <string name="label_authorization_title">Authorization using a Hawkular server is necessary.</string>
-  <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 3.</string>
-  <string name="label_availability_up">Up</string>
-  <string name="label_availability_down">Down</string>
+  <string name="message_empty">Nothing here</string>
+  <string name="message_empty_tip">Well, not yet. Visit the web interface to produce some.</string>
+  <string name="message_general">Oops, something went wrong.</string>
+
+  <string name="notification_alert">Some metric is not in the mood.</string>
 
   <string name="settings_category_account">Account</string>
   <string name="settings_description_account_sign_out">Remove account and start from scratch.</string>
   <string name="settings_title_account_sign_out">Sign Out</string>
 
-</resources>
+  <string name="title_alerts">Alerts</string>
+  <string name="title_authorization">Authorization</string>
+  <string name="title_metric">Metric</string>
+  <string name="title_metrics">Metrics</string>
+  <string name="title_resources">Resources</string>
+  <string name="title_settings">Settings</string>
 
+</resources>
