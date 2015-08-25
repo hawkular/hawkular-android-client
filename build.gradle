@@ -49,19 +49,21 @@ android {
 
         def serverProperties = readProperties("server.properties")
 
-        buildConfigField "String", "UPS_URL", formatStringField(serverProperties["ups.url"])
-        buildConfigField "String", "UPS_VARIANT", formatStringField(serverProperties["ups.variant"])
-        buildConfigField "String", "UPS_SECRET", formatStringField(serverProperties["ups.secret"])
-        buildConfigField "String", "GCM_SENDER", formatStringField(serverProperties["gcm.sender"])
+        buildConfigField "String", "UPS_URL", formatStringField(readProperty(serverProperties, "ups.url"))
+        buildConfigField "String", "UPS_VARIANT", formatStringField(readProperty(serverProperties, "ups.variant"))
+        buildConfigField "String", "UPS_SECRET", formatStringField(readProperty(serverProperties, "ups.secret"))
+        buildConfigField "String", "GCM_SENDER", formatStringField(readProperty(serverProperties, "gcm.sender"))
 
         signingConfigs {
             release {
-                def signingProperties = readProperties("signing.properties")
+                if (file("signing.properties").exists()) {
+                    def signingProperties = readProperties("signing.properties")
 
-                storeFile file(signingProperties["keystore.file"])
-                storePassword signingProperties["keystore.password"]
-                keyAlias signingProperties["key.alias"]
-                keyPassword signingProperties["key.password"]
+                    storeFile file(readProperty(signingProperties, "keystore.file"))
+                    storePassword readProperty(signingProperties, "keystore.password")
+                    keyAlias readProperty(signingProperties, "key.alias")
+                    keyPassword readProperty(signingProperties, "key.password")
+                }
             }
         }
 
@@ -97,18 +99,24 @@ def readProperties(propertiesFileName) {
     return properties
 }
 
-def formatStringField(field) {
-    if (field) {
-        return "\"${field}\""
+def readProperty(properties, propertyName) {
+    def property = properties[propertyName]
+
+    if (property) {
+        return property
     } else {
-        return "\"\""
+        return ""
     }
+}
+
+def formatStringField(field) {
+    return "\"${field}\""
 }
 
 def readProguardFiles() {
     def proguardFiles = []
 
-    proguardFiles << getDefaultProguardFile("proguard-android.txt")
+    proguardFiles << android.getDefaultProguardFile("proguard-android.txt")
 
     file("proguard").eachFile { proguardFile ->
         proguardFiles << proguardFile
