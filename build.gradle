@@ -43,24 +43,38 @@ android {
         minSdkVersion 16
         targetSdkVersion 22
 
-        def serverFile = file("server.properties")
-        def serverProperties = new Properties()
-
-        if (serverFile.exists()) {
-            serverProperties.load(serverFile.newInputStream())
-
-            buildConfigField "String", "UPS_URL", formatStringField(serverProperties["ups.url"])
-            buildConfigField "String", "UPS_VARIANT", formatStringField(serverProperties["ups.variant"])
-            buildConfigField "String", "UPS_SECRET", formatStringField(serverProperties["ups.secret"])
-            buildConfigField "String", "GCM_SENDER", formatStringField(serverProperties["gcm.sender"])
-        } else {
-            buildConfigField "String", "UPS_URL", formatStringField("")
-            buildConfigField "String", "UPS_VARIANT", formatStringField("")
-            buildConfigField "String", "UPS_SECRET", formatStringField("")
-            buildConfigField "String", "GCM_SENDER", formatStringField("")
-        }
+        resConfigs "en", "de"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        def serverProperties = readProperties("server.properties")
+
+        buildConfigField "String", "UPS_URL", formatStringField(serverProperties["ups.url"])
+        buildConfigField "String", "UPS_VARIANT", formatStringField(serverProperties["ups.variant"])
+        buildConfigField "String", "UPS_SECRET", formatStringField(serverProperties["ups.secret"])
+        buildConfigField "String", "GCM_SENDER", formatStringField(serverProperties["gcm.sender"])
+
+        signingConfigs {
+            release {
+                def signingProperties = readProperties("signing.properties")
+
+                storeFile file(signingProperties["keystore.file"])
+                storePassword signingProperties["keystore.password"]
+                keyAlias signingProperties["key.alias"]
+                keyPassword signingProperties["key.password"]
+            }
+        }
+
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+
+                minifyEnabled true
+                shrinkResources true
+
+                proguardFiles readProguardFiles()
+            }
+        }
     }
 }
 
@@ -72,8 +86,35 @@ def buildVersionCode(versionMajor, versionMinor, versionPatch) {
     return versionMajor * 10 ** 2 + versionMinor * 10 ** 1 + versionPatch * 10 ** 0
 }
 
+def readProperties(propertiesFileName) {
+    def properties = new Properties()
+    def propertiesFile = file(propertiesFileName)
+
+    if (propertiesFile.exists()) {
+        properties.load(propertiesFile.newInputStream())
+    }
+
+    return properties
+}
+
 def formatStringField(field) {
-    return "\"${field}\""
+    if (field) {
+        return "\"${field}\""
+    } else {
+        return "\"\""
+    }
+}
+
+def readProguardFiles() {
+    def proguardFiles = []
+
+    proguardFiles << getDefaultProguardFile("proguard-android.txt")
+
+    file("proguard").eachFile { proguardFile ->
+        proguardFiles << proguardFile
+    }
+
+    return proguardFiles
 }
 
 dependencies {
