@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,10 +40,11 @@ final class BackendAuthorization {
         private Endpoints() {
         }
 
-        public static final String ACCESS = "/realms/hawkular/tokens/access/codes";
-        public static final String AUTHZ = "/realms/hawkular/tokens/login";
-        public static final String REFRESH = "/realms/hawkular/tokens/refresh";
+        public static final String ACCESS = "/realms/hawkular/protocol/openid-connect/token";
+        public static final String AUTHZ = "/realms/hawkular/protocol/openid-connect/auth";
+        public static final String REFRESH = "/realms/hawkular/protocol/openid-connect/token";
     }
+
 
     public static final class Paths {
         private Paths() {

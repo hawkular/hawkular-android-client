@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,8 +56,8 @@ final class BackendPipes {
         public static final String METRICS = "inventory/%s/resources/%s/metrics";
         public static final String METRIC_DATA_AVAILABILITY= "metrics/availability/%s/data";
         public static final String METRIC_DATA_GAUGE = "metrics/gauges/%s/data";
-        public static final String PERSONA = "hawkular-accounts/personas/current";
-        public static final String PERSONAS = "hawkular-accounts/personas";
+        public static final String PERSONA = "hawkular/accounts/personas/current";
+        public static final String PERSONAS = "hawkular/accounts/personas";
         public static final String RESOURCES = "inventory/%s/resources";
         public static final String TRIGGERS = "alerts/triggers";
     }
