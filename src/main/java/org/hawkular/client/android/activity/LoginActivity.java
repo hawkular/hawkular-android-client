@@ -108,15 +108,17 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null) {
+        if (scanResult != null && scanResult.getContents()!=null) {
             BackendClient.of(this).configureAuthorization();
             String authorization= scanResult.getContents();
             String[] authArray=authorization.split(",");
-            Preferences.of(LoginActivity.this).key().set(authArray[0]);
-            Preferences.of(LoginActivity.this).secret().set(authArray[1]);
-            setUpBackendCommunication(getMockPersona());
+            if(authArray.length>=2) {
+                Preferences.of(LoginActivity.this).key().set(authArray[0]);
+                Preferences.of(LoginActivity.this).secret().set(authArray[1]);
+                setUpBackendCommunication(getMockPersona());
 
-            setUpPersona();
+                setUpPersona();
+            }
         }
     }
 

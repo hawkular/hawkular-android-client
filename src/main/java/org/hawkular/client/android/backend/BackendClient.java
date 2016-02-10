@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,6 +33,8 @@ import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Trigger;
+import org.hawkular.client.android.util.ModifiedAuthzModule;
+import org.hawkular.client.android.util.ModuleKeeper;
 import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Uris;
 import org.hawkular.client.android.util.Urls;
@@ -66,11 +68,7 @@ import android.support.annotation.RequiresPermission;
  * Most of the configuration is stored using internal AeroGear long-lived objects. It is not necessary to handle
  * this class objects as singletons, it is intended to be used as a short-lived object.
  *
- * As a rule of thumb, it is necessary to configure authorization using {@link #configureAuthorization(String)}
- * or {@link #configureAuthorization(String, int)} in the beginning of the application lifecycle, most likely
- * on the first screen. The next step is to configure {@link org.jboss.aerogear.android.pipe.Pipe} instances.
- * The best time to to do so of course is after the authorization process.
- *
+
  * {@link org.jboss.aerogear.android.pipe.Pipe} instances are not exposed to class users, external API prefers
  * {@link org.jboss.aerogear.android.core.Callback} over them.
  */
@@ -93,32 +91,16 @@ public final class BackendClient {
     private BackendClient(Activity activity, Fragment fragment) {
         this.activity = activity;
         this.fragment = fragment;
+
     }
 
-    public void configureAuthorization(@NonNull String host) {
-        URL backendUrl = Urls.getUrl(host);
 
-        configureAuthorization(backendUrl);
+
+    public void configureAuthorization() {
+        ModuleKeeper.modules.put("hawkular", new ModifiedAuthzModule(activity.getApplicationContext()));
+
     }
 
-    public void configureAuthorization(@NonNull String host,
-                                       @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port) {
-        URL backendUrl = Urls.getUrl(host, port);
-
-        configureAuthorization(backendUrl);
-    }
-
-    private void configureAuthorization(URL backendUrl) {
-        AuthorizationManager.config(BackendAuthorization.NAME, OAuth2AuthorizationConfiguration.class)
-            .setBaseURL(Urls.getUrl(backendUrl, BackendAuthorization.Paths.BASE))
-            .setRedirectURL(Urls.getUrl(backendUrl, BackendAuthorization.Paths.REDIRECT).toString())
-            .setAccessTokenEndpoint(BackendAuthorization.Endpoints.ACCESS)
-            .setAuthzEndpoint(BackendAuthorization.Endpoints.AUTHZ)
-            .setRefreshEndpoint(BackendAuthorization.Endpoints.REFRESH)
-            .setAccountId(BackendAuthorization.Ids.ACCOUNT)
-            .setClientId(BackendAuthorization.Ids.CLIENT)
-            .asModule();
-    }
 
     public void configureCommunication(@NonNull String host, @NonNull Persona persona) {
         URL backendUrl = Urls.getUrl(host);
@@ -155,7 +137,9 @@ public final class BackendClient {
     }
 
     private AuthzModule getAuthorizationModule() {
-        return AuthorizationManager.getModule(BackendAuthorization.NAME);
+
+            return ModuleKeeper.modules.get("hawkular");
+
     }
 
     private PipeModule getPersonnelModule(Persona persona) {
