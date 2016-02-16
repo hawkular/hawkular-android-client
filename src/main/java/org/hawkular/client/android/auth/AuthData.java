@@ -16,16 +16,15 @@
  */
 package org.hawkular.client.android.auth;
 
-import java.util.HashMap;
-import java.util.Map;
+public final class AuthData {
+    public static final String NAME = "hawkular";
+    public static final String STORE = "sessionStore";
 
-/**
- * ModuleKeeper.
- * <p/>
- * This class have sole reason for storing the Authentication module.
- * So that can be accessed from anywhere in the code at any time.
- */
+    public static final class Endpoints {
+        private Endpoints() {
+        }
 
-public final class ModuleKeeper {
-    public static Map<String, SecretStoreAuthzModule> modules = new HashMap<String, SecretStoreAuthzModule>();
+        public static final String ACCESS = "/secret-store/v1/tokens/create";
+    }
+
 }
