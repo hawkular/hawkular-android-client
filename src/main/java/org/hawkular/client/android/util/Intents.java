@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ package org.hawkular.client.android.util;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.activity.AlertsActivity;
 import org.hawkular.client.android.activity.AuthorizationActivity;
+import org.hawkular.client.android.activity.LoginActivity;
 import org.hawkular.client.android.activity.MetricActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
 import org.hawkular.client.android.activity.SettingsActivity;
@@ -48,6 +49,8 @@ public final class Intents {
         public static final String ENVIRONMENT = "environment";
         public static final String RESOURCE = "resource";
         public static final String METRIC = "metric";
+        public static final String HOST = "host";
+        public static final String PORT = "port";
     }
 
     public static final class Requests {
@@ -121,6 +124,15 @@ public final class Intents {
         @NonNull
         public Intent buildSettingsIntent() {
             return new Intent(context, SettingsActivity.class);
+        }
+
+        @NonNull
+        public Intent buildLoginIntent(@NonNull String host, @NonNull String port) {
+            Intent intent = new Intent(context, LoginActivity.class);
+            intent.putExtra(Extras.HOST, host);
+            intent.putExtra(Extras.PORT, port);
+
+            return intent;
         }
     }
 }

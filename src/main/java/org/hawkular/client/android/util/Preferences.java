@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,7 @@ import info.metadude.android.typedpreferences.StringPreference;
  * Configuration storage for simple objects, such as text and numbers.
  */
 public final class Preferences {
+    public static final String EXIST= "exist";
     private static final class Locations {
         private Locations() {
         }
@@ -88,5 +89,10 @@ public final class Preferences {
     @NonNull
     public StringPreference personaName() {
         return new StringPreference(serverPreferences, Keys.BACKEND_PERSONA_NAME);
+    }
+
+    @NonNull
+    public StringPreference exist() {
+        return new StringPreference(serverPreferences, EXIST);
     }
 }
