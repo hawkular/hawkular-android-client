@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-    Copyright 2015 Red Hat, Inc. and/or its affiliates
+    Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,73 +18,60 @@
 
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="org.hawkular.client.android"
-  android:installLocation="auto">
+          package="org.hawkular.client.android"
+          android:installLocation="auto">
 
-  <uses-permission
-    android:name="android.permission.INTERNET"/>
-  <uses-permission
-    android:name="android.permission.WAKE_LOCK"/>
-
-  <uses-permission
-    android:name="com.google.android.c2dm.permission.RECEIVE"/>
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
 
   <permission
-    android:name="org.hawkular.client.android.permission.C2D_MESSAGE"
-    android:protectionLevel="signature"/>
-  <uses-permission
-    android:name="org.hawkular.client.android.permission.C2D_MESSAGE"/>
+      android:name="org.hawkular.client.android.permission.C2D_MESSAGE"
+      android:protectionLevel="signature"/>
+
+  <uses-permission android:name="org.hawkular.client.android.permission.C2D_MESSAGE"/>
 
   <application
-    android:allowBackup="false"
-    android:icon="@mipmap/ic_launcher"
-    android:name=".HawkularApplication"
-    android:label="@string/application_name"
-    android:theme="@style/Theme.Hawkular">
-
+      android:name=".HawkularApplication"
+      android:allowBackup="false"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/application_name"
+      android:theme="@style/Theme.Hawkular">
     <activity
-      android:name=".activity.DrawerActivity"
-      android:theme="@style/Theme.Hawkular.Drawer">
-
+        android:name=".activity.DrawerActivity"
+        android:theme="@style/Theme.Hawkular.Drawer">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
+
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
-
+    </activity>
+    <activity
+        android:name=".activity.AuthorizationActivity"
+        android:label="@string/title_authorization">
+    </activity>
+    <activity
+        android:name=".activity.MetricsActivity"
+        android:label="@string/title_metrics">
+    </activity>
+    <activity
+        android:name=".activity.MetricActivity"
+        android:label="@string/title_metric">
+    </activity>
+    <activity
+        android:name=".activity.AlertsActivity"
+        android:label="@string/title_alerts"/>
+    <activity
+        android:name=".activity.SettingsActivity"
+        android:label="@string/title_settings">
     </activity>
 
-    <activity
-      android:name=".activity.AuthorizationActivity"
-      android:label="@string/title_authorization">
-    </activity>
-
-    <activity
-      android:name=".activity.MetricsActivity"
-      android:label="@string/title_metrics">
-    </activity>
-
-    <activity
-      android:name=".activity.MetricActivity"
-      android:label="@string/title_metric">
-    </activity>
-
-    <activity
-      android:name=".activity.AlertsActivity"
-      android:label="@string/title_alerts"/>
-
-    <activity
-      android:name=".activity.SettingsActivity"
-      android:label="@string/title_settings">
-    </activity>
-
-    <service
-      android:name="org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthzService">
+    <service android:name="org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthzService">
     </service>
 
     <receiver
-      android:name="org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMMessageReceiver"
-      android:permission="com.google.android.c2dm.permission.SEND">
-
+        android:name="org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMMessageReceiver"
+        android:permission="com.google.android.c2dm.permission.SEND">
       <intent-filter>
         <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
         <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
@@ -93,11 +80,18 @@
       </intent-filter>
 
       <meta-data
-        android:name="DEFAULT_MESSAGE_HANDLER_KEY"
-        android:value="org.hawkular.client.android.push.PushHandler"/>
-
+          android:name="DEFAULT_MESSAGE_HANDLER_KEY"
+          android:value="org.hawkular.client.android.push.PushHandler"/>
     </receiver>
 
+    <activity
+        android:name=".activity.LoginActivity"
+        android:label="@string/title_activity_login"
+        android:parentActivityName=".activity.AuthorizationActivity">
+      <meta-data
+          android:name="android.support.PARENT_ACTIVITY"
+          android:value="org.hawkular.client.android.activity.AuthorizationActivity"/>
+    </activity>
   </application>
 
 </manifest>

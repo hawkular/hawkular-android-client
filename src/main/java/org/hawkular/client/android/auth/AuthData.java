@@ -14,22 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.client.android.backend;
+package org.hawkular.client.android.auth;
 
-/**
- * Backend endpoints.
- *
- * Default endpoint configurations, such as a demo server.
- */
-public final class BackendEndpoints {
-    private BackendEndpoints() {
-    }
+public final class AuthData {
+    public static final String NAME = "hawkular";
+    public static final String STORE = "sessionStore";
 
-    public static final class Demo {
-        private Demo() {
+    public static final class Endpoints {
+        private Endpoints() {
         }
 
-        public static final String HOST = "192.168.1.12";
-        public static final String PORT = "8080";
+        public static final String ACCESS = "/secret-store/v1/tokens/create";
     }
+
 }

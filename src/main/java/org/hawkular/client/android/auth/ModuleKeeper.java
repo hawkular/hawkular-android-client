@@ -14,22 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.client.android.backend;
+package org.hawkular.client.android.auth;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Backend endpoints.
- *
- * Default endpoint configurations, such as a demo server.
+ * ModuleKeeper.
+ * <p/>
+ * This class have sole reason for storing the Authentication module.
+ * So that can be accessed from anywhere in the code at any time.
  */
-public final class BackendEndpoints {
-    private BackendEndpoints() {
-    }
 
-    public static final class Demo {
-        private Demo() {
-        }
-
-        public static final String HOST = "192.168.1.12";
-        public static final String PORT = "8080";
-    }
+public final class ModuleKeeper {
+    public static Map<String, SecretStoreAuthzModule> modules = new HashMap<String, SecretStoreAuthzModule>();
 }
