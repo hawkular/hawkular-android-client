@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -136,14 +136,15 @@ public final class BackendClient {
 
     private void configurePipes(URL backendUrl, Persona persona) {
         URL pipeUrl = Urls.getUrl(backendUrl, BackendPipes.Paths.ROOT);
-
+        URL alertResolveUrl = Urls.getUrl(pipeUrl, BackendPipes.Paths.ALERT_RESOLVE);
+        URL alertAckUrl = Urls.getUrl(pipeUrl, BackendPipes.Paths.ALERT_ACKNOWLEDGE);
         List<PipeModule> pipeModules = Arrays.asList(
             getAuthorizationModule(),
             getPersonnelModule(persona));
 
         configurePipe(BackendPipes.Names.ALERTS, pipeUrl, pipeModules, Alert.class);
-        configurePipe(BackendPipes.Names.ALERT_ACKNOWLEDGE, pipeUrl, pipeModules, String.class);
-        configurePipe(BackendPipes.Names.ALERT_RESOLVE, pipeUrl, pipeModules, String.class);
+        configurePipe(BackendPipes.Names.ALERT_ACKNOWLEDGE, alertAckUrl, pipeModules, String.class);
+        configurePipe(BackendPipes.Names.ALERT_RESOLVE, alertResolveUrl, pipeModules, String.class);
         configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
         configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
         configurePipe(BackendPipes.Names.METRIC_DATA_AVAILABILITY, pipeUrl, pipeModules, MetricData.class);
@@ -211,16 +212,12 @@ public final class BackendClient {
 
     public void acknowledgeAlert(@NonNull Alert alert,
                                  @NonNull Callback<List<String>> callback) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.ALERT_ACKNOWLEDGE, alert.getId()));
-
-        readPipe(BackendPipes.Names.ALERT_ACKNOWLEDGE, uri, callback);
+        savePipe(BackendPipes.Names.ALERT_ACKNOWLEDGE, alert, callback);
     }
 
     public void resolveAlert(@NonNull Alert alert,
                              @NonNull Callback<List<String>> callback) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.ALERT_RESOLVE, alert.getId()));
-
-        readPipe(BackendPipes.Names.ALERT_RESOLVE, uri, callback);
+        savePipe(BackendPipes.Names.ALERT_RESOLVE, alert, callback);
     }
 
     public void getEnvironments(@NonNull Callback<List<Environment>> callback) {
@@ -288,6 +285,11 @@ public final class BackendClient {
     @SuppressWarnings("unchecked")
     private <T> void readPipe(String pipeName, URI uri, Callback<List<T>> callback) {
         getPipe(pipeName).read(getFilter(uri), callback);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> void savePipe(String pipeName, Object object, Callback<List<T>> callback) {
+        getPipe(pipeName).save(object, callback);
     }
 
     private LoaderPipe getPipe(String pipeName) {
