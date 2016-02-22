@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +43,6 @@ final class BackendPersonnel implements PipeModule {
         ModuleFields fields = new ModuleFields();
 
         fields.addHeader(BackendPipes.Headers.PERSONA, persona.getId());
-        fields.addHeader(BackendPipes.Headers.TENANT, persona.getId());
 
         return fields;
     }
