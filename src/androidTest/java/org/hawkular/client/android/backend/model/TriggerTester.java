@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,9 @@
  */
 package org.hawkular.client.android.backend.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.assertj.core.api.Assertions;
 import org.hawkular.client.android.util.Parceler;
 import org.hawkular.client.android.util.Randomizer;
@@ -28,7 +31,9 @@ import android.support.test.runner.AndroidJUnit4;
 public final class TriggerTester {
     @Test
     public void parcelable() {
-        Trigger originalTrigger = new Trigger(Randomizer.generateString());
+        Map<String, String> test = new HashMap<>();
+        test.put(Randomizer.generateString(), Randomizer.generateString());
+        Trigger originalTrigger = new Trigger(Randomizer.generateString(), test);
         Trigger parceledTrigger = Parceler.parcel(Trigger.CREATOR, originalTrigger);
 
         Assertions.assertThat(parceledTrigger.getId()).isEqualTo(originalTrigger.getId());

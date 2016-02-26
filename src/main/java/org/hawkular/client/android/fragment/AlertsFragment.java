@@ -47,7 +47,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -207,7 +206,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         List<Trigger> filteredTriggers = new ArrayList<>();
 
         for (Trigger trigger : triggers) {
-            if (trigger.getId().endsWith(resource.getId())) {
+            if (trigger.getTags() != null
+                    && trigger.getTags().get("resourceId").equals(resource.getId())) {
                 filteredTriggers.add(trigger);
             }
         }

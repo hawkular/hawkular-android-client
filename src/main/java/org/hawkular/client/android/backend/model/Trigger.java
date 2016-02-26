@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,8 @@
  */
 package org.hawkular.client.android.backend.model;
 
+import java.util.Map;
+
 import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
@@ -26,14 +28,21 @@ import android.support.annotation.VisibleForTesting;
 public final class Trigger implements Parcelable {
     @SerializedName("id")
     private String id;
+    @SerializedName("tags")
+    private Map<String, String> tags;
 
     public String getId() {
         return id;
     }
 
+    public Map<String, String> getTags() {
+        return tags;
+    }
+
     @VisibleForTesting
-    public Trigger(@NonNull String id) {
+    public Trigger(@NonNull String id, @NonNull Map<String, String> tags) {
         this.id = id;
+        this.tags = tags;
     }
 
     public static Creator<Trigger> CREATOR = new Creator<Trigger>() {
@@ -55,6 +64,7 @@ public final class Trigger implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(id);
+        parcel.writeMap(tags);
     }
 
     @Override
