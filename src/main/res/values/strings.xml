@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-    Copyright 2015 Red Hat, Inc. and/or its affiliates
+    Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,14 +32,18 @@
   <string name="hint_host">Host</string>
   <string name="hint_port">Port</string>
 
-  <string name="label_authorization_description">Please provide the server location. The next step will require the credentials.</string>
+  <string name="label_authorization_description">Please provide the server location. The next step will require the
+    credentials.
+  </string>
   <string name="label_authorization_title">Authorization using a Hawkular server is necessary.</string>
   <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 3.</string>
   <string name="label_availability_up">Up</string>
   <string name="label_availability_down">Down</string>
 
   <string name="mask_alert_availability">Server was down for %1$d seconds (until %2$s).</string>
-  <string name="mask_alert_threshold">Response time was above the threshold (%1$.1f ms) for %2$d seconds (until %3$s). The average response time was %4$.1f ms.</string>
+  <string name="mask_alert_threshold">Response time was above the threshold (%1$.1f ms) for %2$d seconds (until %3$s).
+    The average response time was %4$.1f ms.
+  </string>
 
   <string name="menu_acknowledge">Acknowledge</string>
   <string name="menu_alerts" translatable="false">@string/title_alerts</string>
@@ -70,5 +74,9 @@
   <string name="title_metrics">Metrics</string>
   <string name="title_resources">Resources</string>
   <string name="title_settings">Settings</string>
+  <string name="title_activity_login">Login</string>
+  <string name="hint_username">Enter Username</string>
+  <string name="hint_password">Enter Password</string>
+  <string name="button_login">Login</string>
 
 </resources>
