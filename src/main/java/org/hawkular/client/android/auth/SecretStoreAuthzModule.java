@@ -189,7 +189,8 @@ public class SecretStoreAuthzModule implements AuthzModule {
         session.setAccountId(AuthData.NAME);
         session.setKey(auth.getString(AuthData.Credentials.KEY));
         session.setSecret(auth.getString(AuthData.Credentials.SECRET));
-        if (auth.has(AuthData.Credentials.EXPIRES_ON)) {
+        if (auth.has(AuthData.Credentials.EXPIRES_ON)
+                && !(auth.getString(AuthData.Credentials.EXPIRES_ON).equals("null"))) {
             session.setExpires_on(Long.parseLong(auth.getString(AuthData.Credentials.EXPIRES_ON)));
         } else {
             session.setExpires_on(0);
