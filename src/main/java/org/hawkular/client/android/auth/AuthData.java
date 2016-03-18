@@ -29,6 +29,7 @@ public final class AuthData {
         }
 
         public static final String ACCESS = "/secret-store/v1/tokens/create";
+        public static final String PERSONA = "/hawkular/accounts/personas/current";
     }
 
     public static final class Credentials {
