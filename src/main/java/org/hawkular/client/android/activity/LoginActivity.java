@@ -28,6 +28,9 @@ import org.hawkular.client.android.util.Urls;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -123,6 +126,48 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
         } catch (RuntimeException e) {
             Timber.d(e, "Authorization failed.");
             showError(R.string.error_authorization_host_port);
+        }
+    }
+
+    @OnClick(R.id.button_QR)
+    public void scan() {
+        IntentIntegrator integrator = new IntentIntegrator(LoginActivity.this);
+        integrator.initiateScan();
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent response) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, response);
+        if (scanResult != null && scanResult.getContents() != null) {
+            BackendClient.of(this).configureAuthorization(this.getApplicationContext());
+            String authorization = scanResult.getContents();
+            String[] authArray = authorization.split(",");
+            if (authArray.length >= 2) {
+                try {
+                    if (!isPortAvailable()) {
+                        backendUrl = Urls.getUrl(getHost());
+                    } else {
+                        backendUrl = Urls.getUrl(getHost(), getPortNumber());
+                    }
+                    username = edit_username.getText().toString();
+                    password = edit_password.getText().toString();
+                    BackendClient.of(this).configureAuthorization(getApplicationContext());
+                    BackendClient.of(this).deauthorize();
+                    Intent intent = this.getIntent();
+                    intent.putExtra("key", authArray[0]);
+                    intent.putExtra("secret", authArray[1]);
+                    intent.putExtra("url", backendUrl.toString());
+                    intent.putExtra("contain", "pair");
+                    if(authArray.length==3)
+                    {
+                        intent.putExtra("expiresAt", authArray[2]);
+                    }
+                    BackendClient.of(this).authorize(this, this);
+                } catch (RuntimeException e) {
+                    Timber.d(e, "Authorization failed.");
+                    showError(R.string.error_authorization_host_port);
+                }
+            }
         }
     }
 
