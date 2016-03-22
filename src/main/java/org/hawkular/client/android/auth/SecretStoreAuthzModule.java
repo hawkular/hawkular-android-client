@@ -90,8 +90,10 @@ public class SecretStoreAuthzModule implements AuthzModule {
             if (intent.getStringExtra(AuthData.Credentials.CONTAIN) == null) {
                 Session session = sessionStore.read(AuthData.NAME);
                 callback.onSuccess(session.getKey() + ":" + session.getSecret());
-            } else {
+            } else if (intent.getStringExtra(AuthData.Credentials.CONTAIN).equals("true")){
                 doRequestAccess(activity, callback);
+            } else {
+                doRequestAccessKey(activity, callback);
             }
         }
     }
@@ -116,6 +118,59 @@ public class SecretStoreAuthzModule implements AuthzModule {
                             + buildLoginData(username, password));
                     result = provider.post("");
                     addAccount(new String(result.getBody()));
+                } catch (MalformedURLException e) {
+                    Timber.d(SecretStoreAuthzModule.class.getSimpleName(), "Error with URL", e);
+                    exception = e;
+                } catch (HttpException e) {
+                    Timber.d(SecretStoreAuthzModule.class.getSimpleName(), "HTTP error", e);
+                    exception = e;
+                } catch (RuntimeException e) {
+                    Timber.d(SecretStoreAuthzModule.class.getSimpleName(), "Connection Exception", e);
+                    exception = e;
+                } catch (JSONException e) {
+                    Timber.d(SecretStoreAuthzModule.class.getSimpleName(), "Json parse Exception", e);
+                    exception = e;
+                }
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(HeaderAndBody headerAndBody) {
+                if (exception == null) {
+                    callback.onSuccess(new String(headerAndBody.getBody()));
+                } else {
+                    callback.onFailure(exception);
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+    }
+
+    private void doRequestAccessKey(final Activity activity, final Callback<String> callback) {
+        Intent intent = activity.getIntent();
+        final String key = intent.getStringExtra(AuthData.Credentials.KEY);
+        final String secret = intent.getStringExtra(AuthData.Credentials.SECRET);
+        final String expiresAt = intent.getStringExtra(AuthData.Credentials.EXPIRES_ON);
+        final String url = intent.getStringExtra(AuthData.Credentials.URL);
+
+        AsyncTask<Void, Void, HeaderAndBody> task = new AsyncTask<Void, Void, HeaderAndBody>() {
+            private Exception exception;
+
+            @Override
+            protected HeaderAndBody doInBackground(Void... params) {
+                HeaderAndBody result = null;
+                try {
+                    HttpProvider provider =
+                            new HttpRestProvider(new URL(url.toString() + AuthData.Endpoints.PERSONA));
+                    provider.setDefaultHeader("Accept", "application/json");
+                    provider.setDefaultHeader("Authorization", "Basic "
+                            + buildLoginData(key, secret));
+                    result = provider.get();
+                    JSONObject data = new JSONObject();
+                    data.put(AuthData.Credentials.KEY, key);
+                    data.put(AuthData.Credentials.SECRET, secret);
+                    data.put(AuthData.Credentials.EXPIRES_ON, expiresAt);
+                    addAccount(new String(data.toString()));
                 } catch (MalformedURLException e) {
                     Timber.d(SecretStoreAuthzModule.class.getSimpleName(), "Error with URL", e);
                     exception = e;

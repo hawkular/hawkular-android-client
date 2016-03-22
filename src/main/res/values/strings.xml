@@ -36,7 +36,7 @@
     credentials.
   </string>
   <string name="label_authorization_title">Authorization using a Hawkular server is necessary.</string>
-  <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 3.</string>
+  <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 11.</string>
   <string name="label_availability_up">Up</string>
   <string name="label_availability_down">Down</string>
 
@@ -78,5 +78,6 @@
   <string name="hint_username">Enter Username</string>
   <string name="hint_password">Enter Password</string>
   <string name="button_login">Login</string>
+  <string name="button_QR">Scan QR</string>
 
 </resources>
