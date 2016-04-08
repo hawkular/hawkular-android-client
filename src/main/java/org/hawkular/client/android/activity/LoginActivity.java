@@ -158,8 +158,7 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
                     intent.putExtra("secret", authArray[1]);
                     intent.putExtra("url", backendUrl.toString());
                     intent.putExtra("contain", "pair");
-                    if(authArray.length==3)
-                    {
+                    if(authArray.length==3) {
                         intent.putExtra("expiresAt", authArray[2]);
                     }
                     BackendClient.of(this).authorize(this, this);
