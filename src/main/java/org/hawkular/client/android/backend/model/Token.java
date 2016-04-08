@@ -35,6 +35,7 @@ public final class Token implements Parcelable {
             return new Token[size];
         }
     };
+
     @RecordId
     @SerializedName("persona")
     private String persona;

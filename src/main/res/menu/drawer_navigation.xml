@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-    Copyright 2015 Red Hat, Inc. and/or its affiliates
+    Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,6 +47,11 @@
       android:id="@+id/menu_feedback"
       android:icon="@drawable/ic_feedback"
       android:title="@string/menu_feedback"/>
+
+    <item
+        android:id="@+id/menu_tokens"
+        android:icon="@drawable/ic_token"
+        android:title="@string/menu_tokens"/>
 
   </group>
 

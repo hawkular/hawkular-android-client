@@ -36,9 +36,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import icepick.Icepick;
@@ -50,7 +52,8 @@ import icepick.State;
  * Displays available tokens.
  */
 
-public class TokensFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class TokensFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        TokensAdapter.TokenMenuListener {
 
     @Bind(R.id.list)
     ListView list;
@@ -89,7 +92,7 @@ public class TokensFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         Collection<Token> array = store.readAll();
         tokens = new ArrayList<>(array);
-        list.setAdapter(new TokensAdapter(getActivity(), tokens));
+        list.setAdapter(new TokensAdapter(getActivity(), this, tokens));
         hideRefreshing();
         showList();
     }
@@ -153,5 +156,42 @@ public class TokensFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private void tearDownBindings() {
         ButterKnife.unbind(this);
+    }
+
+    @Override public void onTokenMenuClick(View tokenView, int tokenPosition) {
+        showTokenMenu(tokenView, tokenPosition);
+    }
+
+    private void showTokenMenu(final View tokenView, final int tokenPosition) {
+        PopupMenu tokenMenu = new PopupMenu(getActivity(), tokenView);
+
+        tokenMenu.getMenuInflater().inflate(R.menu.popup_tokens, tokenMenu.getMenu());
+
+        tokenMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                Token token = getTokensAdapter().getItem(tokenPosition);
+
+                switch (menuItem.getItemId()) {
+                    case R.id.menu_delete:
+                        Context context = getActivity();
+                        SQLStore<Token> store = openStore(context);
+                        store.openSync();
+                        store.remove(token.getPersona());
+                        onRefresh();
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        tokenMenu.show();
+    }
+
+
+    private TokensAdapter getTokensAdapter() {
+        return (TokensAdapter) list.getAdapter();
     }
 }

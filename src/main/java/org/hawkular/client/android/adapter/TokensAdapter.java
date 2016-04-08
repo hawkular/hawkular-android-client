@@ -37,10 +37,19 @@ import butterknife.ButterKnife;
  */
 
 public class TokensAdapter extends BindableAdapter<Token> {
+
+    public interface TokenMenuListener {
+        void onTokenMenuClick(View tokenView, int tokenPosition);
+    }
+
     private final List<Token> tokens;
 
-    public TokensAdapter(@NonNull Context context, @NonNull List<Token> tokens) {
+    private final TokenMenuListener tokenMenuListener;
+
+    public TokensAdapter(@NonNull Context context, @NonNull TokenMenuListener tokenMenuListener,
+                         @NonNull List<Token> tokens) {
         super(context);
+        this.tokenMenuListener = tokenMenuListener;
         this.tokens = tokens;
     }
 
@@ -63,20 +72,36 @@ public class TokensAdapter extends BindableAdapter<Token> {
     @NonNull
     @Override
     protected View newView(LayoutInflater inflater, ViewGroup viewContainer) {
-        View view = inflater.inflate(R.layout.layout_list_item, viewContainer, false);
+        View view = inflater.inflate(R.layout.layout_list_item_token, viewContainer, false);
         view.setTag(new ViewHolder(view));
         return view;
     }
 
     @Override
-    protected void bindView(Token token, int position, View view) {
+    protected void bindView(Token token, final int position, View view) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
-        viewHolder.nameText.setText(token.getPersona());
+        viewHolder.titleText.setText(token.getPersona());
+        viewHolder.messageText.setText(token.getKey());
+
+        final int alertPosition = position;
+
+        viewHolder.menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tokenMenuListener.onTokenMenuClick(view, position);
+            }
+        });
     }
 
     static final class ViewHolder {
-        @Bind(R.id.text)
-        public TextView nameText;
+        @Bind(R.id.text_title)
+        TextView titleText;
+
+        @Bind(R.id.text_message)
+        TextView messageText;
+
+        @Bind(R.id.button_menu)
+        View menuButton;
 
         public ViewHolder(@NonNull View view) {
             ButterKnife.bind(this, view);

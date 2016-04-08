@@ -309,6 +309,10 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
                 startFeedbackActivity();
                 break;
 
+            case R.id.menu_tokens:
+                startActivity(new Intent(getApplicationContext(), TokensActivity.class));
+                break;
+
             default:
                 break;
         }

@@ -5,3 +5,6 @@
 -keep class org.hawkular.client.android.auth.Session {
     public <methods>;
 }
+-keep class org.hawkular.client.android.backend.model.Token {
+    public <methods>;
+}
