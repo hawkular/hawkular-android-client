@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-    Copyright 2015 Red Hat, Inc. and/or its affiliates
+    Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,7 +33,17 @@
     <FrameLayout
       android:id="@+id/layout_container"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="match_parent">
+
+      <android.support.design.widget.FloatingActionButton
+          android:id="@+id/action_button"
+          android:layout_width="60dp"
+          android:layout_height="60dp"
+          android:layout_gravity="bottom|right"
+          android:layout_margin="16dp"
+          android:visibility="invisible" />
+
+    </FrameLayout>
 
   </FrameLayout>
 

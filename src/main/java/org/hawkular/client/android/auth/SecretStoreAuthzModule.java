@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.UUID;
 
+import org.hawkular.client.android.backend.model.Token;
 import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.pipe.http.HeaderAndBody;
@@ -45,7 +46,7 @@ import timber.log.Timber;
 
 /**
  * SecretStoreAuthzModule.
- * <p>
+ * <p/>
  * Performs all related work of generating new key and secret pair, Storing them as account,
  * Retrieving stored account, Deleting stored account.
  */
@@ -53,11 +54,14 @@ import timber.log.Timber;
 public class SecretStoreAuthzModule implements AuthzModule {
     private final Context context;
     private final SQLStore<Session> sessionStore;
+    private final SQLStore<Token> tokenStore;
 
     public SecretStoreAuthzModule(Context context) {
         this.context = context.getApplicationContext();
         this.sessionStore = openSessionStore();
         sessionStore.openSync();
+        this.tokenStore = openTokenStore();
+        tokenStore.openSync();
     }
 
     private SQLStore<Session> openSessionStore() {
@@ -71,6 +75,19 @@ public class SecretStoreAuthzModule implements AuthzModule {
                     }
                 }).store();
         return (SQLStore<Session>) DataManager.getStore(AuthData.STORE);
+    }
+
+    private SQLStore<Token> openTokenStore() {
+        DataManager.config("store", SQLStoreConfiguration.class)
+                .forClass(Token.class)
+                .withContext(context)
+                .withIdGenerator(new IdGenerator() {
+                    @Override
+                    public String generate() {
+                        return UUID.randomUUID().toString();
+                    }
+                }).store();
+        return (SQLStore<Token>) DataManager.getStore("store");
     }
 
     @Override
@@ -90,7 +107,7 @@ public class SecretStoreAuthzModule implements AuthzModule {
             if (intent.getStringExtra(AuthData.Credentials.CONTAIN) == null) {
                 Session session = sessionStore.read(AuthData.NAME);
                 callback.onSuccess(session.getKey() + ":" + session.getSecret());
-            } else if (intent.getStringExtra(AuthData.Credentials.CONTAIN).equals("true")){
+            } else if (intent.getStringExtra(AuthData.Credentials.CONTAIN).equals("true")) {
                 doRequestAccess(activity, callback);
             } else {
                 doRequestAccessKey(activity, callback);
@@ -212,6 +229,7 @@ public class SecretStoreAuthzModule implements AuthzModule {
     @Override
     public void deleteAccount() {
         sessionStore.remove(AuthData.NAME);
+        tokenStore.reset();
     }
 
     @Override
