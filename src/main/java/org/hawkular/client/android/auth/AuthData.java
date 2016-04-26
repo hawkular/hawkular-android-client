@@ -23,6 +23,8 @@ package org.hawkular.client.android.auth;
 public final class AuthData {
     public static final String NAME = "hawkular";
     public static final String STORE = "sessionStore";
+    public static final String DESCRIPTION = "{\"attributes\":{\"description\":\"" +
+            "'Token created via Hawkular Android Client'\"}}";
 
     public static final class Endpoints {
         private Endpoints() {
