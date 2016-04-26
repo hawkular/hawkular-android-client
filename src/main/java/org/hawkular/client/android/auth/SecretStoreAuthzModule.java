@@ -131,9 +131,10 @@ public class SecretStoreAuthzModule implements AuthzModule {
                     HttpProvider provider =
                             new HttpRestProvider(new URL(url.toString() + AuthData.Endpoints.ACCESS));
                     provider.setDefaultHeader("Accept", "application/json");
+                    provider.setDefaultHeader("Content-Type", "application/json");
                     provider.setDefaultHeader("Authorization", "Basic "
                             + buildLoginData(username, password));
-                    result = provider.post("");
+                    result = provider.post(AuthData.DESCRIPTION);
                     addAccount(new String(result.getBody()));
                 } catch (MalformedURLException e) {
                     Timber.d(SecretStoreAuthzModule.class.getSimpleName(), "Error with URL", e);
