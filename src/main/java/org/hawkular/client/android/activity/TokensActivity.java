@@ -191,7 +191,7 @@ public class TokensActivity extends AppCompatActivity {
                         Context context = activity;
                         SQLStore<Token> store = openStore(context);
                         store.openSync();
-                        Token token = new Token(persona.getString("name"), key, secret);
+                        Token token = new Token(persona.getString("name"), persona.getString("id"), key, secret);
                         store.save(token);
                         ((TokensFragment) tokenFragment).onRefresh();
                     } catch (JSONException e) {

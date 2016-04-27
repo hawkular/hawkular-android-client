@@ -17,14 +17,18 @@
 package org.hawkular.client.android.activity;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.UUID;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.adapter.PersonasAdapter;
+import org.hawkular.client.android.auth.AuthData;
+import org.hawkular.client.android.auth.Session;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.backend.model.Token;
 import org.hawkular.client.android.event.Events;
 import org.hawkular.client.android.event.ResourceSelectedEvent;
 import org.hawkular.client.android.util.Fragments;
@@ -34,12 +38,16 @@ import org.hawkular.client.android.util.Preferences;
 import org.hawkular.client.android.util.ViewTransformer;
 import org.hawkular.client.android.util.Views;
 import org.jboss.aerogear.android.core.Callback;
-import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
+import org.jboss.aerogear.android.store.DataManager;
+import org.jboss.aerogear.android.store.generator.IdGenerator;
+import org.jboss.aerogear.android.store.sql.SQLStore;
+import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
 
 import com.squareup.otto.Subscribe;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -53,14 +61,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import icepick.Icepick;
 import icepick.State;
-import timber.log.Timber;
 
 /**
  * Drawer activity
@@ -218,14 +224,30 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void setUpPersonas() {
-        BackendClient.of(this).getPersonas(new PersonasCallback());
-    }
+        Context context = getApplicationContext();
+        SQLStore<Token> store = openStore(context);
+        store.openSync();
 
-    private void setUpPersonas(List<Persona> personasList) {
-        personas.setAdapter(new PersonasAdapter(this, personasList));
+        Collection<Token> array = store.readAll();
+        store.close();
+        ArrayList<Token> tokens = new ArrayList<>(array);
+        personas.setAdapter(new PersonasAdapter(this, tokens));
 
         setUpPersonasList();
         setUpPersonasAction();
+    }
+
+    private SQLStore<Token> openStore(Context context) {
+        DataManager.config("Store", SQLStoreConfiguration.class)
+                .forClass(Token.class)
+                .withContext(context)
+                .withIdGenerator(new IdGenerator() {
+                    @Override
+                    public String generate() {
+                        return UUID.randomUUID().toString();
+                    }
+                }).store();
+        return (SQLStore<Token>) DataManager.getStore("Store");
     }
 
     private void setUpPersonasList() {
@@ -245,7 +267,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private boolean arePersonasAvailable() {
-        return (getPersonasAdapter() != null) && (getPersonasAdapter().getCount() > 1);
+        return (getPersonasAdapter() != null) && (getPersonasAdapter().getCount() > 0);
     }
 
     private PersonasAdapter getPersonasAdapter() {
@@ -262,11 +284,38 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     @OnItemClick(R.id.list_personas)
     public void setUpPersona(int personaPosition) {
-        Persona persona = getPersonasAdapter().getItem(personaPosition);
-
-        setUpBackendClient(persona);
-
+        Token persona = getPersonasAdapter().getItem(personaPosition);
+        SQLStore<Session> sessionStore;
+        sessionStore = openSessionStore();
+        sessionStore.openSync();
+        addAccount(persona, sessionStore);
+        sessionStore.close();
+        Preferences.of(getApplicationContext()).personaId().set(persona.getPersonaID());
+        Preferences.of(getApplicationContext()).personaName().set(persona.getPersona());
+        recreate();
+        this.getResourcesFragment().onResume();
         hidePersonas();
+    }
+
+    private void addAccount(Token token, SQLStore<Session> sessionStore) {
+        Session session = new Session();
+        session.setAccountId(AuthData.NAME);
+        session.setKey(token.getKey());
+        session.setSecret(token.getSecret());
+        sessionStore.save(session);
+    }
+
+    private SQLStore<Session> openSessionStore() {
+        DataManager.config(AuthData.STORE, SQLStoreConfiguration.class)
+                .forClass(Session.class)
+                .withContext(getApplicationContext())
+                .withIdGenerator(new IdGenerator() {
+                    @Override
+                    public String generate() {
+                        return UUID.randomUUID().toString();
+                    }
+                }).store();
+        return (SQLStore<Session>) DataManager.getStore(AuthData.STORE);
     }
 
     @Override
@@ -378,6 +427,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void openDrawer() {
+        setUpPersonas();
         drawer.openDrawer(GravityCompat.START);
     }
 
@@ -431,21 +481,4 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         Icepick.saveInstanceState(this, state);
     }
 
-    private static final class PersonasCallback extends AbstractActivityCallback<List<Persona>> {
-        @Override
-        public void onSuccess(List<Persona> personas) {
-            getDrawerActivity().setUpPersonas(personas);
-        }
-
-        @Override
-        public void onFailure(Exception e) {
-            Timber.d(e, "Personas fetching failed.");
-
-            getDrawerActivity().setUpPersonas(new ArrayList<Persona>());
-        }
-
-        private DrawerActivity getDrawerActivity() {
-            return (DrawerActivity) getActivity();
-        }
-    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@ package org.hawkular.client.android.adapter;
 import java.util.List;
 
 import org.hawkular.client.android.R;
-import org.hawkular.client.android.backend.model.Persona;
+import org.hawkular.client.android.backend.model.Token;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -27,16 +27,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
  * Personas adapter.
- *
+ * <p>
  * Transforms a list of personas to a human-readable interpretation.
  */
-public final class PersonasAdapter extends BindableAdapter<Persona> {
+public final class PersonasAdapter extends BindableAdapter<Token> {
     static final class ViewHolder {
         @Bind(R.id.text)
         public TextView nameText;
@@ -46,9 +45,9 @@ public final class PersonasAdapter extends BindableAdapter<Persona> {
         }
     }
 
-    private final List<Persona> personas;
+    private final List<Token> personas;
 
-    public PersonasAdapter(@NonNull Context context, @NonNull List<Persona> personas) {
+    public PersonasAdapter(@NonNull Context context, @NonNull List<Token> personas) {
         super(context);
 
         this.personas = personas;
@@ -61,7 +60,7 @@ public final class PersonasAdapter extends BindableAdapter<Persona> {
 
     @NonNull
     @Override
-    public Persona getItem(int position) {
+    public Token getItem(int position) {
         return personas.get(position);
     }
 
@@ -81,9 +80,9 @@ public final class PersonasAdapter extends BindableAdapter<Persona> {
     }
 
     @Override
-    protected void bindView(Persona persona, int position, View view) {
+    protected void bindView(Token persona, int position, View view) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        viewHolder.nameText.setText(persona.getName());
+        viewHolder.nameText.setText(persona.getPersona());
     }
 }
