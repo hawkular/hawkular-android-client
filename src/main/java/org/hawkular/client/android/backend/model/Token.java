@@ -39,19 +39,23 @@ public final class Token implements Parcelable {
     @RecordId
     @SerializedName("persona")
     private String persona;
+    @SerializedName("personaID")
+    private String personaID;
     @SerializedName("key")
     private String key;
     @SerializedName("secret")
     private String secret;
 
-    public Token(@NonNull String persona, @NonNull String key, @NonNull String secret) {
+    public Token(@NonNull String persona, @NonNull String personaID, @NonNull String key, @NonNull String secret) {
         this.persona = persona;
+        this.personaID = personaID;
         this.key = key;
         this.secret = secret;
     }
 
     private Token(Parcel parcel) {
         this.persona = parcel.readString();
+        this.personaID = parcel.readString();
         this.key = parcel.readString();
         this.secret = parcel.readString();
     }
@@ -72,9 +76,14 @@ public final class Token implements Parcelable {
         return secret;
     }
 
+    public String getPersonaID() {
+        return personaID;
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(persona);
+        parcel.writeString(personaID);
         parcel.writeString(key);
         parcel.writeString(secret);
     }
