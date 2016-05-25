@@ -16,8 +16,6 @@
  */
 package org.hawkular.client.android.backend.model;
 
-import java.util.ArrayList;
-
 import org.assertj.core.api.Assertions;
 import org.hawkular.client.android.util.Parceler;
 import org.hawkular.client.android.util.Randomizer;
@@ -27,19 +25,16 @@ import org.junit.runner.RunWith;
 import android.support.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-public final class AlertTester {
+public final class NoteTester {
     @Test
     public void parcelable() {
-        Alert originalAlert = new Alert(
-                Randomizer.generateString(), Randomizer.generateNumber(), new ArrayList<Alert.Lister>(),
-                Randomizer.generateString(), Randomizer.generateString(), new ArrayList<Note>());
-        Alert parceledAlert = Parceler.parcel(Alert.CREATOR, originalAlert);
+        Note originalNote = new Note(
+                Randomizer.generateString(), Randomizer.generateNumber(), Randomizer.generateString());
 
-        Assertions.assertThat(parceledAlert.getId()).isEqualTo(originalAlert.getId());
-        Assertions.assertThat(parceledAlert.getSeverity()).isEqualTo(originalAlert.getSeverity());
-        Assertions.assertThat(parceledAlert.getStatus()).isEqualTo(originalAlert.getStatus());
-        Assertions.assertThat(parceledAlert.getTimestamp()).isEqualTo(originalAlert.getTimestamp());
-        Assertions.assertThat(parceledAlert.getEvaluations()).isEqualTo(originalAlert.getEvaluations());
-        Assertions.assertThat(parceledAlert.getNotes()).isEqualTo(originalAlert.getNotes());
+        Note parceledNote = Parceler.parcel(Note.CREATOR, originalNote);
+
+        Assertions.assertThat(parceledNote.getUser()).isEqualTo(originalNote.getUser());
+        Assertions.assertThat(parceledNote.getMessage()).isEqualTo(originalNote.getMessage());
+        Assertions.assertThat(parceledNote.getTimestamp()).isEqualTo(originalNote.getTimestamp());
     }
 }
