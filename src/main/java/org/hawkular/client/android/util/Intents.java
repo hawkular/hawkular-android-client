@@ -34,7 +34,7 @@ import android.support.annotation.NonNull;
 
 /**
  * Intent utilities.
- *
+ * <p/>
  * {@link org.hawkular.client.android.util.Intents.Extras} contains extra-related constants.
  * {@link org.hawkular.client.android.util.Intents.Builder} helps with building intents with right extras.
  */
@@ -46,6 +46,7 @@ public final class Intents {
         private Extras() {
         }
 
+        public static final String ALERT = "alert";
         public static final String ENVIRONMENT = "environment";
         public static final String RESOURCE = "resource";
         public static final String METRIC = "metric";

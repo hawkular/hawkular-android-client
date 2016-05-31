@@ -28,10 +28,10 @@ import java.util.Map;
 import org.hawkular.client.android.auth.ModuleKeeper;
 import org.hawkular.client.android.auth.SecretStoreAuthzModule;
 import org.hawkular.client.android.backend.model.Alert;
-import org.hawkular.client.android.backend.model.AlertStatus;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
+import org.hawkular.client.android.backend.model.Note;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Trigger;
@@ -57,19 +57,19 @@ import android.support.annotation.RequiresPermission;
 
 /**
  * Backend client.
- *
+ * <p/>
  * A master controller for all backend-related operations.
- *
+ * <p/>
  * Configures proper {@link org.jboss.aerogear.android.pipe.module.PipeModule} instances for authorization
  * using {@link org.jboss.aerogear.android.authorization.AuthorizationManager}. Configures used in the application
  * {@link org.jboss.aerogear.android.pipe.Pipe} instances.
- *
+ * <p/>
  * Most of the configuration is stored using internal AeroGear long-lived objects. It is not necessary to handle
  * this class objects as singletons, it is intended to be used as a short-lived object.
- *
+ * <p/>
  * The next step is to configure {@link org.jboss.aerogear.android.pipe.Pipe} instances.
  * The best time to to do so of course is after the authorization process.
- *
+ * <p/>
  * {@link org.jboss.aerogear.android.pipe.Pipe} instances are not exposed to class users, external API prefers
  * {@link org.jboss.aerogear.android.core.Callback} over them.
  */
@@ -116,6 +116,7 @@ public final class BackendClient {
         URL pipeUrl = Urls.getUrl(backendUrl, BackendPipes.Paths.ROOT);
         URL alertResolveUrl = Urls.getUrl(pipeUrl, BackendPipes.Paths.ALERT_RESOLVE);
         URL alertAckUrl = Urls.getUrl(pipeUrl, BackendPipes.Paths.ALERT_ACKNOWLEDGE);
+        URL alertNoteUrl = Urls.getUrl(pipeUrl, BackendPipes.Paths.ALERT_NOTE);
         List<PipeModule> pipeModules = Arrays.asList(
                 getAuthorizationModule(),
                 getPersonnelModule(persona));
@@ -127,6 +128,7 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
         configurePipe(BackendPipes.Names.METRIC_DATA_AVAILABILITY, pipeUrl, pipeModules, MetricData.class);
         configurePipe(BackendPipes.Names.METRIC_DATA_GAUGE, pipeUrl, pipeModules, MetricData.class);
+        configurePipe(BackendPipes.Names.NOTE, alertNoteUrl, pipeModules, Note.class);
         configurePipe(BackendPipes.Names.PERSONA, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.PERSONAS, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.RESOURCES, pipeUrl, pipeModules, Resource.class);
@@ -171,7 +173,6 @@ public final class BackendClient {
         parameters.put(BackendPipes.Parameters.START_TIME, String.valueOf(startTime.getTime()));
         parameters.put(BackendPipes.Parameters.FINISH_TIME, String.valueOf(finishTime.getTime()));
         parameters.put(BackendPipes.Parameters.TRIGGERS, Uris.getParameter(getTriggerIds(triggers)));
-        parameters.put(BackendPipes.Parameters.STATUSES, String.valueOf(AlertStatus.OPEN));
 
         URI uri = Uris.getUri(BackendPipes.Paths.ALERTS, parameters);
 
@@ -196,6 +197,12 @@ public final class BackendClient {
     public void resolveAlert(@NonNull Alert alert,
                              @NonNull Callback<List<String>> callback) {
         savePipe(BackendPipes.Names.ALERT_RESOLVE, alert, callback);
+    }
+
+
+    public void noteOnAlert(@NonNull Note note,
+                            @NonNull Callback<List<String>> callback) {
+        savePipe(BackendPipes.Names.NOTE, note, callback);
     }
 
     public void getEnvironments(@NonNull Callback<List<Environment>> callback) {

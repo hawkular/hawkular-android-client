@@ -8,3 +8,6 @@
 -keep class org.hawkular.client.android.backend.model.Token {
     public <methods>;
 }
+-keep class org.hawkular.client.android.backend.model.Note {
+    public <methods>;
+}
