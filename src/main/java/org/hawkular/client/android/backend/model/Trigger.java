@@ -30,6 +30,8 @@ public final class Trigger implements Parcelable {
     private String id;
     @SerializedName("tags")
     private Map<String, String> tags;
+    @SerializedName("description")
+    private String description;
 
     public String getId() {
         return id;
@@ -39,10 +41,15 @@ public final class Trigger implements Parcelable {
         return tags;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     @VisibleForTesting
-    public Trigger(@NonNull String id, @NonNull Map<String, String> tags) {
+    public Trigger(@NonNull String id, @NonNull Map<String, String> tags, @NonNull String description) {
         this.id = id;
         this.tags = tags;
+        this.description = description;
     }
 
     public static Creator<Trigger> CREATOR = new Creator<Trigger>() {
@@ -59,11 +66,13 @@ public final class Trigger implements Parcelable {
 
     private Trigger(Parcel parcel) {
         this.id = parcel.readString();
+        this.description = parcel.readString();
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(id);
+        parcel.writeString(description);
         parcel.writeMap(tags);
     }
 
