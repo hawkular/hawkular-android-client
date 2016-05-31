@@ -16,9 +16,11 @@
  */
 package org.hawkular.client.android.util;
 
+import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.fragment.AlertDetailFragment;
 import org.hawkular.client.android.fragment.AlertsFragment;
 import org.hawkular.client.android.fragment.MetricAvailabilityFragment;
 import org.hawkular.client.android.fragment.MetricGaugeFragment;
@@ -36,7 +38,7 @@ import android.support.annotation.NonNull;
 
 /**
  * Fragment utilities.
- *
+ * <p/>
  * {@link org.hawkular.client.android.util.Fragments.Arguments} contains argument-related constants.
  * {@link org.hawkular.client.android.util.Fragments.Builder} helps with building fragments with right arguments.
  * {@link org.hawkular.client.android.util.Fragments.Operator} helps with setting fragments to right places.
@@ -49,6 +51,7 @@ public final class Fragments {
         private Arguments() {
         }
 
+        public static final String ALERT = "alert";
         public static final String ENVIRONMENT = "environment";
         public static final String METRIC = "metric";
         public static final String RESOURCE = "resource";
@@ -64,6 +67,18 @@ public final class Fragments {
 
             Bundle arguments = new Bundle();
             arguments.putParcelable(Arguments.RESOURCE, resource);
+
+            fragment.setArguments(arguments);
+
+            return fragment;
+        }
+
+        @NonNull
+        public static Fragment buildAlertDetailFragment(@NonNull Alert alert) {
+            Fragment fragment = new AlertDetailFragment();
+
+            Bundle arguments = new Bundle();
+            arguments.putParcelable(Arguments.ALERT, alert);
 
             fragment.setArguments(arguments);
 
@@ -150,16 +165,16 @@ public final class Fragments {
             }
 
             fragmentManager
-                .beginTransaction()
-                .add(fragmentContainerId, fragment)
-                .commit();
+                    .beginTransaction()
+                    .add(fragmentContainerId, fragment)
+                    .commit();
         }
 
         public void reset(@IdRes int fragmentContainerId, @NonNull Fragment fragment) {
             fragmentManager
-                .beginTransaction()
-                .replace(fragmentContainerId, fragment)
-                .commit();
+                    .beginTransaction()
+                    .replace(fragmentContainerId, fragment)
+                    .commit();
         }
     }
 }

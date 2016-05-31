@@ -82,5 +82,14 @@
   <string name="menu_tokens">Tokens</string>
   <string name="menu_delete">Delete</string>
   <string name="title_activity_token">Tokens</string>
+  <string name="alert_detail">Alert</string>
+  <string name="alert_detail_title">Alert</string>
+  <string name="alert_state">State</string>
+  <string name="alert_severity">Severity</string>
+  <string name="alert_trigger">Trigger</string>
+  <string name="alert_state_open">OPEN</string>
+  <string name="alert_state_ack">ACKNOWLEDGED</string>
+  <string name="alert_state_res">RESOLVED</string>
+  <string name="error_later">Please check connection and try later.</string>
 
 </resources>

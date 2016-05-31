@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,8 +32,8 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -44,8 +44,9 @@ import butterknife.ButterKnife;
  * Hawkular Web UI. Has an ability to attach a listener for alert-related operations menu.
  */
 public final class AlertsAdapter extends BindableAdapter<Alert> {
-    public interface AlertMenuListener {
+    public interface AlertListener {
         void onAlertMenuClick(View alertView, int alertPosition);
+        void onAlertBodyClick(View alertView, int alertPosition);
     }
 
     static final class ViewHolder {
@@ -55,23 +56,29 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
         @Bind(R.id.text_message)
         TextView messageText;
 
+        @Bind(R.id.text_status)
+        TextView statusText;
+
         @Bind(R.id.button_menu)
         View menuButton;
+
+        @Bind(R.id.data_box)
+        LinearLayout dataBox;
 
         public ViewHolder(@NonNull View view) {
             ButterKnife.bind(this, view);
         }
     }
 
-    private final AlertMenuListener alertMenuListener;
+    private final AlertListener alertListener;
 
     private final List<Alert> alerts;
 
-    public AlertsAdapter(@NonNull Context context, @NonNull AlertMenuListener alertMenuListener,
+    public AlertsAdapter(@NonNull Context context, @NonNull AlertListener alertListener,
                          @NonNull List<Alert> alerts) {
         super(context);
 
-        this.alertMenuListener = alertMenuListener;
+        this.alertListener = alertListener;
 
         this.alerts = new ArrayList<>(alerts);
     }
@@ -108,13 +115,20 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
 
         viewHolder.titleText.setText(getAlertTitle(view.getContext(), alert));
         viewHolder.messageText.setText(getAlertMessage(view.getContext(), alert));
+        viewHolder.statusText.setText(alert.getStatus());
 
         final int alertPosition = position;
+
+        viewHolder.dataBox.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                alertListener.onAlertBodyClick(view, alertPosition);
+            }
+        });
 
         viewHolder.menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alertMenuListener.onAlertMenuClick(view, alertPosition);
+                alertListener.onAlertMenuClick(view, alertPosition);
             }
         });
     }

@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.hawkular.client.android.R;
+import org.hawkular.client.android.activity.AlertDetailActivity;
 import org.hawkular.client.android.adapter.AlertsAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Alert;
@@ -30,11 +31,13 @@ import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Fragments;
+import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Time;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
@@ -56,11 +59,11 @@ import timber.log.Timber;
 
 /**
  * Alerts fragment.
- *
+ * <p/>
  * Displays alerts as a list with menus allowing some alert-related actions, such as acknowledgement and resolving.
  */
-public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertMenuListener,
-    SwipeRefreshLayout.OnRefreshListener {
+public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertListener,
+        SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.list)
     ListView list;
 
@@ -74,6 +77,13 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     @State
     @Nullable
     ArrayList<Alert> alerts;
+
+    @State
+    @Nullable
+    ArrayList<Alert> alertsDump;
+
+    @State
+    boolean isActionPlus;
 
     @State
     @IdRes
@@ -95,6 +105,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
 
         setUpList();
         setUpMenu();
+
+        isActionPlus = false;
 
         setUpRefreshing();
 
@@ -134,7 +146,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
 
             setUpAlertsForced();
         } else {
-            setUpAlerts(alerts);
+            setUpAlerts(alertsDump);
         }
     }
 
@@ -219,20 +231,47 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         return getArguments().getParcelable(Fragments.Arguments.RESOURCE);
     }
 
-    private void setUpAlerts(List<Alert> alerts) {
-        this.alerts = new ArrayList<>(alerts);
+    private void setUpAlerts(final List<Alert> alerts) {
+        this.alertsDump = new ArrayList<>(alerts);
 
-        sortAlerts(this.alerts);
+        sortAlerts(this.alertsDump);
 
-        list.setAdapter(new AlertsAdapter(getActivity(), this, this.alerts));
+        if (isActionPlus) {
+            this.alerts = alertsDump;
+            if (this.alerts != null) {
+                list.setAdapter(new AlertsAdapter(getActivity(), this, this.alerts));
+            }
+        } else {
+            this.alerts = removeResolved();
+            if (this.alerts != null) {
+                list.setAdapter(new AlertsAdapter(getActivity(), this, this.alerts));
+            }
+        }
 
         hideRefreshing();
 
         showList();
     }
 
+    private ArrayList<Alert> removeResolved() {
+        this.alerts = new ArrayList<>();
+        for (Alert alert : alertsDump) {
+            if (!alert.getStatus().equals("RESOLVED"))
+                alerts.add(alert);
+        }
+        return alerts;
+    }
+
     private void sortAlerts(List<Alert> alerts) {
         Collections.sort(alerts, new AlertsComparator());
+    }
+
+    @Override
+    public void onAlertBodyClick(View alertView, int alertPosition) {
+        Intent intent = new Intent(getActivity(), AlertDetailActivity.class);
+        Alert alert = getAlertsAdapter().getItem(alertPosition);
+        intent.putExtra(Intents.Extras.ALERT, alert);
+        startActivity(intent);
     }
 
     @Override
@@ -301,9 +340,18 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
 
                 return true;
 
+            case R.id.show_hide_res:
+                isActionPlus = !isActionPlus;
+                setUpAlerts(alertsDump);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(menuItem);
         }
+    }
+
+    private void cleanDump() {
+        this.alertsDump = new ArrayList<>();
     }
 
     private void hideRefreshing() {
@@ -376,6 +424,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
                 getAlertsFragment().setUpAlerts(alerts);
             } else {
                 getAlertsFragment().showMessage();
+                getAlertsFragment().cleanDump();
             }
         }
 
