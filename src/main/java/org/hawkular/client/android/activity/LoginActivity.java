@@ -40,7 +40,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -53,13 +53,13 @@ import timber.log.Timber;
 
 public class LoginActivity extends AppCompatActivity implements Callback<String> {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.edit_username)
+    @BindView(R.id.edit_username)
     EditText edit_username;
 
-    @Bind(R.id.edit_password)
+    @BindView(R.id.edit_password)
     EditText edit_password;
 
     String host;

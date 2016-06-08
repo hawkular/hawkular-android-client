@@ -66,27 +66,25 @@ public class SecretStoreAuthzModule implements AuthzModule {
 
     private SQLStore<Session> openSessionStore() {
         DataManager.config(AuthData.STORE, SQLStoreConfiguration.class)
-                .forClass(Session.class)
                 .withContext(context)
                 .withIdGenerator(new IdGenerator() {
                     @Override
                     public String generate() {
                         return UUID.randomUUID().toString();
                     }
-                }).store();
+                }).store(Session.class);
         return (SQLStore<Session>) DataManager.getStore(AuthData.STORE);
     }
 
     private SQLStore<Token> openTokenStore() {
         DataManager.config("store", SQLStoreConfiguration.class)
-                .forClass(Token.class)
                 .withContext(context)
                 .withIdGenerator(new IdGenerator() {
                     @Override
                     public String generate() {
                         return UUID.randomUUID().toString();
                     }
-                }).store();
+                }).store(Token.class);
         return (SQLStore<Token>) DataManager.getStore("store");
     }
 

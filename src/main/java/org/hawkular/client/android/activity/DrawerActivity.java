@@ -49,15 +49,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
 import icepick.Icepick;
 import icepick.State;
 import timber.log.Timber;
@@ -72,29 +70,24 @@ import timber.log.Timber;
  * Contains {@link org.hawkular.client.android.fragment.ResourcesFragment}
  */
 public final class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-    Callback<String> {
-    @Bind(R.id.toolbar)
+        Callback<String> {
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.drawer)
+    @BindView(R.id.drawer)
     DrawerLayout drawer;
 
-    @Bind(R.id.navigation)
+    @BindView(R.id.navigation)
     NavigationView navigation;
 
-    @Bind(R.id.text_host)
     TextView host;
 
-    @Bind(R.id.text_persona)
     TextView persona;
 
-    @Bind(R.id.list_personas)
     ListView personas;
 
-    @Bind(R.id.layout_personas)
     ViewGroup personasLayout;
 
-    @Bind(R.id.image_personas_action)
     ImageView personasActionIcon;
 
     @State
@@ -122,6 +115,14 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     private void setUpBindings() {
         ButterKnife.bind(this);
+        View headerView = navigation.getHeaderView(0);
+        host = ButterKnife.findById(headerView, R.id.text_host);
+        persona = ButterKnife.findById(headerView, R.id.text_persona);
+        personas = ButterKnife.findById(headerView, R.id.list_personas);
+        personasLayout = ButterKnife.findById(headerView, R.id.layout_personas);
+        personasActionIcon = ButterKnife.findById(headerView, R.id.image_personas_action);
+        ButterKnife.bind(this);
+
     }
 
     private void setUpToolbar() {
@@ -260,6 +261,9 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         ViewTransformer.of(personasActionIcon).hide();
     }
 
+    // TODO : Failing caused by upgrade in butterknife and not needed at present.
+    /*
+    @Nullable
     @OnItemClick(R.id.list_personas)
     public void setUpPersona(int personaPosition) {
         Persona persona = getPersonasAdapter().getItem(personaPosition);
@@ -268,6 +272,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
         hidePersonas();
     }
+    */
 
     @Override
     public void onFailure(Exception e) {
@@ -340,6 +345,8 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         drawer.closeDrawers();
     }
 
+    // TODO : Failing caused by upgrade in butterknife and not needed at present.
+    /*
     @OnClick(R.id.layout_header)
     public void triggerPersonas() {
         if (!arePersonasAvailable()) {
@@ -352,6 +359,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
             showPersonas();
         }
     }
+    */
 
     private void showPersonas() {
         ViewTransformer.of(personasLayout).expand();

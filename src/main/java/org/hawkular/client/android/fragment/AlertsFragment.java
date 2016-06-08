@@ -50,7 +50,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import icepick.Icepick;
@@ -64,10 +64,10 @@ import timber.log.Timber;
  */
 public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertListener,
         SwipeRefreshLayout.OnRefreshListener {
-    @Bind(R.id.list)
+    @BindView(R.id.list)
     ListView list;
 
-    @Bind(R.id.content)
+    @BindView(R.id.content)
     SwipeRefreshLayout contentLayout;
 
     @State
@@ -389,7 +389,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private void tearDownBindings() {
-        ButterKnife.unbind(this);
+        //TODO: Modify it
+        //ButterKnife.unbind(this);
     }
 
     private static final class TriggersCallback extends AbstractFragmentCallback<List<Trigger>> {

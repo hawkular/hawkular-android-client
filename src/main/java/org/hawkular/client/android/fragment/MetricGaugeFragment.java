@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,8 +42,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import icepick.Icepick;
@@ -70,10 +69,10 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         public static final int AXIS_INTERVAL_IN_MINUTES = 1;
     }
 
-    @Bind(R.id.chart)
+    @BindView(R.id.chart)
     LineChartView chart;
 
-    @Bind(R.id.content)
+    @BindView(R.id.content)
     SwipeRefreshLayout contentLayout;
 
     @State

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,7 +60,8 @@ public final class PushClient implements Callback<Void> {
             .setPushServerURI(Uris.getUriFromString(PushConfiguration.Ups.URL))
             .setSecret(PushConfiguration.Ups.SECRET)
             .setVariantID(PushConfiguration.Ups.VARIANT)
-            .setSenderIds(PushConfiguration.Gcm.SENDER)
+                //TODO: Modify it
+            //.setSenderIds(PushConfiguration.Gcm.SENDER)
             .asRegistrar();
 
         RegistrarManager.getRegistrar(PushConfiguration.NAME).register(context, this);

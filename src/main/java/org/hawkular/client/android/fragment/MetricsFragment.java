@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,8 +42,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
@@ -57,10 +56,10 @@ import timber.log.Timber;
  * Displays metrics as a list.
  */
 public final class MetricsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    @Bind(R.id.list)
+    @BindView(R.id.list)
     ListView list;
 
-    @Bind(R.id.content)
+    @BindView(R.id.content)
     SwipeRefreshLayout contentLayout;
 
     @State
@@ -198,7 +197,8 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
     }
 
     private void tearDownBindings() {
-        ButterKnife.unbind(this);
+        //TODO: Modify it
+        //ButterKnife.unbind(this);
     }
 
     private static final class MetricsCallback extends AbstractFragmentCallback<List<Metric>> {

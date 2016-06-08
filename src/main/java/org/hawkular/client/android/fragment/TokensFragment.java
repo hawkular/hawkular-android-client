@@ -41,7 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
@@ -55,10 +55,10 @@ import icepick.State;
 public class TokensFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         TokensAdapter.TokenMenuListener {
 
-    @Bind(R.id.list)
+    @BindView(R.id.list)
     ListView list;
 
-    @Bind(R.id.content)
+    @BindView(R.id.content)
     SwipeRefreshLayout contentLayout;
 
     @State
@@ -108,14 +108,13 @@ public class TokensFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private SQLStore<Token> openStore(Context context) {
         DataManager.config("Store", SQLStoreConfiguration.class)
-                .forClass(Token.class)
                 .withContext(context)
                 .withIdGenerator(new IdGenerator() {
                     @Override
                     public String generate() {
                         return UUID.randomUUID().toString();
                     }
-                }).store();
+                }).store(Token.class);
         return (SQLStore<Token>) DataManager.getStore("Store");
     }
 
@@ -155,7 +154,8 @@ public class TokensFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void tearDownBindings() {
-        ButterKnife.unbind(this);
+        //TODO: Modify it
+        //ButterKnife.unbind(this);
     }
 
     @Override public void onTokenMenuClick(View tokenView, int tokenPosition) {

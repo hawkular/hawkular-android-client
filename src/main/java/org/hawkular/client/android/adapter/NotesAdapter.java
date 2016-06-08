@@ -28,7 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -81,13 +81,13 @@ public class NotesAdapter extends BindableAdapter<Note> {
     }
 
     static final class ViewHolder {
-        @Bind(R.id.text_user)
+        @BindView(R.id.text_user)
         TextView userText;
 
-        @Bind(R.id.text_date)
+        @BindView(R.id.text_date)
         TextView dateText;
 
-        @Bind(R.id.text_message)
+        @BindView(R.id.text_message)
         TextView messageText;
 
 

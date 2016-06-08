@@ -56,15 +56,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public class TokensActivity extends AppCompatActivity {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.action_button)
+    @BindView(R.id.action_button)
     FloatingActionButton actionButton;
 
     Fragment tokenFragment;
@@ -206,14 +206,13 @@ public class TokensActivity extends AppCompatActivity {
 
     private SQLStore<Token> openStore(Context context) {
         DataManager.config("Store", SQLStoreConfiguration.class)
-                .forClass(Token.class)
                 .withContext(context)
                 .withIdGenerator(new IdGenerator() {
                     @Override
                     public String generate() {
                         return UUID.randomUUID().toString();
                     }
-                }).store();
+                }).store(Token.class);
         return (SQLStore<Token>) DataManager.getStore("Store");
     }
 

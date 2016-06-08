@@ -27,7 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -94,13 +94,13 @@ public class TokensAdapter extends BindableAdapter<Token> {
     }
 
     static final class ViewHolder {
-        @Bind(R.id.text_title)
+        @BindView(R.id.text_title)
         TextView titleText;
 
-        @Bind(R.id.text_message)
+        @BindView(R.id.text_message)
         TextView messageText;
 
-        @Bind(R.id.button_menu)
+        @BindView(R.id.button_menu)
         View menuButton;
 
         public ViewHolder(@NonNull View view) {

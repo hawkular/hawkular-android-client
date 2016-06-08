@@ -58,7 +58,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
@@ -72,28 +72,28 @@ import icepick.State;
 
 public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    @Bind(R.id.content)
+    @BindView(R.id.content)
     SwipeRefreshLayout contentLayout;
 
-    @Bind(R.id.list)
+    @BindView(R.id.list)
     ListView list;
 
-    @Bind(R.id.alert_detail)
+    @BindView(R.id.alert_detail)
     TextView detail;
 
-    @Bind(R.id.alert_severity)
+    @BindView(R.id.alert_severity)
     TextView severity;
 
-    @Bind(R.id.alert_trigger)
+    @BindView(R.id.alert_trigger)
     TextView trigger;
 
-    @Bind(R.id.alert_note_edit)
+    @BindView(R.id.alert_note_edit)
     EditText editNote;
 
-    @Bind(R.id.alert_fab)
+    @BindView(R.id.alert_fab)
     FloatingActionButton fab;
 
-    @Bind(R.id.alert_state_status)
+    @BindView(R.id.alert_state_status)
     Button alertSateButton;
 
     @State
@@ -259,7 +259,7 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
     }
 
     private void tearDownBindings() {
-        ButterKnife.unbind(this);
+        //ButterKnife.unbind(this);
     }
 
     private String getAlertTimestamp(Context context, long timestamp) {
