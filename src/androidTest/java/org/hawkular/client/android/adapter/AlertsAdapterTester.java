@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.assertj.android.api.Assertions;
 import org.hawkular.client.android.backend.model.Alert;
-import org.hawkular.client.android.backend.model.AlertEvaluation;
+import org.hawkular.client.android.backend.model.Note;
 import org.hawkular.client.android.util.Randomizer;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,14 +75,21 @@ public final class AlertsAdapterTester {
 
     private Alert generateAlert() {
         return new Alert(
-            Randomizer.generateString(),
-            Randomizer.generateNumber(),
-            new ArrayList<List<AlertEvaluation>>());
+                Randomizer.generateString(),
+                Randomizer.generateNumber(),
+                (new ArrayList<Alert.Lister>()),
+                Randomizer.generateString(),
+                Randomizer.generateString(),
+                new ArrayList<Note>());
     }
 
-    private static final class AlertMenuAdapter implements AlertsAdapter.AlertMenuListener {
+    private static final class AlertMenuAdapter implements AlertsAdapter.AlertListener {
         @Override
         public void onAlertMenuClick(View alertView, int alertPosition) {
+        }
+
+        @Override public void onAlertBodyClick(View alertView, int alertPosition) {
+
         }
     }
 }
