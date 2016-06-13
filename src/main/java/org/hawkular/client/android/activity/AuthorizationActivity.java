@@ -28,7 +28,7 @@ import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
@@ -40,13 +40,13 @@ import timber.log.Timber;
  * and triggering the OAuth flow.
  */
 public final class AuthorizationActivity extends AppCompatActivity {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.edit_host)
+    @BindView(R.id.edit_host)
     EditText hostEdit;
 
-    @Bind(R.id.edit_port)
+    @BindView(R.id.edit_port)
     EditText portEdit;
 
     @Override

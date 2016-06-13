@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,19 +27,18 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Metric activity.
- *
+ * <p/>
  * Can be considered as a wrapper for {@link org.hawkular.client.android.fragment.MetricAvailabilityFragment}
  * and {@link org.hawkular.client.android.fragment.MetricGaugeFragment} depending
  * on a passed {@link org.hawkular.client.android.backend.model.Resource}.
  */
 public final class MetricActivity extends AppCompatActivity {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @Override
