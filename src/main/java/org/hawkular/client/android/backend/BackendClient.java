@@ -16,9 +16,7 @@
  */
 package org.hawkular.client.android.backend;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,8 +55,6 @@ import android.content.Context;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
-import android.widget.Toast;
-import timber.log.Timber;
 
 /**
  * Backend client.
@@ -236,21 +232,17 @@ public final class BackendClient {
 
 
     public void getRecResourcesFromFeed(@NonNull Callback<List<Resource>> callback, Resource resource) {
-        URI uri = null;
-        try {
-            uri = new URI(String.format(BackendPipes.Paths.FEED_REC_RESOURCES,
-                    Uris.getEncodedParameter(resource.getFeed()),
+
+            URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_REC_RESOURCES,resource.getFeed(),
                     Uris.getEncodedParameter(resource.getId())));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
 
         readPipe(BackendPipes.Names.FEED_REC_RESOURCES, uri, callback);
     }
 
 
     public void getMetricsFromFeed(@NonNull Callback<List<Metric>> callback, Resource resource) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_METRICS, resource.getFeed(), resource.getId()));
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_METRICS, resource.getFeed(),
+                Uris.getEncodedParameter(resource.getId())));
 
         readPipe(BackendPipes.Names.FEED_METRICS, uri, callback);
     }

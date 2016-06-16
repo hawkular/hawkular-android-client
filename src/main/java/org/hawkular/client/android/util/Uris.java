@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,8 @@
  */
 package org.hawkular.client.android.util;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -55,8 +53,8 @@ public final class Uris {
     @NonNull
     public static URI getUri(@NonNull String path) {
         Uri uri = new Uri.Builder()
-            .appendPath(Uris.getEncodedParameter(path))
-            .build();
+                .appendEncodedPath(path)
+                .build();
 
         return Uris.getUriFromString(uri.toString());
     }
@@ -65,7 +63,7 @@ public final class Uris {
     public static URI getUri(@NonNull String path, @NonNull Map<String, String> parameters) {
         Uri.Builder uriBuilder = new Uri.Builder();
 
-        uriBuilder.appendPath(path);
+        uriBuilder.appendEncodedPath(path);
 
         for (String parameterKey : parameters.keySet()) {
             String parameterValue = parameters.get(parameterKey);
@@ -85,10 +83,7 @@ public final class Uris {
 
     @NonNull
     public static String getEncodedParameter(@NonNull String parameter) {
-        try {
-            return URLEncoder.encode(parameter, Charsets.UTF_8);
-        } catch (UnsupportedEncodingException e) {
-            return parameter;
-        }
+
+        return Uri.encode(parameter, Charsets.UTF_8);
     }
 }

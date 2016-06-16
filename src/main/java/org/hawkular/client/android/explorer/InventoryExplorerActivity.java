@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * and other contributors as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.hawkular.client.android.explorer;
 
 import java.util.List;
@@ -17,8 +33,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import timber.log.Timber;
+
+/**
+ * Inventory Explorer activity.
+ *
+ * Manage explorer interaction and presentation.
+ */
 
 public class InventoryExplorerActivity extends AppCompatActivity {
 
@@ -58,7 +79,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     private void setUpFeeds(List<Feed> feeds) {
         for (Feed feed : feeds) {
-            int icon = getResources().getIdentifier("drawable/"+"feed_icon", null, getPackageName());
+            int icon = getResources().getIdentifier("drawable/" + "feed_icon", null, getPackageName());
             TreeNode newFeed = new TreeNode(new IconTreeItemHolder.IconTreeItem(
                     icon, IconTreeItemHolder.IconTreeItem.Type.FEED, feed.getId(), feed));
             tView.addNode(root, newFeed);
@@ -68,7 +89,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     private void setUpResources(List<Resource> resources, TreeNode parent) {
         for (Resource resource : resources) {
-            int icon = getResources().getIdentifier("drawable/"+"resource_icon", null, getPackageName());
+            int icon = getResources().getIdentifier("drawable/" + "resource_icon", null, getPackageName());
             TreeNode newResource = new TreeNode(new IconTreeItemHolder.IconTreeItem(
                     icon, IconTreeItemHolder.IconTreeItem.Type.RESOURCE, resource.getName(), resource));
             tView.addNode(parent, newResource);
@@ -78,7 +99,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     private void setUpMetrics(List<Metric> metrics, TreeNode parent) {
         for (Metric metric : metrics) {
-            int icon = getResources().getIdentifier("drawable/"+"metric_icon", null, getPackageName());
+            int icon = getResources().getIdentifier("drawable/" + "metric_icon", null, getPackageName());
             TreeNode newMetric = new TreeNode(new IconTreeItemHolder.IconTreeItem(
                     icon, IconTreeItemHolder.IconTreeItem.Type.METRIC, metric.getName(), metric));
             tView.addNode(parent, newMetric);
@@ -96,12 +117,12 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         public void onClick(TreeNode node, Object value) {
             IconTreeItemHolder.IconTreeItem item = (IconTreeItemHolder.IconTreeItem) value;
             if (item.type == IconTreeItemHolder.IconTreeItem.Type.FEED) {
-                if(node.size()==0) {
+                if (node.size() == 0) {
                     BackendClient.of(getInventoryExplorerActivity()).getResourcesFromFeed(
                             new ResourcesCallback(node), (Feed) item.value);
                 }
             } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.RESOURCE) {
-                if(node.size()==0) {
+                if (node.size() == 0) {
                     BackendClient.of(getInventoryExplorerActivity()).getRecResourcesFromFeed(
                             new ResourcesCallback(node), (Resource) item.value);
                     BackendClient.of(getInventoryExplorerActivity()).getMetricsFromFeed(
@@ -157,7 +178,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
         private TreeNode parent;
 
-        ResourcesCallback(TreeNode parent){
+        ResourcesCallback(TreeNode parent) {
             this.parent = parent;
         }
 
@@ -166,9 +187,6 @@ public class InventoryExplorerActivity extends AppCompatActivity {
             if (!resources.isEmpty()) {
                 getInventoryExplorerActivity().setUpResources(resources, parent);
             } else {
-                parent.setExpanded(false);
-                parent.getViewHolder().toggle(false);
-                Toast.makeText(getActivity(), "No Child", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -188,7 +206,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
         private TreeNode parent;
 
-        MetricsCallback(TreeNode parent){
+        MetricsCallback(TreeNode parent) {
             this.parent = parent;
         }
 
