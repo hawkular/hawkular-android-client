@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-
     Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
     and other contributors as indicated by the @author tags.
 
@@ -15,7 +14,6 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.hawkular.client.android"
@@ -102,7 +100,6 @@
         android:name=".activity.LoginActivity"
         android:label="@string/title_activity_login">
     </activity>
-
     <activity
         android:name=".activity.TokensActivity"
         android:label="@string/title_activity_token">
@@ -110,6 +107,8 @@
     <activity
         android:name=".activity.AlertDetailActivity"
         android:windowSoftInputMode="adjustPan">
+    </activity>
+    <activity android:name=".explorer.InventoryExplorerActivity">
     </activity>
   </application>
 

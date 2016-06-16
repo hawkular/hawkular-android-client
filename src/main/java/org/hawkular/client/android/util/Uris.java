@@ -84,7 +84,7 @@ public final class Uris {
     }
 
     @NonNull
-    private static String getEncodedParameter(@NonNull String parameter) {
+    public static String getEncodedParameter(@NonNull String parameter) {
         try {
             return URLEncoder.encode(parameter, Charsets.UTF_8);
         } catch (UnsupportedEncodingException e) {

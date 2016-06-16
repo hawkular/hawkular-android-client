@@ -53,6 +53,11 @@
         android:icon="@drawable/ic_token"
         android:title="@string/menu_tokens"/>
 
+    <item
+        android:id="@+id/menu_explorer"
+        android:icon="@drawable/ic_token"
+        android:title="@string/menu_explorer"/>
+
   </group>
 
 </menu>

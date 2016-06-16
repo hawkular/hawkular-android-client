@@ -11,3 +11,6 @@
 -keep class org.hawkular.client.android.backend.model.Note {
     public <methods>;
 }
+-keep class org.hawkular.client.android.explorer.holder.IconTreeItemHolder {
+    public <methods>;
+}
