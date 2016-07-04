@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -73,10 +73,9 @@ public final class IntentsTester {
 
     @Test
     public void metric() {
-        Intent intent = Intents.Builder.of(context).buildMetricIntent(generateResource(), generateMetric());
+        Intent intent = Intents.Builder.of(context).buildMetricIntent(generateMetric());
 
         Assertions.assertThat(intent).hasComponent(context, MetricActivity.class);
-        Assertions.assertThat(intent).hasExtra(Intents.Extras.RESOURCE);
         Assertions.assertThat(intent).hasExtra(Intents.Extras.METRIC);
     }
 
