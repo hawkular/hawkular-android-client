@@ -27,6 +27,7 @@ import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.event.Events;
 import org.hawkular.client.android.event.ResourceSelectedEvent;
+import org.hawkular.client.android.explorer.InventoryExplorerActivity;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Ports;
@@ -316,6 +317,10 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
             case R.id.menu_tokens:
                 startActivity(new Intent(getApplicationContext(), TokensActivity.class));
+                break;
+
+            case R.id.menu_explorer:
+                startActivity(new Intent(getApplicationContext(), InventoryExplorerActivity.class));
                 break;
 
             default:

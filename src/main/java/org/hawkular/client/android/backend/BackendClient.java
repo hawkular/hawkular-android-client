@@ -29,6 +29,7 @@ import org.hawkular.client.android.auth.ModuleKeeper;
 import org.hawkular.client.android.auth.SecretStoreAuthzModule;
 import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.backend.model.Environment;
+import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.backend.model.Note;
@@ -125,6 +126,10 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.ALERT_ACKNOWLEDGE, alertAckUrl, pipeModules, String.class);
         configurePipe(BackendPipes.Names.ALERT_RESOLVE, alertResolveUrl, pipeModules, String.class);
         configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
+        configurePipe(BackendPipes.Names.FEEDS, pipeUrl, pipeModules, Feed.class);
+        configurePipe(BackendPipes.Names.FEED_METRICS, pipeUrl, pipeModules, Metric.class);
+        configurePipe(BackendPipes.Names.FEED_REC_RESOURCES, pipeUrl, pipeModules, Resource.class);
+        configurePipe(BackendPipes.Names.FEED_RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
         configurePipe(BackendPipes.Names.METRIC_DATA_AVAILABILITY, pipeUrl, pipeModules, MetricData.class);
         configurePipe(BackendPipes.Names.METRIC_DATA_GAUGE, pipeUrl, pipeModules, MetricData.class);
@@ -210,6 +215,38 @@ public final class BackendClient {
 
         readPipe(BackendPipes.Names.ENVIRONMENTS, uri, callback);
     }
+
+
+    public void getFeeds(@NonNull Callback<List<Feed>> callback) {
+        URI uri = Uris.getUri(BackendPipes.Paths.FEEDS);
+
+        readPipe(BackendPipes.Names.FEEDS, uri, callback);
+    }
+
+    public void getResourcesFromFeed(@NonNull Callback<List<Resource>> callback, Feed feed) {
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_RESOURCES,
+                Uris.getEncodedParameter(feed.getId())));
+
+        readPipe(BackendPipes.Names.FEED_RESOURCES, uri, callback);
+    }
+
+
+    public void getRecResourcesFromFeed(@NonNull Callback<List<Resource>> callback, Resource resource) {
+
+            URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_REC_RESOURCES,resource.getFeed(),
+                    Uris.getEncodedParameter(resource.getId())));
+
+        readPipe(BackendPipes.Names.FEED_REC_RESOURCES, uri, callback);
+    }
+
+
+    public void getMetricsFromFeed(@NonNull Callback<List<Metric>> callback, Resource resource) {
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_METRICS, resource.getFeed(),
+                Uris.getEncodedParameter(resource.getId())));
+
+        readPipe(BackendPipes.Names.FEED_METRICS, uri, callback);
+    }
+
 
     public void getMetrics(@NonNull Environment environment, @NonNull Resource resource,
                            @NonNull Callback<List<Metric>> callback) {

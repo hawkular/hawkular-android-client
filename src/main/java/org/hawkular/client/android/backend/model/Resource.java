@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,8 +27,14 @@ public final class Resource implements Parcelable {
     @SerializedName("id")
     private String id;
 
+    @SerializedName("name")
+    private String name;
+
     @SerializedName("type")
     private ResourceType type;
+
+    @SerializedName("path")
+    private String path;
 
     @SerializedName("properties")
     private ResourceProperties properties;
@@ -48,6 +54,25 @@ public final class Resource implements Parcelable {
         return type;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getFeed() {
+        String[] temp = path.split("/");
+        for (String string : temp) {
+            if (string.startsWith("f")) {
+                return string.substring(2);
+            }
+        }
+        return null;
+    }
+
+
     public ResourceProperties getProperties() {
         return properties;
     }
@@ -66,14 +91,18 @@ public final class Resource implements Parcelable {
 
     private Resource(Parcel parcel) {
         this.id = parcel.readString();
+        this.name = parcel.readString();
         this.type = parcel.readParcelable(ResourceType.class.getClassLoader());
+        this.path = parcel.readString();
         this.properties = parcel.readParcelable(ResourceProperties.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(id);
+        parcel.writeString(name);
         parcel.writeParcelable(type, flags);
+        parcel.writeString(path);
         parcel.writeParcelable(properties, flags);
     }
 

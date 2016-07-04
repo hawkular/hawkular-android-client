@@ -17,14 +17,14 @@
     limitations under the License.
 
 -->
-<resources>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-  <dimen name="text_primary">16sp</dimen>
-  <dimen name="text_secondary">14sp</dimen>
-  <dimen name="text_primary_small">12sp</dimen>
-  <dimen name="text_secondary_small">10sp</dimen>
-  <!-- Default screen margins, per the Android Design guidelines. -->
-  <dimen name="activity_horizontal_margin">16dp</dimen>
-  <dimen name="activity_vertical_margin">16dp</dimen>
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@+id/container"></RelativeLayout>
 
-</resources>
+
+</RelativeLayout>

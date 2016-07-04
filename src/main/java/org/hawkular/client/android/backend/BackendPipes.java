@@ -34,6 +34,10 @@ final class BackendPipes {
         public static final String ALERT_ACKNOWLEDGE = "alert-acknowledge";
         public static final String ALERT_RESOLVE = "alert-resolve";
         public static final String ENVIRONMENTS = "environments";
+        public static final String FEEDS = "feeds";
+        public static final String FEED_METRICS = "feed_metrics";
+        public static final String FEED_RESOURCES = "feed_resources";
+        public static final String FEED_REC_RESOURCES = "feed_rec_resources";
         public static final String METRICS = "metrics";
         public static final String METRIC_DATA_AVAILABILITY = "metric-data-availability";
         public static final String METRIC_DATA_GAUGE = "metric-data-gauge";
@@ -55,6 +59,10 @@ final class BackendPipes {
         public static final String ALERT_NOTE = "alerts/note";
         public static final String ALERT_RESOLVE = "alerts/resolve";
         public static final String ENVIRONMENTS = "inventory/environments";
+        public static final String FEEDS = "inventory/feeds";
+        public static final String FEED_METRICS = "inventory/feeds/%s/resources/%s/metrics";
+        public static final String FEED_RESOURCES = "inventory/feeds/%s/resources";
+        public static final String FEED_REC_RESOURCES = "inventory/feeds/%s/resources/%s/recursiveChildren";
         public static final String METRICS = "inventory/%s/resources/%s/metrics";
         public static final String METRIC_DATA_AVAILABILITY= "metrics/availability/%s/data";
         public static final String METRIC_DATA_GAUGE = "metrics/gauges/%s/data";
