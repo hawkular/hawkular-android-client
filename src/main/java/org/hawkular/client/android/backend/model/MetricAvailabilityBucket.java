@@ -21,9 +21,6 @@ import com.google.gson.annotations.SerializedName;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by anuj on 23/6/16.
- */
 public class MetricAvailabilityBucket implements Parcelable {
 
     @SerializedName("uptimeRatio")
