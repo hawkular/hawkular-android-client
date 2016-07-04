@@ -24,9 +24,9 @@ import java.util.List;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricAvailability;
-import org.hawkular.client.android.backend.model.MetricData;
-import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.backend.model.MetricAvailabilityBucket;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Formatter;
 import org.hawkular.client.android.util.Fragments;
@@ -39,11 +39,16 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.FloatRange;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -60,7 +65,7 @@ import timber.log.Timber;
 
 /**
  * Metric fragment.
- *
+ * <p/>
  * Displays metric availability data as a bar chart.
  */
 public final class MetricAvailabilityFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -71,6 +76,9 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         public static final int AXIS_INTERVAL = 3;
     }
 
+    @BindView(R.id.metric_name)
+    TextView metric_name;
+
     @BindView(R.id.chart)
     ColumnChartView chart;
 
@@ -78,7 +86,11 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     SwipeRefreshLayout contentLayout;
 
     @State
-    ArrayList<MetricData> metricData;
+    ArrayList<MetricAvailabilityBucket> metricBucket;
+
+    @State
+    @IdRes
+    int timeMenu;
 
     @Nullable
     @Override
@@ -90,14 +102,53 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     public void onActivityCreated(Bundle state) {
         super.onActivityCreated(state);
 
+
         setUpState(state);
 
         setUpBindings();
+
+        setUpMenu();
 
         setUpRefreshing();
 
         setUpMetricData();
     }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        super.onCreateOptionsMenu(menu, menuInflater);
+
+        menuInflater.inflate(R.menu.toolbar_time, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        menu.findItem(timeMenu).setChecked(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.menu_time_hour:
+            case R.id.menu_time_day:
+            case R.id.menu_time_week:
+            case R.id.menu_time_month:
+            case R.id.menu_time_year:
+                timeMenu = menuItem.getItemId();
+                menuItem.setChecked(true);
+
+                setUpMetricDataForced();
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(menuItem);
+        }
+    }
+
 
     private void setUpState(Bundle state) {
         Icepick.restoreInstanceState(this, state);
@@ -105,6 +156,10 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
 
     private void setUpBindings() {
         ButterKnife.bind(this, getView());
+    }
+
+    private void setUpMenu() {
+        setHasOptionsMenu(true);
     }
 
     private void setUpRefreshing() {
@@ -118,41 +173,66 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     }
 
     private void setUpMetricDataForced() {
+
+        metric_name.setText(getMetric().getName());
         BackendClient.of(this).getMetricDataAvailability(
-            getResource(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+                getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+    }
+
+    private Metric getMetric() {
+        return getArguments().getParcelable(Fragments.Arguments.METRIC);
     }
 
     @OnClick(R.id.button_retry)
     public void setUpMetricData() {
-        if (metricData == null) {
+        if (metricBucket == null) {
             showProgress();
-
+            timeMenu = R.id.menu_time_hour;
             setUpMetricDataForced();
         } else {
-            setUpMetricData(metricData);
+            setUpMetricData(metricBucket);
         }
     }
 
-    private Resource getResource() {
-        return getArguments().getParcelable(Fragments.Arguments.RESOURCE);
+    private Date getMetricStartTime() {
+        switch (timeMenu) {
+            case R.id.menu_time_hour:
+                return Time.hourAgo();
+
+            case R.id.menu_time_day:
+                return Time.dayAgo();
+
+            case R.id.menu_time_week:
+                return Time.weekAgo();
+
+            case R.id.menu_time_month:
+                return Time.monthAgo();
+
+            case R.id.menu_time_year:
+                return Time.yearAgo();
+
+            default:
+                return Time.hourAgo();
+        }
     }
 
-    private Date getMetricStartTime() {
-        return Time.hourAgo();
-    }
 
     private Date getMetricFinishTime() {
         return Time.current();
+    }
+
+    private long getBuckets() {
+        return (60);
     }
 
     private void showProgress() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
     }
 
-    private void setUpMetricData(List<MetricData> metricDataList) {
-        this.metricData = new ArrayList<>(metricDataList);
+    private void setUpMetricData(List<MetricAvailabilityBucket> metricBucketList) {
+        this.metricBucket = new ArrayList<>(metricBucketList);
 
-        sortMetricData(metricData);
+        sortMetricData(metricBucket);
 
         setUpChartColumns();
         setUpChartArea();
@@ -162,8 +242,8 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         showChart();
     }
 
-    private void sortMetricData(List<MetricData> metricDataList) {
-        Collections.sort(metricDataList, new MetricDataComparator());
+    private void sortMetricData(List<MetricAvailabilityBucket> metricBucketList) {
+        Collections.sort(metricBucketList, new MetricBucketComparator());
     }
 
     private void setUpChartColumns() {
@@ -172,20 +252,28 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         List<AxisValue> chartAxisValues = getChartAxisValues();
 
         ColumnChartData chartData = new ColumnChartData()
-            .setColumns(chartColumns);
+                .setColumns(chartColumns);
         chartData.setAxisXBottom(new Axis()
-            .setValues(chartAxisPoints));
+                .setValues(chartAxisPoints));
         chartData.setAxisYLeft(new Axis()
-            .setValues(chartAxisValues));
+                .setValues(chartAxisValues));
 
         chart.setColumnChartData(chartData);
     }
 
     private List<Column> getChartColumns() {
-        List<Column> chartColumns = new ArrayList<>(metricData.size());
+        List<Column> chartColumns = new ArrayList<>(metricBucket.size());
 
-        for (MetricData metricData : this.metricData) {
-            MetricAvailability metricAvailability = MetricAvailability.from(metricData.getValue());
+        for (MetricAvailabilityBucket metricBucket : this.metricBucket) {
+            MetricAvailability metricAvailability = null;
+            if (metricBucket.getValue().equals("NaN")) {
+                metricAvailability = MetricAvailability.from("unknown");
+            } else if (Float.parseFloat(metricBucket.getValue()) >= .5) {
+                metricAvailability = MetricAvailability.from("up");
+            } else {
+                metricAvailability = MetricAvailability.from("down");
+            }
+
 
             float columnValue = getColumnValue(metricAvailability);
             int columnColor = getColumnColor(metricAvailability);
@@ -232,12 +320,25 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     private List<AxisValue> getChartAxisPoints() {
         List<AxisValue> chartAxisPoints = new ArrayList<>();
 
-        for (int metricDataPoint = 0; metricDataPoint < metricData.size(); metricDataPoint += Defaults.AXIS_INTERVAL) {
+        for (int metricDataPoint = 0; metricDataPoint < metricBucket.size();
+             metricDataPoint += Defaults.AXIS_INTERVAL) {
             float chartAxisPointHorizontal = metricDataPoint;
-            String chartAxisPointLabel = Formatter.formatTime(metricData.get(metricDataPoint).getTimestamp());
+            String chartAxisPointLabel;
+            switch (timeMenu) {
+                case R.id.menu_time_hour:
+                case R.id.menu_time_day:
+                    chartAxisPointLabel = Formatter.formatTime(metricBucket.get(metricDataPoint).getStartTimestamp());
+                    break;
+                case R.id.menu_time_week:
+                case R.id.menu_time_month:
+                case R.id.menu_time_year:
+                default:
+                    chartAxisPointLabel = Formatter.formatDate(metricBucket.get(metricDataPoint).getStartTimestamp());
+            }
+
 
             chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal)
-                .setLabel(chartAxisPointLabel));
+                    .setLabel(chartAxisPointLabel));
         }
 
         return chartAxisPoints;
@@ -247,9 +348,9 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         List<AxisValue> chartAxisValues = new ArrayList<>();
 
         chartAxisValues.add(new AxisValue(getColumnValue(MetricAvailability.UP) / 2)
-            .setLabel(getString(R.string.label_availability_up)));
+                .setLabel(getString(R.string.label_availability_up)));
         chartAxisValues.add(new AxisValue(getColumnValue(MetricAvailability.DOWN) / 2)
-            .setLabel(getString(R.string.label_availability_down)));
+                .setLabel(getString(R.string.label_availability_down)));
 
         return chartAxisValues;
     }
@@ -262,7 +363,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
 
         chart.setCurrentViewport(currentViewport);
 
-        chart.setZoomEnabled(false);
+        chart.setZoomEnabled(true);
     }
 
     private void hideRefreshing() {
@@ -292,11 +393,11 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         Icepick.saveInstanceState(this, state);
     }
 
-    private static final class MetricDataCallback extends AbstractFragmentCallback<List<MetricData>> {
+    private static final class MetricDataCallback extends AbstractFragmentCallback<List<MetricAvailabilityBucket>> {
         @Override
-        public void onSuccess(List<MetricData> metricData) {
-            if (!metricData.isEmpty()) {
-                getMetricFragment().setUpMetricData(metricData);
+        public void onSuccess(List<MetricAvailabilityBucket> metricBucket) {
+            if (!metricBucket.isEmpty()) {
+                getMetricFragment().setUpMetricData(metricBucket);
             } else {
                 getMetricFragment().showMessage();
             }
@@ -314,13 +415,13 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         }
     }
 
-    private static final class MetricDataComparator implements Comparator<MetricData> {
+    private static final class MetricBucketComparator implements Comparator<MetricAvailabilityBucket> {
         @Override
-        public int compare(MetricData leftMetricData, MetricData rightMetricData) {
-            Date leftMetricDataTimestamp = new Date(leftMetricData.getTimestamp());
-            Date rightMetricDataTimestamp = new Date(rightMetricData.getTimestamp());
+        public int compare(MetricAvailabilityBucket leftMetricBucket, MetricAvailabilityBucket rightMetricBucket) {
+            Date leftMetricBucketTimestamp = new Date(leftMetricBucket.getStartTimestamp());
+            Date rightMetricBucketTimestamp = new Date(rightMetricBucket.getStartTimestamp());
 
-            return leftMetricDataTimestamp.compareTo(rightMetricDataTimestamp);
+            return leftMetricBucketTimestamp.compareTo(rightMetricBucketTimestamp);
         }
     }
 }

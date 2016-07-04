@@ -63,10 +63,10 @@ import timber.log.Timber;
 
 /**
  * Metric fragment.
- * <p/>
+ *
  * Displays metric gauge data as a line chart.
  */
-public final class MetricGaugeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public final class MetricCounterFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.metric_name)
     TextView metric_name;
@@ -164,7 +164,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
 
     private void setUpMetricDataForced() {
         metric_name.setText(getMetric().getName());
-        BackendClient.of(this).getMetricDataGauge(
+        BackendClient.of(this).getMetricDataCounter(
                 getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
     }
 
@@ -211,6 +211,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
     }
 
 
+
     private void showProgress() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
     }
@@ -241,16 +242,16 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         List<AxisValue> chartAxisPoints = getChartAxisPoints();
 
         Line chartLine = new Line(chartPoints)
-            .setColor(getResources().getColor(R.color.background_primary_dark))
-            .setCubic(true)
-            .setHasPoints(false);
+                .setColor(getResources().getColor(R.color.background_primary_dark))
+                .setCubic(true)
+                .setHasPoints(false);
 
         LineChartData chartData = new LineChartData()
-            .setLines(Collections.singletonList(chartLine));
+                .setLines(Collections.singletonList(chartLine));
         chartData.setAxisXBottom(new Axis()
-            .setValues(chartAxisPoints));
+                .setValues(chartAxisPoints));
         chartData.setAxisYLeft(new Axis()
-            .setHasLines(true));
+                .setHasLines(true));
 
         chart.setLineChartData(chartData);
     }
@@ -281,11 +282,12 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         chartCalendar.set(Calendar.SECOND, 0);
         chartCalendar.set(Calendar.MILLISECOND, 0);
 
+
         while (chartCalendar.getTime().before(chartFinishTime)) {
             float chartAxisPointHorizontal = getChartRelativeTimestamp(chartCalendar.getTime().getTime());
             String chartAxisPointHorizontalLabel = "";
 
-            switch (timeMenu) {
+            switch (timeMenu){
                 case R.id.menu_time_hour:
                     chartAxisPointHorizontalLabel = Formatter.formatTime(chartCalendar.getTime().getTime());
 
@@ -315,7 +317,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
 
                     chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal)
                             .setLabel(chartAxisPointHorizontalLabel));
-                    chartCalendar.add(Calendar.HOUR, 24 * 3);
+                    chartCalendar.add(Calendar.HOUR, 24*3);
                     break;
 
                 case R.id.menu_time_year:
@@ -323,7 +325,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
 
                     chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal)
                             .setLabel(chartAxisPointHorizontalLabel));
-                    chartCalendar.add(Calendar.HOUR, 24 * 7);
+                    chartCalendar.add(Calendar.HOUR, 24*7);
                     break;
 
                 default:
@@ -405,8 +407,8 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
             getMetricFragment().showError();
         }
 
-        private MetricGaugeFragment getMetricFragment() {
-            return (MetricGaugeFragment) getFragment();
+        private MetricCounterFragment getMetricFragment() {
+            return (MetricCounterFragment) getFragment();
         }
     }
 
