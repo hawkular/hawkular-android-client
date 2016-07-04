@@ -31,7 +31,8 @@ import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.Metric;
-import org.hawkular.client.android.backend.model.MetricData;
+import org.hawkular.client.android.backend.model.MetricAvailabilityBucket;
+import org.hawkular.client.android.backend.model.MetricBucket;
 import org.hawkular.client.android.backend.model.Note;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
@@ -131,8 +132,10 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.FEED_REC_RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.FEED_RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
-        configurePipe(BackendPipes.Names.METRIC_DATA_AVAILABILITY, pipeUrl, pipeModules, MetricData.class);
-        configurePipe(BackendPipes.Names.METRIC_DATA_GAUGE, pipeUrl, pipeModules, MetricData.class);
+        configurePipe(BackendPipes.Names.METRIC_DATA_AVAILABILITY, pipeUrl, pipeModules,
+                MetricAvailabilityBucket.class);
+        configurePipe(BackendPipes.Names.METRIC_DATA_COUNTER, pipeUrl, pipeModules, MetricBucket.class);
+        configurePipe(BackendPipes.Names.METRIC_DATA_GAUGE, pipeUrl, pipeModules, MetricBucket.class);
         configurePipe(BackendPipes.Names.NOTE, alertNoteUrl, pipeModules, Note.class);
         configurePipe(BackendPipes.Names.PERSONA, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.PERSONAS, backendUrl, pipeModules, Persona.class);
@@ -255,26 +258,45 @@ public final class BackendClient {
         readPipe(BackendPipes.Names.METRICS, uri, callback);
     }
 
-    public void getMetricDataAvailability(@NonNull Resource resource,
+    public void getMetricDataAvailability(@NonNull Metric metric, long bucket,
                                           @NonNull Date startTime, @NonNull Date finishTime,
-                                          @NonNull Callback<List<MetricData>> callback) {
+                                          @NonNull Callback<List<MetricAvailabilityBucket>> callback) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTime()));
         parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
+        parameters.put(BackendPipes.Parameters.BUCKETS, String.valueOf(bucket));
 
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA_AVAILABILITY, resource.getId()), parameters);
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA_AVAILABILITY,
+                Uris.getEncodedParameter(metric.getId())), parameters);
 
         readPipe(BackendPipes.Names.METRIC_DATA_AVAILABILITY, uri, callback);
     }
 
-    public void getMetricDataGauge(@NonNull Metric metric,
-                                   @NonNull Date startTime, @NonNull Date finishTime,
-                                   @NonNull Callback<List<MetricData>> callback) {
+    public void getMetricDataCounter(@NonNull Metric metric, long bucket,
+                                          @NonNull Date startTime, @NonNull Date finishTime,
+                                          @NonNull Callback<List<MetricBucket>> callback) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTime()));
         parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
+        parameters.put(BackendPipes.Parameters.BUCKETS, String.valueOf(bucket));
 
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA_GAUGE, metric.getId()), parameters);
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA_COUNTER,
+                Uris.getEncodedParameter(metric.getId())), parameters);
+
+        readPipe(BackendPipes.Names.METRIC_DATA_COUNTER, uri, callback);
+    }
+
+    public void getMetricDataGauge(@NonNull Metric metric, @NonNull long bucket,
+                                   @NonNull Date startTime, @NonNull Date finishTime,
+                                   @NonNull Callback<List<MetricBucket>> callback) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTime()));
+        parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
+        parameters.put(BackendPipes.Parameters.BUCKETS, String.valueOf(bucket));
+
+
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRIC_DATA_GAUGE,
+                Uris.getEncodedParameter(metric.getId())), parameters);
 
         readPipe(BackendPipes.Names.METRIC_DATA_GAUGE, uri, callback);
     }

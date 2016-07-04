@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 package org.hawkular.client.android.util;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.content.Context;
@@ -42,4 +43,10 @@ public final class Formatter {
     public static String formatTime(@IntRange(from = 0) long millis) {
         return DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(millis));
     }
+
+    @NonNull
+    public static String formatDate(@IntRange(from = 0) long millis) {
+        return new SimpleDateFormat("dd MMM yy").format(new Date(millis));
+    }
+
 }

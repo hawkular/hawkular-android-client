@@ -105,9 +105,8 @@ public final class Intents {
         }
 
         @NonNull
-        public Intent buildMetricIntent(@NonNull Resource resource, @NonNull Metric metric) {
+        public Intent buildMetricIntent(@NonNull Metric metric) {
             Intent intent = new Intent(context, MetricActivity.class);
-            intent.putExtra(Extras.RESOURCE, resource);
             intent.putExtra(Extras.METRIC, metric);
 
             return intent;
