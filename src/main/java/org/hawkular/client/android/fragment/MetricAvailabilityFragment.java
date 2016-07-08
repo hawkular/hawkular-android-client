@@ -26,7 +26,7 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricAvailability;
-import org.hawkular.client.android.backend.model.MetricAvailabilityBucket;
+import org.hawkular.client.android.backend.model.MetricBucket;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Formatter;
 import org.hawkular.client.android.util.Fragments;
@@ -86,7 +86,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     SwipeRefreshLayout contentLayout;
 
     @State
-    ArrayList<MetricAvailabilityBucket> metricBucket;
+    ArrayList<MetricBucket> metricBucket;
 
     @State
     @IdRes
@@ -175,7 +175,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     private void setUpMetricDataForced() {
 
         metric_name.setText(getMetric().getName());
-        BackendClient.of(this).getMetricDataAvailability(
+        BackendClient.of(this).getMetricData(
                 getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
     }
 
@@ -229,7 +229,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
     }
 
-    private void setUpMetricData(List<MetricAvailabilityBucket> metricBucketList) {
+    private void setUpMetricData(List<MetricBucket> metricBucketList) {
         this.metricBucket = new ArrayList<>(metricBucketList);
 
         sortMetricData(metricBucket);
@@ -242,7 +242,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         showChart();
     }
 
-    private void sortMetricData(List<MetricAvailabilityBucket> metricBucketList) {
+    private void sortMetricData(List<MetricBucket> metricBucketList) {
         Collections.sort(metricBucketList, new MetricBucketComparator());
     }
 
@@ -264,7 +264,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     private List<Column> getChartColumns() {
         List<Column> chartColumns = new ArrayList<>(metricBucket.size());
 
-        for (MetricAvailabilityBucket metricBucket : this.metricBucket) {
+        for (MetricBucket metricBucket : this.metricBucket) {
             MetricAvailability metricAvailability = null;
             if (metricBucket.getValue().equals("NaN")) {
                 metricAvailability = MetricAvailability.from("unknown");
@@ -393,11 +393,11 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         Icepick.saveInstanceState(this, state);
     }
 
-    private static final class MetricDataCallback extends AbstractFragmentCallback<List<MetricAvailabilityBucket>> {
+    private static final class MetricDataCallback extends AbstractFragmentCallback<List<MetricBucket>> {
         @Override
-        public void onSuccess(List<MetricAvailabilityBucket> metricBucket) {
-            if (!metricBucket.isEmpty()) {
-                getMetricFragment().setUpMetricData(metricBucket);
+        public void onSuccess(List<MetricBucket> metricBuckets) {
+            if (!metricBuckets.isEmpty()) {
+                getMetricFragment().setUpMetricData(metricBuckets);
             } else {
                 getMetricFragment().showMessage();
             }
@@ -415,9 +415,9 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         }
     }
 
-    private static final class MetricBucketComparator implements Comparator<MetricAvailabilityBucket> {
+    private static final class MetricBucketComparator implements Comparator<MetricBucket> {
         @Override
-        public int compare(MetricAvailabilityBucket leftMetricBucket, MetricAvailabilityBucket rightMetricBucket) {
+        public int compare(MetricBucket leftMetricBucket, MetricBucket rightMetricBucket) {
             Date leftMetricBucketTimestamp = new Date(leftMetricBucket.getStartTimestamp());
             Date rightMetricBucketTimestamp = new Date(rightMetricBucket.getStartTimestamp());
 

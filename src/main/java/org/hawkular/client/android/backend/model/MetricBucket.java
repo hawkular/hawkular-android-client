@@ -18,19 +18,15 @@ package org.hawkular.client.android.backend.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class MetricBucket implements Parcelable {
-
-    @SerializedName("avg")
-    private String value;
+public abstract class MetricBucket {
 
     @SerializedName("start")
-    private long startTimestamp;
+    protected long startTimestamp;
 
     @SerializedName("end")
-    private long endTimestamp;
+    protected long endTimestamp;
+
+    public abstract String getValue();
 
     public long getStartTimestamp() {
         return startTimestamp;
@@ -40,37 +36,5 @@ public class MetricBucket implements Parcelable {
         return endTimestamp;
     }
 
-    public String getValue() {
-        return value;
-    }
 
-    protected MetricBucket(Parcel in) {
-        value = in.readString();
-        startTimestamp = in.readLong();
-        endTimestamp = in.readLong();
-    }
-
-    public static final Creator<MetricBucket> CREATOR = new Creator<MetricBucket>() {
-        @Override
-        public MetricBucket createFromParcel(Parcel in) {
-            return new MetricBucket(in);
-        }
-
-        @Override
-        public MetricBucket[] newArray(int size) {
-            return new MetricBucket[size];
-        }
-    };
-
-
-
-    @Override public int describeContents() {
-        return 0;
-    }
-
-    @Override public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(value);
-        dest.writeLong(startTimestamp);
-        dest.writeLong(endTimestamp);
-    }
 }

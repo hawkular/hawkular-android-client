@@ -16,28 +16,30 @@
  */
 package org.hawkular.client.android.backend.model;
 
+
 import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MetricAvailabilityBucket extends MetricBucket implements Parcelable {
+public class MetricGaugeBucket extends MetricBucket implements Parcelable {
 
-    public static final Creator<MetricAvailabilityBucket> CREATOR = new Creator<MetricAvailabilityBucket>() {
+
+    public static final Creator<MetricGaugeBucket> CREATOR = new Creator<MetricGaugeBucket>() {
         @Override
-        public MetricAvailabilityBucket createFromParcel(Parcel in) {
-            return new MetricAvailabilityBucket(in);
+        public MetricGaugeBucket createFromParcel(Parcel in) {
+            return new MetricGaugeBucket(in);
         }
 
         @Override
-        public MetricAvailabilityBucket[] newArray(int size) {
-            return new MetricAvailabilityBucket[size];
+        public MetricGaugeBucket[] newArray(int size) {
+            return new MetricGaugeBucket[size];
         }
     };
-    @SerializedName("uptimeRatio")
-    private String value;
+    @SerializedName("avg")
+    protected String value;
 
-    protected MetricAvailabilityBucket(Parcel in) {
+    protected MetricGaugeBucket(Parcel in) {
         value = in.readString();
         startTimestamp = in.readLong();
         endTimestamp = in.readLong();

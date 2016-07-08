@@ -78,7 +78,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
     SwipeRefreshLayout contentLayout;
 
     @State
-    ArrayList<MetricBucket> metricData;
+    ArrayList<MetricBucket> metricBucket;
 
     @State
     @IdRes
@@ -164,18 +164,18 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
 
     private void setUpMetricDataForced() {
         metric_name.setText(getMetric().getName());
-        BackendClient.of(this).getMetricDataGauge(
+        BackendClient.of(this).getMetricData(
                 getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
     }
 
     @OnClick(R.id.button_retry)
     public void setUpMetricData() {
-        if (metricData == null) {
+        if (metricBucket == null) {
             showProgress();
             timeMenu = R.id.menu_time_hour;
             setUpMetricDataForced();
         } else {
-            setUpMetricData(metricData);
+            setUpMetricData(metricBucket);
         }
     }
 
@@ -220,9 +220,9 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
     }
 
     private void setUpMetricData(List<MetricBucket> metricDataList) {
-        this.metricData = new ArrayList<>(metricDataList);
+        this.metricBucket = new ArrayList<>(metricDataList);
 
-        sortMetricData(metricData);
+        sortMetricData(metricBucket);
 
         setUpChartLine();
         setUpChartArea();
@@ -256,9 +256,9 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
     }
 
     private List<PointValue> getChartPoints() {
-        List<PointValue> chartPoints = new ArrayList<>(metricData.size());
+        List<PointValue> chartPoints = new ArrayList<>(metricBucket.size());
 
-        for (MetricBucket metricBucket : this.metricData) {
+        for (MetricBucket metricBucket : this.metricBucket) {
             float chartPointHorizontal = getChartRelativeTimestamp(metricBucket.getStartTimestamp());
             float chartPointVertical = metricBucket.getValue().equals("NaN")
                     ? 0 : Float.valueOf(metricBucket.getValue());
@@ -390,9 +390,13 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
 
     private static final class MetricDataCallback extends AbstractFragmentCallback<List<MetricBucket>> {
         @Override
-        public void onSuccess(List<MetricBucket> metricBucket) {
-            if (!metricBucket.isEmpty()) {
-                getMetricFragment().setUpMetricData(metricBucket);
+        public void onSuccess(List<MetricBucket> metricBuckets) {
+            if (!metricBuckets.isEmpty()) {
+                /*List<MetricBucket> formatted = new ArrayList<>();
+                for(MetricGaugeBucket metricGaugeBucket : metricBuckets){
+                    formatted.add(metricGaugeBucket);
+                }*/
+                getMetricFragment().setUpMetricData(metricBuckets);
             } else {
                 getMetricFragment().showMessage();
             }
