@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,20 +26,12 @@ public final class Persona implements Parcelable {
     @SerializedName("id")
     private String id;
 
-    @SerializedName("name")
-    private String name;
-
-    public Persona(@NonNull String id, @NonNull String name) {
+    public Persona(@NonNull String id) {
         this.id = id;
-        this.name = name;
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public static Creator<Persona> CREATOR = new Creator<Persona>() {
@@ -56,13 +48,11 @@ public final class Persona implements Parcelable {
 
     private Persona(Parcel parcel) {
         this.id = parcel.readString();
-        this.name = parcel.readString();
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(id);
-        parcel.writeString(name);
     }
 
     @Override

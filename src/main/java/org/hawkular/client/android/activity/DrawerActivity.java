@@ -175,8 +175,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     private Persona getPersona() {
         return new Persona(
-            Preferences.of(this).personaId().get(),
-            Preferences.of(this).personaName().get());
+            Preferences.of(this).personaId().get());
     }
 
     @Override
@@ -214,13 +213,13 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     private void setUpNavigationHeader() {
         host.setText(getBackendHost());
-        persona.setText(getPersona().getName());
+        persona.setText(getPersona().getId());
 
         setUpPersonas();
     }
 
     private void setUpPersonas() {
-        BackendClient.of(this).getPersonas(new PersonasCallback());
+        //BackendClient.of(this).getPersonas(new PersonasCallback());
     }
 
     private void setUpPersonas(List<Persona> personasList) {

@@ -23,14 +23,12 @@ package org.hawkular.client.android.auth;
 public final class AuthData {
     public static final String NAME = "hawkular";
     public static final String STORE = "sessionStore";
-    public static final String DESCRIPTION = "{\"attributes\":{\"description\":\"" +
-            "'Token created via Hawkular Android Client'\"}}";
 
     public static final class Endpoints {
         private Endpoints() {
         }
 
-        public static final String ACCESS = "/secret-store/v1/tokens/create";
+        public static final String ACCESS = "/hawkular/metrics/tenants";
         public static final String PERSONA = "/hawkular/accounts/personas/current";
     }
 
@@ -40,9 +38,6 @@ public final class AuthData {
 
         public static final String USERNAME = "username";
         public static final String PASSWORD = "password";
-        public static final String EXPIRES_ON = "expiresAt";
-        public static final String KEY = "key";
-        public static final String SECRET = "secret";
         public static final String URL = "url";
         public static final String CONTAIN = "contain";
     }
