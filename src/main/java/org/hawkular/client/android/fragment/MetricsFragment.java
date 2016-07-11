@@ -174,7 +174,7 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
     }
 
     private void startMetricActivity(Metric metric) {
-        Intent intent = Intents.Builder.of(getActivity()).buildMetricIntent(getResource(), metric);
+        Intent intent = Intents.Builder.of(getActivity()).buildMetricIntent(metric);
         startActivity(intent);
     }
 

@@ -24,11 +24,13 @@ import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.explorer.holder.IconTreeItemHolder;
+import org.hawkular.client.android.util.Intents;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -129,7 +131,8 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                             new MetricsCallback(node), (Resource) item.value);
                 }
             } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.METRIC) {
-
+                Intent intent = Intents.Builder.of(getApplicationContext()).buildMetricIntent((Metric) item.value);
+                startActivity(intent);
             }
         }
     };

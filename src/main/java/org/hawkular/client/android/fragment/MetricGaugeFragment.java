@@ -27,7 +27,7 @@ import java.util.List;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Metric;
-import org.hawkular.client.android.backend.model.MetricData;
+import org.hawkular.client.android.backend.model.MetricBucket;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Formatter;
 import org.hawkular.client.android.util.Fragments;
@@ -37,11 +37,16 @@ import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -58,16 +63,13 @@ import timber.log.Timber;
 
 /**
  * Metric fragment.
- *
+ * <p/>
  * Displays metric gauge data as a line chart.
  */
 public final class MetricGaugeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    private static final class Defaults {
-        private Defaults() {
-        }
 
-        public static final int AXIS_INTERVAL_IN_MINUTES = 1;
-    }
+    @BindView(R.id.metric_name)
+    TextView metric_name;
 
     @BindView(R.id.chart)
     LineChartView chart;
@@ -76,7 +78,11 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
     SwipeRefreshLayout contentLayout;
 
     @State
-    ArrayList<MetricData> metricData;
+    ArrayList<MetricBucket> metricBucket;
+
+    @State
+    @IdRes
+    int timeMenu;
 
     @Nullable
     @Override
@@ -92,10 +98,47 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
 
         setUpBindings();
 
+        setUpMenu();
+
         setUpRefreshing();
 
         setUpMetricData();
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        super.onCreateOptionsMenu(menu, menuInflater);
+
+        menuInflater.inflate(R.menu.toolbar_time, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        menu.findItem(timeMenu).setChecked(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.menu_time_hour:
+            case R.id.menu_time_day:
+            case R.id.menu_time_week:
+            case R.id.menu_time_month:
+            case R.id.menu_time_year:
+                timeMenu = menuItem.getItemId();
+                menuItem.setChecked(true);
+
+                setUpMetricDataForced();
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(menuItem);
+        }
+    }
+
 
     private void setUpState(Bundle state) {
         Icepick.restoreInstanceState(this, state);
@@ -103,6 +146,10 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
 
     private void setUpBindings() {
         ButterKnife.bind(this, getView());
+    }
+
+    private void setUpMenu() {
+        setHasOptionsMenu(true);
     }
 
     private void setUpRefreshing() {
@@ -116,28 +163,53 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
     }
 
     private void setUpMetricDataForced() {
-        BackendClient.of(this).getMetricDataGauge(
-            getMetric(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+        metric_name.setText(getMetric().getName());
+        BackendClient.of(this).getMetricData(
+                getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
     }
 
     @OnClick(R.id.button_retry)
     public void setUpMetricData() {
-        if (metricData == null) {
+        if (metricBucket == null) {
             showProgress();
-
+            timeMenu = R.id.menu_time_hour;
             setUpMetricDataForced();
         } else {
-            setUpMetricData(metricData);
+            setUpMetricData(metricBucket);
         }
     }
 
     private Date getMetricStartTime() {
-        return Time.hourAgo();
+        switch (timeMenu) {
+            case R.id.menu_time_hour:
+                return Time.hourAgo();
+
+            case R.id.menu_time_day:
+                return Time.dayAgo();
+
+            case R.id.menu_time_week:
+                return Time.weekAgo();
+
+            case R.id.menu_time_month:
+                return Time.monthAgo();
+
+            case R.id.menu_time_year:
+                return Time.yearAgo();
+
+            default:
+                return Time.hourAgo();
+        }
     }
+
 
     private Date getMetricFinishTime() {
         return Time.current();
     }
+
+    private long getBuckets() {
+        return (60);
+    }
+
 
     private void showProgress() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
@@ -147,10 +219,10 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         return getArguments().getParcelable(Fragments.Arguments.METRIC);
     }
 
-    private void setUpMetricData(List<MetricData> metricDataList) {
-        this.metricData = new ArrayList<>(metricDataList);
+    private void setUpMetricData(List<MetricBucket> metricDataList) {
+        this.metricBucket = new ArrayList<>(metricDataList);
 
-        sortMetricData(metricData);
+        sortMetricData(metricBucket);
 
         setUpChartLine();
         setUpChartArea();
@@ -160,8 +232,8 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         showChart();
     }
 
-    private void sortMetricData(List<MetricData> metricDataList) {
-        Collections.sort(metricDataList, new MetricDataComparator());
+    private void sortMetricData(List<MetricBucket> metricBucketList) {
+        Collections.sort(metricBucketList, new MetricBucketComparator());
     }
 
     private void setUpChartLine() {
@@ -184,11 +256,12 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
     }
 
     private List<PointValue> getChartPoints() {
-        List<PointValue> chartPoints = new ArrayList<>(metricData.size());
+        List<PointValue> chartPoints = new ArrayList<>(metricBucket.size());
 
-        for (MetricData metricData : this.metricData) {
-            float chartPointHorizontal = getChartRelativeTimestamp(metricData.getTimestamp());
-            float chartPointVertical = Float.valueOf(metricData.getValue());
+        for (MetricBucket metricBucket : this.metricBucket) {
+            float chartPointHorizontal = getChartRelativeTimestamp(metricBucket.getStartTimestamp());
+            float chartPointVertical = metricBucket.getValue().equals("NaN")
+                    ? 0 : Float.valueOf(metricBucket.getValue());
 
             chartPoints.add(new PointValue(chartPointHorizontal, chartPointVertical));
         }
@@ -210,12 +283,57 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
 
         while (chartCalendar.getTime().before(chartFinishTime)) {
             float chartAxisPointHorizontal = getChartRelativeTimestamp(chartCalendar.getTime().getTime());
-            String chartAxisPointHorizontalLabel = Formatter.formatTime(chartCalendar.getTime().getTime());
+            String chartAxisPointHorizontalLabel = "";
 
-            chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal)
-                .setLabel(chartAxisPointHorizontalLabel));
+            switch (timeMenu) {
+                case R.id.menu_time_hour:
+                    chartAxisPointHorizontalLabel = Formatter.formatTime(chartCalendar.getTime().getTime());
 
-            chartCalendar.add(Calendar.MINUTE, Defaults.AXIS_INTERVAL_IN_MINUTES);
+                    chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal)
+                            .setLabel(chartAxisPointHorizontalLabel));
+                    chartCalendar.add(Calendar.MINUTE, 1);
+                    break;
+
+                case R.id.menu_time_day:
+                    chartAxisPointHorizontalLabel = Formatter.formatTime(chartCalendar.getTime().getTime());
+
+                    chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal)
+                            .setLabel(chartAxisPointHorizontalLabel));
+                    chartCalendar.add(Calendar.HOUR, 1);
+                    break;
+
+                case R.id.menu_time_week:
+                    chartAxisPointHorizontalLabel = Formatter.formatDate(chartCalendar.getTime().getTime());
+
+                    chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal)
+                            .setLabel(chartAxisPointHorizontalLabel));
+                    chartCalendar.add(Calendar.HOUR, 24);
+                    break;
+
+                case R.id.menu_time_month:
+                    chartAxisPointHorizontalLabel = Formatter.formatDate(chartCalendar.getTime().getTime());
+
+                    chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal)
+                            .setLabel(chartAxisPointHorizontalLabel));
+                    chartCalendar.add(Calendar.HOUR, 24 * 3);
+                    break;
+
+                case R.id.menu_time_year:
+                    chartAxisPointHorizontalLabel = Formatter.formatDate(chartCalendar.getTime().getTime());
+
+                    chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal)
+                            .setLabel(chartAxisPointHorizontalLabel));
+                    chartCalendar.add(Calendar.HOUR, 24 * 7);
+                    break;
+
+                default:
+                    chartAxisPointHorizontalLabel = Formatter.formatTime(chartCalendar.getTime().getTime());
+
+                    chartAxisPoints.add(new AxisValue(chartAxisPointHorizontal)
+                            .setLabel(chartAxisPointHorizontalLabel));
+                    chartCalendar.add(Calendar.MINUTE, 1);
+            }
+
         }
 
         return chartAxisPoints;
@@ -240,7 +358,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
 
         chart.setCurrentViewport(currentViewport);
 
-        chart.setZoomEnabled(false);
+        chart.setZoomEnabled(true);
     }
 
     private void hideRefreshing() {
@@ -270,11 +388,15 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         Icepick.saveInstanceState(this, state);
     }
 
-    private static final class MetricDataCallback extends AbstractFragmentCallback<List<MetricData>> {
+    private static final class MetricDataCallback extends AbstractFragmentCallback<List<MetricBucket>> {
         @Override
-        public void onSuccess(List<MetricData> metricData) {
-            if (!metricData.isEmpty()) {
-                getMetricFragment().setUpMetricData(metricData);
+        public void onSuccess(List<MetricBucket> metricBuckets) {
+            if (!metricBuckets.isEmpty()) {
+                /*List<MetricBucket> formatted = new ArrayList<>();
+                for(MetricGaugeBucket metricGaugeBucket : metricBuckets){
+                    formatted.add(metricGaugeBucket);
+                }*/
+                getMetricFragment().setUpMetricData(metricBuckets);
             } else {
                 getMetricFragment().showMessage();
             }
@@ -292,13 +414,13 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         }
     }
 
-    private static final class MetricDataComparator implements Comparator<MetricData> {
+    private static final class MetricBucketComparator implements Comparator<MetricBucket> {
         @Override
-        public int compare(MetricData leftMetricData, MetricData rightMetricData) {
-            Date leftMetricDataTimestamp = new Date(leftMetricData.getTimestamp());
-            Date rightMetricDataTimestamp = new Date(rightMetricData.getTimestamp());
+        public int compare(MetricBucket leftMetricBucket, MetricBucket rightMetricBucket) {
+            Date leftMetricBucketTimestamp = new Date(leftMetricBucket.getStartTimestamp());
+            Date rightMetricBucketTimestamp = new Date(rightMetricBucket.getStartTimestamp());
 
-            return leftMetricDataTimestamp.compareTo(rightMetricDataTimestamp);
+            return leftMetricBucketTimestamp.compareTo(rightMetricBucketTimestamp);
         }
     }
 }

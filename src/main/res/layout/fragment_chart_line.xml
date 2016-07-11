@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-    Copyright 2015 Red Hat, Inc. and/or its affiliates
+    Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,13 +35,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <lecho.lib.hellocharts.view.LineChartView
-      android:id="@+id/chart"
-      android:paddingTop="16dp"
-      android:paddingBottom="16dp"
-      android:paddingLeft="16dp"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+      <TextView
+          android:id="@+id/metric_name"
+          android:layout_width="match_parent"
+          android:layout_gravity="center"
+          android:gravity="center_horizontal"
+          android:textColor="@color/text_secondary"
+          android:textSize="@dimen/text_primary_small"
+          android:layout_height="wrap_content"/>
+
+      <lecho.lib.hellocharts.view.LineChartView
+          android:id="@+id/chart"
+          android:paddingTop="16dp"
+          android:paddingBottom="16dp"
+          android:paddingLeft="16dp"
+          android:layout_width="match_parent"
+          android:layout_weight="1"
+          android:layout_height="0dp"/>
+    </LinearLayout>
+
 
   </android.support.v4.widget.SwipeRefreshLayout>
 
