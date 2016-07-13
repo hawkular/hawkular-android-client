@@ -18,8 +18,6 @@
 
 package org.hawkular.client.android.auth;
 
-import java.util.Date;
-
 import org.jboss.aerogear.android.core.RecordId;
 
 import android.os.Parcel;
@@ -32,53 +30,43 @@ public class Session implements Parcelable {
 
     @RecordId
     private String accountId = "";
-    private String key = "";
-    private String secret = "";
+    private String username = "";
+    private String password = "";
     private String url = "";
-    private long expires_on = 0;
 
     private Session(Parcel in) {
-        key = in.readString();
-        secret = in.readString();
+        username = in.readString();
+        password = in.readString();
         url = in.readString();
         accountId = in.readString();
-        expires_on = in.readLong();
     }
 
     public Session() {
     }
 
-    public String getKey() {
-        return key;
+    public String getUsername() {
+        return username;
     }
 
-    public String getSecret() {
-        return secret;
+    public String getPassword() {
+        return password;
     }
 
     public String getUrl() {
         return url;
     }
 
-    public long getExpires_on() {
-        return expires_on;
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-
-    public void setExpires_on(long expires_on) {
-        this.expires_on = expires_on;
     }
 
     /**
@@ -108,11 +96,10 @@ public class Session implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(key);
-        dest.writeString(secret);
+        dest.writeString(username);
+        dest.writeString(password);
         dest.writeString(url);
         dest.writeString(accountId);
-        dest.writeLong(expires_on);
     }
 
     public static final Parcelable.Creator<Session> CREATOR = new Parcelable.Creator<Session>() {
@@ -128,11 +115,5 @@ public class Session implements Parcelable {
 
     };
 
-    public boolean tokenIsNotExpired() {
-        if (expires_on == 0) {
-            return true;
-        }
-        return (expires_on > new Date().getTime());
-    }
 
 }

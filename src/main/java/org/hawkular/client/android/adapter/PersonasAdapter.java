@@ -84,6 +84,6 @@ public final class PersonasAdapter extends BindableAdapter<Persona> {
     protected void bindView(Persona persona, int position, View view) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        viewHolder.nameText.setText(persona.getName());
+        viewHolder.nameText.setText(persona.getId());
     }
 }

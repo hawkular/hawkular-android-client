@@ -43,6 +43,7 @@ final class BackendPersonnel implements PipeModule {
         ModuleFields fields = new ModuleFields();
 
         fields.addHeader(BackendPipes.Headers.PERSONA, persona.getId());
+        fields.addHeader(BackendPipes.Headers.TENANT, persona.getId());
 
         return fields;
     }

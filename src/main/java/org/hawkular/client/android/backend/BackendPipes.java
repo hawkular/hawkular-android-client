@@ -59,18 +59,18 @@ final class BackendPipes {
         public static final String ALERT_ACKNOWLEDGE = "alerts/ack";
         public static final String ALERT_NOTE = "alerts/note";
         public static final String ALERT_RESOLVE = "alerts/resolve";
-        public static final String ENVIRONMENTS = "inventory/environments";
-        public static final String FEEDS = "inventory/feeds";
-        public static final String FEED_METRICS = "inventory/feeds/%s/resources/%s/metrics";
-        public static final String FEED_RESOURCES = "inventory/feeds/%s/resources";
-        public static final String FEED_REC_RESOURCES = "inventory/feeds/%s/resources/%s/recursiveChildren";
-        public static final String METRICS = "inventory/%s/resources/%s/metrics";
+        public static final String ENVIRONMENTS = "inventory/deprecated/environments";
+        public static final String FEEDS = "inventory/deprecated/feeds";
+        public static final String FEED_METRICS = "inventory/deprecated/feeds/%s/resources/%s/metrics";
+        public static final String FEED_RESOURCES = "inventory/deprecated/feeds/%s/resources";
+        public static final String FEED_REC_RESOURCES = "inventory/deprecated/feeds/%s/resources/%s/recursiveChildren";
+        public static final String METRICS = "inventory/deprecated/%s/resources/%s/metrics";
         public static final String METRIC_DATA_AVAILABILITY= "metrics/availability/%s/data";
         public static final String METRIC_DATA_COUNTER = "metrics/counters/%s/data";
         public static final String METRIC_DATA_GAUGE = "metrics/gauges/%s/data";
-        public static final String PERSONA = "hawkular/accounts/personas/current";
-        public static final String PERSONAS = "hawkular/accounts/personas";
-        public static final String RESOURCES = "inventory/%s/resources";
+        public static final String PERSONA = "hawkular/metrics/tenants";
+        public static final String PERSONAS = "hawkular/metrics/tenants";
+        public static final String RESOURCES = "inventory/deprecated/%s/resources";
         public static final String TRIGGERS = "alerts/triggers";
     }
 
@@ -94,5 +94,6 @@ final class BackendPipes {
         }
 
         public static final String PERSONA = "Hawkular-Persona";
+        public static final String TENANT = "Hawkular-Tenant";
     }
 }

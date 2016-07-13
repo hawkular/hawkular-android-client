@@ -196,7 +196,7 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
     }
 
     private Persona getMockPersona() {
-        return new Persona("", "");
+        return new Persona("");
     }
 
     private void setUpPersona() {
@@ -222,7 +222,6 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
         }
 
         Preferences.of(this).personaId().set(persona.getId());
-        Preferences.of(this).personaName().set(persona.getName());
         Preferences.of(this).environment().set(environment.getId());
     }
 
