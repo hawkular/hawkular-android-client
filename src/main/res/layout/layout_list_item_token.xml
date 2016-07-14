@@ -30,6 +30,7 @@
     android:orientation="vertical"
     android:layout_weight="1"
     android:layout_width="0dp"
+    android:id="@+id/text_wrapper"
     android:layout_height="wrap_content">
 
     <TextView
