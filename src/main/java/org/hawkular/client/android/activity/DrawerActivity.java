@@ -322,6 +322,10 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
                 startActivity(new Intent(getApplicationContext(), InventoryExplorerActivity.class));
                 break;
 
+            case R.id.menu_favourite:
+                startActivity(new Intent(getApplicationContext(), FavMetricsActivity.class));
+                break;
+
             default:
                 break;
         }

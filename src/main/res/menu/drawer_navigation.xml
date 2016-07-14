@@ -58,6 +58,11 @@
         android:icon="@drawable/ic_token"
         android:title="@string/menu_explorer"/>
 
+    <item
+        android:id="@+id/menu_favourite"
+        android:icon="@drawable/ic_token"
+        android:title="@string/menu_favourite"/>
+
   </group>
 
 </menu>
