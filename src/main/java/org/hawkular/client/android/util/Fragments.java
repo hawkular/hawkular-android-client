@@ -22,6 +22,7 @@ import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.fragment.AlertDetailFragment;
 import org.hawkular.client.android.fragment.AlertsFragment;
+import org.hawkular.client.android.fragment.FavMetricsFragment;
 import org.hawkular.client.android.fragment.MetricAvailabilityFragment;
 import org.hawkular.client.android.fragment.MetricCounterFragment;
 import org.hawkular.client.android.fragment.MetricGaugeFragment;
@@ -84,6 +85,11 @@ public final class Fragments {
             fragment.setArguments(arguments);
 
             return fragment;
+        }
+
+        @NonNull
+        public static Fragment buildFavMetricsFragment() {
+            return new FavMetricsFragment();
         }
 
         @NonNull
