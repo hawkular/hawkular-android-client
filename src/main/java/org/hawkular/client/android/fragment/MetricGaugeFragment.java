@@ -260,7 +260,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
 
         for (MetricBucket metricBucket : this.metricBucket) {
             float chartPointHorizontal = getChartRelativeTimestamp(metricBucket.getStartTimestamp());
-            float chartPointVertical = metricBucket.getValue().equals("NaN")
+            float chartPointVertical = metricBucket.isEmpty()
                     ? 0 : Float.valueOf(metricBucket.getValue());
 
             chartPoints.add(new PointValue(chartPointHorizontal, chartPointVertical));
