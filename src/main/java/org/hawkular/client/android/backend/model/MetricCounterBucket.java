@@ -40,6 +40,7 @@ public class MetricCounterBucket extends MetricBucket implements Parcelable {
 
     protected MetricCounterBucket(Parcel in) {
         value = in.readString();
+        empty = in.readString().equals("true");
         startTimestamp = in.readLong();
         endTimestamp = in.readLong();
     }
@@ -54,6 +55,7 @@ public class MetricCounterBucket extends MetricBucket implements Parcelable {
 
     @Override public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(value);
+        dest.writeString(empty ? "true" : "false");
         dest.writeLong(startTimestamp);
         dest.writeLong(endTimestamp);
     }

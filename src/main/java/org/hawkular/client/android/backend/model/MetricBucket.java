@@ -26,6 +26,9 @@ public abstract class MetricBucket {
     @SerializedName("end")
     protected long endTimestamp;
 
+    @SerializedName("empty")
+    protected boolean empty;
+
     public abstract String getValue();
 
     public long getStartTimestamp() {
@@ -34,6 +37,10 @@ public abstract class MetricBucket {
 
     public long getEndTimestamp() {
         return endTimestamp;
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 
 

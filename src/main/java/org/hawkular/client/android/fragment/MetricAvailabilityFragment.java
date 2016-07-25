@@ -266,7 +266,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
 
         for (MetricBucket metricBucket : this.metricBucket) {
             MetricAvailability metricAvailability = null;
-            if (metricBucket.getValue().equals("NaN")) {
+            if (metricBucket.isEmpty()) {
                 metricAvailability = MetricAvailability.from("unknown");
             } else if (Float.parseFloat(metricBucket.getValue()) >= .5) {
                 metricAvailability = MetricAvailability.from("up");
