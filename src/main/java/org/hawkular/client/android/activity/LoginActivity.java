@@ -23,6 +23,7 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Persona;
+import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Preferences;
 import org.hawkular.client.android.util.Urls;
 import org.jboss.aerogear.android.core.Callback;
@@ -59,19 +60,21 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
     @BindView(R.id.edit_password)
     EditText edit_password;
 
-    String host;
-    String port;
-    public URL backendUrl;
-    public String username;
-    public String password;
+    private URL backendUrl;
+    private String host;
+    private String port;
+    private String username;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         Bundle bundle = getIntent().getExtras();
-        host = bundle.getString("host");
-        port = bundle.getString("port");
+        host = bundle.getString(Intents.Extras.HOST);
+        port = bundle.getString(Intents.Extras.PORT);
+
         setUpBindings();
         setUpToolbar();
     }
