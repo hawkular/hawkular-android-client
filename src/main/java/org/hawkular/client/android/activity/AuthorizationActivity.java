@@ -45,11 +45,11 @@ public final class AuthorizationActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.edit_host)
-    EditText hostEdit;
+    @BindView(R.id.host)
+    EditText mHost;
 
-    @BindView(R.id.edit_port)
-    EditText portEdit;
+    @BindView(R.id.port)
+    EditText mPort;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -61,24 +61,24 @@ public final class AuthorizationActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (Android.isDebugging()) {
-            hostEdit.setText(BackendEndpoints.Demo.HOST);
-            portEdit.setText(BackendEndpoints.Demo.PORT);
+            mHost.setText(BackendEndpoints.Demo.HOST);
+            mPort.setText(BackendEndpoints.Demo.PORT);
         }
 
     }
 
     @OnClick(R.id.button_authorize)
     public void setUpAuthorization() {
-        String host = hostEdit.getText().toString().trim();
-        String port = portEdit.getText().toString().trim();
+        String host = mHost.getText().toString().trim();
+        String port = mPort.getText().toString().trim();
 
         if (host.isEmpty()) {
-            showError(hostEdit, R.string.error_empty);
+            showError(mHost, R.string.error_empty);
             return;
         }
 
         if ((!port.isEmpty()) && (!Ports.isCorrect(Integer.valueOf(port)))) {
-            showError(portEdit, R.string.error_authorization_port);
+            showError(mPort, R.string.error_authorization_port);
             return;
         }
 
