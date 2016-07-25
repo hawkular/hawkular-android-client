@@ -97,5 +97,6 @@
   <string name="ic_keyboard_arrow_right">&#xe0c7;</string>
   <string name="ic_keyboard_arrow_up">&#xe0c8;</string>
   <string name="menu_explorer">Explorer</string>
+  <string name="menu_favourite">Favourite</string>
 
 </resources>
