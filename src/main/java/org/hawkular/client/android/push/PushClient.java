@@ -60,8 +60,7 @@ public final class PushClient implements Callback<Void> {
             .setPushServerURI(Uris.getUriFromString(PushConfiguration.Ups.URL))
             .setSecret(PushConfiguration.Ups.SECRET)
             .setVariantID(PushConfiguration.Ups.VARIANT)
-                //TODO: Modify it
-            //.setSenderIds(PushConfiguration.Gcm.SENDER)
+            .setSenderId(PushConfiguration.Gcm.SENDER)
             .asRegistrar();
 
         RegistrarManager.getRegistrar(PushConfiguration.NAME).register(context, this);
