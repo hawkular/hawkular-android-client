@@ -63,7 +63,7 @@ final class BackendPipes {
         public static final String FEEDS = "inventory/deprecated/feeds";
         public static final String FEED_METRICS = "inventory/deprecated/feeds/%s/resources/%s/metrics";
         public static final String FEED_RESOURCES = "inventory/deprecated/feeds/%s/resources";
-        public static final String FEED_REC_RESOURCES = "inventory/deprecated/feeds/%s/resources/%s/recursiveChildren";
+        public static final String FEED_REC_RESOURCES = "inventory/deprecated/feeds/%s/resources/%s/children";
         public static final String METRICS = "inventory/deprecated/%s/resources/%s/metrics";
         public static final String METRIC_DATA_AVAILABILITY= "metrics/availability/%s/data";
         public static final String METRIC_DATA_COUNTER = "metrics/counters/%s/data";

@@ -112,8 +112,6 @@
     </activity>
     <activity android:name=".explorer.InventoryExplorerActivity">
     </activity>
-    <activity android:name=".activity.FavMetricsActivity">
-    </activity>
   </application>
 
 </manifest>
