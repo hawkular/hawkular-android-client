@@ -24,9 +24,7 @@ import org.hawkular.client.android.adapter.PersonasAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Persona;
-import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.event.Events;
-import org.hawkular.client.android.event.ResourceSelectedEvent;
 import org.hawkular.client.android.explorer.InventoryExplorerActivity;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
@@ -36,8 +34,6 @@ import org.hawkular.client.android.util.ViewTransformer;
 import org.hawkular.client.android.util.Views;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
-
-import com.squareup.otto.Subscribe;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -187,7 +183,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         if (currentNavigationId == 0) {
             showNavigation(R.id.menu_metrics);
 
-            showResourcesFragment();
+            showFavMetricsFragment();
         } else {
             showNavigation(currentNavigationId);
         }
@@ -199,12 +195,20 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         navigation.getMenu().findItem(navigationId).setChecked(true);
     }
 
-    private void showResourcesFragment() {
-        Fragments.Operator.of(this).reset(R.id.layout_container, getResourcesFragment());
+    private void showFavMetricsFragment() {
+        Fragments.Operator.of(this).reset(R.id.layout_container, getFavMetricsFragment());
     }
 
-    private Fragment getResourcesFragment() {
-        return Fragments.Builder.buildResourcesFragment(getEnvironment());
+    private void showAlertsFragment() {
+        Fragments.Operator.of(this).reset(R.id.layout_container, getAlertsFragment());
+    }
+
+    private Fragment getFavMetricsFragment() {
+        return Fragments.Builder.buildFavMetricsFragment();
+    }
+
+    private Fragment getAlertsFragment() {
+        return Fragments.Builder.buildAlertsFragment(null);
     }
 
     private Environment getEnvironment() {
@@ -306,6 +310,14 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
+            case R.id.menu_metrics:
+                showFavMetricsFragment();
+                break;
+
+            case R.id.menu_alerts:
+                showAlertsFragment();
+                break;
+
             case R.id.menu_settings:
                 startSettingsActivity();
                 break;
@@ -320,10 +332,6 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
             case R.id.menu_explorer:
                 startActivity(new Intent(getApplicationContext(), InventoryExplorerActivity.class));
-                break;
-
-            case R.id.menu_favourite:
-                startActivity(new Intent(getApplicationContext(), FavMetricsActivity.class));
                 break;
 
             default:
@@ -397,30 +405,6 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         drawer.openDrawer(GravityCompat.START);
     }
 
-    @Subscribe
-    public void onResourceSelected(ResourceSelectedEvent event) {
-        Resource resource = event.getResource();
-
-        if (areMetricsCurrentNavigation()) {
-            startMetricsActivity(resource);
-        } else {
-            startAlertsActivity(resource);
-        }
-    }
-
-    private boolean areMetricsCurrentNavigation() {
-        return navigation.getMenu().findItem(R.id.menu_metrics).isChecked();
-    }
-
-    private void startMetricsActivity(Resource resource) {
-        Intent intent = Intents.Builder.of(this).buildMetricsIntent(getEnvironment(), resource);
-        startActivity(intent);
-    }
-
-    private void startAlertsActivity(Resource resource) {
-        Intent intent = Intents.Builder.of(this).buildAlertsIntent(resource);
-        startActivity(intent);
-    }
 
     @Override
     protected void onResume() {

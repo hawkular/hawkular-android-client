@@ -161,7 +161,9 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private void setUpAlerts() {
-        if (!areTriggersAvailable()) {
+        if(getResource() == null) {
+            BackendClient.of(this).getAlerts(getAlertsTime(), Time.current(), null, new AlertsCallback());
+        } else if (!areTriggersAvailable()) {
             setUpTriggers();
         } else {
             BackendClient.of(this).getAlerts(getAlertsTime(), Time.current(), triggers, new AlertsCallback());

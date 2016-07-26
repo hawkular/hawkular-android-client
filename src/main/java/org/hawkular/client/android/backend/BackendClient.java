@@ -183,8 +183,9 @@ public final class BackendClient {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(BackendPipes.Parameters.START_TIME, String.valueOf(startTime.getTime()));
         parameters.put(BackendPipes.Parameters.FINISH_TIME, String.valueOf(finishTime.getTime()));
-        parameters.put(BackendPipes.Parameters.TRIGGERS, Uris.getParameter(getTriggerIds(triggers)));
-
+        if (triggers != null) {
+            parameters.put(BackendPipes.Parameters.TRIGGERS, Uris.getParameter(getTriggerIds(triggers)));
+        }
         URI uri = Uris.getUri(BackendPipes.Paths.ALERTS, parameters);
 
         readPipe(BackendPipes.Names.ALERTS, uri, callback);
