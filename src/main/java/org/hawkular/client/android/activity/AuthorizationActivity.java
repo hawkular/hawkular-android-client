@@ -16,19 +16,18 @@
  */
 package org.hawkular.client.android.activity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.StringRes;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.widget.EditText;
-
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendEndpoints;
 import org.hawkular.client.android.util.Android;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Ports;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.StringRes;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

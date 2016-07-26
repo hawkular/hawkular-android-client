@@ -17,80 +17,80 @@
 
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <include layout="@layout/layout_toolbar" />
+  <include layout="@layout/layout_toolbar"/>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:gravity="center"
+      android:orientation="vertical"
+      android:padding="16sp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/label_authorization_title"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/text_primary"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
+        android:text="@string/label_authorization_support"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_secondary"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
+        android:text="@string/label_authorization_description"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_secondary"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="16sp">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/label_authorization_title"
-            android:textColor="@color/text_primary"
-            android:textSize="@dimen/text_primary" />
+      <EditText
+          android:id="@+id/host"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginEnd="16sp"
+          android:layout_marginRight="16sp"
+          android:layout_weight="4"
+          android:hint="@string/hint_host"
+          android:inputType="textUri"
+          android:singleLine="true"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center_horizontal"
-            android:text="@string/label_authorization_support"
-            android:textColor="@color/text_secondary"
-            android:textSize="@dimen/text_secondary" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="8dp"
-            android:gravity="center_horizontal"
-            android:text="@string/label_authorization_description"
-            android:textColor="@color/text_secondary"
-            android:textSize="@dimen/text_secondary" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/host"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16sp"
-                android:layout_marginRight="16sp"
-                android:layout_weight="4"
-                android:hint="@string/hint_host"
-                android:inputType="textUri"
-                android:singleLine="true" />
-
-            <EditText
-                android:id="@+id/port"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/hint_port"
-                android:inputType="number"
-                android:singleLine="true" />
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/button_authorize"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16sp"
-            android:text="@string/button_authorize" />
+      <EditText
+          android:id="@+id/port"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:hint="@string/hint_port"
+          android:inputType="number"
+          android:singleLine="true"/>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button_authorize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16sp"
+        android:text="@string/button_authorize"/>
+
+  </LinearLayout>
 
 </LinearLayout>
