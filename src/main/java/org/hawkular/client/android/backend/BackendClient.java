@@ -40,6 +40,7 @@ import org.hawkular.client.android.backend.model.Note;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Trigger;
+import org.hawkular.client.android.util.CanonicalPath;
 import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Uris;
 import org.hawkular.client.android.util.Urls;
@@ -241,7 +242,7 @@ public final class BackendClient {
     public void getRecResourcesFromFeed(@NonNull Callback<List<Resource>> callback, Resource resource) {
 
             URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_REC_RESOURCES,resource.getFeed(),
-                    Uris.getEncodedParameter(resource.getId())));
+                    CanonicalPath.getByString(resource.getPath()).getResource()));
 
         readPipe(BackendPipes.Names.FEED_REC_RESOURCES, uri, callback);
     }
@@ -249,7 +250,7 @@ public final class BackendClient {
 
     public void getMetricsFromFeed(@NonNull Callback<List<Metric>> callback, Resource resource) {
         URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_METRICS, resource.getFeed(),
-                Uris.getEncodedParameter(resource.getId())));
+                CanonicalPath.getByString(resource.getPath()).getResource()));
 
         readPipe(BackendPipes.Names.FEED_METRICS, uri, callback);
     }
