@@ -35,105 +35,66 @@ import timber.log.Timber;
 
 /**
  * Authorization activity.
- *
+ * <p/>
  * Performs all related to authorization user operations, including accepting server host and port information
  * and triggering the OAuth flow.
  */
 public final class AuthorizationActivity extends AppCompatActivity {
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.edit_host)
-    EditText hostEdit;
+    @BindView(R.id.host)
+    EditText mHost;
 
-    @BindView(R.id.edit_port)
-    EditText portEdit;
+    @BindView(R.id.port)
+    EditText mPort;
 
     @Override
     protected void onCreate(Bundle state) {
+
         super.onCreate(state);
         setContentView(R.layout.activity_authorization);
 
-        setUpBindings();
-
-        setUpToolbar();
-
-        setUpDefaults();
-    }
-
-    private void setUpBindings() {
         ButterKnife.bind(this);
-    }
-
-    private void setUpToolbar() {
         setSupportActionBar(toolbar);
-    }
 
-    private void setUpDefaults() {
         if (Android.isDebugging()) {
-            hostEdit.setText(BackendEndpoints.Demo.HOST);
-            portEdit.setText(BackendEndpoints.Demo.PORT);
+            mHost.setText(BackendEndpoints.Demo.HOST);
+            mPort.setText(BackendEndpoints.Demo.PORT);
         }
+
     }
 
     @OnClick(R.id.button_authorize)
     public void setUpAuthorization() {
-        if (!isHostAvailable()) {
-            showError(hostEdit, R.string.error_empty);
+        String host = mHost.getText().toString().trim();
+        String port = mPort.getText().toString().trim();
+
+        if (host.isEmpty()) {
+            showError(mHost, R.string.error_empty);
             return;
         }
 
-        if (isPortAvailable() && !isPortCorrect()) {
-            showError(portEdit, R.string.error_authorization_port);
+        if ((!port.isEmpty()) && (!Ports.isCorrect(Integer.valueOf(port)))) {
+            showError(mPort, R.string.error_authorization_port);
             return;
         }
 
-        setUpLogin();
-    }
-
-    private boolean isHostAvailable() {
-        return !getHost().isEmpty();
-    }
-
-    private String getHost() {
-        return hostEdit.getText().toString().trim();
-    }
-
-    private boolean isPortAvailable() {
-        return !getPort().isEmpty();
-    }
-
-    private String getPort() {
-        return portEdit.getText().toString().trim();
-    }
-
-    private boolean isPortCorrect() {
-        try {
-            return Ports.isCorrect(getPortNumber());
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    private int getPortNumber() {
-        return Integer.valueOf(getPort());
-    }
-
-    private void showError(EditText errorEdit, @StringRes int errorMessage) {
-        errorEdit.setError(getString(errorMessage));
-    }
-
-    private void setUpLogin() {
         try {
             Intent intent = Intents.Builder.of(getApplicationContext())
-                    .buildLoginIntent(getHost(), getPort());
+                    .buildLoginIntent(host, port);
             startActivity(intent);
             finish();
         } catch (RuntimeException e) {
             Timber.d(e, "Authorization failed.");
-
         }
+
     }
 
+    // TODO Should be moved to a util class and reused
+    private void showError(EditText errorEdit, @StringRes int errorMessage) {
+        errorEdit.setError(getString(errorMessage));
+    }
 
 }
