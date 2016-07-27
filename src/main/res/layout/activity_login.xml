@@ -44,6 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/hint_username"
+        android:imeOptions="actionNext"
         android:inputType="text"
         android:singleLine="true"/>
 
@@ -52,6 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:imeOptions="actionDone"
         android:hint="@string/hint_password"
         android:inputType="textPassword"
         android:singleLine="true"/>
