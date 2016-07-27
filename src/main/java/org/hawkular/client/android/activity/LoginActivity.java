@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.List;
 
 import org.hawkular.client.android.R;
+import org.hawkular.client.android.auth.AuthData;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Persona;
@@ -95,10 +96,10 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
             BackendClient.of(this).deauthorize();
 
             Intent intent = this.getIntent();
-            intent.putExtra("username", username);
-            intent.putExtra("password", password);
-            intent.putExtra("url", backendUrl.toString());
-            intent.putExtra("contain", "true");
+            intent.putExtra(AuthData.Credentials.USERNAME, username);
+            intent.putExtra(AuthData.Credentials.PASSWORD, password);
+            intent.putExtra(AuthData.Credentials.URL, backendUrl.toString());
+            intent.putExtra(AuthData.Credentials.CONTAIN, "true");
 
             BackendClient.of(this).authorize(this, this);
 
