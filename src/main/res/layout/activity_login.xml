@@ -25,61 +25,58 @@
   <include
       layout="@layout/layout_toolbar"/>
 
-  <FrameLayout
+  <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:foreground="?android:windowContentOverlay"
-      android:padding="16dp">
+      android:gravity="center"
+      android:padding="20dp"
+      android:orientation="vertical">
 
-    <LinearLayout
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/logo"
+        android:layout_marginBottom="16dp"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <EditText
+          android:id="@+id/username"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/username"
+          android:imeOptions="actionNext"
+          android:inputType="text"
+          android:singleLine="true"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <EditText
+          android:id="@+id/password"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:imeOptions="actionDone"
+          android:hint="@string/password"
+          android:inputType="textPassword"
+          android:singleLine="true"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/button_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
+        android:layout_marginTop="16dp"
+        android:text="@string/button_login"/>
 
-      <ImageView
-          android:layout_width="200dp"
-          android:layout_marginTop="8dp"
-          android:layout_height="200dp"
-          android:layout_gravity="center_horizontal"
-          android:src="@mipmap/ic_launcher"/>
-
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
-          android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/edit_username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/hint_username"
-            android:inputType="textUri"
-            android:singleLine="true"/>
-
-        <EditText
-            android:id="@+id/edit_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_weight="1"
-            android:hint="@string/hint_password"
-            android:inputType="textPassword"
-            android:singleLine="true"/>
-
-      </LinearLayout>
-
-      <Button
-          android:id="@+id/button_login"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="16dp"
-          android:text="@string/button_login"/>
-
-    </LinearLayout>
-
-  </FrameLayout>
+  </LinearLayout>
 
 </LinearLayout>

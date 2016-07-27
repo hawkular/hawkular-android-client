@@ -20,12 +20,13 @@ import java.net.URL;
 import java.util.List;
 
 import org.hawkular.client.android.R;
+import org.hawkular.client.android.auth.AuthData;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Persona;
+import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Preferences;
 import org.hawkular.client.android.util.Urls;
-import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
 import android.app.Activity;
@@ -48,137 +49,107 @@ import timber.log.Timber;
  * Provide with facility to login either by using credentials or by simply scanning the QR.
  */
 
-public class LoginActivity extends AppCompatActivity implements Callback<String> {
+public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    Toolbar mToolbar;
 
-    @BindView(R.id.edit_username)
-    EditText edit_username;
+    @BindView(R.id.username)
+    EditText mUsername;
 
-    @BindView(R.id.edit_password)
-    EditText edit_password;
+    @BindView(R.id.password)
+    EditText mPassword;
 
-    String host;
-    String port;
-    public URL backendUrl;
-    public String username;
-    public String password;
+    private String host;
+    private String port;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         Bundle bundle = getIntent().getExtras();
-        host = bundle.getString("host");
-        port = bundle.getString("port");
-        setUpBindings();
-        setUpToolbar();
-    }
+        host = bundle.getString(Intents.Extras.HOST);
+        port = bundle.getString(Intents.Extras.PORT);
 
-    private void setUpBindings() {
         ButterKnife.bind(this);
-    }
-
-    private void setUpToolbar() {
-        setSupportActionBar(toolbar);
-    }
-
-    private String getHost() {
-        return host.trim();
-    }
-
-    private boolean isPortAvailable() {
-        return !getPort().isEmpty();
-    }
-
-    private String getPort() {
-        return port.trim();
-    }
-
-
-    private int getPortNumber() {
-        return Integer.valueOf(getPort());
+        setSupportActionBar(mToolbar);
     }
 
     @OnClick(R.id.button_login)
     public void login() {
 
         try {
-            if (!isPortAvailable()) {
-                backendUrl = Urls.getUrl(getHost());
+
+            URL backendUrl;
+            if (port.isEmpty()) {
+                backendUrl = Urls.getUrl(host.trim());
             } else {
-                backendUrl = Urls.getUrl(getHost(), getPortNumber());
+                backendUrl = Urls.getUrl(host.trim(), Integer.valueOf(port));
             }
-            username = edit_username.getText().toString();
-            password = edit_password.getText().toString();
+
+            String username = mUsername.getText().toString();
+            String password = mPassword.getText().toString();
+
             BackendClient.of(this).configureAuthorization(getApplicationContext());
             BackendClient.of(this).deauthorize();
+
             Intent intent = this.getIntent();
-            intent.putExtra("username", username);
-            intent.putExtra("password", password);
-            intent.putExtra("url", backendUrl.toString());
-            intent.putExtra("contain", "true");
-            BackendClient.of(this).authorize(this, this);
+            intent.putExtra(AuthData.Credentials.USERNAME, username);
+            intent.putExtra(AuthData.Credentials.PASSWORD, password);
+            intent.putExtra(AuthData.Credentials.URL, backendUrl.toString());
+            intent.putExtra(AuthData.Credentials.CONTAIN, "true");
+
+            BackendClient.of(this).authorize(this, new AuthorizeCallback());
+
         } catch (RuntimeException e) {
             Timber.d(e, "Authorization failed.");
             showError(R.string.error_authorization_host_port);
         }
+
+    }
+
+    private void setUpBackendCommunication(Persona persona) {
+        if (port.isEmpty()) {
+            BackendClient.of(this).configureCommunication(host.trim(), persona);
+        } else {
+            BackendClient.of(this).configureCommunication(host.trim(), Integer.valueOf(port), persona);
+        }
+    }
+
+    private void succeed(Persona persona, Environment environment) {
+        // Save Backend preferences
+        Preferences.of(this).host().set(host.trim());
+        if (!port.isEmpty()) Preferences.of(this).port().set(Integer.valueOf(port));
+        Preferences.of(this).personaId().set(persona.getId());
+        Preferences.of(this).environment().set(environment.getId());
+
+        setResult(Activity.RESULT_OK);
+        finish();
+        startActivity(new Intent(getApplicationContext(), DrawerActivity.class));
     }
 
     private void showError(@StringRes int errorMessage) {
         Snackbar.make(findViewById(android.R.id.content), errorMessage, Snackbar.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onFailure(Exception e) {
-        Timber.d(e, "Authorization failed.");
+    private static final class AuthorizeCallback extends AbstractActivityCallback<String> {
+        @Override
+        public void onSuccess(String authorization) {
+            LoginActivity activity = (LoginActivity) getActivity();
 
-        showError(R.string.error_general);
-    }
-
-    @Override
-    public void onSuccess(String authorization) {
-        setUpBackendCommunication(getMockPersona());
-        setUpPersona();
-    }
-
-    private void setUpBackendCommunication(Persona persona) {
-        if (!isPortAvailable()) {
-            BackendClient.of(this).configureCommunication(getHost(), persona);
-        } else {
-            BackendClient.of(this).configureCommunication(getHost(), getPortNumber(), persona);
-        }
-    }
-
-    private Persona getMockPersona() {
-        return new Persona("");
-    }
-
-    private void setUpPersona() {
-        BackendClient.of(this).getPersona(new PersonasCallback());
-    }
-
-    private void setUpEnvironment(Persona persona) {
-        BackendClient.of(this).getEnvironments(new EnvironmentsCallback(persona));
-    }
-
-    private void succeed(Persona persona, Environment environment) {
-        saveBackendPreferences(persona, environment);
-        setResult(Activity.RESULT_OK);
-        finish();
-        startActivity(new Intent(getApplicationContext(), DrawerActivity.class));
-    }
-
-
-    private void saveBackendPreferences(Persona persona, Environment environment) {
-        Preferences.of(this).host().set(getHost());
-        if (isPortAvailable()) {
-            Preferences.of(this).port().set(getPortNumber());
+            activity.setUpBackendCommunication(new Persona(""));
+            BackendClient.of(getActivity()).getPersona(new PersonasCallback());
         }
 
-        Preferences.of(this).personaId().set(persona.getId());
-        Preferences.of(this).environment().set(environment.getId());
+        @Override
+        public void onFailure(Exception e) {
+            Timber.d(e, "Authorization failed.");
+
+            LoginActivity activity = (LoginActivity) getActivity();
+            activity.showError(R.string.error_general);
+        }
+
     }
 
     private static final class PersonasCallback extends AbstractActivityCallback<List<Persona>> {
@@ -194,7 +165,7 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
             LoginActivity activity = (LoginActivity) getActivity();
 
             activity.setUpBackendCommunication(persona);
-            activity.setUpEnvironment(persona);
+            BackendClient.of(getActivity()).getEnvironments(new EnvironmentsCallback(persona));
         }
 
         @Override
@@ -229,6 +200,5 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
 
         }
     }
-
 
 }

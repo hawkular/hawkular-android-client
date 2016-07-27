@@ -42,7 +42,7 @@ import timber.log.Timber;
 public final class AuthorizationActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    Toolbar mToolbar;
 
     @BindView(R.id.host)
     EditText mHost;
@@ -57,7 +57,7 @@ public final class AuthorizationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_authorization);
 
         ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
 
         if (Android.isDebugging()) {
             mHost.setText(BackendEndpoints.Demo.HOST);
