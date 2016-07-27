@@ -52,13 +52,13 @@ import timber.log.Timber;
 public class LoginActivity extends AppCompatActivity implements Callback<String> {
 
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    Toolbar mToolbar;
 
-    @BindView(R.id.edit_username)
-    EditText edit_username;
+    @BindView(R.id.username)
+    EditText mUsername;
 
-    @BindView(R.id.edit_password)
-    EditText edit_password;
+    @BindView(R.id.password)
+    EditText mPassword;
 
     private URL backendUrl;
     private String host;
@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
     }
 
     private void setUpToolbar() {
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
     }
 
     private String getHost() {
@@ -113,8 +113,8 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
             } else {
                 backendUrl = Urls.getUrl(getHost(), getPortNumber());
             }
-            username = edit_username.getText().toString();
-            password = edit_password.getText().toString();
+            username = mUsername.getText().toString();
+            password = mPassword.getText().toString();
             BackendClient.of(this).configureAuthorization(getApplicationContext());
             BackendClient.of(this).deauthorize();
             Intent intent = this.getIntent();
