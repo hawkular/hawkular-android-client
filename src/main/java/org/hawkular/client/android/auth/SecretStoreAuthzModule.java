@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.core.Callback;
+import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 import org.jboss.aerogear.android.pipe.http.HeaderAndBody;
 import org.jboss.aerogear.android.pipe.http.HttpException;
 import org.jboss.aerogear.android.pipe.http.HttpProvider;
@@ -88,6 +89,9 @@ public class SecretStoreAuthzModule implements AuthzModule {
             Intent intent = activity.getIntent();
             if (intent.getStringExtra(AuthData.Credentials.CONTAIN) == null) {
                 Session session = sessionStore.read(AuthData.NAME);
+                if(callback instanceof AbstractActivityCallback){
+                    ((AbstractActivityCallback)callback).setActivity(activity);
+                }
                 callback.onSuccess(session.getUsername() + ":" + session.getPassword());
             } else if (intent.getStringExtra(AuthData.Credentials.CONTAIN).equals("true")) {
                 doRequestAccess(activity, callback);
@@ -132,6 +136,9 @@ public class SecretStoreAuthzModule implements AuthzModule {
             @Override
             protected void onPostExecute(HeaderAndBody headerAndBody) {
                 if (exception == null) {
+                    if(callback instanceof AbstractActivityCallback){
+                        ((AbstractActivityCallback)callback).setActivity(activity);
+                    }
                     callback.onSuccess(new String(headerAndBody.getBody()));
                 } else {
                     callback.onFailure(exception);
