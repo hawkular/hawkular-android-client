@@ -21,7 +21,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.UUID;
 
-import org.hawkular.client.android.backend.model.Token;
 import org.jboss.aerogear.android.authorization.AuthzModule;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.pipe.http.HeaderAndBody;
@@ -52,14 +51,12 @@ import timber.log.Timber;
 public class SecretStoreAuthzModule implements AuthzModule {
     private final Context context;
     private final SQLStore<Session> sessionStore;
-    private final SQLStore<Token> tokenStore;
+
 
     public SecretStoreAuthzModule(Context context) {
         this.context = context.getApplicationContext();
         this.sessionStore = openSessionStore();
         sessionStore.openSync();
-        this.tokenStore = openTokenStore();
-        tokenStore.openSync();
     }
 
     private SQLStore<Session> openSessionStore() {
@@ -74,17 +71,6 @@ public class SecretStoreAuthzModule implements AuthzModule {
         return (SQLStore<Session>) DataManager.getStore(AuthData.STORE);
     }
 
-    private SQLStore<Token> openTokenStore() {
-        DataManager.config("store", SQLStoreConfiguration.class)
-                .withContext(context)
-                .withIdGenerator(new IdGenerator() {
-                    @Override
-                    public String generate() {
-                        return UUID.randomUUID().toString();
-                    }
-                }).store(Token.class);
-        return (SQLStore<Token>) DataManager.getStore("store");
-    }
 
     @Override
     public boolean isAuthorized() {
@@ -169,7 +155,6 @@ public class SecretStoreAuthzModule implements AuthzModule {
     @Override
     public void deleteAccount() {
         sessionStore.remove(AuthData.NAME);
-        tokenStore.reset();
     }
 
     @Override

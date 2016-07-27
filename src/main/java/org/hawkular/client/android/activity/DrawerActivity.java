@@ -332,10 +332,6 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
                 startFeedbackActivity();
                 break;
 
-            case R.id.menu_tokens:
-                startActivity(new Intent(getApplicationContext(), TokensActivity.class));
-                break;
-
             case R.id.menu_explorer:
                 startActivity(new Intent(getApplicationContext(), InventoryExplorerActivity.class));
                 break;

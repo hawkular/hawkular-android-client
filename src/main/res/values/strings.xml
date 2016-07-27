@@ -79,9 +79,7 @@
   <string name="hint_password">Enter Password</string>
   <string name="button_login">Login</string>
   <string name="button_QR">Scan QR</string>
-  <string name="menu_tokens">Tokens</string>
   <string name="menu_delete">Delete</string>
-  <string name="title_activity_token">Tokens</string>
   <string name="alert_detail">Alert</string>
   <string name="alert_detail_title">Alert</string>
   <string name="alert_state">State</string>
