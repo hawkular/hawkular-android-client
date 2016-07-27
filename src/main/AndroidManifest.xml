@@ -103,10 +103,6 @@
         android:label="@string/title_activity_login">
     </activity>
     <activity
-        android:name=".activity.TokensActivity"
-        android:label="@string/title_activity_token">
-    </activity>
-    <activity
         android:name=".activity.AlertDetailActivity"
         android:windowSoftInputMode="adjustPan">
     </activity>

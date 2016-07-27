@@ -29,7 +29,6 @@ import org.hawkular.client.android.fragment.MetricGaugeFragment;
 import org.hawkular.client.android.fragment.MetricsFragment;
 import org.hawkular.client.android.fragment.ResourcesFragment;
 import org.hawkular.client.android.fragment.SettingsFragment;
-import org.hawkular.client.android.fragment.TokensFragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -136,13 +135,6 @@ public final class Fragments {
             arguments.putParcelable(Arguments.RESOURCE, resource);
 
             fragment.setArguments(arguments);
-
-            return fragment;
-        }
-
-        @NonNull
-        public static Fragment buildTokensFragment() {
-            Fragment fragment = new TokensFragment();
 
             return fragment;
         }
