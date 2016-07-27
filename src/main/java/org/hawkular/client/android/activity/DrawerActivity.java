@@ -309,6 +309,12 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+        for (int i = 0; i < navigation.getMenu().size(); i++) {
+            MenuItem item = navigation.getMenu().getItem(i);
+            item.setChecked(false);
+        }
+
         switch (menuItem.getItemId()) {
             case R.id.menu_metrics:
                 showFavMetricsFragment();
