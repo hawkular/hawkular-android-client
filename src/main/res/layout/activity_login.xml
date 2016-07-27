@@ -39,24 +39,36 @@
         android:src="@drawable/logo"
         android:layout_marginBottom="16dp"/>
 
-    <EditText
-        android:id="@+id/edit_username"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/hint_username"
-        android:imeOptions="actionNext"
-        android:inputType="text"
-        android:singleLine="true"/>
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/edit_password"
+      <EditText
+          android:id="@+id/edit_username"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/username"
+          android:imeOptions="actionNext"
+          android:inputType="text"
+          android:singleLine="true"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:imeOptions="actionDone"
-        android:hint="@string/hint_password"
-        android:inputType="textPassword"
-        android:singleLine="true"/>
+        android:layout_height="wrap_content">
+
+      <EditText
+          android:id="@+id/edit_password"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:imeOptions="actionDone"
+          android:hint="@string/password"
+          android:inputType="textPassword"
+          android:singleLine="true"/>
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/button_login"
