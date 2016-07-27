@@ -27,7 +27,6 @@ import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Preferences;
 import org.hawkular.client.android.util.Urls;
-import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 
 import android.app.Activity;
@@ -50,7 +49,7 @@ import timber.log.Timber;
  * Provide with facility to login either by using credentials or by simply scanning the QR.
  */
 
-public class LoginActivity extends AppCompatActivity implements Callback<String> {
+public class LoginActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -101,26 +100,13 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
             intent.putExtra(AuthData.Credentials.URL, backendUrl.toString());
             intent.putExtra(AuthData.Credentials.CONTAIN, "true");
 
-            BackendClient.of(this).authorize(this, this);
+            BackendClient.of(this).authorize(this, new AuthorizeCallback());
 
         } catch (RuntimeException e) {
             Timber.d(e, "Authorization failed.");
             showError(R.string.error_authorization_host_port);
         }
 
-    }
-
-    @Override
-    public void onFailure(Exception e) {
-        Timber.d(e, "Authorization failed.");
-
-        showError(R.string.error_general);
-    }
-
-    @Override
-    public void onSuccess(String authorization) {
-        setUpBackendCommunication(new Persona(""));
-        BackendClient.of(this).getPersona(new PersonasCallback());
     }
 
     private void setUpBackendCommunication(Persona persona) {
@@ -145,6 +131,25 @@ public class LoginActivity extends AppCompatActivity implements Callback<String>
 
     private void showError(@StringRes int errorMessage) {
         Snackbar.make(findViewById(android.R.id.content), errorMessage, Snackbar.LENGTH_LONG).show();
+    }
+
+    private static final class AuthorizeCallback extends AbstractActivityCallback<String> {
+        @Override
+        public void onSuccess(String authorization) {
+            LoginActivity activity = (LoginActivity) getActivity();
+
+            activity.setUpBackendCommunication(new Persona(""));
+            BackendClient.of(getActivity()).getPersona(new PersonasCallback());
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            Timber.d(e, "Authorization failed.");
+
+            LoginActivity activity = (LoginActivity) getActivity();
+            activity.showError(R.string.error_general);
+        }
+
     }
 
     private static final class PersonasCallback extends AbstractActivityCallback<List<Persona>> {
