@@ -28,10 +28,9 @@ import android.support.test.runner.AndroidJUnit4;
 public final class PersonaTester {
     @Test
     public void parcelable() {
-        Persona originalPersona = new Persona(Randomizer.generateString(), Randomizer.generateString());
+        Persona originalPersona = new Persona(Randomizer.generateString());
         Persona parceledPerson = Parceler.parcel(Persona.CREATOR, originalPersona);
 
         Assertions.assertThat(parceledPerson.getId()).isEqualTo(originalPersona.getId());
-        Assertions.assertThat(parceledPerson.getName()).isEqualTo(originalPersona.getName());
     }
 }

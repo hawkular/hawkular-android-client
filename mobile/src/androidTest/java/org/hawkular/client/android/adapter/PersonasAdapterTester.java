@@ -72,6 +72,6 @@ public final class PersonasAdapterTester {
     }
 
     private Persona generatePersona() {
-        return new Persona(Randomizer.generateString(), Randomizer.generateString());
+        return new Persona(Randomizer.generateString());
     }
 }
