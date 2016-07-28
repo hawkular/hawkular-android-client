@@ -14,7 +14,6 @@
 -keep class org.hawkular.client.android.explorer.holder.IconTreeItemHolder {
     public <methods>;
 }
-
 -keep class org.hawkular.client.android.backend.model.Metric {
     public <methods>;
 }
