@@ -96,5 +96,8 @@
   <string name="ic_keyboard_arrow_up">&#xe0c8;</string>
   <string name="menu_explorer">Explorer</string>
   <string name="menu_favourite">Favourite</string>
+  <string name="error_not_found">Please check entered host and port</string>
+  <string name="error_internet_connection">Please check your Internet connection.</string>
+  <string name="error_unauth">Please enter correct username and password</string>
 
 </resources>

@@ -135,10 +135,10 @@ public class SecretStoreAuthzModule implements AuthzModule {
 
             @Override
             protected void onPostExecute(HeaderAndBody headerAndBody) {
+                if(callback instanceof AbstractActivityCallback){
+                    ((AbstractActivityCallback)callback).setActivity(activity);
+                }
                 if (exception == null) {
-                    if(callback instanceof AbstractActivityCallback){
-                        ((AbstractActivityCallback)callback).setActivity(activity);
-                    }
                     callback.onSuccess(new String(headerAndBody.getBody()));
                 } else {
                     callback.onFailure(exception);
