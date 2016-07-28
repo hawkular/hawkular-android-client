@@ -28,6 +28,7 @@ import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Preferences;
 import org.hawkular.client.android.util.Urls;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
+import org.jboss.aerogear.android.pipe.http.HttpException;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -147,7 +148,22 @@ public class LoginActivity extends AppCompatActivity {
             Timber.d(e, "Authorization failed.");
 
             LoginActivity activity = (LoginActivity) getActivity();
-            activity.showError(R.string.error_general);
+            if (e instanceof HttpException) {
+                switch (((HttpException)e).getStatusCode()){
+                    case 404:
+                        activity.showError(R.string.error_not_found);
+                        break;
+                    case 401:
+                        activity.showError(R.string.error_unauth);
+                        break;
+                    default:
+                        activity.showError(R.string.error_general);
+                }
+            } else if (e instanceof RuntimeException) {
+                activity.showError(R.string.error_internet_connection);
+            } else {
+                activity.showError(R.string.error_general);
+            }
         }
 
     }
