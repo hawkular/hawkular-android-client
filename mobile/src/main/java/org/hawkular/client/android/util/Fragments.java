@@ -30,12 +30,12 @@ import org.hawkular.client.android.fragment.MetricsFragment;
 import org.hawkular.client.android.fragment.ResourcesFragment;
 import org.hawkular.client.android.fragment.SettingsFragment;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 
 /**
  * Fragment utilities.
@@ -161,12 +161,12 @@ public final class Fragments {
         private final FragmentManager fragmentManager;
 
         @NonNull
-        public static Operator of(@NonNull Activity activity) {
+        public static Operator of(@NonNull FragmentActivity activity) {
             return new Operator(activity);
         }
 
-        private Operator(Activity activity) {
-            this.fragmentManager = activity.getFragmentManager();
+        private Operator(FragmentActivity activity) {
+            this.fragmentManager = activity.getSupportFragmentManager();
         }
 
         public void set(@IdRes int fragmentContainerId, @NonNull Fragment fragment) {

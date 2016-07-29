@@ -32,11 +32,11 @@ import org.jboss.aerogear.android.store.generator.IdGenerator;
 import org.jboss.aerogear.android.store.sql.SQLStore;
 import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.MenuItem;

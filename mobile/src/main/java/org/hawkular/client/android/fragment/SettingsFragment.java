@@ -23,8 +23,8 @@ import org.hawkular.client.android.util.Preferences;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.View;
 
 import butterknife.BindString;
@@ -35,13 +35,12 @@ import butterknife.ButterKnife;
  *
  * Displays settings, at this point contains only the logging out action.
  */
-public final class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+public final class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener {
     @BindString(R.string.settings_key_account_sign_out)
     String accountKey;
 
     @Override
-    public void onCreate(Bundle state) {
-        super.onCreate(state);
+    public void onCreatePreferences(Bundle bundle, String s) {
 
         setUpBindings();
 
