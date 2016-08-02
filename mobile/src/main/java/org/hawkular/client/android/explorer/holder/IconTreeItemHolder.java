@@ -86,6 +86,7 @@ public class IconTreeItemHolder extends TreeNode.BaseNodeViewHolder<IconTreeItem
 
         public enum Type {
             FEED,
+            OPERATION,
             RESOURCE,
             METRIC
         }

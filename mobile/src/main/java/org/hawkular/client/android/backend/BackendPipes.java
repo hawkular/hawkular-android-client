@@ -36,6 +36,7 @@ final class BackendPipes {
         public static final String ENVIRONMENTS = "environments";
         public static final String FEEDS = "feeds";
         public static final String FEED_METRICS = "feed_metrics";
+        public static final String FEED_OPERATIONS = "feed_operations";
         public static final String FEED_RESOURCES = "feed_resources";
         public static final String FEED_REC_RESOURCES = "feed_rec_resources";
         public static final String METRICS = "metrics";
@@ -62,6 +63,7 @@ final class BackendPipes {
         public static final String ENVIRONMENTS = "inventory/deprecated/environments";
         public static final String FEEDS = "inventory/deprecated/feeds";
         public static final String FEED_METRICS = "inventory/deprecated/feeds/%s/resources/%s/metrics";
+        public static final String FEED_OPERATIONS = "inventory/deprecated/feeds/%s/resourceTypes/%s/operationTypes";
         public static final String FEED_RESOURCES = "inventory/deprecated/feeds/%s/resources";
         public static final String FEED_REC_RESOURCES = "inventory/deprecated/feeds/%s/resources/%s/children";
         public static final String METRICS = "inventory/deprecated/%s/resources/%s/metrics";

@@ -37,6 +37,7 @@ import org.hawkular.client.android.backend.model.MetricCounterBucket;
 import org.hawkular.client.android.backend.model.MetricGaugeBucket;
 import org.hawkular.client.android.backend.model.MetricType;
 import org.hawkular.client.android.backend.model.Note;
+import org.hawkular.client.android.backend.model.Operation;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Trigger;
@@ -133,6 +134,7 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
         configurePipe(BackendPipes.Names.FEEDS, pipeUrl, pipeModules, Feed.class);
         configurePipe(BackendPipes.Names.FEED_METRICS, pipeUrl, pipeModules, Metric.class);
+        configurePipe(BackendPipes.Names.FEED_OPERATIONS, pipeUrl, pipeModules, Operation.class);
         configurePipe(BackendPipes.Names.FEED_REC_RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.FEED_RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
@@ -229,6 +231,14 @@ public final class BackendClient {
         URI uri = Uris.getUri(BackendPipes.Paths.FEEDS);
 
         readPipe(BackendPipes.Names.FEEDS, uri, callback);
+    }
+
+    public void getOpreationsFromFeed(@NonNull Callback<List<Operation>> callback, Resource resource) {
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_OPERATIONS,
+                CanonicalPath.getByString(resource.getPath()).getFeed(),
+                Uris.getEncodedParameter(resource.getType().getId())));
+
+        readPipe(BackendPipes.Names.FEED_OPERATIONS, uri, callback);
     }
 
     public void getResourcesFromFeed(@NonNull Callback<List<Resource>> callback, Feed feed) {
