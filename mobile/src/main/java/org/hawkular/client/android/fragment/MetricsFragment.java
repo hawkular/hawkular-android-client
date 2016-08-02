@@ -31,12 +31,12 @@ import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
+import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -201,7 +201,7 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
         //ButterKnife.unbind(this);
     }
 
-    private static final class MetricsCallback extends AbstractFragmentCallback<List<Metric>> {
+    private static final class MetricsCallback extends AbstractSupportFragmentCallback<List<Metric>> {
         @Override
         public void onSuccess(List<Metric> metrics) {
             if (!metrics.isEmpty()) {
@@ -219,7 +219,7 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
         }
 
         private MetricsFragment getMetricsFragment() {
-            return (MetricsFragment) getFragment();
+            return (MetricsFragment) getSupportFragment();
         }
     }
 

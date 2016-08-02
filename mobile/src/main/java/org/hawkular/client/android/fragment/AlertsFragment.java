@@ -34,13 +34,13 @@ import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Time;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
+import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -395,7 +395,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         //ButterKnife.unbind(this);
     }
 
-    private static final class TriggersCallback extends AbstractFragmentCallback<List<Trigger>> {
+    private static final class TriggersCallback extends AbstractSupportFragmentCallback<List<Trigger>> {
         @Override
         public void onSuccess(List<Trigger> triggers) {
             if (triggers.isEmpty()) {
@@ -416,11 +416,11 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         }
 
         private AlertsFragment getAlertsFragment() {
-            return (AlertsFragment) getFragment();
+            return (AlertsFragment) getSupportFragment();
         }
     }
 
-    private static final class AlertsCallback extends AbstractFragmentCallback<List<Alert>> {
+    private static final class AlertsCallback extends AbstractSupportFragmentCallback<List<Alert>> {
         @Override
         public void onSuccess(List<Alert> alerts) {
             if (!alerts.isEmpty()) {
@@ -439,11 +439,11 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         }
 
         private AlertsFragment getAlertsFragment() {
-            return (AlertsFragment) getFragment();
+            return (AlertsFragment) getSupportFragment();
         }
     }
 
-    private static final class AlertActionCallback extends AbstractFragmentCallback<List<String>> {
+    private static final class AlertActionCallback extends AbstractSupportFragmentCallback<List<String>> {
         @Override
         public void onSuccess(List<String> result) {
             getAlertsFragment().setUpAlertsRefreshed();
@@ -454,7 +454,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         }
 
         private AlertsFragment getAlertsFragment() {
-            return (AlertsFragment) getFragment();
+            return (AlertsFragment) getSupportFragment();
         }
     }
 

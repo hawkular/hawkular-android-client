@@ -17,10 +17,10 @@
 package org.hawkular.client.android.util;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.ViewAnimator;
 

@@ -31,11 +31,11 @@ import org.hawkular.client.android.event.ResourceSelectedEvent;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
+import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -207,7 +207,7 @@ public final class ResourcesFragment extends Fragment implements SwipeRefreshLay
         //ButterKnife.unbind(this);
     }
 
-    private static final class ResourcesCallback extends AbstractFragmentCallback<List<Resource>> {
+    private static final class ResourcesCallback extends AbstractSupportFragmentCallback<List<Resource>> {
         @Override
         public void onSuccess(List<Resource> resources) {
             if (!resources.isEmpty()) {
@@ -225,7 +225,7 @@ public final class ResourcesFragment extends Fragment implements SwipeRefreshLay
         }
 
         private ResourcesFragment getResourcesFragment() {
-            return (ResourcesFragment) getFragment();
+            return (ResourcesFragment) getSupportFragment();
         }
     }
 

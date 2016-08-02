@@ -55,11 +55,11 @@ import org.jboss.aerogear.android.pipe.rest.RestfulPipeConfiguration;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
+import android.support.v4.app.Fragment;
 
 /**
  * Backend client.

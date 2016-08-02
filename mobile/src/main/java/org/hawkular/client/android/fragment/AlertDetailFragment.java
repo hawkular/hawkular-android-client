@@ -38,15 +38,15 @@ import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Preferences;
 import org.hawkular.client.android.util.Uris;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
+import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -369,7 +369,7 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
         return this;
     }
 
-    private final class AlertActionCallback extends AbstractFragmentCallback<List<String>> {
+    private final class AlertActionCallback extends AbstractSupportFragmentCallback<List<String>> {
 
         @StringRes int state;
 
@@ -388,11 +388,11 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
         }
 
         private AlertsFragment getAlertsFragment() {
-            return (AlertsFragment) getFragment();
+            return (AlertsFragment) getSupportFragment();
         }
     }
 
-    private final class NoteActionCallback extends AbstractFragmentCallback<List<String>> {
+    private final class NoteActionCallback extends AbstractSupportFragmentCallback<List<String>> {
 
         Note note;
 

@@ -32,15 +32,15 @@ import org.hawkular.client.android.util.Formatter;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Time;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractFragmentCallback;
+import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -393,7 +393,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         Icepick.saveInstanceState(this, state);
     }
 
-    private static final class MetricDataCallback extends AbstractFragmentCallback<List<MetricBucket>> {
+    private static final class MetricDataCallback extends AbstractSupportFragmentCallback<List<MetricBucket>> {
         @Override
         public void onSuccess(List<MetricBucket> metricBuckets) {
             if (!metricBuckets.isEmpty()) {
@@ -411,7 +411,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         }
 
         private MetricAvailabilityFragment getMetricFragment() {
-            return (MetricAvailabilityFragment) getFragment();
+            return (MetricAvailabilityFragment) getSupportFragment();
         }
     }
 
