@@ -23,9 +23,6 @@ import com.google.gson.annotations.SerializedName;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by anuj on 7/6/16.
- */
 public class Operation implements Parcelable {
 
     @RecordId
