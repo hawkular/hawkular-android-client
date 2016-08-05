@@ -149,7 +149,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                             new ResourcesCallback(node), (Resource) item.value);
                     BackendClient.of(getInventoryExplorerActivity()).getMetricsFromFeed(
                             new MetricsCallback(node), (Resource) item.value);
-                    BackendClient.of(getInventoryExplorerActivity()).getOpreationsFromFeed(
+                    BackendClient.of(getInventoryExplorerActivity()).getOpreations(
                             new OpertationsCallback(node), (Resource) item.value);
                 }
             } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.METRIC) {

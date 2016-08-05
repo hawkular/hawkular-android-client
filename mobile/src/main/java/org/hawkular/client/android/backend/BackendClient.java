@@ -134,7 +134,6 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
         configurePipe(BackendPipes.Names.FEEDS, pipeUrl, pipeModules, Feed.class);
         configurePipe(BackendPipes.Names.FEED_METRICS, pipeUrl, pipeModules, Metric.class);
-        configurePipe(BackendPipes.Names.FEED_OPERATIONS, pipeUrl, pipeModules, Operation.class);
         configurePipe(BackendPipes.Names.FEED_REC_RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.FEED_RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
@@ -143,6 +142,7 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.METRIC_DATA_COUNTER, pipeUrl, pipeModules, MetricCounterBucket.class);
         configurePipe(BackendPipes.Names.METRIC_DATA_GAUGE, pipeUrl, pipeModules, MetricGaugeBucket.class);
         configurePipe(BackendPipes.Names.NOTE, alertNoteUrl, pipeModules, Note.class);
+        configurePipe(BackendPipes.Names.OPERATIONS, pipeUrl, pipeModules, Operation.class);
         configurePipe(BackendPipes.Names.PERSONA, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.PERSONAS, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.RESOURCES, pipeUrl, pipeModules, Resource.class);
@@ -233,12 +233,12 @@ public final class BackendClient {
         readPipe(BackendPipes.Names.FEEDS, uri, callback);
     }
 
-    public void getOpreationsFromFeed(@NonNull Callback<List<Operation>> callback, Resource resource) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_OPERATIONS,
+    public void getOpreations(@NonNull Callback<List<Operation>> callback, Resource resource) {
+        URI uri = Uris.getUri(String.format(BackendPipes.Paths.OPERATIONS,
                 CanonicalPath.getByString(resource.getPath()).getFeed(),
                 Uris.getEncodedParameter(resource.getType().getId())));
 
-        readPipe(BackendPipes.Names.FEED_OPERATIONS, uri, callback);
+        readPipe(BackendPipes.Names.OPERATIONS, uri, callback);
     }
 
     public void getResourcesFromFeed(@NonNull Callback<List<Resource>> callback, Feed feed) {
