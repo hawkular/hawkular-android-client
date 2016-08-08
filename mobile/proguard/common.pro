@@ -17,3 +17,4 @@
 -keep class org.hawkular.client.android.backend.model.Metric {
     public <methods>;
 }
+-dontwarn okio.**
