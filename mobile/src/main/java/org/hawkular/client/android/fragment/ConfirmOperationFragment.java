@@ -29,7 +29,6 @@ import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.OperationManager;
 import org.jboss.aerogear.android.core.Callback;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -98,7 +97,7 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
 
         createTable();
 
-        if(operation.getOperationProperties() == null ||
+        if (operation.getOperationProperties() == null ||
                 operation.getOperationProperties().getOperationParameters() == null ||
                 operation.getOperationProperties().getOperationParameters().size() == 0
                 ) {
@@ -136,7 +135,7 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
     }
 
     private void createTable() {
-        TableRow row;
+        TableRow row = null;
         List<OperationParameter> operationParameters = operation.getOperationProperties().getOperationParameters();
 
         if (operationParameters != null) {
@@ -166,18 +165,18 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
                         break;
                     }
 
-                    default: {
+                    case "bool": {
                         row = (TableRow) LayoutInflater.from(getActivity()).inflate(R.layout.row_toggle, null);
                         SwitchCompat data = (SwitchCompat) row.findViewById(R.id.data);
                         data.setChecked(operationParameter.getDefaultValue().equals("true"));
                         break;
                     }
                 }
-
-                TextView name = (TextView) row.findViewById(R.id.name);
-                name.setText(operationParameter.getName());
-
-                table.addView(row);
+                if (row != null) {
+                    TextView name = (TextView) row.findViewById(R.id.name);
+                    name.setText(operationParameter.getName());
+                    table.addView(row);
+                }
             }
             table.requestLayout();
         }
@@ -189,10 +188,10 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
             body.put("operationName", operation.getId());
             body.put("resourcePath", resource.getPath());
             if (custom.isChecked()) {
-                Set<Map.Entry<String, String>> set= map.entrySet();
+                Set<Map.Entry<String, String>> set = map.entrySet();
                 JSONObject params = new JSONObject();
 
-                body.put("parameters",params);
+                body.put("parameters", params);
 
                 for (Map.Entry<String, String> entry : set) {
                     params.put(entry.getKey(), entry.getValue());
@@ -221,9 +220,9 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
 
     private class ClickListner implements View.OnClickListener {
         @Override public void onClick(View view) {
-            if(view.getId() == R.id.cancel) {
+            if (view.getId() == R.id.cancel) {
                 dismiss();
-            } else if(view.getId() == R.id.execute){
+            } else if (view.getId() == R.id.execute) {
                 boolean valid = true;
                 Map<String, String> map = new HashMap<String, String>();
                 for (int i = 0; i < table.getChildCount(); i++) {
