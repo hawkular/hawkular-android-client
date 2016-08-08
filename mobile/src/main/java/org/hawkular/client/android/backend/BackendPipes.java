@@ -43,6 +43,7 @@ final class BackendPipes {
         public static final String METRIC_DATA_GAUGE = "metric-data-gauge";
         public static final String METRIC_DATA_COUNTER = "metric-data-counter";
         public static final String NOTE = "note";
+        public static final String OPERATIONS = "operations";
         public static final String PERSONA = "persona";
         public static final String PERSONAS = "personas";
         public static final String RESOURCES = "resources";
@@ -68,6 +69,7 @@ final class BackendPipes {
         public static final String METRIC_DATA_AVAILABILITY= "metrics/availability/%s/data";
         public static final String METRIC_DATA_COUNTER = "metrics/counters/%s/data";
         public static final String METRIC_DATA_GAUGE = "metrics/gauges/%s/data";
+        public static final String OPERATIONS = "inventory/deprecated/feeds/%s/resourceTypes/%s/operationTypes";
         public static final String PERSONA = "hawkular/metrics/tenants";
         public static final String PERSONAS = "hawkular/metrics/tenants";
         public static final String RESOURCES = "inventory/deprecated/%s/resources";

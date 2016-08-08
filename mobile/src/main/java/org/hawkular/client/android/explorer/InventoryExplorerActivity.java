@@ -23,6 +23,7 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.Operation;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.explorer.holder.IconTreeItemHolder;
 import org.hawkular.client.android.util.Intents;
@@ -98,6 +99,16 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     }
 
+    private void setUpOperations(List<Operation> operations, TreeNode parent) {
+        for (Operation operation : operations) {
+            int icon = getResources().getIdentifier("drawable/" + "operation_icon", null, getPackageName());
+            TreeNode newFeed = new TreeNode(new IconTreeItemHolder.IconTreeItem(
+                    icon, IconTreeItemHolder.IconTreeItem.Type.OPERATION, operation.getId(), operation));
+            tView.addNode(parent, newFeed);
+        }
+
+    }
+
     private void setUpResources(List<Resource> resources, TreeNode parent) {
         for (Resource resource : resources) {
             int icon = getResources().getIdentifier("drawable/" + "resource_icon", null, getPackageName());
@@ -138,6 +149,8 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                             new ResourcesCallback(node), (Resource) item.value);
                     BackendClient.of(getInventoryExplorerActivity()).getMetricsFromFeed(
                             new MetricsCallback(node), (Resource) item.value);
+                    BackendClient.of(getInventoryExplorerActivity()).getOpreations(
+                            new OpertationsCallback(node), (Resource) item.value);
                 }
             } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.METRIC) {
                 Intent intent = Intents.Builder.of(getApplicationContext()).buildMetricIntent((Metric) item.value);
@@ -206,6 +219,32 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         public void onSuccess(List<Feed> feeds) {
             if (!feeds.isEmpty()) {
                 getInventoryExplorerActivity().setUpFeeds(feeds);
+            }
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            Timber.d("Resources fetching failed.");
+
+        }
+
+        private InventoryExplorerActivity getInventoryExplorerActivity() {
+            return (InventoryExplorerActivity) getActivity();
+        }
+    }
+
+    private final class OpertationsCallback extends AbstractActivityCallback<List<Operation>> {
+
+        private TreeNode parent;
+
+        OpertationsCallback(TreeNode parent) {
+            this.parent = parent;
+        }
+
+        @Override
+        public void onSuccess(List<Operation> operations) {
+            if (!operations.isEmpty()) {
+                getInventoryExplorerActivity().setUpOperations(operations, parent);
             }
         }
 
