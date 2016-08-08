@@ -55,6 +55,7 @@ public final class Fragments {
         public static final String ALERT = "alert";
         public static final String ENVIRONMENT = "environment";
         public static final String METRIC = "metric";
+        public static final String OPERATION = "operation";
         public static final String RESOURCE = "resource";
     }
 
