@@ -130,6 +130,8 @@ dependencies {
     compile "com.github.lecho:hellocharts-library:1.5.8@aar"
     compile "com.jakewharton:butterknife:8.0.1"
     compile "com.jakewharton.timber:timber:3.1.0"
+    compile "com.squareup.okhttp:okhttp:2.7.5"
+    compile "com.squareup.okhttp:okhttp-ws:2.7.5"
     compile "info.metadude.android:typed-preferences:2.0.0"
     compile "org.jboss.aerogear:aerogear-android-authz:3.0.0"
     compile "org.jboss.aerogear:aerogear-android-pipe:3.1.0"

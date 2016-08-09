@@ -32,6 +32,9 @@ public class Operation implements Parcelable {
     @SerializedName("name")
     private String name;
 
+    @SerializedName("properties")
+    private OperationProperties operationProperties;
+
     public Operation(String id, String name) {
         this.id = id;
         this.name = name;
@@ -43,6 +46,10 @@ public class Operation implements Parcelable {
 
     public String getName() {
         return name;
+    }
+
+    public OperationProperties getOperationProperties() {
+        return operationProperties;
     }
 
     public void setId(String id) {
@@ -64,12 +71,14 @@ public class Operation implements Parcelable {
     private Operation(Parcel parcel) {
         this.id = parcel.readString();
         this.name = parcel.readString();
+        this.operationProperties = parcel.readParcelable(OperationProperties.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(id);
         parcel.writeString(name);
+        parcel.writeParcelable(operationProperties, flags);
     }
 
     @Override

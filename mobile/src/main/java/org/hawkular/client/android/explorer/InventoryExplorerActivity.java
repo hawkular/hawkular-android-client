@@ -26,7 +26,10 @@ import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Operation;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.explorer.holder.IconTreeItemHolder;
+import org.hawkular.client.android.fragment.ConfirmOperationFragment;
+import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
+import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 import org.jboss.aerogear.android.store.DataManager;
 import org.jboss.aerogear.android.store.generator.IdGenerator;
@@ -40,9 +43,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import timber.log.Timber;
@@ -58,11 +64,14 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     private AndroidTreeView tView;
     private TreeNode.BaseNodeViewHolder holder;
     private TreeNode root;
+    private Callback<String> callback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_explorer);
+
+        callback = new PerformOperationCallback();
 
         ViewGroup containerView = (ViewGroup) findViewById(R.id.container);
 
@@ -150,11 +159,22 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                     BackendClient.of(getInventoryExplorerActivity()).getMetricsFromFeed(
                             new MetricsCallback(node), (Resource) item.value);
                     BackendClient.of(getInventoryExplorerActivity()).getOpreations(
-                            new OpertationsCallback(node), (Resource) item.value);
+                            new OperationsCallback(node), (Resource) item.value);
                 }
             } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.METRIC) {
                 Intent intent = Intents.Builder.of(getApplicationContext()).buildMetricIntent((Metric) item.value);
                 startActivity(intent);
+            } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.OPERATION) {
+                Resource resource = (Resource) ((IconTreeItemHolder.IconTreeItem) node.getParent().getValue()).value;
+                Operation operation = (Operation) ((IconTreeItemHolder.IconTreeItem) node.getValue()).value;
+
+                ConfirmOperationFragment dialog = new ConfirmOperationFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Fragments.Arguments.RESOURCE, resource);
+                bundle.putParcelable(Fragments.Arguments.OPERATION, operation);
+                dialog.setArguments(bundle);
+                dialog.setCallback(callback);
+                dialog.show(getSupportFragmentManager(), "missiles");
             }
         }
     };
@@ -233,11 +253,11 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         }
     }
 
-    private final class OpertationsCallback extends AbstractActivityCallback<List<Operation>> {
+    private final class OperationsCallback extends AbstractActivityCallback<List<Operation>> {
 
         private TreeNode parent;
 
-        OpertationsCallback(TreeNode parent) {
+        OperationsCallback(TreeNode parent) {
             this.parent = parent;
         }
 
@@ -310,6 +330,18 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
         private InventoryExplorerActivity getInventoryExplorerActivity() {
             return (InventoryExplorerActivity) getActivity();
+        }
+    }
+
+    private final class PerformOperationCallback implements Callback<String> {
+
+        @Override public void onSuccess(String data) {
+            Snackbar.make(findViewById(android.R.id.content), data, Snackbar.LENGTH_LONG).show();
+
+        }
+
+        @Override public void onFailure(Exception e) {
+            Snackbar.make(findViewById(android.R.id.content), R.string.operation_fail, Snackbar.LENGTH_LONG).show();
         }
     }
 }

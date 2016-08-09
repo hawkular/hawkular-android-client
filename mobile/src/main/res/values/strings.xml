@@ -99,5 +99,14 @@
   <string name="error_not_found">Please check entered host and port</string>
   <string name="error_internet_connection">Please check your Internet connection.</string>
   <string name="error_unauth">Please enter correct username and password</string>
+  <string name="operation_fail">Operation failed. Please try later.</string>
+  <string name="operation_success">Operation successful.</string>
+  <string name="operation_confirm_title">Confirm to proceed</string>
+  <string name="execute">Execute</string>
+  <string name="cancel">Cancel</string>
+  <string name="error_websocket_close">WebSocket connection was closed. Cannot send any messages</string>
+  <string name="success_websocket_request">Operation request is placed successfully</string>
+  <string name="success_websocket_operation_complete">Operation executed successfully</string>
+  <string name="fail_websocket_operation_complete">Operation failed. Please try later.</string>
 
 </resources>
