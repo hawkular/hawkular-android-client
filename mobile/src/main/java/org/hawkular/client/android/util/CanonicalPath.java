@@ -20,6 +20,8 @@ package org.hawkular.client.android.util;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Canonical Path.
@@ -112,4 +114,38 @@ public class CanonicalPath {
         return (String) data.get(Type.METRIC);
     }
 
+    @Override public String toString() {
+        String path = "";
+        path += data.containsKey(Type.TENANT)?"/t;"+data.get(Type.TENANT):"";
+        path += data.containsKey(Type.FEED)?"/f;"+data.get(Type.FEED):"";
+        path += data.containsKey(Type.ENVIRONMENT)?"/e;"+data.get(Type.ENVIRONMENT):"";
+        path += data.containsKey(Type.RESOURCE_TYPE)?"/rt;"+data.get(Type.RESOURCE_TYPE):"";
+        path += data.containsKey(Type.METRIC_TYPE)?"/mt;"+data.get(Type.METRIC_TYPE):"";
+        path += data.containsKey(Type.METRIC)?"/m;"+data.get(Type.METRIC):"";
+        List<String> resources = (List<String>) data.get(Type.RESOURCE);
+        for (String r : resources) {
+            path += "/r;"+data.get(Type.RESOURCE);
+        }
+
+        return path;
+    }
+
+    public String fix(String path) {
+
+        path = path.replaceAll("\\{t\\}", (String) data.get(Type.TENANT));
+        path = path.replaceAll("\\{e\\}", (String) data.get(Type.ENVIRONMENT));
+        path = path.replaceAll("\\{f\\}", (String) data.get(Type.FEED));
+        path = path.replaceAll("\\{mt\\}", (String) data.get(Type.METRIC_TYPE));
+        path = path.replaceAll("\\{m\\}", (String) data.get(Type.METRIC));
+        path = path.replaceAll("\\{rt\\}", (String) data.get(Type.RESOURCE_TYPE));
+        List<String> resources = (List<String>) data.get(Type.RESOURCE);
+        if(resources != null) {
+            String resource = "";
+            for (String r : resources) {
+                resource += (resource.isEmpty() ? "r;" + r : ("/r;" + r));
+            }
+            path = path.replaceAll("\\{r\\}", resource);
+        }
+        return path;
+    }
 }

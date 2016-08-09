@@ -37,7 +37,7 @@ final class BackendPipes {
         public static final String FEEDS = "feeds";
         public static final String FEED_METRICS = "feed_metrics";
         public static final String FEED_RESOURCES = "feed_resources";
-        public static final String FEED_REC_RESOURCES = "feed_rec_resources";
+        public static final String FEED_CHILD_RESOURCES = "feed_chl_resources";
         public static final String METRICS = "metrics";
         public static final String METRIC_DATA_AVAILABILITY = "metric-data-availability";
         public static final String METRIC_DATA_GAUGE = "metric-data-gauge";
@@ -60,19 +60,19 @@ final class BackendPipes {
         public static final String ALERT_ACKNOWLEDGE = "alerts/ack";
         public static final String ALERT_NOTE = "alerts/note";
         public static final String ALERT_RESOLVE = "alerts/resolve";
-        public static final String ENVIRONMENTS = "inventory/deprecated/environments";
-        public static final String FEEDS = "inventory/deprecated/feeds";
-        public static final String FEED_METRICS = "inventory/deprecated/feeds/%s/resources/%s/metrics";
-        public static final String FEED_RESOURCES = "inventory/deprecated/feeds/%s/resources";
-        public static final String FEED_REC_RESOURCES = "inventory/deprecated/feeds/%s/resources/%s/children";
-        public static final String METRICS = "inventory/deprecated/%s/resources/%s/metrics";
+        public static final String ENVIRONMENTS = "inventory/traversal/type=e";
+        public static final String FEEDS = "inventory/traversal/type=f";
+        public static final String FEED_METRICS = "inventory/traversal/f;{f}/{r}/rl;incorporates/type=m";
+        public static final String FEED_RESOURCES = "inventory/traversal/f;{f}/type=r";
+        public static final String FEED_CHILD_RESOURCES = "inventory/traversal/f;{f}/{r}/type=r";
+        public static final String METRICS = "inventory/traversal/e;{e}/{r}/type=m";
         public static final String METRIC_DATA_AVAILABILITY= "metrics/availability/%s/data";
         public static final String METRIC_DATA_COUNTER = "metrics/counters/%s/data";
         public static final String METRIC_DATA_GAUGE = "metrics/gauges/%s/data";
-        public static final String OPERATIONS = "inventory/deprecated/feeds/%s/resourceTypes/%s/operationTypes";
+        public static final String OPERATIONS = "inventory/traversal/f;{f}/rt;{rt}/type=ot";
         public static final String PERSONA = "hawkular/metrics/tenants";
         public static final String PERSONAS = "hawkular/metrics/tenants";
-        public static final String RESOURCES = "inventory/deprecated/%s/resources";
+        public static final String RESOURCES = "inventory/traversal/type=r";
         public static final String TRIGGERS = "alerts/triggers";
     }
 
