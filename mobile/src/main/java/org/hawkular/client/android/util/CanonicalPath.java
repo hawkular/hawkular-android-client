@@ -20,8 +20,6 @@ package org.hawkular.client.android.util;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Canonical Path.

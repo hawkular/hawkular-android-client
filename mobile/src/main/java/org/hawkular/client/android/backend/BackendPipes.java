@@ -64,15 +64,15 @@ final class BackendPipes {
         public static final String FEEDS = "inventory/traversal/type=f";
         public static final String FEED_METRICS = "inventory/traversal/f;{f}/{r}/rl;incorporates/type=m";
         public static final String FEED_RESOURCES = "inventory/traversal/f;{f}/type=r";
-        public static final String FEED_CHILD_RESOURCES = "inventory/traversal/f;{f}/{r}/type=r";
-        public static final String METRICS = "inventory/traversal/e;{e}/{r}/type=m";
+        public static final String FEED_CHILD_RESOURCES = "inventory/traversal/f;{f}/{r}/rl;isParentOf/type=r";
+        public static final String METRICS = "inventory/traversal/e;{e}/{r}/rl;incorporates/type=m";
         public static final String METRIC_DATA_AVAILABILITY= "metrics/availability/%s/data";
         public static final String METRIC_DATA_COUNTER = "metrics/counters/%s/data";
         public static final String METRIC_DATA_GAUGE = "metrics/gauges/%s/data";
         public static final String OPERATIONS = "inventory/traversal/f;{f}/rt;{rt}/type=ot";
         public static final String PERSONA = "hawkular/metrics/tenants";
         public static final String PERSONAS = "hawkular/metrics/tenants";
-        public static final String RESOURCES = "inventory/traversal/type=r";
+        public static final String RESOURCES = "inventory/traversal/type=f;type=e/type=r";
         public static final String TRIGGERS = "alerts/triggers";
     }
 
