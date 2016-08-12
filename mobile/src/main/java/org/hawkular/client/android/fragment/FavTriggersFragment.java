@@ -22,10 +22,9 @@ import java.util.Collection;
 import java.util.UUID;
 
 import org.hawkular.client.android.R;
-import org.hawkular.client.android.adapter.FavMetricsAdapter;
-import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.adapter.TriggersAdapter;
+import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.util.ColorSchemer;
-import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.store.DataManager;
 import org.jboss.aerogear.android.store.generator.IdGenerator;
@@ -33,7 +32,6 @@ import org.jboss.aerogear.android.store.sql.SQLStore;
 import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -50,13 +48,13 @@ import icepick.Icepick;
 import icepick.State;
 
 /**
- * Favourite Metrics fragment.
+ * Favourite Triggers fragment.
  * <p>
- * Displays available favourite metrics.
+ * Displays available favourite triggers.
  */
 
-public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        FavMetricsAdapter.MetricListener {
+public class FavTriggersFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        TriggersAdapter.TriggerListener {
 
     @BindView(R.id.list)
     ListView list;
@@ -66,7 +64,7 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
 
     @State
     @Nullable
-    ArrayList<Metric> metrics;
+    ArrayList<Trigger> triggers;
 
     @Nullable
     @Override
@@ -84,18 +82,18 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
 
         setUpRefreshing();
 
-        setUpMetrics();
+        setUpTriggers();
     }
 
-    private void setUpMetrics() {
+    private void setUpTriggers() {
 
         Context context = this.getActivity();
-        SQLStore<Metric> store = openStore(context);
+        SQLStore<Trigger> store = openStore(context);
         store.openSync();
 
-        Collection<Metric> array = store.readAll();
-        metrics = new ArrayList<>(array);
-        list.setAdapter(new FavMetricsAdapter(getActivity(), this, metrics));
+        Collection<Trigger> array = store.readAll();
+        triggers = new ArrayList<>(array);
+        list.setAdapter(new TriggersAdapter(getActivity(), this, triggers));
         hideRefreshing();
         showList();
     }
@@ -109,16 +107,16 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
         ViewDirector.of(this).using(R.id.animator).show(R.id.content);
     }
 
-    private SQLStore<Metric> openStore(Context context) {
-        DataManager.config("FavouriteMetrics", SQLStoreConfiguration.class)
+    private SQLStore<Trigger> openStore(Context context) {
+        DataManager.config("FavouriteTriggers", SQLStoreConfiguration.class)
                 .withContext(context)
                 .withIdGenerator(new IdGenerator() {
                     @Override
                     public String generate() {
                         return UUID.randomUUID().toString();
                     }
-                }).store(Metric.class);
-        return (SQLStore<Metric>) DataManager.getStore("FavouriteMetrics");
+                }).store(Trigger.class);
+        return (SQLStore<Trigger>) DataManager.getStore("FavouriteTriggers");
     }
 
     private void setUpState(Bundle state) {
@@ -135,7 +133,7 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
     }
 
     @Override public void onRefresh() {
-        setUpMetrics();
+        setUpTriggers();
     }
 
     @Override
@@ -152,40 +150,33 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
-        tearDownBindings();
     }
 
-    private void tearDownBindings() {
-        //TODO: Modify it
-        //ButterKnife.unbind(this);
+
+    @Override public void onTriggerMenuClick(View triggerView, int triggerPosition) {
+        showTriggerMenu(triggerView, triggerPosition);
     }
 
-    @Override public void onMetricMenuClick(View metricView, int metricPosition) {
-        showMetricMenu(metricView, metricPosition);
+    @Override public void onTriggerTextClick(View triggerView, int triggerPosition) {
+        // TODO : Add detail Trigger fragment
     }
 
-    @Override public void onMetricTextClick(View metricView, int metricPosition) {
-        Intent intent = Intents.Builder.of(getActivity()).buildMetricIntent(metrics.get(metricPosition));
-        startActivity(intent);
-    }
+    private void showTriggerMenu(final View triggerView, final int triggerPosition) {
+        PopupMenu triggerMenu = new PopupMenu(getActivity(), triggerView);
 
-    private void showMetricMenu(final View metricView, final int metricPosition) {
-        PopupMenu metricMenu = new PopupMenu(getActivity(), metricView);
+        triggerMenu.getMenuInflater().inflate(R.menu.popup_delete, triggerMenu.getMenu());
 
-        metricMenu.getMenuInflater().inflate(R.menu.popup_delete, metricMenu.getMenu());
-
-        metricMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        triggerMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                Metric metric = getFavMetricsAdapter().getItem(metricPosition);
+                Trigger trigger = getTriggersAdapter().getItem(triggerPosition);
 
                 switch (menuItem.getItemId()) {
                     case R.id.menu_delete:
                         Context context = getActivity();
-                        SQLStore<Metric> store = openStore(context);
+                        SQLStore<Trigger> store = openStore(context);
                         store.openSync();
-                        store.remove(metric.getId());
+                        store.remove(trigger.getId());
                         onRefresh();
                         return true;
 
@@ -195,12 +186,11 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
             }
         });
 
-        metricMenu.show();
+        triggerMenu.show();
     }
 
 
-    private FavMetricsAdapter getFavMetricsAdapter() {
-        return (FavMetricsAdapter) list.getAdapter();
+    private TriggersAdapter getTriggersAdapter() {
+        return (TriggersAdapter) list.getAdapter();
     }
 }
-

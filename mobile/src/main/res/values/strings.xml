@@ -108,5 +108,6 @@
   <string name="success_websocket_request">Operation request is placed successfully</string>
   <string name="success_websocket_operation_complete">Operation executed successfully</string>
   <string name="fail_websocket_operation_complete">Operation failed. Please try later.</string>
+  <string name="menu_add">ADD</string>
 
 </resources>
