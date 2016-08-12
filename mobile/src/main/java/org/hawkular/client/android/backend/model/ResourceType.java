@@ -27,6 +27,9 @@ public final class ResourceType implements Parcelable {
     @SerializedName("id")
     private String id;
 
+    @SerializedName("path")
+    private String path;
+
     @VisibleForTesting
     public ResourceType(@NonNull String id) {
         this.id = id;
@@ -34,6 +37,10 @@ public final class ResourceType implements Parcelable {
 
     public String getId() {
         return id;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public static Creator<ResourceType> CREATOR = new Creator<ResourceType>() {
@@ -50,11 +57,13 @@ public final class ResourceType implements Parcelable {
 
     private ResourceType(Parcel parcel) {
         this.id = parcel.readString();
+        this.path = parcel.readString();
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(id);
+        parcel.writeString(path);
     }
 
     @Override

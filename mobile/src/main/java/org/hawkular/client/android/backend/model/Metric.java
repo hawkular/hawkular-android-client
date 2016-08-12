@@ -33,6 +33,9 @@ public final class Metric implements Parcelable {
     @SerializedName("name")
     private String name;
 
+    @SerializedName("path")
+    private String path;
+
     @SerializedName("properties")
     private MetricProperties properties;
 
@@ -42,6 +45,7 @@ public final class Metric implements Parcelable {
     @VisibleForTesting
     public Metric(@NonNull String id, @NonNull MetricProperties properties, @NonNull MetricConfiguration config) {
         this.id = id;
+        this.path = path;
         this.properties = properties;
         this.configuration = config;
     }
@@ -56,6 +60,10 @@ public final class Metric implements Parcelable {
 
     public String getName() {
         return name;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public MetricProperties getProperties() {
@@ -81,6 +89,7 @@ public final class Metric implements Parcelable {
     private Metric(Parcel parcel) {
         this.id = parcel.readString();
         this.name = parcel.readString();
+        this.path = parcel.readString();
         this.properties = parcel.readParcelable(MetricProperties.class.getClassLoader());
         this.configuration = parcel.readParcelable(MetricConfiguration.class.getClassLoader());
     }
@@ -89,6 +98,7 @@ public final class Metric implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(id);
         parcel.writeString(name);
+        parcel.writeString(path);
         parcel.writeParcelable(properties, flags);
         parcel.writeParcelable(configuration, flags);
     }

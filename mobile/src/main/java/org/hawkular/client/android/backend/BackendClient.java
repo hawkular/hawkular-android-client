@@ -134,7 +134,7 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
         configurePipe(BackendPipes.Names.FEEDS, pipeUrl, pipeModules, Feed.class);
         configurePipe(BackendPipes.Names.FEED_METRICS, pipeUrl, pipeModules, Metric.class);
-        configurePipe(BackendPipes.Names.FEED_REC_RESOURCES, pipeUrl, pipeModules, Resource.class);
+        configurePipe(BackendPipes.Names.FEED_CHILD_RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.FEED_RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
         configurePipe(BackendPipes.Names.METRIC_DATA_AVAILABILITY, pipeUrl, pipeModules,
@@ -234,16 +234,14 @@ public final class BackendClient {
     }
 
     public void getOpreations(@NonNull Callback<List<Operation>> callback, Resource resource) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.OPERATIONS,
-                CanonicalPath.getByString(resource.getPath()).getFeed(),
-                Uris.getEncodedParameter(resource.getType().getId())));
+        URI uri = Uris.getUri(CanonicalPath.getByString(resource.getType().getPath())
+                .fix(BackendPipes.Paths.OPERATIONS));
 
         readPipe(BackendPipes.Names.OPERATIONS, uri, callback);
     }
 
     public void getResourcesFromFeed(@NonNull Callback<List<Resource>> callback, Feed feed) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_RESOURCES,
-                Uris.getEncodedParameter(feed.getId())));
+        URI uri = Uris.getUri(CanonicalPath.getByString(feed.getPath()).fix(BackendPipes.Paths.FEED_RESOURCES));
 
         readPipe(BackendPipes.Names.FEED_RESOURCES, uri, callback);
     }
@@ -251,16 +249,16 @@ public final class BackendClient {
 
     public void getRecResourcesFromFeed(@NonNull Callback<List<Resource>> callback, Resource resource) {
 
-            URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_REC_RESOURCES,resource.getFeed(),
-                    CanonicalPath.getByString(resource.getPath()).getResource()));
+            URI uri = Uris.getUri(CanonicalPath.getByString(resource.getPath()).
+                    fix(BackendPipes.Paths.FEED_CHILD_RESOURCES));
 
-        readPipe(BackendPipes.Names.FEED_REC_RESOURCES, uri, callback);
+        readPipe(BackendPipes.Names.FEED_CHILD_RESOURCES, uri, callback);
     }
 
 
     public void getMetricsFromFeed(@NonNull Callback<List<Metric>> callback, Resource resource) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.FEED_METRICS, resource.getFeed(),
-                CanonicalPath.getByString(resource.getPath()).getResource()));
+        URI uri = Uris.getUri(CanonicalPath.getByString(resource.getPath()).
+                fix(BackendPipes.Paths.FEED_METRICS));
 
         readPipe(BackendPipes.Names.FEED_METRICS, uri, callback);
     }
@@ -268,8 +266,8 @@ public final class BackendClient {
 
     public void getMetrics(@NonNull Environment environment, @NonNull Resource resource,
                            @NonNull Callback<List<Metric>> callback) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.METRICS, environment.getId(), resource.getId()));
-
+        URI uri = Uris.getUri(CanonicalPath.getByString(resource.getPath()).
+                fix(BackendPipes.Paths.METRICS));
         readPipe(BackendPipes.Names.METRICS, uri, callback);
     }
 

@@ -35,6 +35,9 @@ public class Feed implements Parcelable {
     @SerializedName("name")
     private String name;
 
+    @SerializedName("path")
+    private String path;
+
     public Feed(String id, String name) {
         this.id = id;
         this.name = name;
@@ -46,6 +49,10 @@ public class Feed implements Parcelable {
 
     public String getName() {
         return name;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public void setId(String id) {
@@ -67,12 +74,14 @@ public class Feed implements Parcelable {
     private Feed(Parcel parcel) {
         this.id = parcel.readString();
         this.name = parcel.readString();
+        this.path = parcel.readString();
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(id);
         parcel.writeString(name);
+        parcel.writeString(path);
     }
 
     @Override
