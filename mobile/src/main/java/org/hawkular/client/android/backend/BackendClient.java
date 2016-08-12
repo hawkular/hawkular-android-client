@@ -144,8 +144,6 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.NOTE, alertNoteUrl, pipeModules, Note.class);
         configurePipe(BackendPipes.Names.OPERATIONS, pipeUrl, pipeModules, Operation.class);
         configurePipe(BackendPipes.Names.PERSONA, backendUrl, pipeModules, Persona.class);
-        configurePipe(BackendPipes.Names.PERSONAS, backendUrl, pipeModules, Persona.class);
-        configurePipe(BackendPipes.Names.RESOURCES, pipeUrl, pipeModules, Resource.class);
         configurePipe(BackendPipes.Names.TRIGGERS, pipeUrl, pipeModules, Trigger.class);
     }
 
@@ -302,19 +300,6 @@ public final class BackendClient {
         URI uri = Uris.getUri(BackendPipes.Paths.PERSONA);
 
         readPipe(BackendPipes.Names.PERSONA, uri, callback);
-    }
-
-    public void getPersonas(@NonNull Callback<List<Persona>> callback) {
-        URI uri = Uris.getUri(BackendPipes.Paths.PERSONAS);
-
-        readPipe(BackendPipes.Names.PERSONAS, uri, callback);
-    }
-
-    public void getResources(@NonNull Environment environment,
-                             @NonNull Callback<List<Resource>> callback) {
-        URI uri = Uris.getUri(String.format(BackendPipes.Paths.RESOURCES, environment.getId()));
-
-        readPipe(BackendPipes.Names.RESOURCES, uri, callback);
     }
 
     public void getTriggers(@NonNull Callback<List<Trigger>> callback) {

@@ -45,8 +45,6 @@ final class BackendPipes {
         public static final String NOTE = "note";
         public static final String OPERATIONS = "operations";
         public static final String PERSONA = "persona";
-        public static final String PERSONAS = "personas";
-        public static final String RESOURCES = "resources";
         public static final String TRIGGERS = "triggers";
     }
 
@@ -71,8 +69,6 @@ final class BackendPipes {
         public static final String METRIC_DATA_GAUGE = "metrics/gauges/%s/data";
         public static final String OPERATIONS = "inventory/traversal/f;{f}/rt;{rt}/type=ot";
         public static final String PERSONA = "hawkular/metrics/tenants";
-        public static final String PERSONAS = "hawkular/metrics/tenants";
-        public static final String RESOURCES = "inventory/traversal/type=f;type=e/type=r";
         public static final String TRIGGERS = "alerts/triggers";
     }
 
