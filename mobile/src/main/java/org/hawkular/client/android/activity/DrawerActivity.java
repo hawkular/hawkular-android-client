@@ -68,8 +68,7 @@ import timber.log.Timber;
  * The very first and main from the navigation standpoint screen.
  * Handles a {@link android.support.v4.widget.DrawerLayout}
  * and {@link android.support.design.widget.NavigationView}.
- * Manages personas and a current mode, i. e. Metrics and Alerts.
- * Contains {@link org.hawkular.client.android.fragment.ResourcesFragment}
+ * Manages personas and a current mode, i. e. Metrics and Alerts.}
  */
 public final class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         Callback<String> {
@@ -201,7 +200,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     private void setUpNavigationDefaults() {
         if (currentNavigationId == 0) {
-            showNavigation(R.id.menu_metrics);
+            showNavigation(R.id.menu_favourites);
 
             showFavourites();
         } else {
@@ -216,6 +215,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void showFavourites() {
+        getSupportActionBar().setTitle(R.string.title_favourites);
         adapter.reset();
         adapter.addFragment(getFavMetricsFragment(), "Metrics");
         adapter.addFragment(new FavTriggersFragment(), "Triggers");
@@ -224,6 +224,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     }
 
     private void showAlerts() {
+        getSupportActionBar().setTitle(R.string.title_alerts);
         adapter.reset();
         adapter.addFragment(getAlertsFragment(), "Alerts");
         adapter.addFragment(new TriggersFragment(), "Triggers");
@@ -343,7 +344,7 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         }
 
         switch (menuItem.getItemId()) {
-            case R.id.menu_metrics:
+            case R.id.menu_favourites:
                 showFavourites();
                 break;
 

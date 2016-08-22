@@ -48,7 +48,7 @@
   <string name="menu_acknowledge">Acknowledge</string>
   <string name="menu_alerts" translatable="false">@string/title_alerts</string>
   <string name="menu_feedback">Help &amp; feedback</string>
-  <string name="menu_metrics" translatable="false">@string/title_metrics</string>
+  <string name="menu_favourites" translatable="false">@string/title_favourites</string>
   <string name="menu_resolve">Resolve</string>
   <string name="menu_settings" translatable="false">@string/title_settings</string>
   <string name="menu_time">Time</string>
@@ -109,5 +109,6 @@
   <string name="success_websocket_operation_complete">Operation executed successfully</string>
   <string name="fail_websocket_operation_complete">Operation failed. Please try later.</string>
   <string name="menu_add">ADD</string>
+  <string name="title_favourites">Favourites</string>
 
 </resources>
