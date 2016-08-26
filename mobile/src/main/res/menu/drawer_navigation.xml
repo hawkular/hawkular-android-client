@@ -24,9 +24,9 @@
     android:checkableBehavior="single">
 
     <item
-      android:id="@+id/menu_metrics"
+      android:id="@+id/menu_favourites"
       android:icon="@drawable/ic_metrics"
-      android:title="@string/menu_metrics"/>
+      android:title="@string/menu_favourites"/>
 
     <item
       android:id="@+id/menu_alerts"

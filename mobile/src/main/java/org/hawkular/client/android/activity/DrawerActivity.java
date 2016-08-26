@@ -21,11 +21,14 @@ import java.util.List;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.adapter.PersonasAdapter;
+import org.hawkular.client.android.adapter.ViewPagerAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.event.Events;
 import org.hawkular.client.android.explorer.InventoryExplorerActivity;
+import org.hawkular.client.android.fragment.FavTriggersFragment;
+import org.hawkular.client.android.fragment.TriggersFragment;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Ports;
@@ -40,8 +43,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -63,8 +68,7 @@ import timber.log.Timber;
  * The very first and main from the navigation standpoint screen.
  * Handles a {@link android.support.v4.widget.DrawerLayout}
  * and {@link android.support.design.widget.NavigationView}.
- * Manages personas and a current mode, i. e. Metrics and Alerts.
- * Contains {@link org.hawkular.client.android.fragment.ResourcesFragment}
+ * Manages personas and a current mode, i. e. Metrics and Alerts.}
  */
 public final class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         Callback<String> {
@@ -77,6 +81,12 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     @BindView(R.id.navigation)
     NavigationView navigation;
 
+    @BindView(R.id.tabs)
+    TabLayout tabLayout;
+
+    @BindView(R.id.viewpager)
+    ViewPager viewPager;
+
     TextView host;
 
     TextView persona;
@@ -86,6 +96,8 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     ViewGroup personasLayout;
 
     ImageView personasActionIcon;
+
+    ViewPagerAdapter adapter;
 
     @State
     @IdRes
@@ -101,9 +113,16 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         setUpBindings();
 
         setUpToolbar();
+
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
+        viewPager.setAdapter(adapter);
+
         setUpNavigation();
 
         setUpBackendClient();
+
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     private void setUpState(Bundle state) {
@@ -181,9 +200,9 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
 
     private void setUpNavigationDefaults() {
         if (currentNavigationId == 0) {
-            showNavigation(R.id.menu_metrics);
+            showNavigation(R.id.menu_favourites);
 
-            showFavMetricsFragment();
+            showFavourites();
         } else {
             showNavigation(currentNavigationId);
         }
@@ -195,12 +214,21 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         navigation.getMenu().findItem(navigationId).setChecked(true);
     }
 
-    private void showFavMetricsFragment() {
-        Fragments.Operator.of(this).reset(R.id.layout_container, getFavMetricsFragment());
+    private void showFavourites() {
+        getSupportActionBar().setTitle(R.string.title_favourites);
+        adapter.reset();
+        adapter.addFragment(getFavMetricsFragment(), "Metrics");
+        adapter.addFragment(new FavTriggersFragment(), "Triggers");
+        adapter.notifyDataSetChanged();
+
     }
 
-    private void showAlertsFragment() {
-        Fragments.Operator.of(this).reset(R.id.layout_container, getAlertsFragment());
+    private void showAlerts() {
+        getSupportActionBar().setTitle(R.string.title_alerts);
+        adapter.reset();
+        adapter.addFragment(getAlertsFragment(), "Alerts");
+        adapter.addFragment(new TriggersFragment(), "Triggers");
+        adapter.notifyDataSetChanged();
     }
 
     private Fragment getFavMetricsFragment() {
@@ -316,12 +344,12 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         }
 
         switch (menuItem.getItemId()) {
-            case R.id.menu_metrics:
-                showFavMetricsFragment();
+            case R.id.menu_favourites:
+                showFavourites();
                 break;
 
             case R.id.menu_alerts:
-                showAlertsFragment();
+                showAlerts();
                 break;
 
             case R.id.menu_settings:
