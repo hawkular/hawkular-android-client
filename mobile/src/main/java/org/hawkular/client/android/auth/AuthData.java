@@ -28,7 +28,7 @@ public final class AuthData {
         private Endpoints() {
         }
 
-        public static final String ACCESS = "/hawkular/metrics/tenants";
+        public static final String ACCESS = "/hawkular/metrics";
         public static final String PERSONA = "/hawkular/accounts/personas/current";
     }
 

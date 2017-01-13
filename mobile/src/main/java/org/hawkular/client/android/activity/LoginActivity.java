@@ -139,8 +139,8 @@ public class LoginActivity extends AppCompatActivity {
         public void onSuccess(String authorization) {
             LoginActivity activity = (LoginActivity) getActivity();
 
-            activity.setUpBackendCommunication(new Persona(""));
-            BackendClient.of(getActivity()).getPersona(new PersonasCallback());
+            activity.setUpBackendCommunication(new Persona("hawkular"));
+            BackendClient.of(getActivity()).getEnvironments(new EnvironmentsCallback(new Persona("hawkular")));
         }
 
         @Override
