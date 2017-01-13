@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -139,8 +139,8 @@ public class LoginActivity extends AppCompatActivity {
         public void onSuccess(String authorization) {
             LoginActivity activity = (LoginActivity) getActivity();
 
-            activity.setUpBackendCommunication(new Persona(""));
-            BackendClient.of(getActivity()).getPersona(new PersonasCallback());
+            activity.setUpBackendCommunication(new Persona("hawkular"));
+            BackendClient.of(getActivity()).getEnvironments(new EnvironmentsCallback(new Persona("hawkular")));
         }
 
         @Override
