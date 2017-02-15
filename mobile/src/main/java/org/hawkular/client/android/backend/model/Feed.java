@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,23 +32,15 @@ public class Feed implements Parcelable {
     @SerializedName("id")
     private String id;
 
-    @SerializedName("name")
-    private String name;
-
     @SerializedName("path")
     private String path;
 
-    public Feed(String id, String name) {
+    public Feed(String id) {
         this.id = id;
-        this.name = name;
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getPath() {
@@ -73,14 +65,12 @@ public class Feed implements Parcelable {
 
     private Feed(Parcel parcel) {
         this.id = parcel.readString();
-        this.name = parcel.readString();
         this.path = parcel.readString();
     }
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(id);
-        parcel.writeString(name);
         parcel.writeString(path);
     }
 
