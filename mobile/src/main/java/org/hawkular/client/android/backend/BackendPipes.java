@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,8 +44,10 @@ final class BackendPipes {
         public static final String METRIC_DATA_COUNTER = "metric-data-counter";
         public static final String NOTE = "note";
         public static final String OPERATIONS = "operations";
+        public static final String OPERATION_PROPERTIES = "operationProperties";
         public static final String PERSONA = "persona";
         public static final String TRIGGERS = "triggers";
+
     }
 
     public static final class Paths {

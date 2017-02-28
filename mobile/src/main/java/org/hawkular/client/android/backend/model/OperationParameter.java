@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,9 +24,6 @@ import android.os.Parcelable;
 
 public class OperationParameter implements Parcelable {
 
-    @SerializedName("name")
-    private String name;
-
     @SerializedName("type")
     private String type;
 
@@ -40,15 +37,10 @@ public class OperationParameter implements Parcelable {
     private boolean required;
 
     public OperationParameter(Parcel parcel) {
-        name = parcel.readString();
         type = parcel.readString();
         description = parcel.readString();
         defaultValue = parcel.readString();
         required = parcel.readString().equals("true");
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getType() {
@@ -73,7 +65,6 @@ public class OperationParameter implements Parcelable {
     }
 
     @Override public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(name);
         parcel.writeString(type);
         parcel.writeString(description);
         parcel.writeString(defaultValue);
