@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,9 +35,6 @@ public class Operation implements Parcelable {
     @SerializedName("path")
     private String path;
 
-    @SerializedName("properties")
-    private OperationProperties operationProperties;
-
     public Operation(String id, String name) {
         this.id = id;
         this.name = name;
@@ -53,10 +50,6 @@ public class Operation implements Parcelable {
 
     public String getPath() {
         return path;
-    }
-
-    public OperationProperties getOperationProperties() {
-        return operationProperties;
     }
 
     public void setId(String id) {
@@ -79,7 +72,6 @@ public class Operation implements Parcelable {
         this.id = parcel.readString();
         this.name = parcel.readString();
         this.path = parcel.readString();
-        this.operationProperties = parcel.readParcelable(OperationProperties.class.getClassLoader());
     }
 
     @Override
@@ -87,7 +79,6 @@ public class Operation implements Parcelable {
         parcel.writeString(id);
         parcel.writeString(name);
         parcel.writeString(path);
-        parcel.writeParcelable(operationProperties, flags);
     }
 
     @Override

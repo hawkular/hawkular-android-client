@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,6 +38,7 @@ import org.hawkular.client.android.backend.model.MetricGaugeBucket;
 import org.hawkular.client.android.backend.model.MetricType;
 import org.hawkular.client.android.backend.model.Note;
 import org.hawkular.client.android.backend.model.Operation;
+import org.hawkular.client.android.backend.model.OperationProperties;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Trigger;
@@ -143,6 +144,7 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.METRIC_DATA_GAUGE, pipeUrl, pipeModules, MetricGaugeBucket.class);
         configurePipe(BackendPipes.Names.NOTE, alertNoteUrl, pipeModules, Note.class);
         configurePipe(BackendPipes.Names.OPERATIONS, pipeUrl, pipeModules, Operation.class);
+        configurePipe(BackendPipes.Names.OPERATION_PROPERTIES, pipeUrl, pipeModules, OperationProperties.class);
         configurePipe(BackendPipes.Names.PERSONA, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.TRIGGERS, pipeUrl, pipeModules, Trigger.class);
     }
@@ -236,6 +238,13 @@ public final class BackendClient {
                 .fix(BackendPipes.Paths.OPERATIONS));
 
         readPipe(BackendPipes.Names.OPERATIONS, uri, callback);
+    }
+
+    public void getOperationProperties(@NonNull Callback<List<OperationProperties>> callback, Operation operation, Resource resource) {
+        URI uri = Uris.getUri(CanonicalPath.getByString(resource.getType().getPath())
+                .fix(BackendPipes.Paths.OPERATIONS)+";name="+operation.getName()+"/d;parameterTypes");
+
+        readPipe(BackendPipes.Names.OPERATION_PROPERTIES, uri, callback);
     }
 
     public void getResourcesFromFeed(@NonNull Callback<List<Resource>> callback, Feed feed) {

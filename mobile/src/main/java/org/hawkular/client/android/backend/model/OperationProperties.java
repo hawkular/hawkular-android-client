@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,28 +16,34 @@
  */
 package org.hawkular.client.android.backend.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class OperationProperties implements Parcelable {
 
-    @SerializedName("params")
-    private List<OperationParameter> operationParameters;
+    @SerializedName("value")
+    private Map<String, OperationParameter> operationParameters;
 
-    public List<OperationParameter> getOperationParameters() {
+    public Map<String, OperationParameter> getOperationParameters() {
         return operationParameters;
     }
 
     protected OperationProperties(Parcel parcel) {
-        operationParameters = new ArrayList<>();
+        operationParameters = new HashMap<>();
 
-        parcel.readList(operationParameters, OperationParameter.class.getClassLoader());}
+        int size = parcel.readInt();
+        for(int i = 0; i < size; i++){
+            String key = parcel.readString();
+            OperationParameter value = (OperationParameter) parcel.readValue(OperationParameter.class.getClassLoader());
+            operationParameters.put(key,value);
+        }
+    }
 
     public static final Creator<OperationProperties> CREATOR = new Creator<OperationProperties>() {
         @Override
@@ -57,6 +63,10 @@ public class OperationProperties implements Parcelable {
 
     @Override public void writeToParcel(Parcel parcel, int flags) {
 
-    parcel.writeList(operationParameters);
+        parcel.writeInt(operationParameters.size());
+        for(Map.Entry<String,OperationParameter> entry : operationParameters.entrySet()){
+            parcel.writeString(entry.getKey());
+            parcel.writeValue(entry.getValue());
+        }
     }
 }

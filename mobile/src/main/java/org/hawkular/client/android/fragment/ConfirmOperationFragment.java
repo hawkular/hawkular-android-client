@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,12 +23,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hawkular.client.android.R;
+import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Operation;
 import org.hawkular.client.android.backend.model.OperationParameter;
+import org.hawkular.client.android.backend.model.OperationProperties;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.OperationManager;
 import org.jboss.aerogear.android.core.Callback;
+import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -95,14 +98,8 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
 
         setOperationDetail();
 
-        createTable();
-
-        if (operation.getOperationProperties() == null ||
-                operation.getOperationProperties().getOperationParameters() == null ||
-                operation.getOperationProperties().getOperationParameters().size() == 0
-                ) {
-            custom.setEnabled(false);
-        }
+        BackendClient.of(ConfirmOperationFragment.this).getOperationProperties(new ConfirmOperationFragment.OperationPropertiesCallback(),
+                operation, resource);
 
         execute.setOnClickListener(new ClickListner());
         cancel.setOnClickListener(new ClickListner());
@@ -134,17 +131,17 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
         return getArguments().getParcelable(Fragments.Arguments.OPERATION);
     }
 
-    private void createTable() {
+    private void createTable(OperationProperties operationProperties) {
         TableRow row = null;
-        List<OperationParameter> operationParameters = operation.getOperationProperties().getOperationParameters();
+        Map<String, OperationParameter> operationParameters = operationProperties.getOperationParameters();
 
         if (operationParameters != null) {
-            for (OperationParameter operationParameter : operationParameters) {
-                switch (operationParameter.getType()) {
+            for (Map.Entry<String, OperationParameter> entry : operationParameters.entrySet()) {
+                switch (entry.getValue().getType()) {
                     case "string": {
                         row = (TableRow) LayoutInflater.from(getActivity()).inflate(R.layout.row_edit, null);
                         EditText data = (EditText) row.findViewById(R.id.data);
-                        data.setText(operationParameter.getDefaultValue());
+                        data.setText(entry.getValue().getDefaultValue());
                         data.setInputType(InputType.TYPE_CLASS_TEXT);
                         break;
                     }
@@ -152,7 +149,7 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
                     case "int": {
                         row = (TableRow) LayoutInflater.from(getActivity()).inflate(R.layout.row_edit, null);
                         EditText data = (EditText) row.findViewById(R.id.data);
-                        data.setText(operationParameter.getDefaultValue());
+                        data.setText(entry.getValue().getDefaultValue());
                         data.setInputType(InputType.TYPE_CLASS_NUMBER);
                         break;
                     }
@@ -160,7 +157,7 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
                     case "float": {
                         row = (TableRow) LayoutInflater.from(getActivity()).inflate(R.layout.row_edit, null);
                         EditText data = (EditText) row.findViewById(R.id.data);
-                        data.setText(operationParameter.getDefaultValue());
+                        data.setText(entry.getValue().getDefaultValue());
                         data.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                         break;
                     }
@@ -168,13 +165,13 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
                     case "bool": {
                         row = (TableRow) LayoutInflater.from(getActivity()).inflate(R.layout.row_toggle, null);
                         SwitchCompat data = (SwitchCompat) row.findViewById(R.id.data);
-                        data.setChecked(operationParameter.getDefaultValue().equals("true"));
+                        data.setChecked(entry.getValue().getDefaultValue().equals("true"));
                         break;
                     }
                 }
                 if (row != null) {
                     TextView name = (TextView) row.findViewById(R.id.name);
-                    name.setText(operationParameter.getName());
+                    name.setText(entry.getKey());
                     table.addView(row);
                 }
             }
@@ -250,5 +247,32 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
 
         }
     }
+
+    private void setUpParams(List<OperationProperties> operationProperties) {
+
+        if (operationProperties.size() == 0 ||
+                operationProperties.get(0).getOperationParameters().size() == 0 ) {
+            custom.setEnabled(false);
+        } else {
+            createTable(operationProperties.get(0));
+        }
+
+    }
+
+    private static final class OperationPropertiesCallback extends AbstractSupportFragmentCallback<List<OperationProperties>> {
+        @Override
+        public void onSuccess(List<OperationProperties> result) {
+            getConfirmOperationFragment().setUpParams(result);
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+        }
+
+        private ConfirmOperationFragment getConfirmOperationFragment() {
+            return (ConfirmOperationFragment) getSupportFragment();
+        }
+    }
+
 
 }
