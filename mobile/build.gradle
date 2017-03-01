@@ -2,8 +2,8 @@ apply plugin: "com.android.application"
 apply plugin: "android-apt"
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         def versionMajor = 1
@@ -15,7 +15,7 @@ android {
         versionCode buildVersionCode(versionMajor, versionMinor, versionPatch)
 
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 25
 
         resConfigs "en", "de"
 
@@ -116,15 +116,15 @@ def readProguardFiles() {
 dependencies {
 
     wearApp project(':wear')
-    compile 'com.google.android.gms:play-services:9.2.1'
+    compile 'com.google.android.gms:play-services:10.2.0'
 
     apt "com.jakewharton:butterknife-compiler:8.0.1"
 
-    compile "com.android.support:appcompat-v7:24.1.1"
-    compile "com.android.support:design:24.1.1"
-    compile "com.android.support:preference-v7:24.0.0"
-    compile "com.android.support:support-annotations:24.1.1"
-    compile "com.android.support:support-v4:24.1.1"
+    compile "com.android.support:appcompat-v7:25.1.1"
+    compile "com.android.support:design:25.1.1"
+    compile "com.android.support:preference-v7:25.1.1"
+    compile "com.android.support:support-annotations:25.1.1"
+    compile "com.android.support:support-v4:25.1.1"
     compile 'com.github.bmelnychuk:atv:1.2.8'
     compile 'com.github.johnkil.print:print:1.2.2'
     compile "com.github.lecho:hellocharts-library:1.5.8@aar"
@@ -142,9 +142,9 @@ dependencies {
     provided "frankiesardo:icepick-processor:3.1.0"
 
     testCompile 'junit:junit:4.12'
-    androidTestCompile "com.android.support:support-annotations:24.1.1"
-    androidTestCompile "com.android.support.test:rules:0.3"
-    androidTestCompile "com.android.support.test:runner:0.3"
+    androidTestCompile "com.android.support:support-annotations:25.1.1"
+    androidTestCompile "com.android.support.test:rules:0.5"
+    androidTestCompile "com.android.support.test:runner:0.5"
     androidTestCompile "com.squareup.assertj:assertj-android:1.1.0"
 
 }
