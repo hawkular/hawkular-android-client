@@ -52,8 +52,11 @@ android {
         buildTypes {
             debug {
                 minifyEnabled true
+                def files = readProguardFiles()
+                files.each { file ->
+                    proguardFiles file
+                }
 
-                proguardFiles readProguardFiles()
             }
 
             release {
@@ -61,8 +64,10 @@ android {
 
                 minifyEnabled true
                 shrinkResources true
-
-                proguardFiles readProguardFiles()
+                def files = readProguardFiles()
+                files.each { file ->
+                    proguardFiles file
+                }
             }
         }
     }
