@@ -50,3 +50,14 @@ password : `password`
 There are some documents on the link:../../wiki[Wiki], including API overview, UI mockups
 and instructions on running necessary servers for using the client in common and
 push notifications specifically.
+
+== Contributing
+
+- When you decide you want to start coding for Hawkular Android Client, add
+https://github.com/hawkular/hawkular-build-tools/tree/master/ide-configs/idea[settings.jar]
+into android studio by following
+https://www.jetbrains.com/help/idea/2016.3/exporting-and-importing-settings.html[guide of IntelliJ IDEA].
+
+- Execute  `$ mvn license:format` before commit to correct license headers.
+
+- Execute `$ mvn clean install` before sending PR to confirm your present code pass coding standards of Hawkular.
