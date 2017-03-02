@@ -17,20 +17,6 @@
 package org.hawkular.client.android.fragment;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.UUID;
-
-import org.hawkular.client.android.R;
-import org.hawkular.client.android.adapter.TriggersAdapter;
-import org.hawkular.client.android.backend.model.Trigger;
-import org.hawkular.client.android.util.ColorSchemer;
-import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.store.DataManager;
-import org.jboss.aerogear.android.store.generator.IdGenerator;
-import org.jboss.aerogear.android.store.sql.SQLStore;
-import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -42,6 +28,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+
+import org.hawkular.client.android.R;
+import org.hawkular.client.android.adapter.TriggersAdapter;
+import org.hawkular.client.android.backend.model.Trigger;
+import org.hawkular.client.android.util.ColorSchemer;
+import org.hawkular.client.android.util.ViewDirector;
+import org.jboss.aerogear.android.store.DataManager;
+import org.jboss.aerogear.android.store.generator.IdGenerator;
+import org.jboss.aerogear.android.store.sql.SQLStore;
+import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.UUID;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import icepick.Icepick;
@@ -95,7 +96,12 @@ public class FavTriggersFragment extends Fragment implements SwipeRefreshLayout.
         triggers = new ArrayList<>(array);
         list.setAdapter(new TriggersAdapter(getActivity(), this, triggers));
         hideRefreshing();
-        showList();
+
+        if(triggers.isEmpty()) {
+            showMessage();
+        } else {
+            showList();
+        }
     }
 
 
@@ -106,6 +112,8 @@ public class FavTriggersFragment extends Fragment implements SwipeRefreshLayout.
     private void showList() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.content);
     }
+
+    private void showMessage() { ViewDirector.of(this).using(R.id.animator).show(R.id.message);}
 
     private SQLStore<Trigger> openStore(Context context) {
         DataManager.config("FavouriteTriggers", SQLStoreConfiguration.class)
