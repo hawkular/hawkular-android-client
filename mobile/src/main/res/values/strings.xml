@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-    Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+    Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@
     credentials.
   </string>
   <string name="label_authorization_title">Authorization using a Hawkular server is necessary.</string>
-  <string name="label_authorization_support">The supported Hawkular version is 1.0.0 Alpha 11.</string>
+  <string name="label_authorization_support">The supported Hawkular version is Hawkular-Service 0.32.0.Final.</string>
   <string name="label_availability_up">Up</string>
   <string name="label_availability_down">Down</string>
 
