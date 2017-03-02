@@ -31,6 +31,20 @@ $ vi signing.properties
 $ ./gradlew clean assembleRelease
 -----
 
+== Demo Server
+
+Demo server is temporarily hosted at `http://h.anujgarg.space:8080/`
+
+To signin with android client use
+
+host : `h.anujgarg.space`
+
+port : `8080`
+
+username : `jdoe`
+
+password : `password`
+
 == Reading
 
 There are some documents on the link:../../wiki[Wiki], including API overview, UI mockups
