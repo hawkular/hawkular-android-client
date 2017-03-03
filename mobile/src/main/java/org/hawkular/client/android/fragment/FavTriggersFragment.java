@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -95,7 +95,12 @@ public class FavTriggersFragment extends Fragment implements SwipeRefreshLayout.
         triggers = new ArrayList<>(array);
         list.setAdapter(new TriggersAdapter(getActivity(), this, triggers));
         hideRefreshing();
-        showList();
+        if(triggers.isEmpty()){
+            showMessage();
+        }
+        else{
+            showList();
+        }
     }
 
 
@@ -105,6 +110,9 @@ public class FavTriggersFragment extends Fragment implements SwipeRefreshLayout.
 
     private void showList() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.content);
+    }
+    private void showMessage(){
+        ViewDirector.of(this).using(R.id.animator).show(R.id.message);
     }
 
     private SQLStore<Trigger> openStore(Context context) {
