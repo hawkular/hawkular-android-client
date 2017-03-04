@@ -31,6 +31,7 @@ import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 import org.jboss.aerogear.android.pipe.http.HttpException;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -63,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private String host;
     private String port;
+    private ProgressDialog authIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +104,10 @@ public class LoginActivity extends AppCompatActivity {
             intent.putExtra(AuthData.Credentials.CONTAIN, "true");
 
             BackendClient.of(this).authorize(this, new AuthorizeCallback());
+            authIndicator=new ProgressDialog(this);
+            authIndicator.setCancelable(false);
+            authIndicator.setMessage("logging in...");
+            authIndicator.show();
 
         } catch (RuntimeException e) {
             Timber.d(e, "Authorization failed.");
@@ -124,7 +130,9 @@ public class LoginActivity extends AppCompatActivity {
         if (!port.isEmpty()) Preferences.of(this).port().set(Integer.valueOf(port));
         Preferences.of(this).personaId().set(persona.getId());
         Preferences.of(this).environment().set(environment.getId());
-
+        if (authIndicator.isShowing()){
+            authIndicator.dismiss();
+        }
         setResult(Activity.RESULT_OK);
         finish();
         startActivity(new Intent(getApplicationContext(), DrawerActivity.class));
@@ -148,6 +156,10 @@ public class LoginActivity extends AppCompatActivity {
             Timber.d(e, "Authorization failed.");
 
             LoginActivity activity = (LoginActivity) getActivity();
+            if (activity.authIndicator.isShowing()){
+                activity.authIndicator.setMessage("Error occurred");
+                activity.authIndicator.dismiss();
+            }
             if (e instanceof HttpException) {
                 switch (((HttpException)e).getStatusCode()){
                     case 404:
@@ -186,6 +198,11 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Exception e) {
+            LoginActivity activity = (LoginActivity) getActivity();
+            if (activity.authIndicator.isShowing()){
+                activity.authIndicator.setMessage("Error occurred");
+                activity.authIndicator.dismiss();
+            }
             Timber.d(e, "Personas fetching failed.");
         }
     }
