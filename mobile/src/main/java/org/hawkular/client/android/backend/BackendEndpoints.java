@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@ public final class BackendEndpoints {
         private Demo() {
         }
 
-        public static final String HOST = "demo.hawkular.org";
+        public static final String HOST = "livingontheedge.hawkular.org";
         public static final String PORT = "";
     }
 }

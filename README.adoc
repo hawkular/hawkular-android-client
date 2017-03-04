@@ -33,13 +33,13 @@ $ ./gradlew clean assembleRelease
 
 == Demo Server
 
-Demo server is temporarily hosted at `http://h.anujgarg.space:8080/`
+Demo server is hosted at `http://livingontheedge.hawkular.org/`
 
 To signin with android client use
 
-host : `h.anujgarg.space`
+host : `livingontheedge.hawkular.org`
 
-port : `8080`
+port : by default 80, not needed to specify
 
 username : `jdoe`
 
