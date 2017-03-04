@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -338,18 +338,15 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
 
-        for (int i = 0; i < navigation.getMenu().size(); i++) {
-            MenuItem item = navigation.getMenu().getItem(i);
-            item.setChecked(false);
-        }
-
         switch (menuItem.getItemId()) {
             case R.id.menu_favourites:
                 showFavourites();
+                menuItem.setChecked(true);
                 break;
 
             case R.id.menu_alerts:
                 showAlerts();
+                menuItem.setChecked(true);
                 break;
 
             case R.id.menu_settings:
@@ -369,8 +366,6 @@ public final class DrawerActivity extends AppCompatActivity implements Navigatio
         }
 
         currentNavigationId = menuItem.getItemId();
-
-        menuItem.setChecked(true);
 
         closeDrawers();
 
