@@ -252,7 +252,11 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
 
         hideRefreshing();
 
-        showList();
+        if(this.alerts.isEmpty()) {
+            showMessage();
+        } else {
+            showList();
+        }
     }
 
     private ArrayList<Alert> removeResolved() {
@@ -434,8 +438,10 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         @Override
         public void onFailure(Exception e) {
             Timber.d(e, "Alerts fetching failed.");
+            if (getAlertsFragment()!=null){
+                getAlertsFragment().showError();
+            }
 
-            getAlertsFragment().showError();
         }
 
         private AlertsFragment getAlertsFragment() {
