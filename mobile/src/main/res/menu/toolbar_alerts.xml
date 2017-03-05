@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-    Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+    Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,7 +58,7 @@
       android:id="@+id/show_hide_res"
       android:icon="@drawable/ic_plus_white"
       android:title="@string/menu_time"
-      auto:showAsAction="always">
+      auto:showAsAction="never">
 
 
 
