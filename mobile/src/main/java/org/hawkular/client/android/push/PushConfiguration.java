@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,5 +43,9 @@ final class PushConfiguration {
         }
 
         public static final String SENDER = BuildConfig.GCM_SENDER;
+        public static final String API_KEY = BuildConfig.GCM_API_KEY;
+        public static final String APPLICATION_ID = BuildConfig.GCM_APPLICATION_ID;
+        public static final String DATABASE_URL = BuildConfig.GCM_DATABASE_URL;
+        public static final String STORAGE_BUCKET = BuildConfig.GCM_STORAGE_BUCKET;
     }
 }

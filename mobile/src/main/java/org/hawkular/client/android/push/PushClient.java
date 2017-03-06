@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,12 +22,15 @@ import java.util.List;
 import org.hawkular.client.android.util.Uris;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.unifiedpush.RegistrarManager;
-import org.jboss.aerogear.android.unifiedpush.gcm.AeroGearGCMPushConfiguration;
+import org.jboss.aerogear.android.unifiedpush.fcm.AeroGearFCMPushConfiguration;
 
 import android.Manifest;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
+
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 
 import timber.log.Timber;
 
@@ -56,7 +59,14 @@ public final class PushClient implements Callback<Void> {
             return;
         }
 
-        RegistrarManager.config(PushConfiguration.NAME, AeroGearGCMPushConfiguration.class)
+        FirebaseApp.initializeApp(this.context, new FirebaseOptions.Builder()
+                .setApiKey(PushConfiguration.Gcm.API_KEY)
+                .setApplicationId(PushConfiguration.Gcm.APPLICATION_ID)
+                .setDatabaseUrl(PushConfiguration.Gcm.DATABASE_URL)
+                .setGcmSenderId(PushConfiguration.Gcm.SENDER)
+                .setStorageBucket(PushConfiguration.Gcm.STORAGE_BUCKET).build());
+
+        RegistrarManager.config(PushConfiguration.NAME, AeroGearFCMPushConfiguration.class)
             .setPushServerURI(Uris.getUriFromString(PushConfiguration.Ups.URL))
             .setSecret(PushConfiguration.Ups.SECRET)
             .setVariantID(PushConfiguration.Ups.VARIANT)

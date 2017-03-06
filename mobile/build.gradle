@@ -27,6 +27,10 @@ android {
         buildConfigField "String", "UPS_VARIANT", formatStringField(readProperty(serverProperties, "ups.variant"))
         buildConfigField "String", "UPS_SECRET", formatStringField(readProperty(serverProperties, "ups.secret"))
         buildConfigField "String", "GCM_SENDER", formatStringField(readProperty(serverProperties, "gcm.sender"))
+        buildConfigField "String", "GCM_APPLICATION_ID", formatStringField(readProperty(serverProperties, "gcm.application"))
+        buildConfigField "String", "GCM_API_KEY", formatStringField(readProperty(serverProperties, "gcm.api"))
+        buildConfigField "String", "GCM_DATABASE_URL", formatStringField(readProperty(serverProperties, "gcm.database"))
+        buildConfigField "String", "GCM_STORAGE_BUCKET", formatStringField(readProperty(serverProperties, "gcm.bucket"))
 
         signingConfigs {
             release {
@@ -140,7 +144,7 @@ dependencies {
     compile "info.metadude.android:typed-preferences:2.0.0"
     compile "org.jboss.aerogear:aerogear-android-authz:3.0.0"
     compile "org.jboss.aerogear:aerogear-android-pipe:3.1.0"
-    compile "org.jboss.aerogear:aerogear-android-push:3.0.0"
+    compile "org.jboss.aerogear:aerogear-android-push:4.0.2"
     compile "com.squareup:otto:1.3.8"
     compile "frankiesardo:icepick:3.1.0"
 
