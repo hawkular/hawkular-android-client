@@ -110,5 +110,7 @@
   <string name="fail_websocket_operation_complete">Operation failed. Please try later.</string>
   <string name="menu_add">ADD</string>
   <string name="title_favourites">Favourites</string>
+  <string name="hide_resolved">Hide Resolved</string>
+  <string name="show_resolved">Show Resolved</string>
 
 </resources>

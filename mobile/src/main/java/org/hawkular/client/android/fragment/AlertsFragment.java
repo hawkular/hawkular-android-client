@@ -350,10 +350,10 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
                 isActionPlus = !isActionPlus;
                 setUpAlerts(alertsDump);
                 if(isActionPlus){
-                    menuItem.setTitle("Hide resolved");
+                    menuItem.setTitle(R.string.hide_resolved);
                 }
                 else{
-                    menuItem.setTitle("Show resolved");
+                    menuItem.setTitle(R.string.show_resolved);
                 }
                 return true;
 
