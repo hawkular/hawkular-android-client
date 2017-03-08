@@ -78,6 +78,12 @@
       android:label="@string/title_settings">
     </activity>
 
+    <activity
+        android:name=".activity.TriggerDetailActivity"
+        android:windowSoftInputMode="adjustPan">
+    </activity>
+
+
     <service
       android:name="org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthzService">
     </service>

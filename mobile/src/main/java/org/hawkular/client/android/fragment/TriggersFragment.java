@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hawkular.client.android.R;
+import org.hawkular.client.android.activity.TriggerDetailActivity;
 import org.hawkular.client.android.adapter.TriggersAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
@@ -30,6 +31,7 @@ import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Fragments;
+import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 import org.jboss.aerogear.android.store.DataManager;
@@ -38,6 +40,7 @@ import org.jboss.aerogear.android.store.sql.SQLStore;
 import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -200,6 +203,13 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
 
     @Override public void onTriggerTextClick(View triggerView, int triggerPosition) {
 
+    }
+
+    @Override public void onTriggerBodyClick(View TriggerView, int triggerPosition) {
+        Intent intent = new Intent(getActivity(), TriggerDetailActivity.class);
+        Trigger trigger = getTriggersAdapter().getItem(triggerPosition);
+        intent.putExtra(Intents.Extras.TRIGGER,trigger);
+        startActivity(intent);
     }
 
     private void showTriggerMenu(final View triggerView, final int triggerPosition) {

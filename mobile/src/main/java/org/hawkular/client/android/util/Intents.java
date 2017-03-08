@@ -52,6 +52,7 @@ public final class Intents {
         public static final String METRIC = "metric";
         public static final String HOST = "host";
         public static final String PORT = "port";
+        public static final String TRIGGER = "trigger";
     }
 
     public static final class Requests {
