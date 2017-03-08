@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.fragment.AlertDetailFragment;
 import org.hawkular.client.android.fragment.AlertsFragment;
 import org.hawkular.client.android.fragment.FavMetricsFragment;
@@ -28,6 +29,7 @@ import org.hawkular.client.android.fragment.MetricCounterFragment;
 import org.hawkular.client.android.fragment.MetricGaugeFragment;
 import org.hawkular.client.android.fragment.MetricsFragment;
 import org.hawkular.client.android.fragment.SettingsFragment;
+import org.hawkular.client.android.fragment.TriggerDetailFragment;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -56,6 +58,7 @@ public final class Fragments {
         public static final String METRIC = "metric";
         public static final String OPERATION = "operation";
         public static final String RESOURCE = "resource";
+        public static final String TRIGGER = "trigger";
     }
 
     public static final class Builder {
@@ -82,6 +85,16 @@ public final class Fragments {
             arguments.putParcelable(Arguments.ALERT, alert);
 
             fragment.setArguments(arguments);
+
+            return fragment;
+        }
+        public static Fragment buildTriggerDetailFragment(@NonNull Trigger trigger){
+            Fragment fragment = new TriggerDetailFragment();
+
+            Bundle args = new Bundle();
+            args.putParcelable(Arguments.TRIGGER,trigger);
+
+            fragment.setArguments(args);
 
             return fragment;
         }

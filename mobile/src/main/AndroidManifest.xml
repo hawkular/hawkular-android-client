@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-    Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+    Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -77,6 +77,12 @@
       android:theme="@style/Theme.Hawkular.SettingsTheme"
       android:label="@string/title_settings">
     </activity>
+
+    <activity
+        android:name=".activity.TriggerDetailActivity"
+        android:windowSoftInputMode="adjustPan">
+    </activity>
+
 
     <service
       android:name="org.jboss.aerogear.android.authorization.oauth2.OAuth2AuthzService">
