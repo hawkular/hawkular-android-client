@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,6 +52,7 @@ public final class Intents {
         public static final String METRIC = "metric";
         public static final String HOST = "host";
         public static final String PORT = "port";
+        public static final String TRIGGER = "trigger";
     }
 
     public static final class Requests {
