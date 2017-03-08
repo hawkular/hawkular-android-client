@@ -169,6 +169,10 @@ public class FavTriggersFragment extends Fragment implements SwipeRefreshLayout.
         // TODO : Add detail Trigger fragment
     }
 
+    @Override public void onTriggerBodyClick(View TriggerView, int triggerPosition) {
+
+    }
+
     private void showTriggerMenu(final View triggerView, final int triggerPosition) {
         PopupMenu triggerMenu = new PopupMenu(getActivity(), triggerView);
 
