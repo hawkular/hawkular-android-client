@@ -121,7 +121,7 @@ dependencies {
 
     wearApp project(':wear')
 
-    apt "com.jakewharton:butterknife-compiler:8.0.1"
+    apt "com.jakewharton:butterknife-compiler:8.5.1"
 
     provided "frankiesardo:icepick-processor:3.1.0"
 
@@ -133,7 +133,7 @@ dependencies {
     compile 'com.github.bmelnychuk:atv:1.2.8'
     compile 'com.github.johnkil.print:print:1.2.2'
     compile "com.github.lecho:hellocharts-library:1.5.8@aar"
-    compile "com.jakewharton:butterknife:8.0.1"
+    compile "com.jakewharton:butterknife:8.5.1"
     compile "com.jakewharton.timber:timber:3.1.0"
     compile "com.squareup.okhttp:okhttp:2.7.5"
     compile "com.squareup.okhttp:okhttp-ws:2.7.5"
