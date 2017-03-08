@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         setResult(Activity.RESULT_OK);
         finish();
-        startActivity(new Intent(getApplicationContext(), DrawerActivity.class));
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 
     private void showError(@StringRes int errorMessage) {

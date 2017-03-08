@@ -16,21 +16,18 @@
  */
 package org.hawkular.client.android.util;
 
-import org.hawkular.client.android.R;
+import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+
 import org.hawkular.client.android.activity.AlertsActivity;
 import org.hawkular.client.android.activity.AuthorizationActivity;
 import org.hawkular.client.android.activity.LoginActivity;
 import org.hawkular.client.android.activity.MetricActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
-import org.hawkular.client.android.activity.SettingsActivity;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Resource;
-
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.support.annotation.NonNull;
 
 /**
  * Intent utilities.
@@ -63,13 +60,6 @@ public final class Intents {
         public static final int DEAUTHORIZATION = 24;
     }
 
-    private static final class Uris {
-        private Uris() {
-        }
-
-        public static final String EMAIL = "mailto:%s?subject=%s";
-    }
-
     public static final class Builder {
         private final Context context;
 
@@ -88,21 +78,6 @@ public final class Intents {
             intent.putExtra(Extras.RESOURCE, resource);
 
             return intent;
-        }
-
-        @NonNull
-        public Intent buildAuthorizationIntent() {
-            return new Intent(context, AuthorizationActivity.class);
-        }
-
-        @NonNull
-        public Intent buildFeedbackIntent() {
-            String feedbackAddress = context.getString(R.string.feedback_address);
-            String feedbackSubject = context.getString(R.string.feedback_subject);
-
-            String feedbackUri = String.format(Uris.EMAIL, feedbackAddress, feedbackSubject);
-
-            return new Intent(Intent.ACTION_SENDTO, Uri.parse(feedbackUri));
         }
 
         @NonNull
@@ -131,9 +106,6 @@ public final class Intents {
             return intent;
         }
 
-        @NonNull
-        public Intent buildSettingsIntent() {
-            return new Intent(context, SettingsActivity.class);
-        }
     }
+
 }
