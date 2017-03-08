@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-    Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+    Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/layout_toolbar"/>
+
   <RelativeLayout
+      android:layout_below="@+id/toolbar"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:id="@+id/container"></RelativeLayout>

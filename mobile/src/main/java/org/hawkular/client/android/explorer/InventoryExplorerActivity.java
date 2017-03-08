@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,10 +47,16 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import timber.log.Timber;
 
 /**
@@ -60,6 +66,8 @@ import timber.log.Timber;
  */
 
 public class InventoryExplorerActivity extends AppCompatActivity {
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private AndroidTreeView tView;
     private TreeNode.BaseNodeViewHolder holder;
@@ -72,6 +80,10 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inventory_explorer);
 
         callback = new PerformOperationCallback();
+
+        setUpBindings();
+
+        setUpToolbar();
 
         ViewGroup containerView = (ViewGroup) findViewById(R.id.container);
 
@@ -96,6 +108,34 @@ public class InventoryExplorerActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    private void setUpBindings() {
+        ButterKnife.bind(this);
+    }
+
+    private void setUpToolbar() {
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() == null) {
+            return;
+        }
+
+        getSupportActionBar().setTitle("Explorer");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(menuItem);
+        }
     }
 
     private void setUpFeeds(List<Feed> feeds) {
@@ -137,6 +177,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         }
 
     }
+
 
     private InventoryExplorerActivity getInventoryExplorerActivity() {
         return this;
