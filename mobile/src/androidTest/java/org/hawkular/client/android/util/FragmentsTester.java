@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,8 +28,8 @@ import org.hawkular.client.android.backend.model.ResourceType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import android.app.Fragment;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v4.app.Fragment;
 
 @RunWith(AndroidJUnit4.class)
 public final class FragmentsTester {
@@ -67,13 +67,6 @@ public final class FragmentsTester {
 
         Assertions.assertThat(fragment.getArguments()).hasKey(Fragments.Arguments.ENVIRONMENT);
         Assertions.assertThat(fragment.getArguments()).hasKey(Fragments.Arguments.RESOURCE);
-    }
-
-    @Test
-    public void resources() {
-        Fragment fragment = Fragments.Builder.buildResourcesFragment(generateEnvironment());
-
-        Assertions.assertThat(fragment.getArguments()).hasKey(Fragments.Arguments.ENVIRONMENT);
     }
 
     private Resource generateResource() {
