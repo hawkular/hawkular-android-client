@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,20 +58,6 @@ public final class IntentsTester {
     }
 
     @Test
-    public void authorization() {
-        Intent intent = Intents.Builder.of(context).buildAuthorizationIntent();
-
-        Assertions.assertThat(intent).hasComponent(context, AuthorizationActivity.class);
-    }
-
-    @Test
-    public void feedback() {
-        Intent intent = Intents.Builder.of(context).buildFeedbackIntent();
-
-        Assert.assertNotNull(intent);
-    }
-
-    @Test
     public void metric() {
         Intent intent = Intents.Builder.of(context).buildMetricIntent(generateMetric());
 
@@ -86,13 +72,6 @@ public final class IntentsTester {
         Assertions.assertThat(intent).hasComponent(context, MetricsActivity.class);
         Assertions.assertThat(intent).hasExtra(Intents.Extras.ENVIRONMENT);
         Assertions.assertThat(intent).hasExtra(Intents.Extras.RESOURCE);
-    }
-
-    @Test
-    public void settings() {
-        Intent intent = Intents.Builder.of(context).buildSettingsIntent();
-
-        Assertions.assertThat(intent).hasComponent(context, SettingsActivity.class);
     }
 
     private Resource generateResource() {

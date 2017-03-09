@@ -100,11 +100,6 @@ public final class Fragments {
         }
 
         @NonNull
-        public static Fragment buildFavMetricsFragment() {
-            return new FavMetricsFragment();
-        }
-
-        @NonNull
         public static Fragment buildMetricAvailabilityFragment(@NonNull Metric metric) {
             Fragment fragment = new MetricAvailabilityFragment();
 
