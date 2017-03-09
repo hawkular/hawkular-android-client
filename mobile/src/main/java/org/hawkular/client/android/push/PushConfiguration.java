@@ -38,14 +38,14 @@ final class PushConfiguration {
         public static final String VARIANT = BuildConfig.UPS_VARIANT;
     }
 
-    public static final class Gcm {
-        private Gcm() {
+    public static final class Fcm {
+        private Fcm() {
         }
 
-        public static final String SENDER = BuildConfig.GCM_SENDER;
-        public static final String API_KEY = BuildConfig.GCM_API_KEY;
-        public static final String APPLICATION_ID = BuildConfig.GCM_APPLICATION_ID;
-        public static final String DATABASE_URL = BuildConfig.GCM_DATABASE_URL;
-        public static final String STORAGE_BUCKET = BuildConfig.GCM_STORAGE_BUCKET;
+        public static final String SENDER = BuildConfig.FCM_SENDER;
+        public static final String API_KEY = BuildConfig.FCM_API_KEY;
+        public static final String APPLICATION_ID = BuildConfig.FCM_APPLICATION_ID;
+        public static final String DATABASE_URL = BuildConfig.FCM_DATABASE_URL;
+        public static final String STORAGE_BUCKET = BuildConfig.FCM_STORAGE_BUCKET;
     }
 }
