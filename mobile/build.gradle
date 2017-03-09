@@ -27,11 +27,12 @@ android {
         buildConfigField "String", "UPS_URL", formatStringField(readProperty(serverProperties, "ups.url"))
         buildConfigField "String", "UPS_VARIANT", formatStringField(readProperty(serverProperties, "ups.variant"))
         buildConfigField "String", "UPS_SECRET", formatStringField(readProperty(serverProperties, "ups.secret"))
-        buildConfigField "String", "GCM_SENDER", formatStringField(readProperty(serverProperties, "gcm.sender"))
-        buildConfigField "String", "GCM_APPLICATION_ID", formatStringField(readProperty(serverProperties, "gcm.application"))
-        buildConfigField "String", "GCM_API_KEY", formatStringField(readProperty(serverProperties, "gcm.api"))
-        buildConfigField "String", "GCM_DATABASE_URL", formatStringField(readProperty(serverProperties, "gcm.database"))
-        buildConfigField "String", "GCM_STORAGE_BUCKET", formatStringField(readProperty(serverProperties, "gcm.bucket"))
+        buildConfigField "String", "FCM_SENDER", formatStringField(readProperty(serverProperties, "fcm.sender"))
+        buildConfigField "String", "FCM_APPLICATION_ID", formatStringField(readProperty(serverProperties, "fcm" +
+                ".application"))
+        buildConfigField "String", "FCM_API_KEY", formatStringField(readProperty(serverProperties, "fcm.api"))
+        buildConfigField "String", "FCM_DATABASE_URL", formatStringField(readProperty(serverProperties, "fcm.database"))
+        buildConfigField "String", "FCM_STORAGE_BUCKET", formatStringField(readProperty(serverProperties, "fcm.bucket"))
 
         signingConfigs {
             release {

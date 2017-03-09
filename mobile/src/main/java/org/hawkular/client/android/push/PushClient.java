@@ -60,17 +60,17 @@ public final class PushClient implements Callback<Void> {
         }
 
         FirebaseApp.initializeApp(this.context, new FirebaseOptions.Builder()
-                .setApiKey(PushConfiguration.Gcm.API_KEY)
-                .setApplicationId(PushConfiguration.Gcm.APPLICATION_ID)
-                .setDatabaseUrl(PushConfiguration.Gcm.DATABASE_URL)
-                .setGcmSenderId(PushConfiguration.Gcm.SENDER)
-                .setStorageBucket(PushConfiguration.Gcm.STORAGE_BUCKET).build());
+                .setApiKey(PushConfiguration.Fcm.API_KEY)
+                .setApplicationId(PushConfiguration.Fcm.APPLICATION_ID)
+                .setDatabaseUrl(PushConfiguration.Fcm.DATABASE_URL)
+                .setGcmSenderId(PushConfiguration.Fcm.SENDER)
+                .setStorageBucket(PushConfiguration.Fcm.STORAGE_BUCKET).build());
 
         RegistrarManager.config(PushConfiguration.NAME, AeroGearFCMPushConfiguration.class)
             .setPushServerURI(Uris.getUriFromString(PushConfiguration.Ups.URL))
             .setSecret(PushConfiguration.Ups.SECRET)
             .setVariantID(PushConfiguration.Ups.VARIANT)
-            .setSenderId(PushConfiguration.Gcm.SENDER)
+            .setSenderId(PushConfiguration.Fcm.SENDER)
             .asRegistrar();
 
         RegistrarManager.getRegistrar(PushConfiguration.NAME).register(context, this);
@@ -81,7 +81,7 @@ public final class PushClient implements Callback<Void> {
             PushConfiguration.Ups.URL,
             PushConfiguration.Ups.SECRET,
             PushConfiguration.Ups.VARIANT,
-            PushConfiguration.Gcm.SENDER);
+            PushConfiguration.Fcm.SENDER);
 
         for (String pushConfigurationField : pushConfigurationFields) {
             if (pushConfigurationField.isEmpty()) {
