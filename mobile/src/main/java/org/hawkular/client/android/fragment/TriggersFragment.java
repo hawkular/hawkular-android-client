@@ -198,8 +198,9 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     }
 
     @Override public void onTriggerMenuClick(View triggerView, int triggerPosition) {
-        showTriggerMenu(triggerView, triggerPosition);
+       // showTriggerMenu(triggerView, triggerPosition);
     }
+
 
     @Override public void onTriggerTextClick(View triggerView, int triggerPosition) {
         Intent intent = new Intent(getActivity(), TriggerDetailActivity.class);
@@ -208,7 +209,7 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         startActivity(intent);
     }
 
-    private void showTriggerMenu(final View triggerView, final int triggerPosition) {
+    /*private void showTriggerMenu(final View triggerView, final int triggerPosition) {
         PopupMenu triggerMenu = new PopupMenu(getActivity(), triggerView);
 
         triggerMenu.getMenuInflater().inflate(R.menu.popup_add, triggerMenu.getMenu());
@@ -246,7 +247,7 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
                     }
                 }).store(Trigger.class);
         return (SQLStore<Trigger>) DataManager.getStore("FavouriteTriggers");
-    }
+    }*/
 
     private static final class TriggersCallback extends AbstractSupportFragmentCallback<List<Trigger>> {
         @Override
