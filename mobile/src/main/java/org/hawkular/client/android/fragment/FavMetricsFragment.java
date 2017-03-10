@@ -104,6 +104,8 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
             showList();
         }
 
+        store.close();
+
     }
 
     private void hideRefreshing() {
