@@ -94,6 +94,8 @@ public final class MainActivity extends AppCompatActivity
 
     ViewPagerAdapter adapter;
 
+    Boolean atHome;
+
     @State
     @IdRes
     int currentNavigationId;
@@ -104,6 +106,7 @@ public final class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle state) {
         super.onCreate(state);
         setContentView(R.layout.activity_main);
+        atHome = true;
 
         // -- Bind objects
 
@@ -293,6 +296,7 @@ public final class MainActivity extends AppCompatActivity
     }
 
     private void showFavourites() {
+        atHome = true;
         getSupportActionBar().setTitle(R.string.title_favourites);
         adapter.reset();
         adapter.addFragment(new FavMetricsFragment(), "Metrics");
@@ -302,6 +306,7 @@ public final class MainActivity extends AppCompatActivity
     }
 
     private void showAlerts() {
+        atHome = false;
         getSupportActionBar().setTitle(R.string.title_alerts);
         adapter.reset();
         adapter.addFragment(Fragments.Builder.buildAlertsFragment(null), "Alerts");
@@ -309,4 +314,13 @@ public final class MainActivity extends AppCompatActivity
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!atHome) {
+            showFavourites();
+            navigation.setCheckedItem(R.id.menu_favourites);
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
