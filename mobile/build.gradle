@@ -131,6 +131,7 @@ license {
     exclude "gradlew.bat"
     exclude "**/*.pro"
     exclude "**/*.properties"
+    exclude "**/*.png"
     exclude "**/misc/*"
 }
 
