@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 
-    Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+    Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
     and other contributors as indicated by the @author tags.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,15 @@
 
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="horizontal"
-  android:gravity="center_vertical"
-  android:paddingLeft="16dp"
-  android:paddingTop="16dp"
-  android:paddingBottom="16dp"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:id="@+id/data_box">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/data_box">
 
   <LinearLayout
     android:orientation="vertical"
@@ -68,7 +69,7 @@
 
   <ImageView
     android:id="@+id/button_menu"
-    android:src="@drawable/ic_more"
+    app:srcCompat="@drawable/ic_more"
     android:scaleType="center"
     android:background="?attr/selectableItemBackgroundBorderless"
     android:layout_width="48dp"

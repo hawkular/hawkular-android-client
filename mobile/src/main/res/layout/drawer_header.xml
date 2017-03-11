@@ -18,10 +18,11 @@
 
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:theme="@style/ThemeOverlay.AppCompat.Dark"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
   <FrameLayout
     android:id="@+id/layout_header"
@@ -66,7 +67,7 @@
 
       <ImageView
         android:id="@+id/image_personas_action"
-        android:src="@drawable/ic_expand"
+        app:srcCompat="@drawable/ic_expand"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
