@@ -16,7 +16,7 @@
  */
 package org.hawkular.client.android.fragment;
 
-import org.hawkular.client.android.Animae.MyBounceInterpolator;
+import org.hawkular.client.android.animation.MyBounceInterpolator;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.util.Fragments;
@@ -25,11 +25,9 @@ import org.jboss.aerogear.android.store.generator.IdGenerator;
 import org.jboss.aerogear.android.store.sql.SQLStore;
 import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +35,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.UUID;
 
@@ -52,10 +49,10 @@ public class TriggerDetailFragment extends android.support.v4.app.Fragment {
             @Nullable
             Trigger trigger;
     @BindView(R.id.add_button)
-    ImageButton button;
+    ImageButton addButton;
 
     @BindView(R.id.text_title)
-    TextView textView;
+    TextView textViewTrigger;
 
 
     @Nullable @Override
@@ -70,10 +67,10 @@ public class TriggerDetailFragment extends android.support.v4.app.Fragment {
         MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
         myAnim.setInterpolator(interpolator);
 
-        button.setColorFilter(getResources().getColor(R.color.background_primary));
-        button.startAnimation(myAnim);
+        addButton.setColorFilter(getResources().getColor(R.color.background_primary));
+        addButton.startAnimation(myAnim);
 
-        textView.setText("Trigger Added");
+        textViewTrigger.setText("Trigger Added");
         SQLStore<Trigger> store = openStore(context);
         store.openSync();
         store.save(trigger);
@@ -91,14 +88,11 @@ public class TriggerDetailFragment extends android.support.v4.app.Fragment {
         return (SQLStore<Trigger>) DataManager.getStore("FavouriteTriggers");
     }
 
-    private void setUpBindings() {
-        ButterKnife.bind(this, getView());
-    }
 
     @Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        setUpBindings();
+        ButterKnife.bind(this, getView());
 
         trigger = getArguments().getParcelable(Fragments.Arguments.TRIGGER);
     }

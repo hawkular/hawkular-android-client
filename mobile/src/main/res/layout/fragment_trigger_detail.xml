@@ -41,7 +41,7 @@
         android:scaleType="fitXY"
         android:id="@+id/add_button"
         android:background="@color/background_window"
-        android:src="@drawable/ic_favorite_black_24dp"
+        android:src="@drawable/ic_favorite"
          />
 
 </LinearLayout>
