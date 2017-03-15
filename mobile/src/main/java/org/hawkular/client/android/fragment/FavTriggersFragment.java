@@ -160,9 +160,7 @@ public class FavTriggersFragment extends Fragment implements SwipeRefreshLayout.
         super.onDestroyView();
     }
 
-
-    @Override public void onTriggerMenuClick(View triggerView, int triggerPosition) {
-        showTriggerMenu(triggerView, triggerPosition);
+    @Override public void onTriggerToggleChanged(View TriggerView, int triggerPosition, boolean state) {
     }
 
     @Override public void onTriggerTextClick(View triggerView, int triggerPosition) {

@@ -24,6 +24,7 @@ import org.hawkular.client.android.backend.model.Trigger;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,7 @@ import butterknife.ButterKnife;
 public class TriggersAdapter extends BindableAdapter<Trigger> {
 
     public interface TriggerListener {
-        void onTriggerMenuClick(View TriggerView, int triggerPosition);
+        void onTriggerToggleChanged(View TriggerView, int triggerPosition,boolean state);
         void onTriggerTextClick(View TriggerView, int triggerPosition);
     }
 
@@ -92,12 +93,7 @@ public class TriggersAdapter extends BindableAdapter<Trigger> {
             }
         });
 
-        viewHolder.menuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                triggerListener.onTriggerMenuClick(view, position);
-            }
-        });
+        viewHolder.toggleTrigger.setChecked(trigger.getEnableStatus());
     }
 
     static final class ViewHolder {
@@ -107,8 +103,8 @@ public class TriggersAdapter extends BindableAdapter<Trigger> {
         @BindView(R.id.text_message)
         TextView messageText;
 
-        @BindView(R.id.button_menu)
-        View menuButton;
+        @BindView(R.id.toggle_trigger)
+        SwitchCompat toggleTrigger;
 
         @BindView(R.id.text_wrapper)
         LinearLayout linearLayout;
