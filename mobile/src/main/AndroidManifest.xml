@@ -55,7 +55,7 @@
             android:label="@string/title_authorization" />
 
         <activity
-            android:name=".activity.MetricsActivity"
+            android:name=".activity.MetricActivity"
             android:label="@string/title_metrics" />
 
         <activity
