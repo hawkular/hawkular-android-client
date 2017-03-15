@@ -82,6 +82,9 @@ public final class MainActivity extends AppCompatActivity
     @BindView(R.id.viewpager)
     ViewPager viewPager;
 
+    @BindView(R.id.title)
+    TextView title;
+
     TextView host;
 
     TextView persona;
@@ -118,6 +121,7 @@ public final class MainActivity extends AppCompatActivity
         personas = ButterKnife.findById(headerView, R.id.list_personas);
         personasLayout = ButterKnife.findById(headerView, R.id.layout_personas);
         personasActionIcon = ButterKnife.findById(headerView, R.id.image_personas_action);
+        title.setText(R.string.title_favourites);
 
         // -- Setup State
         Icepick.restoreInstanceState(this, state);
@@ -297,7 +301,7 @@ public final class MainActivity extends AppCompatActivity
 
     private void showFavourites() {
         atHome = true;
-        getSupportActionBar().setTitle(R.string.title_favourites);
+        title.setText(R.string.title_favourites);
         adapter.reset();
         adapter.addFragment(new FavMetricsFragment(), "Metrics");
         adapter.addFragment(new FavTriggersFragment(), "Triggers");
@@ -307,7 +311,7 @@ public final class MainActivity extends AppCompatActivity
 
     private void showAlerts() {
         atHome = false;
-        getSupportActionBar().setTitle(R.string.title_alerts);
+        title.setText(R.string.title_alerts);
         adapter.reset();
         adapter.addFragment(Fragments.Builder.buildAlertsFragment(null), "Alerts");
         adapter.addFragment(new TriggersFragment(), "Triggers");
