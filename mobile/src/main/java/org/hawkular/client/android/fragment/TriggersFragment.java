@@ -117,7 +117,7 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
 
     private void setUpTriggersForced() {
 
-        if( getArguments().getString("state").compareTo("From Favourite") == 0) {
+        if( getArguments().getString("state").equalsIgnoreCase("From Favourite")) {
             setUpFavTriggers();
         }
         else {
