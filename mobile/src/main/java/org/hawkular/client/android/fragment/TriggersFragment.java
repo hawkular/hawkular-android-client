@@ -17,12 +17,14 @@
 package org.hawkular.client.android.fragment;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
 import org.hawkular.client.android.R;
+import org.hawkular.client.android.activity.MainActivity;
 import org.hawkular.client.android.activity.TriggerDetailActivity;
 import org.hawkular.client.android.adapter.TriggersAdapter;
 import org.hawkular.client.android.backend.BackendClient;
@@ -45,6 +47,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,14 +82,13 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
+
         return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
     @Override
     public void onActivityCreated(Bundle state) {
         super.onActivityCreated(state);
-
-        setUpState(state);
 
         setUpBindings();
 
@@ -114,14 +116,19 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     }
 
     private void setUpTriggersForced() {
-        BackendClient.of(this).getTriggers(new TriggersCallback());
+
+        if( getArguments().getString("state").compareTo("From Favourite") == 0) {
+            setUpFavTriggers();
+        }
+        else {
+            BackendClient.of(this).getTriggers(new TriggersCallback());
+        }
     }
 
     @OnClick(R.id.button_retry)
     public void setUpTriggers() {
         if (triggers == null) {
             showProgress();
-
             setUpTriggersForced();
         } else {
             setUpTriggers(triggers);
@@ -175,6 +182,38 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     @OnItemClick(R.id.list)
     public void setUpTrigger(int position) {
         Trigger trigger = getTriggersAdapter().getItem(position);
+    }
+
+    private void setUpFavTriggers() {
+
+        Context context = this.getActivity();
+        SQLStore<Trigger> store = openStore(context);
+        store.openSync();
+
+        Collection<Trigger> array = store.readAll();
+        triggers = new ArrayList<>(array);
+        sortTriggers(this.triggers);
+        list.setAdapter(new TriggersAdapter(getActivity(), this, triggers));
+        hideRefreshing();
+        if(triggers.isEmpty()){
+            showMessage();
+        }
+        else{
+            showList();
+        }
+    }
+
+
+    private SQLStore<Trigger> openStore(Context context) {
+        DataManager.config("FavouriteTriggers", SQLStoreConfiguration.class)
+                .withContext(context)
+                .withIdGenerator(new IdGenerator() {
+                    @Override
+                    public String generate() {
+                        return UUID.randomUUID().toString();
+                    }
+                }).store(Trigger.class);
+        return (SQLStore<Trigger>) DataManager.getStore("FavouriteTriggers");
     }
 
     private TriggersAdapter getTriggersAdapter() {
