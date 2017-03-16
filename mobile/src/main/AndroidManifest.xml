@@ -37,6 +37,7 @@
 
         <activity
             android:name=".activity.MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:theme="@style/Theme.Hawkular.Drawer">
 
             <intent-filter>
