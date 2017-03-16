@@ -82,6 +82,7 @@ public final class Trigger implements Parcelable {
     private Trigger(Parcel parcel) {
         this.id = parcel.readString();
         this.description = parcel.readString();
+        this.tags = parcel.readHashMap(String.class.getClassLoader());
         this.enabled = parcel.readString().equals("true");
     }
 
@@ -90,7 +91,7 @@ public final class Trigger implements Parcelable {
         parcel.writeString(id);
         parcel.writeString(description);
         parcel.writeMap(tags);
-        parcel.writeValue(enabled);
+        parcel.writeString(enabled ? "true" : "false");
     }
 
     @Override
