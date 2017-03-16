@@ -119,7 +119,6 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
 
         if( getArguments().getString("state").compareTo("From Favourite") == 0)
         {
-            Log.d("value",getArguments().getString("state"));
             setUpFavTriggers();
         }
         else
@@ -293,7 +292,6 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         @Override
         public void onSuccess(List<Trigger> triggers) {
             if (!triggers.isEmpty()) {
-                Log.d("Insidee call back","Hi");
                 getTriggersFragment().setUpTriggers(triggers);
             } else {
                 getTriggersFragment().showMessage();
