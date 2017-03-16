@@ -42,7 +42,6 @@ import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.event.Events;
 import org.hawkular.client.android.explorer.InventoryExplorerActivity;
 import org.hawkular.client.android.fragment.FavMetricsFragment;
-import org.hawkular.client.android.fragment.FavTriggersFragment;
 import org.hawkular.client.android.fragment.TriggersFragment;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
@@ -303,8 +302,14 @@ public final class MainActivity extends AppCompatActivity
         atHome = true;
         title.setText(R.string.title_favourites);
         adapter.reset();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("state", "From Favourite");
+        TriggersFragment triggersFragment = new TriggersFragment();
+        triggersFragment.setArguments(bundle);
+
         adapter.addFragment(new FavMetricsFragment(), "Metrics");
-        adapter.addFragment(new FavTriggersFragment(), "Triggers");
+        adapter.addFragment(triggersFragment, "FavTriggers");
         adapter.notifyDataSetChanged();
 
     }
@@ -313,8 +318,14 @@ public final class MainActivity extends AppCompatActivity
         atHome = false;
         title.setText(R.string.title_alerts);
         adapter.reset();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("state", "From Home");
+        TriggersFragment triggersFragment = new TriggersFragment();
+        triggersFragment.setArguments(bundle);
+
         adapter.addFragment(Fragments.Builder.buildAlertsFragment(null), "Alerts");
-        adapter.addFragment(new TriggersFragment(), "Triggers");
+        adapter.addFragment(triggersFragment, "Triggers");
         adapter.notifyDataSetChanged();
     }
 
