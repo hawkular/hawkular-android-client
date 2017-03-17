@@ -12,7 +12,7 @@ android:
     - extra-google-m2repository
 
 script:
-  - mvn --settings maven.settings.xml license:check checkstyle:check && ./gradlew clean assembleDebug
+  - mvn --settings maven.settings.xml checkstyle:check && ./gradlew clean license assembleDebug
 
 cache:
   directories:
