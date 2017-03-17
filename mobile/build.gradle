@@ -4,6 +4,7 @@ plugins {
 
 apply plugin: "com.android.application"
 apply plugin: "android-apt"
+apply plugin: "checkstyle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -120,6 +121,17 @@ def readProguardFiles() {
     }
 
     return proguardFiles
+}
+
+tasks.withType(Checkstyle) {
+    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+
+    source 'src'
+    include '**/*.java'
+    exclude '**/gen/**'
+
+    classpath = files()
+
 }
 
 license {
