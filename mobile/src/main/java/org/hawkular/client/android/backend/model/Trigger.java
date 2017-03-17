@@ -27,7 +27,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
-public final class Trigger implements Parcelable {
+public class Trigger implements Parcelable {
     @RecordId
     @SerializedName("id")
     private String id;
@@ -79,7 +79,7 @@ public final class Trigger implements Parcelable {
         }
     };
 
-    private Trigger(Parcel parcel) {
+    protected Trigger(Parcel parcel) {
         this.id = parcel.readString();
         this.description = parcel.readString();
         this.tags = parcel.readHashMap(String.class.getClassLoader());
