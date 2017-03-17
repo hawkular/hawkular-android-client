@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,6 +35,8 @@ public final class Trigger implements Parcelable {
     private Map<String, String> tags;
     @SerializedName("description")
     private String description;
+    @SerializedName("enabled")
+    private boolean enabled;
 
     public String getId() {
         return id;
@@ -52,11 +54,17 @@ public final class Trigger implements Parcelable {
         return description;
     }
 
+    public boolean getEnableStatus(){
+        return enabled;
+    }
+
     @VisibleForTesting
-    public Trigger(@NonNull String id, @NonNull Map<String, String> tags, @NonNull String description) {
+    public Trigger(@NonNull String id, @NonNull Map<String, String> tags, @NonNull String description, @NonNull
+                   boolean enabled) {
         this.id = id;
         this.tags = tags;
         this.description = description;
+        this.enabled = enabled;
     }
 
     public static Creator<Trigger> CREATOR = new Creator<Trigger>() {
@@ -74,6 +82,8 @@ public final class Trigger implements Parcelable {
     private Trigger(Parcel parcel) {
         this.id = parcel.readString();
         this.description = parcel.readString();
+        this.tags = parcel.readHashMap(String.class.getClassLoader());
+        this.enabled = parcel.readString().equals("true");
     }
 
     @Override
@@ -81,6 +91,7 @@ public final class Trigger implements Parcelable {
         parcel.writeString(id);
         parcel.writeString(description);
         parcel.writeMap(tags);
+        parcel.writeString(enabled ? "true" : "false");
     }
 
     @Override

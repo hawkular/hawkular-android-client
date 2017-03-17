@@ -236,10 +236,8 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         super.onDestroyView();
     }
 
-    @Override public void onTriggerMenuClick(View triggerView, int triggerPosition) {
-       // showTriggerMenu(triggerView, triggerPosition);
+    @Override public void onTriggerToggleChanged(View TriggerView, int triggerPosition, boolean state) {
     }
-
 
     @Override public void onTriggerTextClick(View triggerView, int triggerPosition) {
         Intent intent = new Intent(getActivity(), TriggerDetailActivity.class);
