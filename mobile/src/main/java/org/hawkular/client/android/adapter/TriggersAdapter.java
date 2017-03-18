@@ -85,7 +85,7 @@ public class TriggersAdapter extends BindableAdapter<Trigger> {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         viewHolder.titleText.setText(trigger.getId());
         viewHolder.messageText.setText(trigger.getDescription());
-        viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
+        viewHolder.listItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 triggerListener.onTriggerTextClick(view, position);
@@ -110,8 +110,8 @@ public class TriggersAdapter extends BindableAdapter<Trigger> {
         @BindView(R.id.button_menu)
         View menuButton;
 
-        @BindView(R.id.text_wrapper)
-        LinearLayout linearLayout;
+        @BindView(R.id.list_item)
+        LinearLayout listItem;
 
         public ViewHolder(@NonNull View view) {
             ButterKnife.bind(this, view);
