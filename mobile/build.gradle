@@ -124,7 +124,7 @@ def readProguardFiles() {
 }
 
 tasks.withType(Checkstyle) {
-    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+    configFile = rootProject.file('misc/checkstyle.xml')
 
     source 'src'
     include '**/*.java'
