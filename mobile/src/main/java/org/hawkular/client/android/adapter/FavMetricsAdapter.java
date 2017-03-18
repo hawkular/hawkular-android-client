@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -86,7 +86,7 @@ public class FavMetricsAdapter extends BindableAdapter<Metric> {
         viewHolder.titleText.setText(metric.getName());
         viewHolder.messageText.setText(metric.getId());
 
-        viewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
+        viewHolder.listItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 metricListener.onMetricTextClick(view, position);
@@ -111,8 +111,8 @@ public class FavMetricsAdapter extends BindableAdapter<Metric> {
         @BindView(R.id.button_menu)
         View menuButton;
 
-        @BindView(R.id.text_wrapper)
-        LinearLayout linearLayout;
+        @BindView(R.id.list_item)
+        LinearLayout listItem;
 
         public ViewHolder(@NonNull View view) {
             ButterKnife.bind(this, view);
