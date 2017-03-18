@@ -331,6 +331,10 @@ public final class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+            return;
+        }
         if (!atHome) {
             showFavourites();
             navigation.setCheckedItem(R.id.menu_favourites);
