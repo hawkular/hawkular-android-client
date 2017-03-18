@@ -32,6 +32,7 @@ import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
+import org.hawkular.client.android.util.SharedVariables;
 import org.hawkular.client.android.util.Time;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
@@ -98,6 +99,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     @Override
     public void onActivityCreated(Bundle state) {
         super.onActivityCreated(state);
+
+        SharedVariables.isAlertsFragmentAvailable = true;
 
         setUpState(state);
 
@@ -397,6 +400,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     public void onDestroyView() {
         super.onDestroyView();
 
+        SharedVariables.isAlertsFragmentAvailable = false;
+
         tearDownBindings();
     }
 
@@ -433,11 +438,13 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     private static final class AlertsCallback extends AbstractSupportFragmentCallback<List<Alert>> {
         @Override
         public void onSuccess(List<Alert> alerts) {
-            if (!alerts.isEmpty()) {
-                getAlertsFragment().setUpAlerts(alerts);
-            } else {
-                getAlertsFragment().showMessage();
-                getAlertsFragment().cleanDump();
+            if (SharedVariables.isAlertsFragmentAvailable) {
+                if (!alerts.isEmpty()) {
+                    getAlertsFragment().setUpAlerts(alerts);
+                } else {
+                    getAlertsFragment().showMessage();
+                    getAlertsFragment().cleanDump();
+                }
             }
         }
 
@@ -445,7 +452,9 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         public void onFailure(Exception e) {
             Timber.d(e, "Alerts fetching failed.");
 
-            getAlertsFragment().showError();
+            if (SharedVariables.isAlertsFragmentAvailable) {
+                getAlertsFragment().showError();
+            }
         }
 
         private AlertsFragment getAlertsFragment() {

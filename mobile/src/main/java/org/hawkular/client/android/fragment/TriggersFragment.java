@@ -34,6 +34,7 @@ import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
+import org.hawkular.client.android.util.SharedVariables;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 import org.jboss.aerogear.android.store.DataManager;
@@ -289,10 +290,12 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     private static final class TriggersCallback extends AbstractSupportFragmentCallback<List<Trigger>> {
         @Override
         public void onSuccess(List<Trigger> triggers) {
-            if (!triggers.isEmpty()) {
-                getTriggersFragment().setUpTriggers(triggers);
-            } else {
-                getTriggersFragment().showMessage();
+            if(SharedVariables.isAlertsFragmentAvailable) {
+                if (!triggers.isEmpty()) {
+                    getTriggersFragment().setUpTriggers(triggers);
+                } else {
+                    getTriggersFragment().showMessage();
+                }
             }
         }
 
@@ -300,7 +303,9 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         public void onFailure(Exception e) {
             Timber.d(e, "Triggers fetching failed.");
 
-            getTriggersFragment().showError();
+            if (SharedVariables.isAlertsFragmentAvailable) {
+                getTriggersFragment().showError();
+            }
         }
 
         private TriggersFragment getTriggersFragment() {
