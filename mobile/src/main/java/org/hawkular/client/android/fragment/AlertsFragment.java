@@ -444,8 +444,10 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         @Override
         public void onFailure(Exception e) {
             Timber.d(e, "Alerts fetching failed.");
+            if (getAlertsFragment()!=null){
+                getAlertsFragment().showError();
+            }
 
-            getAlertsFragment().showError();
         }
 
         private AlertsFragment getAlertsFragment() {
