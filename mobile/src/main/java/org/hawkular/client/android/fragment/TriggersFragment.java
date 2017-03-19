@@ -34,7 +34,6 @@ import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
-import org.hawkular.client.android.util.SharedVariables;
 import org.hawkular.client.android.util.ViewDirector;
 import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 import org.jboss.aerogear.android.store.DataManager;
@@ -70,6 +69,8 @@ import timber.log.Timber;
  */
 public final class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         TriggersAdapter.TriggerListener {
+    private boolean isTriggersFragmentAvailableForAlerts;
+
     @BindView(R.id.list)
     ListView list;
 
@@ -122,6 +123,8 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
             setUpFavTriggers();
         }
         else {
+            isTriggersFragmentAvailableForAlerts = true;
+
             BackendClient.of(this).getTriggers(new TriggersCallback());
         }
     }
@@ -235,6 +238,8 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
+        isTriggersFragmentAvailableForAlerts = false;
     }
 
     @Override public void onTriggerToggleChanged(View TriggerView, int triggerPosition, boolean state) {
@@ -290,7 +295,7 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     private static final class TriggersCallback extends AbstractSupportFragmentCallback<List<Trigger>> {
         @Override
         public void onSuccess(List<Trigger> triggers) {
-            if(SharedVariables.isAlertsFragmentAvailable) {
+            if (getTriggersFragment().isTriggersFragmentAvailableForAlerts) {
                 if (!triggers.isEmpty()) {
                     getTriggersFragment().setUpTriggers(triggers);
                 } else {
@@ -303,7 +308,7 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         public void onFailure(Exception e) {
             Timber.d(e, "Triggers fetching failed.");
 
-            if (SharedVariables.isAlertsFragmentAvailable) {
+            if (getTriggersFragment().isTriggersFragmentAvailableForAlerts) {
                 getTriggersFragment().showError();
             }
         }
