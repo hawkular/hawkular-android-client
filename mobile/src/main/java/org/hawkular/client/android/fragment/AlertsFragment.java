@@ -64,7 +64,7 @@ import timber.log.Timber;
  */
 public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertListener,
         SwipeRefreshLayout.OnRefreshListener {
-    private boolean isAlertsFragmentAvailableForAlerts;
+    private boolean isAlertsFragmentAvailable;
 
     @BindView(R.id.list)
     ListView list;
@@ -101,7 +101,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     public void onActivityCreated(Bundle state) {
         super.onActivityCreated(state);
 
-        isAlertsFragmentAvailableForAlerts = true;
+        isAlertsFragmentAvailable = true;
 
         setUpState(state);
 
@@ -401,7 +401,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     public void onDestroyView() {
         super.onDestroyView();
 
-        isAlertsFragmentAvailableForAlerts = false;
+        isAlertsFragmentAvailable = false;
 
         tearDownBindings();
     }
@@ -439,7 +439,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     private static final class AlertsCallback extends AbstractSupportFragmentCallback<List<Alert>> {
         @Override
         public void onSuccess(List<Alert> alerts) {
-            if (getAlertsFragment().isAlertsFragmentAvailableForAlerts) {
+            if (getAlertsFragment().isAlertsFragmentAvailable) {
                 if (!alerts.isEmpty()) {
                     getAlertsFragment().setUpAlerts(alerts);
                 } else {
@@ -453,7 +453,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         public void onFailure(Exception e) {
             Timber.d(e, "Alerts fetching failed.");
 
-            if (getAlertsFragment().isAlertsFragmentAvailableForAlerts) {
+            if (getAlertsFragment().isAlertsFragmentAvailable) {
                 getAlertsFragment().showError();
             }
         }

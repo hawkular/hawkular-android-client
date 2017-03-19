@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hawkular.client.android.R;
-import org.hawkular.client.android.activity.MainActivity;
 import org.hawkular.client.android.activity.TriggerDetailActivity;
 import org.hawkular.client.android.adapter.TriggersAdapter;
 import org.hawkular.client.android.backend.BackendClient;
@@ -47,13 +46,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -69,7 +65,7 @@ import timber.log.Timber;
  */
 public final class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         TriggersAdapter.TriggerListener {
-    private boolean isTriggersFragmentAvailableForAlerts;
+    private boolean isTriggersFragmentAvailable;
 
     @BindView(R.id.list)
     ListView list;
@@ -91,6 +87,8 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     @Override
     public void onActivityCreated(Bundle state) {
         super.onActivityCreated(state);
+
+        isTriggersFragmentAvailable = true;
 
         setUpBindings();
 
@@ -123,8 +121,6 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
             setUpFavTriggers();
         }
         else {
-            isTriggersFragmentAvailableForAlerts = true;
-
             BackendClient.of(this).getTriggers(new TriggersCallback());
         }
     }
@@ -239,7 +235,7 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     public void onDestroyView() {
         super.onDestroyView();
 
-        isTriggersFragmentAvailableForAlerts = false;
+        isTriggersFragmentAvailable = false;
     }
 
     @Override public void onTriggerToggleChanged(View TriggerView, int triggerPosition, boolean state) {
@@ -295,7 +291,7 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     private static final class TriggersCallback extends AbstractSupportFragmentCallback<List<Trigger>> {
         @Override
         public void onSuccess(List<Trigger> triggers) {
-            if (getTriggersFragment().isTriggersFragmentAvailableForAlerts) {
+            if (getTriggersFragment().isTriggersFragmentAvailable) {
                 if (!triggers.isEmpty()) {
                     getTriggersFragment().setUpTriggers(triggers);
                 } else {
@@ -308,7 +304,7 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         public void onFailure(Exception e) {
             Timber.d(e, "Triggers fetching failed.");
 
-            if (getTriggersFragment().isTriggersFragmentAvailableForAlerts) {
+            if (getTriggersFragment().isTriggersFragmentAvailable) {
                 getTriggersFragment().showError();
             }
         }
