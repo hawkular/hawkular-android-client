@@ -125,6 +125,7 @@ public final class BackendClient {
         URL alertResolveUrl = Urls.getUrl(pipeUrl, BackendPipes.Paths.ALERT_RESOLVE);
         URL alertAckUrl = Urls.getUrl(pipeUrl, BackendPipes.Paths.ALERT_ACKNOWLEDGE);
         URL alertNoteUrl = Urls.getUrl(pipeUrl, BackendPipes.Paths.ALERT_NOTE);
+        URL triggerUpdateUrl = Urls.getUrl(pipeUrl,BackendPipes.Paths.UPDATE_TRIGGER);
         List<PipeModule> pipeModules = Arrays.asList(
                 getAuthorizationModule(),
                 getPersonnelModule(persona));
@@ -147,6 +148,7 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.OPERATION_PROPERTIES, pipeUrl, pipeModules, OperationProperties.class);
         configurePipe(BackendPipes.Names.PERSONA, backendUrl, pipeModules, Persona.class);
         configurePipe(BackendPipes.Names.TRIGGERS, pipeUrl, pipeModules, Trigger.class);
+        configurePipe(BackendPipes.Names.UPDATE_TRIGGER, triggerUpdateUrl ,pipeModules,String.class);
     }
 
     private AuthzModule getAuthorizationModule() {
@@ -218,6 +220,10 @@ public final class BackendClient {
     public void noteOnAlert(@NonNull Note note,
                             @NonNull Callback<List<String>> callback) {
         savePipe(BackendPipes.Names.NOTE, note, callback);
+    }
+
+    public void updateTrigger(@NonNull Trigger trigger, @NonNull Callback<List<String>> callback){
+        savePipe(BackendPipes.Names.UPDATE_TRIGGER,trigger,callback);
     }
 
     public void getEnvironments(@NonNull Callback<List<Environment>> callback) {

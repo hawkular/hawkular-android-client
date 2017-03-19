@@ -28,6 +28,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.BindView;
@@ -94,6 +95,12 @@ public class TriggersAdapter extends BindableAdapter<Trigger> {
         });
 
         viewHolder.toggleTrigger.setChecked(trigger.getEnableStatus());
+
+        viewHolder.toggleTrigger.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                triggerListener.onTriggerToggleChanged(compoundButton,position,b);
+            }
+        });
     }
 
     static final class ViewHolder {

@@ -239,6 +239,9 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     }
 
     @Override public void onTriggerToggleChanged(View TriggerView, int triggerPosition, boolean state) {
+        Trigger updatedTrigger = this.triggers.get(triggerPosition);
+        updatedTrigger.setEnabledStatus(state);
+        BackendClient.of(TriggersFragment.this).updateTrigger(updatedTrigger,new TriggerUpdateCallback());
     }
 
     @Override public void onTriggerTextClick(View triggerView, int triggerPosition) {
@@ -311,6 +314,14 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
 
         private TriggersFragment getTriggersFragment() {
             return (TriggersFragment) getSupportFragment();
+        }
+    }
+
+    private class TriggerUpdateCallback extends AbstractSupportFragmentCallback{
+        @Override public void onSuccess(Object data) {
+        }
+
+        @Override public void onFailure(Exception e) {
         }
     }
 

@@ -58,6 +58,10 @@ public final class Trigger implements Parcelable {
         return enabled;
     }
 
+    public void setEnabledStatus(boolean enabled) {
+        this.enabled=enabled;
+    }
+
     @VisibleForTesting
     public Trigger(@NonNull String id, @NonNull Map<String, String> tags, @NonNull String description, @NonNull
                    boolean enabled) {
