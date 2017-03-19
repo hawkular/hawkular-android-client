@@ -47,6 +47,7 @@ final class BackendPipes {
         public static final String OPERATION_PROPERTIES = "operationProperties";
         public static final String PERSONA = "persona";
         public static final String TRIGGERS = "triggers";
+        public static final String UPDATE_TRIGGER = "trigger-update";
 
     }
 
@@ -72,6 +73,7 @@ final class BackendPipes {
         public static final String OPERATIONS = "inventory/traversal/f;{f}/rt;{rt}/type=ot";
         public static final String PERSONA = "hawkular/metrics/tenants";
         public static final String TRIGGERS = "alerts/triggers";
+        public static final String UPDATE_TRIGGER = "alerts/triggers";
     }
 
     public static final class Parameters {
