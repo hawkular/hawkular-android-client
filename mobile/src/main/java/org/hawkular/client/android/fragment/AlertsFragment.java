@@ -64,6 +64,8 @@ import timber.log.Timber;
  */
 public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertListener,
         SwipeRefreshLayout.OnRefreshListener {
+    private boolean isAlertsFragmentAvailable;
+
     @BindView(R.id.list)
     ListView list;
 
@@ -98,6 +100,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     @Override
     public void onActivityCreated(Bundle state) {
         super.onActivityCreated(state);
+
+        isAlertsFragmentAvailable = true;
 
         setUpState(state);
 
@@ -397,6 +401,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     public void onDestroyView() {
         super.onDestroyView();
 
+        isAlertsFragmentAvailable = false;
+
         tearDownBindings();
     }
 
@@ -433,11 +439,13 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     private static final class AlertsCallback extends AbstractSupportFragmentCallback<List<Alert>> {
         @Override
         public void onSuccess(List<Alert> alerts) {
-            if (!alerts.isEmpty()) {
-                getAlertsFragment().setUpAlerts(alerts);
-            } else {
-                getAlertsFragment().showMessage();
-                getAlertsFragment().cleanDump();
+            if (getAlertsFragment().isAlertsFragmentAvailable) {
+                if (!alerts.isEmpty()) {
+                    getAlertsFragment().setUpAlerts(alerts);
+                } else {
+                    getAlertsFragment().showMessage();
+                    getAlertsFragment().cleanDump();
+                }
             }
         }
 
@@ -445,7 +453,9 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         public void onFailure(Exception e) {
             Timber.d(e, "Alerts fetching failed.");
 
-            getAlertsFragment().showError();
+            if (getAlertsFragment().isAlertsFragmentAvailable) {
+                getAlertsFragment().showError();
+            }
         }
 
         private AlertsFragment getAlertsFragment() {
