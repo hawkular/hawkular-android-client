@@ -35,6 +35,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.UUID;
 
@@ -72,10 +73,12 @@ public class TriggerDetailFragment extends android.support.v4.app.Fragment {
 
         if (store.read(trigger.getId()) == null) {
             store.save(trigger);
+            Toast.makeText(getContext(),"Added to Favourites", Toast.LENGTH_SHORT).show();
             addButton.setColorFilter(getResources().getColor(R.color.background_primary));
             addButton.startAnimation(myAnim);
         } else {
             store.remove(trigger.getId());
+            Toast.makeText(getContext(),"Removed from Favourites", Toast.LENGTH_SHORT).show();
             addButton.setColorFilter(getResources().getColor(R.color.background_secondary));
             addButton.startAnimation(myAnim);
         }

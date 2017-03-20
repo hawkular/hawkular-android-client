@@ -50,6 +50,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -241,6 +243,12 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     @Override public void onTriggerToggleChanged(View TriggerView, int triggerPosition, boolean state) {
         Trigger updatedTrigger = this.triggers.get(triggerPosition);
         updatedTrigger.setEnabledStatus(state);
+        if (state){
+            Toast.makeText(getContext(),"Trigger is On", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(getContext(),"Trigger is Off", Toast.LENGTH_SHORT).show();
+        }
         BackendClient.of(TriggersFragment.this).updateTrigger(updatedTrigger,new TriggerUpdateCallback());
     }
 
