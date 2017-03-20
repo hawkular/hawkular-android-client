@@ -112,5 +112,10 @@
   <string name="title_favourites">Favourites</string>
   <string name="hide_resolved">Hide Resolved</string>
   <string name="show_resolved">Show Resolved</string>
+  <string name="favourites_added">Added to Favourites</string>
+  <string name="favourites_removed">Removed from Favourites</string>
+  <string name="trigger_on">Trigger is On</string>
+  <string name="trigger_off">Trigger is Off</string>
+
 
 </resources>

@@ -44,12 +44,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -241,6 +244,14 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     @Override public void onTriggerToggleChanged(View TriggerView, int triggerPosition, boolean state) {
         Trigger updatedTrigger = this.triggers.get(triggerPosition);
         updatedTrigger.setEnabledStatus(state);
+        if (state){
+            Snackbar snackbar = Snackbar.make(getView(),R.string.trigger_on, Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        }
+        else {
+            Snackbar snackbar = Snackbar.make(getView(),R.string.trigger_off, Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        }
         BackendClient.of(TriggersFragment.this).updateTrigger(updatedTrigger,new TriggerUpdateCallback());
     }
 
