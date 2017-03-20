@@ -48,7 +48,7 @@ import timber.log.Timber;
 /**
  * Login activity.
  * <p/>
- * Provide with facility to login either by using credentials or by simply scanning the QR.
+ * Provide with facility to login using username and password.
  */
 
 public class LoginActivity extends AppCompatActivity {
