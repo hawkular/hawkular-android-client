@@ -28,6 +28,7 @@ import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,12 +74,14 @@ public class TriggerDetailFragment extends android.support.v4.app.Fragment {
 
         if (store.read(trigger.getId()) == null) {
             store.save(trigger);
-            Toast.makeText(getContext(),"Added to Favourites", Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar.make(getView(),R.string.favourites_added, Snackbar.LENGTH_SHORT);
+            snackbar.show();
             addButton.setColorFilter(getResources().getColor(R.color.background_primary));
             addButton.startAnimation(myAnim);
         } else {
             store.remove(trigger.getId());
-            Toast.makeText(getContext(),"Removed from Favourites", Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar.make(getView(),R.string.favourites_removed, Snackbar.LENGTH_SHORT);
+            snackbar.show();
             addButton.setColorFilter(getResources().getColor(R.color.background_secondary));
             addButton.startAnimation(myAnim);
         }

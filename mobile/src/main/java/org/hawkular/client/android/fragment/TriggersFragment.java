@@ -44,6 +44,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -244,10 +245,12 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         Trigger updatedTrigger = this.triggers.get(triggerPosition);
         updatedTrigger.setEnabledStatus(state);
         if (state){
-            Toast.makeText(getContext(),"Trigger is On", Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar.make(getView(),R.string.trigger_on, Snackbar.LENGTH_SHORT);
+            snackbar.show();
         }
         else {
-            Toast.makeText(getContext(),"Trigger is Off", Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar.make(getView(),R.string.trigger_off, Snackbar.LENGTH_SHORT);
+            snackbar.show();
         }
         BackendClient.of(TriggersFragment.this).updateTrigger(updatedTrigger,new TriggerUpdateCallback());
     }
