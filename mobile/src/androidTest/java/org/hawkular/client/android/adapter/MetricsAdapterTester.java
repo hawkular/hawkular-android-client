@@ -61,13 +61,16 @@ public final class MetricsAdapterTester {
 
         MetricsAdapter metricsAdapter = new MetricsAdapter(context, metrics);
 
-        Assertions.assertThat(metricsAdapter).hasItem(metric, 0);
+        for(int i=0; i< metrics.size(); i++) {
+            Assertions.assertThat(metricsAdapter).hasItem(metrics.get(i), i);
+        }
     }
 
     private List<Metric> generateMetrics() {
         List<Metric> metrics = new ArrayList<>();
+        long random = Randomizer.generateNumber();
 
-        for (int metricPosition = 0; metricPosition < Randomizer.generateNumber(); metricPosition++) {
+        for (int metricPosition = 0; metricPosition < random ; metricPosition++) {
             metrics.add(generateMetric());
         }
 
