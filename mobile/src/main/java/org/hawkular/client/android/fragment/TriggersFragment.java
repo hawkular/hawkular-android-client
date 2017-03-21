@@ -204,6 +204,8 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         else{
             showList();
         }
+
+        store.close();
     }
 
 
