@@ -140,7 +140,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     private void setUpFeeds(List<Feed> feeds) {
         for (Feed feed : feeds) {
-            int icon = getResources().getIdentifier("drawable/" + "feed_icon", null, getPackageName());
+            int icon = getResources().getIdentifier("drawable/" + "ic_feed_icon", null, getPackageName());
             TreeNode newFeed = new TreeNode(new IconTreeItemHolder.IconTreeItem(
                     icon, IconTreeItemHolder.IconTreeItem.Type.FEED, feed.getId(), feed));
             tView.addNode(root, newFeed);
@@ -150,7 +150,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     private void setUpOperations(List<Operation> operations, TreeNode parent) {
         for (Operation operation : operations) {
-            int icon = getResources().getIdentifier("drawable/" + "operation_icon", null, getPackageName());
+            int icon = getResources().getIdentifier("drawable/" + "ic_operation_icon", null, getPackageName());
             TreeNode newFeed = new TreeNode(new IconTreeItemHolder.IconTreeItem(
                     icon, IconTreeItemHolder.IconTreeItem.Type.OPERATION, operation.getId(), operation));
             tView.addNode(parent, newFeed);
@@ -160,7 +160,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     private void setUpResources(List<Resource> resources, TreeNode parent) {
         for (Resource resource : resources) {
-            int icon = getResources().getIdentifier("drawable/" + "resource_icon", null, getPackageName());
+            int icon = getResources().getIdentifier("drawable/" + "ic_resource_icon", null, getPackageName());
             TreeNode newResource = new TreeNode(new IconTreeItemHolder.IconTreeItem(
                     icon, IconTreeItemHolder.IconTreeItem.Type.RESOURCE, resource.getName(), resource));
             tView.addNode(parent, newResource);
@@ -170,7 +170,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     private void setUpMetrics(List<Metric> metrics, TreeNode parent) {
         for (Metric metric : metrics) {
-            int icon = getResources().getIdentifier("drawable/" + "metric_icon", null, getPackageName());
+            int icon = getResources().getIdentifier("drawable/" + "ic_metric_icon", null, getPackageName());
             TreeNode newMetric = new TreeNode(new IconTreeItemHolder.IconTreeItem(
                     icon, IconTreeItemHolder.IconTreeItem.Type.METRIC, metric.getName(), metric));
             tView.addNode(parent, newMetric);
