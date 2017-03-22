@@ -75,7 +75,7 @@ public class FavMetricsAdapter extends BindableAdapter<Metric> {
     @NonNull
     @Override
     protected View newView(LayoutInflater inflater, ViewGroup viewContainer) {
-        View view = inflater.inflate(R.layout.layout_list_item_token, viewContainer, false);
+        View view = inflater.inflate(R.layout.layout_list_item_alert, viewContainer, false);
         view.setTag(new ViewHolder(view));
         return view;
     }
@@ -111,7 +111,7 @@ public class FavMetricsAdapter extends BindableAdapter<Metric> {
         @BindView(R.id.button_menu)
         View menuButton;
 
-        @BindView(R.id.list_item)
+        @BindView(R.id.data_box)
         LinearLayout listItem;
 
         public ViewHolder(@NonNull View view) {
