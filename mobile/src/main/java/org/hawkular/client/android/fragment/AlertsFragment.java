@@ -174,6 +174,11 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         }
     }
 
+    @Override public void onResume() {
+        super.onResume();
+        setUpAlerts();
+    }
+
     private boolean areTriggersAvailable() {
         return (triggers != null) && !triggers.isEmpty();
     }

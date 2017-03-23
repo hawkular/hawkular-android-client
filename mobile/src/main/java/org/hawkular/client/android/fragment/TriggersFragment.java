@@ -100,6 +100,16 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         setUpTriggers();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if( getArguments().getString("state").equalsIgnoreCase("From Favourite")) {
+            setUpFavTriggers();
+        } else {
+            BackendClient.of(this).getTriggers(new TriggersCallback());
+        }
+    }
+
     private void setUpState(Bundle state) {
         Icepick.restoreInstanceState(this, state);
     }
@@ -241,7 +251,8 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         isTriggersFragmentAvailable = false;
     }
 
-    @Override public void onTriggerToggleChanged(View TriggerView, int triggerPosition, boolean state) {
+    @Override
+    public void onTriggerToggleChanged(View TriggerView, int triggerPosition, boolean state) {
         Trigger updatedTrigger = this.triggers.get(triggerPosition);
         updatedTrigger.setEnabledStatus(state);
         if (state){
@@ -255,7 +266,8 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         BackendClient.of(TriggersFragment.this).updateTrigger(updatedTrigger,new TriggerUpdateCallback());
     }
 
-    @Override public void onTriggerTextClick(View triggerView, int triggerPosition) {
+    @Override
+    public void onTriggerTextClick(View triggerView, int triggerPosition) {
         Intent intent = new Intent(getActivity(), TriggerDetailActivity.class);
         Trigger trigger = getTriggersAdapter().getItem(triggerPosition);
         intent.putExtra(Intents.Extras.TRIGGER,trigger);
@@ -329,10 +341,12 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     }
 
     private class TriggerUpdateCallback extends AbstractSupportFragmentCallback{
-        @Override public void onSuccess(Object data) {
+        @Override
+        public void onSuccess(Object data) {
         }
 
-        @Override public void onFailure(Exception e) {
+        @Override
+        public void onFailure(Exception e) {
         }
     }
 
