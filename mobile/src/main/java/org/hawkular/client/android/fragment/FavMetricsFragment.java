@@ -16,7 +16,6 @@
  */
 package org.hawkular.client.android.fragment;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
@@ -35,20 +34,17 @@ import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.PopupMenu;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import icepick.Icepick;
-import icepick.State;
-
 /**
  * Favourite Metrics fragment.
  * <p>
@@ -58,17 +54,11 @@ import icepick.State;
 public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         FavMetricsAdapter.MetricListener {
 
-    @BindView(R.id.list)
-    ListView list;
+    @BindView(R.id.list) RecyclerView recyclerView;
+    @BindView(R.id.content) SwipeRefreshLayout swipeRefreshLayout;
 
-    @BindView(R.id.content)
-    SwipeRefreshLayout contentLayout;
-
-    @State
-    @Nullable
     ArrayList<Metric> metrics;
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
         return inflater.inflate(R.layout.fragment_list, container, false);
@@ -79,11 +69,8 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
         super.onActivityCreated(state);
 
         setUpState(state);
-
         setUpBindings();
-
         setUpRefreshing();
-
         setUpMetrics();
     }
 
@@ -95,7 +82,7 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
 
         Collection<Metric> array = store.readAll();
         metrics = new ArrayList<>(array);
-        list.setAdapter(new FavMetricsAdapter(getActivity(), this, metrics));
+        recyclerView.setAdapter(new FavMetricsAdapter(getActivity(), this, metrics));
         hideRefreshing();
 
         if(metrics.isEmpty()) {
@@ -109,7 +96,7 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
     }
 
     private void hideRefreshing() {
-        contentLayout.setRefreshing(false);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void showList() {
@@ -141,11 +128,12 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
     }
 
     private void setUpRefreshing() {
-        contentLayout.setOnRefreshListener(this);
-        contentLayout.setColorSchemeResources(ColorSchemer.getScheme());
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeResources(ColorSchemer.getScheme());
     }
 
-    @Override public void onRefresh() {
+    @Override
+    public void onRefresh() {
         setUpMetrics();
     }
 
@@ -172,11 +160,13 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
         //ButterKnife.unbind(this);
     }
 
-    @Override public void onMetricMenuClick(View metricView, int metricPosition) {
+    @Override
+    public void onMetricMenuClick(View metricView, int metricPosition) {
         showMetricMenu(metricView, metricPosition);
     }
 
-    @Override public void onMetricTextClick(View metricView, int metricPosition) {
+    @Override
+    public void onMetricTextClick(View metricView, int metricPosition) {
         Intent intent = Intents.Builder.of(getActivity()).buildMetricIntent(metrics.get(metricPosition));
         startActivity(intent);
     }
@@ -211,7 +201,7 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
 
 
     private FavMetricsAdapter getFavMetricsAdapter() {
-        return (FavMetricsAdapter) list.getAdapter();
+        return (FavMetricsAdapter) recyclerView.getAdapter();
     }
 }
 
