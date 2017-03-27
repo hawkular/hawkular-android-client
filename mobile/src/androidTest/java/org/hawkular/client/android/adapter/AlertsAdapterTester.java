@@ -60,8 +60,9 @@ public final class AlertsAdapterTester {
 
         AlertsAdapter alertsAdapter = new AlertsAdapter(context, new AlertMenuAdapter(), alerts);
 
-        for(int i=0; i<alerts.size(); i++)
-        Assertions.assertThat(alertsAdapter).hasItem(alerts.get(i), i);
+        for(int i=0; i<alerts.size(); i++) {
+            Assertions.assertThat(alertsAdapter).hasItem(alerts.get(i), i);
+        }
     }
 
     private List<Alert> generateAlerts() {
