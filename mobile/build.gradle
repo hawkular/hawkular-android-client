@@ -148,6 +148,7 @@ license {
     exclude "**/*.pro"
     exclude "**/*.properties"
     exclude "**/misc/*"
+    exclude "**/*.png"
 }
 
 dependencies {
