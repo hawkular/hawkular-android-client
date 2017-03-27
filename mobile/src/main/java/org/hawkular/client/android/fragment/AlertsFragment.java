@@ -38,23 +38,21 @@ import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.PopupMenu;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import icepick.Icepick;
-import icepick.State;
 import timber.log.Timber;
 
 /**
@@ -62,36 +60,20 @@ import timber.log.Timber;
  * <p/>
  * Displays alerts as a list with menus allowing some alert-related actions, such as acknowledgement and resolving.
  */
-public final class AlertsFragment extends Fragment implements AlertsAdapter.AlertListener,
-        SwipeRefreshLayout.OnRefreshListener {
-    private boolean isAlertsFragmentAvailable;
 
-    @BindView(R.id.list)
-    ListView list;
+public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        AlertsAdapter.AlertListener {
 
-    @BindView(R.id.content)
-    SwipeRefreshLayout contentLayout;
+    @BindView(R.id.list) RecyclerView recyclerView;
+    @BindView(R.id.content) SwipeRefreshLayout swipeRefreshLayout;
 
-    @State
-    @Nullable
-    ArrayList<Trigger> triggers;
+    public ArrayList<Trigger> triggers;
+    public ArrayList<Alert> alerts;
+    public ArrayList<Alert> alertsDump;
+    public boolean isActionPlus;
+    public int alertsTimeMenu;
+    public boolean isAlertsFragmentAvailable;
 
-    @State
-    @Nullable
-    ArrayList<Alert> alerts;
-
-    @State
-    @Nullable
-    ArrayList<Alert> alertsDump;
-
-    @State
-    boolean isActionPlus;
-
-    @State
-    @IdRes
-    int alertsTimeMenu;
-
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
         return inflater.inflate(R.layout.fragment_list, container, false);
@@ -102,18 +84,12 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         super.onActivityCreated(state);
 
         isAlertsFragmentAvailable = true;
-
         setUpState(state);
-
         setUpBindings();
-
         setUpList();
         setUpMenu();
-
         isActionPlus = false;
-
         setUpRefreshing();
-
         setUpAlertsUi();
     }
 
@@ -126,7 +102,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private void setUpList() {
-        list.setSelector(android.R.color.transparent);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     private void setUpMenu() {
@@ -134,13 +111,8 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private void setUpRefreshing() {
-        contentLayout.setOnRefreshListener(this);
-        contentLayout.setColorSchemeResources(ColorSchemer.getScheme());
-    }
-
-    @Override
-    public void onRefresh() {
-        setUpAlertsRefreshed();
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeResources(ColorSchemer.getScheme());
     }
 
     @OnClick(R.id.button_retry)
@@ -160,7 +132,6 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
 
     private void setUpAlertsForced() {
         showProgress();
-
         setUpAlerts();
     }
 
@@ -220,7 +191,6 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         // Caused by a lack of API connecting Inventory and Alerts components.
 
         Resource resource = getResource();
-
         List<Trigger> filteredTriggers = new ArrayList<>();
 
         for (Trigger trigger : triggers) {
@@ -245,12 +215,12 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
         if (isActionPlus) {
             this.alerts = alertsDump;
             if (this.alerts != null) {
-                list.setAdapter(new AlertsAdapter(getActivity(), this, this.alerts));
+                recyclerView.setAdapter(new AlertsAdapter(getActivity(), this, this.alerts));
             }
         } else {
             this.alerts = removeResolved();
             if (this.alerts != null) {
-                list.setAdapter(new AlertsAdapter(getActivity(), this, this.alerts));
+                recyclerView.setAdapter(new AlertsAdapter(getActivity(), this, this.alerts));
             }
         }
 
@@ -318,7 +288,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private AlertsAdapter getAlertsAdapter() {
-        return (AlertsAdapter) list.getAdapter();
+        return (AlertsAdapter) recyclerView.getAdapter();
     }
 
     @Override
@@ -371,7 +341,7 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     }
 
     private void hideRefreshing() {
-        contentLayout.setRefreshing(false);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void showList() {
@@ -409,6 +379,11 @@ public final class AlertsFragment extends Fragment implements AlertsAdapter.Aler
     private void tearDownBindings() {
         //TODO: Modify it
         //ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onRefresh() {
+
     }
 
     private static final class TriggersCallback extends AbstractSupportFragmentCallback<List<Trigger>> {

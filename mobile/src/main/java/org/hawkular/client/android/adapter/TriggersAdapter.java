@@ -16,7 +16,6 @@
  */
 package org.hawkular.client.android.adapter;
 
-
 import java.util.List;
 
 import org.hawkular.client.android.R;
@@ -24,6 +23,7 @@ import org.hawkular.client.android.backend.model.Trigger;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +40,7 @@ import butterknife.ButterKnife;
  * Transforms a list of Triggers to a human-readable interpretation.
  */
 
-public class TriggersAdapter extends BindableAdapter<Trigger> {
+public class TriggersAdapter extends RecyclerView.Adapter<TriggersAdapter.RecyclerViewHolder>{
 
     public interface TriggerListener {
         void onTriggerToggleChanged(View TriggerView, int triggerPosition,boolean state);
@@ -48,23 +48,16 @@ public class TriggersAdapter extends BindableAdapter<Trigger> {
     }
 
     private final List<Trigger> triggers;
-
     private final TriggerListener triggerListener;
+    public Context context;
 
     public TriggersAdapter(@NonNull Context context, @NonNull TriggerListener triggerMenuListener,
                            @NonNull List<Trigger> triggers) {
-        super(context);
+        this.context = context;
         this.triggerListener = triggerMenuListener;
         this.triggers = triggers;
     }
 
-    @Override
-    public int getCount() {
-        return triggers.size();
-    }
-
-    @NonNull
-    @Override
     public Trigger getItem(int position) {
         return triggers.get(position);
     }
@@ -74,49 +67,51 @@ public class TriggersAdapter extends BindableAdapter<Trigger> {
         return position;
     }
 
-    @NonNull
     @Override
-    protected View newView(LayoutInflater inflater, ViewGroup viewContainer) {
-        View view = inflater.inflate(R.layout.layout_list_item_token, viewContainer, false);
-        view.setTag(new ViewHolder(view));
-        return view;
+    public int getItemCount() {
+        return triggers.size();
     }
 
+
     @Override
-    protected void bindView(Trigger trigger, final int position, View view) {
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
-        viewHolder.titleText.setText(trigger.getId());
-        viewHolder.messageText.setText(trigger.getDescription());
-        viewHolder.listItem.setOnClickListener(new View.OnClickListener() {
+    public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.layout_list_item_token, parent, false);
+
+        return new RecyclerViewHolder(itemView);
+    }
+
+    public void onBindViewHolder(RecyclerViewHolder holder, final int position) {
+        final Trigger currentTrigger = getItem(position);
+
+        holder.titleText.setText(currentTrigger.getId());
+        holder.messageText.setText(currentTrigger.getDescription());
+        holder.listItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 triggerListener.onTriggerTextClick(view, position);
             }
         });
 
-        viewHolder.toggleTrigger.setChecked(trigger.getEnableStatus());
+        holder.toggleTrigger.setChecked(currentTrigger.getEnableStatus());
 
-        viewHolder.toggleTrigger.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        holder.toggleTrigger.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 triggerListener.onTriggerToggleChanged(compoundButton,position,b);
             }
         });
     }
 
-    static final class ViewHolder {
-        @BindView(R.id.text_title)
-        TextView titleText;
+    static final class RecyclerViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.text_title) TextView titleText;
+        @BindView(R.id.text_message) TextView messageText;
+        @BindView(R.id.toggle_trigger) SwitchCompat toggleTrigger;
+        @BindView(R.id.list_item) LinearLayout listItem;
 
-        @BindView(R.id.text_message)
-        TextView messageText;
-
-        @BindView(R.id.toggle_trigger)
-        SwitchCompat toggleTrigger;
-
-        @BindView(R.id.list_item)
-        LinearLayout listItem;
-
-        public ViewHolder(@NonNull View view) {
+        RecyclerViewHolder(@NonNull View view) {
+            super(view);
             ButterKnife.bind(this, view);
         }
     }

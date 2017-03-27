@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,7 @@ import org.hawkular.client.android.util.Formatter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,32 +44,14 @@ import butterknife.ButterKnife;
  * Transforms a list of alerts to a human-readable interpretation, including proper formatting for alerts, based on
  * Hawkular Web UI. Has an ability to attach a listener for alert-related operations menu.
  */
-public final class AlertsAdapter extends BindableAdapter<Alert> {
+
+public class AlertsAdapter extends RecyclerView.Adapter<AlertsAdapter.RecyclerViewHolder> {
+
+    public Context context;
+
     public interface AlertListener {
         void onAlertMenuClick(View alertView, int alertPosition);
-
         void onAlertBodyClick(View alertView, int alertPosition);
-    }
-
-    static final class ViewHolder {
-        @BindView(R.id.text_title)
-        TextView titleText;
-
-        @BindView(R.id.text_message)
-        TextView messageText;
-
-        @BindView(R.id.text_status)
-        TextView statusText;
-
-        @BindView(R.id.button_menu)
-        View menuButton;
-
-        @BindView(R.id.data_box)
-        LinearLayout dataBox;
-
-        public ViewHolder(@NonNull View view) {
-            ButterKnife.bind(this, view);
-        }
     }
 
     private final AlertListener alertListener;
@@ -77,61 +60,54 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
 
     public AlertsAdapter(@NonNull Context context, @NonNull AlertListener alertListener,
                          @NonNull List<Alert> alerts) {
-        super(context);
-
+        this.context = context;
         this.alertListener = alertListener;
-
         this.alerts = new ArrayList<>(alerts);
     }
 
-    @Override
-    public int getCount() {
-        return alerts.size();
-    }
-
-    @NonNull
-    @Override
     public Alert getItem(int position) {
         return alerts.get(position);
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @NonNull
-    @Override
-    public View newView(LayoutInflater inflater, ViewGroup viewContainer) {
-        View view = inflater.inflate(R.layout.layout_list_item_alert, viewContainer, false);
-
-        view.setTag(new ViewHolder(view));
-
-        return view;
+    public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View view = layoutInflater.inflate(R.layout.layout_list_item_alert, parent, false);
+        view.setTag(new RecyclerViewHolder(view));
+        return new RecyclerViewHolder(view);
     }
 
     @Override
-    public void bindView(Alert alert, int position, View view) {
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
-
-        viewHolder.titleText.setText(getAlertTitle(view.getContext(), alert));
-        viewHolder.messageText.setText(getAlertMessage(view.getContext(), alert));
-        viewHolder.statusText.setText(alert.getStatus());
+    public void onBindViewHolder(RecyclerViewHolder holder, int position) {
+        Alert currentAlert = getItem(position);
+        holder.titleText.setText(getAlertTitle(context, currentAlert));
+        holder.messageText.setText(getAlertMessage(context, currentAlert));
+        holder.statusText.setText(currentAlert.getStatus());
 
         final int alertPosition = position;
 
-        viewHolder.dataBox.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+        holder.dataBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 alertListener.onAlertBodyClick(view, alertPosition);
             }
         });
 
-        viewHolder.menuButton.setOnClickListener(new View.OnClickListener() {
+        holder.menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertListener.onAlertMenuClick(view, alertPosition);
             }
         });
+    }
+
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return alerts.size();
     }
 
     private String getAlertTitle(Context context, Alert alert) {
@@ -174,8 +150,8 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
         long alertFinishTimestamp = getAlertFinishTimestamp(alert);
 
         return context.getString(R.string.mask_alert_availability,
-            getAlertDuration(alertStartTimestamp, alertFinishTimestamp),
-            getAlertTimestamp(context, alertFinishTimestamp));
+                getAlertDuration(alertStartTimestamp, alertFinishTimestamp),
+                getAlertTimestamp(context, alertFinishTimestamp));
     }
 
     private long getAlertStartTimestamp(Alert alert) {
@@ -206,10 +182,10 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
         double alertThreshold = getAlertThreshold(alert);
 
         return context.getString(R.string.mask_alert_threshold,
-            alertThreshold,
-            getAlertDuration(alertStartTimestamp, alertFinishTimestamp),
-            getAlertTimestamp(context, alertFinishTimestamp),
-            alertAverage);
+                alertThreshold,
+                getAlertDuration(alertStartTimestamp, alertFinishTimestamp),
+                getAlertTimestamp(context, alertFinishTimestamp),
+                alertAverage);
     }
 
     private double getAlertAverage(Alert alert) {
@@ -239,5 +215,18 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
         }
 
         throw new RuntimeException("No alert threshold found.");
+    }
+
+    class RecyclerViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.text_title) TextView titleText;
+        @BindView(R.id.text_message) TextView messageText;
+        @BindView(R.id.text_status) TextView statusText;
+        @BindView(R.id.button_menu) View menuButton;
+        @BindView(R.id.data_box) LinearLayout dataBox;
+
+        RecyclerViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
     }
 }

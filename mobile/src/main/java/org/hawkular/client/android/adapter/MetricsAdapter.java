@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.model.Metric;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,31 +35,17 @@ import butterknife.ButterKnife;
  *
  * Transforms a list of metrics to a human-readable interpretation.
  */
-public final class MetricsAdapter extends BindableAdapter<Metric> {
-    static final class ViewHolder {
-        @BindView(R.id.text)
-        public TextView nameText;
 
-        public ViewHolder(@NonNull View view) {
-            ButterKnife.bind(this, view);
-        }
-    }
+public class MetricsAdapter extends RecyclerView.Adapter<MetricsAdapter.RecyclerViewHolder> {
 
-    private final List<Metric> metrics;
+    public Context context;
+    public List<Metric> metrics;
 
-    public MetricsAdapter(@NonNull Context context, @NonNull List<Metric> metrics) {
-        super(context);
-
+    public MetricsAdapter(Context context, List<Metric> metrics) {
+        this.context = context;
         this.metrics = metrics;
     }
 
-    @Override
-    public int getCount() {
-        return metrics.size();
-    }
-
-    @NonNull
-    @Override
     public Metric getItem(int position) {
         return metrics.get(position);
     }
@@ -69,20 +55,32 @@ public final class MetricsAdapter extends BindableAdapter<Metric> {
         return position;
     }
 
-    @NonNull
     @Override
-    public View newView(LayoutInflater inflater, ViewGroup viewContainer) {
-        View view = inflater.inflate(R.layout.layout_list_item, viewContainer, false);
-
-        view.setTag(new ViewHolder(view));
-
-        return view;
+    public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.layout_list_item, parent, false);
+        itemView.setTag(new RecyclerViewHolder(itemView));
+        return new RecyclerViewHolder(itemView);
     }
 
     @Override
-    public void bindView(Metric metric, int position, View view) {
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
+    public int getItemCount() {
+        return metrics.size();
+    }
 
-        viewHolder.nameText.setText(metric.getProperties().getDescription());
+    @Override
+    public void onBindViewHolder(RecyclerViewHolder holder, int position) {
+        final Metric currentMetric = getItem(position);
+
+        holder.nameText.setText(currentMetric.getProperties().getDescription());
+    }
+
+    class RecyclerViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.text) TextView nameText;
+
+        RecyclerViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
     }
 }

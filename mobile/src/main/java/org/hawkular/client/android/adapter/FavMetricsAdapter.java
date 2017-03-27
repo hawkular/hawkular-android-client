@@ -24,6 +24,7 @@ import org.hawkular.client.android.backend.model.Metric;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,9 @@ import butterknife.ButterKnife;
  * Transforms a list of Metrics to a human-readable interpretation.
  */
 
-public class FavMetricsAdapter extends BindableAdapter<Metric> {
+public class FavMetricsAdapter extends RecyclerView.Adapter<FavMetricsAdapter.RecyclerViewHolder> {
+
+    public Context context;
 
     public interface MetricListener {
         void onMetricMenuClick(View MetricView, int metricPosition);
@@ -51,18 +54,11 @@ public class FavMetricsAdapter extends BindableAdapter<Metric> {
 
     public FavMetricsAdapter(@NonNull Context context, @NonNull MetricListener metricMenuListener,
                          @NonNull List<Metric> metrics) {
-        super(context);
+        this.context = context;
         this.metricListener = metricMenuListener;
         this.metrics = metrics;
     }
 
-    @Override
-    public int getCount() {
-        return metrics.size();
-    }
-
-    @NonNull
-    @Override
     public Metric getItem(int position) {
         return metrics.get(position);
     }
@@ -72,28 +68,33 @@ public class FavMetricsAdapter extends BindableAdapter<Metric> {
         return position;
     }
 
-    @NonNull
     @Override
-    protected View newView(LayoutInflater inflater, ViewGroup viewContainer) {
-        View view = inflater.inflate(R.layout.layout_list_item_token, viewContainer, false);
-        view.setTag(new ViewHolder(view));
-        return view;
+    public int getItemCount() {
+        return metrics.size();
     }
 
     @Override
-    protected void bindView(Metric metric, final int position, View view) {
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
-        viewHolder.titleText.setText(metric.getName());
-        viewHolder.messageText.setText(metric.getId());
+    public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_list_item_token, parent, false);
+        view.setTag(new RecyclerViewHolder(view));
+        return new RecyclerViewHolder(view);
+    }
 
-        viewHolder.listItem.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onBindViewHolder(RecyclerViewHolder holder, final int position) {
+        final Metric currentMetric = getItem(position);
+
+        holder.titleText.setText(currentMetric.getName());
+        holder.messageText.setText(currentMetric.getId());
+
+        holder.listItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 metricListener.onMetricTextClick(view, position);
             }
         });
 
-        viewHolder.menuButton.setOnClickListener(new View.OnClickListener() {
+        holder.menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 metricListener.onMetricMenuClick(view, position);
@@ -101,21 +102,15 @@ public class FavMetricsAdapter extends BindableAdapter<Metric> {
         });
     }
 
-    static final class ViewHolder {
-        @BindView(R.id.text_title)
-        TextView titleText;
+    class RecyclerViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.text_title) TextView titleText;
+        @BindView(R.id.text_message) TextView messageText;
+        @BindView(R.id.button_menu) View menuButton;
+        @BindView(R.id.list_item) LinearLayout listItem;
 
-        @BindView(R.id.text_message)
-        TextView messageText;
-
-        @BindView(R.id.button_menu)
-        View menuButton;
-
-        @BindView(R.id.list_item)
-        LinearLayout listItem;
-
-        public ViewHolder(@NonNull View view) {
-            ButterKnife.bind(this, view);
+        RecyclerViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
