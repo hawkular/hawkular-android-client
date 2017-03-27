@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,13 +60,16 @@ public final class AlertsAdapterTester {
 
         AlertsAdapter alertsAdapter = new AlertsAdapter(context, new AlertMenuAdapter(), alerts);
 
-        Assertions.assertThat(alertsAdapter).hasItem(alert, 0);
+        for(int i=0; i<alerts.size(); i++) {
+            Assertions.assertThat(alertsAdapter).hasItem(alerts.get(i), i);
+        }
     }
 
     private List<Alert> generateAlerts() {
         List<Alert> alerts = new ArrayList<>();
 
-        for (int alertPosition = 0; alertPosition < Randomizer.generateNumber(); alertPosition++) {
+        long random = Randomizer.generateNumber();
+        for (int alertPosition = 0; alertPosition < random ; alertPosition++) {
             alerts.add(generateAlert());
         }
 
