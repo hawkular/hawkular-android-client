@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -103,7 +103,7 @@ public final class AlertsAdapter extends BindableAdapter<Alert> {
     @NonNull
     @Override
     public View newView(LayoutInflater inflater, ViewGroup viewContainer) {
-        View view = inflater.inflate(R.layout.layout_list_item_alert, viewContainer, false);
+        View view = inflater.inflate(R.layout.layout_list_item_with_menu, viewContainer, false);
 
         view.setTag(new ViewHolder(view));
 
