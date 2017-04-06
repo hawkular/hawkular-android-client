@@ -192,6 +192,8 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
         else{
             showList();
         }
+
+        store.close();
     }
 
     private SQLStore<Trigger> openStore(Context context) {
