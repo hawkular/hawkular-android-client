@@ -66,6 +66,13 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"/>
 
+    <TextView
+        android:id="@+id/text_trigger"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
   </LinearLayout>
 
   <ImageView

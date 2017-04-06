@@ -45,10 +45,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.BindView;
@@ -64,13 +70,16 @@ import timber.log.Timber;
  */
 
 public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        TriggersAdapter.TriggerListener{
+        TriggersAdapter.TriggerListener, SearchView.OnQueryTextListener{
 
     @BindView(R.id.list) RecyclerView recyclerView;
     @BindView(R.id.content) SwipeRefreshLayout contentLayout;
 
-    ArrayList<Trigger> triggers;
+    public ArrayList<Trigger> triggers;
     private boolean isTriggersFragmentAvailable;
+    public SearchView searchView;
+    public String searchText;
+    public TriggersAdapter triggersAdapter;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
@@ -86,6 +95,7 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
         setUpRefreshing();
         setUpTriggers();
         setUpList();
+        setUpMenu();
         setUpState(state);
     }
 
@@ -105,6 +115,10 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
     private void setUpRefreshing() {
         contentLayout.setOnRefreshListener(this);
         contentLayout.setColorSchemeResources(ColorSchemer.getScheme());
+    }
+
+    private void setUpMenu() {
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -208,6 +222,48 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private TriggersAdapter getTriggersAdapter() {
         return (TriggersAdapter) recyclerView.getAdapter();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        super.onCreateOptionsMenu(menu, menuInflater);
+        menuInflater.inflate(R.menu.search, menu);
+        MenuItem item = menu.findItem(R.id.menu_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(this);
+        if (searchText != null) {
+            searchView.setQuery(searchText, false);
+        }
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        if (triggers != null && triggers.size() != 0) {
+            if (!TextUtils.isEmpty(query)) {
+                ArrayList<Trigger> filteredMetrics = new ArrayList<>();
+                filteredMetrics.clear();
+                for (int i=0;i<triggers.size();i++) {
+                    String alertID = triggers.get(i).getId().toLowerCase();
+                    if (alertID.contains(query.toLowerCase())) {
+                        filteredMetrics.add(triggers.get(i));
+                    }
+                }
+                triggersAdapter = new TriggersAdapter(getActivity(), this, filteredMetrics);
+                recyclerView.setAdapter(triggersAdapter);
+                searchText = query;
+            } else {
+                triggersAdapter = new TriggersAdapter(getActivity(), this, this.triggers);
+                recyclerView.setAdapter(triggersAdapter);
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        searchView.clearFocus();
+        return false;
     }
 
     @Override

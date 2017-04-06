@@ -28,6 +28,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.BindView;
@@ -75,29 +76,32 @@ public class FavMetricsAdapter extends RecyclerView.Adapter<FavMetricsAdapter.Re
 
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_list_item_token, parent, false);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View view = layoutInflater.inflate(R.layout.layout_list_item_metrics, parent, false);
         view.setTag(new RecyclerViewHolder(view));
         return new RecyclerViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewHolder holder, final int position) {
+    public void onBindViewHolder(RecyclerViewHolder holder, int position) {
         final Metric currentMetric = getItem(position);
 
         holder.titleText.setText(currentMetric.getName());
         holder.messageText.setText(currentMetric.getId());
 
+        final int pos = position;
+
         holder.listItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                metricListener.onMetricTextClick(view, position);
+                metricListener.onMetricTextClick(view, pos);
             }
         });
 
         holder.menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                metricListener.onMetricMenuClick(view, position);
+                metricListener.onMetricMenuClick(view, pos);
             }
         });
     }
@@ -105,7 +109,7 @@ public class FavMetricsAdapter extends RecyclerView.Adapter<FavMetricsAdapter.Re
     class RecyclerViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_title) TextView titleText;
         @BindView(R.id.text_message) TextView messageText;
-        @BindView(R.id.button_menu) View menuButton;
+        @BindView(R.id.toggle_trigger) ImageButton menuButton;
         @BindView(R.id.list_item) LinearLayout listItem;
 
         RecyclerViewHolder(View itemView) {
