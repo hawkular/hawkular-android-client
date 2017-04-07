@@ -145,6 +145,11 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         }
     }
 
+    @Override public void onResume() {
+        super.onResume();
+        setUpAlerts();
+    }
+
     private boolean areTriggersAvailable() {
         return (triggers != null) && !triggers.isEmpty();
     }

@@ -89,6 +89,16 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
         setUpState(state);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if( getArguments().getString("state").equalsIgnoreCase("From Favourite")) {
+            setUpFavTriggers();
+        } else {
+            BackendClient.of(this).getTriggers(new TriggersCallback());
+        }
+    }
+
     private void setUpState(Bundle state) {
         Icepick.restoreInstanceState(this, state);
     }
