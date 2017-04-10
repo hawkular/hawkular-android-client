@@ -59,26 +59,18 @@ public class FavMetricsAdapter extends RecyclerView.Adapter<FavMetricsAdapter.Re
         this.metrics = metrics;
     }
 
+
     public Metric getItem(int position) {
         return metrics.get(position);
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public int getItemCount() {
-        return metrics.size();
-    }
-
-    @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_list_item_token, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_list_item_with_menu, parent, false);
         view.setTag(new RecyclerViewHolder(view));
         return new RecyclerViewHolder(view);
     }
+
 
     @Override
     public void onBindViewHolder(RecyclerViewHolder holder, final int position) {
@@ -102,11 +94,24 @@ public class FavMetricsAdapter extends RecyclerView.Adapter<FavMetricsAdapter.Re
         });
     }
 
+
+
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return metrics.size();
+    }
+
+
+
     class RecyclerViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_title) TextView titleText;
         @BindView(R.id.text_message) TextView messageText;
         @BindView(R.id.button_menu) View menuButton;
-        @BindView(R.id.list_item) LinearLayout listItem;
+        @BindView(R.id.data_box) LinearLayout listItem;
 
         RecyclerViewHolder(View itemView) {
             super(itemView);

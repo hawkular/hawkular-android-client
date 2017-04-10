@@ -36,6 +36,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -68,10 +69,11 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
     public void onActivityCreated(Bundle state) {
         super.onActivityCreated(state);
 
-        setUpState(state);
         setUpBindings();
         setUpRefreshing();
         setUpMetrics();
+        setUpState(state);
+
     }
 
     private void setUpMetrics() {
@@ -82,7 +84,9 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
 
         Collection<Metric> array = store.readAll();
         metrics = new ArrayList<>(array);
-        recyclerView.setAdapter(new FavMetricsAdapter(getActivity(), this, metrics));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        FavMetricsAdapter favMetricsAdapter = new FavMetricsAdapter(getActivity(), this, metrics);
+        recyclerView.setAdapter(favMetricsAdapter);
         hideRefreshing();
 
         if(metrics.isEmpty()) {
