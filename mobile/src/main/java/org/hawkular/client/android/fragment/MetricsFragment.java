@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,19 +35,16 @@ import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnItemClick;
 import icepick.Icepick;
-import icepick.State;
 import timber.log.Timber;
 
 /**
@@ -55,18 +52,15 @@ import timber.log.Timber;
  *
  * Displays metrics as a list.
  */
-public final class MetricsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    @BindView(R.id.list)
-    ListView list;
 
-    @BindView(R.id.content)
-    SwipeRefreshLayout contentLayout;
+public class MetricsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    @State
-    @Nullable
-    ArrayList<Metric> metrics;
+    @BindView(R.id.list) RecyclerView recyclerView;
+    @BindView(R.id.content) SwipeRefreshLayout swipeRefreshLayout;
 
-    @Nullable
+    public ArrayList<Metric> metrics;
+    public MetricsAdapter metricsAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
         return inflater.inflate(R.layout.fragment_list, container, false);
@@ -77,11 +71,8 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
         super.onActivityCreated(state);
 
         setUpState(state);
-
         setUpBindings();
-
         setUpRefreshing();
-
         setUpMetrics();
     }
 
@@ -94,8 +85,8 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
     }
 
     private void setUpRefreshing() {
-        contentLayout.setOnRefreshListener(this);
-        contentLayout.setColorSchemeResources(ColorSchemer.getScheme());
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeResources(ColorSchemer.getScheme());
     }
 
     @Override
@@ -105,17 +96,6 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
 
     private void setUpMetricsForced() {
         BackendClient.of(this).getMetrics(getEnvironment(), getResource(), new MetricsCallback());
-    }
-
-    @OnClick(R.id.button_retry)
-    public void setUpMetrics() {
-        if (metrics == null) {
-            showProgress();
-
-            setUpMetricsForced();
-        } else {
-            setUpMetrics(metrics);
-        }
     }
 
     private void showProgress() {
@@ -135,7 +115,7 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
 
         sortMetrics(this.metrics);
 
-        list.setAdapter(new MetricsAdapter(getActivity(), this.metrics));
+        recyclerView.setAdapter(metricsAdapter);
 
         hideRefreshing();
 
@@ -147,7 +127,7 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
     }
 
     private void hideRefreshing() {
-        contentLayout.setRefreshing(false);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void showList() {
@@ -162,15 +142,9 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
         ViewDirector.of(this).using(R.id.animator).show(R.id.error);
     }
 
-    @OnItemClick(R.id.list)
-    public void setUpMetric(int position) {
-        Metric metric = getMetricsAdapter().getItem(position);
-
-        startMetricActivity(metric);
-    }
 
     private MetricsAdapter getMetricsAdapter() {
-        return (MetricsAdapter) list.getAdapter();
+        return metricsAdapter;
     }
 
     private void startMetricActivity(Metric metric) {
@@ -183,6 +157,16 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
         super.onSaveInstanceState(state);
 
         tearDownState(state);
+    }
+
+    @OnClick(R.id.button_retry)
+    public void setUpMetrics() {
+        if (metrics == null) {
+            showProgress();
+            setUpMetricsForced();
+        } else {
+            setUpMetrics(metrics);
+        }
     }
 
     private void tearDownState(Bundle state) {
@@ -202,6 +186,7 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
     }
 
     private static final class MetricsCallback extends AbstractSupportFragmentCallback<List<Metric>> {
+
         @Override
         public void onSuccess(List<Metric> metrics) {
             if (!metrics.isEmpty()) {
@@ -224,6 +209,7 @@ public final class MetricsFragment extends Fragment implements SwipeRefreshLayou
     }
 
     private static final class MetricsComparator implements Comparator<Metric> {
+
         @Override
         public int compare(Metric leftMetric, Metric rightMetric) {
             String leftMetricDescription = leftMetric.getProperties().getDescription();

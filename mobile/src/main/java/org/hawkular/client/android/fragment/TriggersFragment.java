@@ -28,8 +28,8 @@ import org.hawkular.client.android.activity.TriggerDetailActivity;
 import org.hawkular.client.android.adapter.TriggersAdapter;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
-import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.util.ColorSchemer;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
@@ -43,22 +43,18 @@ import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.Toast;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnItemClick;
 import icepick.Icepick;
-import icepick.State;
 import timber.log.Timber;
 
 /**
@@ -66,24 +62,18 @@ import timber.log.Timber;
  *
  * Displays triggers as a list.
  */
-public final class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        TriggersAdapter.TriggerListener {
+
+public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        TriggersAdapter.TriggerListener{
+
+    @BindView(R.id.list) RecyclerView recyclerView;
+    @BindView(R.id.content) SwipeRefreshLayout contentLayout;
+
+    ArrayList<Trigger> triggers;
     private boolean isTriggersFragmentAvailable;
 
-    @BindView(R.id.list)
-    ListView list;
 
-    @BindView(R.id.content)
-    SwipeRefreshLayout contentLayout;
-
-    @State
-    @Nullable
-    ArrayList<Trigger> triggers;
-
-    @Nullable
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
-
         return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
@@ -92,16 +82,30 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         super.onActivityCreated(state);
 
         isTriggersFragmentAvailable = true;
-
         setUpBindings();
-
         setUpRefreshing();
-
         setUpTriggers();
+        setUpList();
+        setUpState(state);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if( getArguments().getString("state").equalsIgnoreCase("From Favourite")) {
+            setUpFavTriggers();
+        } else {
+            BackendClient.of(this).getTriggers(new TriggersCallback());
+        }
     }
 
     private void setUpState(Bundle state) {
         Icepick.restoreInstanceState(this, state);
+    }
+
+    private void setUpList() {
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     private void setUpBindings() {
@@ -155,7 +159,7 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
 
         sortTriggers(this.triggers);
 
-        list.setAdapter(new TriggersAdapter(getActivity(), this, triggers));
+        recyclerView.setAdapter(new TriggersAdapter(getActivity(), this, triggers));
 
         hideRefreshing();
 
@@ -182,13 +186,7 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         ViewDirector.of(this).using(R.id.animator).show(R.id.error);
     }
 
-    @OnItemClick(R.id.list)
-    public void setUpTrigger(int position) {
-        Trigger trigger = getTriggersAdapter().getItem(position);
-    }
-
     private void setUpFavTriggers() {
-
         Context context = this.getActivity();
         SQLStore<Trigger> store = openStore(context);
         store.openSync();
@@ -196,7 +194,7 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         Collection<Trigger> array = store.readAll();
         triggers = new ArrayList<>(array);
         sortTriggers(this.triggers);
-        list.setAdapter(new TriggersAdapter(getActivity(), this, triggers));
+        recyclerView.setAdapter(new TriggersAdapter(getActivity(), this, triggers));
         hideRefreshing();
         if(triggers.isEmpty()){
             showMessage();
@@ -204,8 +202,9 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         else{
             showList();
         }
-    }
 
+        store.close();
+    }
 
     private SQLStore<Trigger> openStore(Context context) {
         DataManager.config("FavouriteTriggers", SQLStoreConfiguration.class)
@@ -220,7 +219,7 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     }
 
     private TriggersAdapter getTriggersAdapter() {
-        return (TriggersAdapter) list.getAdapter();
+        return (TriggersAdapter) recyclerView.getAdapter();
     }
 
     @Override
@@ -241,7 +240,8 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         isTriggersFragmentAvailable = false;
     }
 
-    @Override public void onTriggerToggleChanged(View TriggerView, int triggerPosition, boolean state) {
+    @Override
+    public void onTriggerToggleChanged(View TriggerView, int triggerPosition, boolean state) {
         Trigger updatedTrigger = this.triggers.get(triggerPosition);
         updatedTrigger.setEnabledStatus(state);
         if (state){
@@ -255,52 +255,13 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
         BackendClient.of(TriggersFragment.this).updateTrigger(updatedTrigger,new TriggerUpdateCallback());
     }
 
-    @Override public void onTriggerTextClick(View triggerView, int triggerPosition) {
+    @Override
+    public void onTriggerTextClick(View triggerView, int triggerPosition) {
         Intent intent = new Intent(getActivity(), TriggerDetailActivity.class);
         Trigger trigger = getTriggersAdapter().getItem(triggerPosition);
         intent.putExtra(Intents.Extras.TRIGGER,trigger);
         startActivity(intent);
     }
-
-    /*private void showTriggerMenu(final View triggerView, final int triggerPosition) {
-        PopupMenu triggerMenu = new PopupMenu(getActivity(), triggerView);
-
-        triggerMenu.getMenuInflater().inflate(R.menu.popup_add, triggerMenu.getMenu());
-
-        triggerMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Trigger trigger = getTriggersAdapter().getItem(triggerPosition);
-
-                switch (menuItem.getItemId()) {
-                    case R.id.menu_add:
-                        Context context = getActivity();
-                        SQLStore<Trigger> store = openStore(context);
-                        store.openSync();
-                        store.save(trigger);
-                        onRefresh();
-                        return true;
-
-                    default:
-                        return false;
-                }
-            }
-        });
-
-        triggerMenu.show();
-    }
-
-    private SQLStore<Trigger> openStore(Context context) {
-        DataManager.config("FavouriteTriggers", SQLStoreConfiguration.class)
-                .withContext(context)
-                .withIdGenerator(new IdGenerator() {
-                    @Override
-                    public String generate() {
-                        return UUID.randomUUID().toString();
-                    }
-                }).store(Trigger.class);
-        return (SQLStore<Trigger>) DataManager.getStore("FavouriteTriggers");
-    }*/
 
     private static final class TriggersCallback extends AbstractSupportFragmentCallback<List<Trigger>> {
         @Override
@@ -329,10 +290,12 @@ public final class TriggersFragment extends Fragment implements SwipeRefreshLayo
     }
 
     private class TriggerUpdateCallback extends AbstractSupportFragmentCallback{
-        @Override public void onSuccess(Object data) {
+        @Override
+        public void onSuccess(Object data) {
         }
 
-        @Override public void onFailure(Exception e) {
+        @Override
+        public void onFailure(Exception e) {
         }
     }
 

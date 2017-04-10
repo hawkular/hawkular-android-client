@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,12 @@
  */
 package org.hawkular.client.android.adapter;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.android.api.Assertions;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricConfiguration;
 import org.hawkular.client.android.backend.model.MetricProperties;
@@ -48,7 +50,7 @@ public final class MetricsAdapterTester {
 
         MetricsAdapter metricsAdapter = new MetricsAdapter(context, metrics);
 
-        Assertions.assertThat(metricsAdapter).hasCount(metrics.size());
+        assertThat(metricsAdapter.getItemCount(), is(metrics.size()));
     }
 
     @Test
@@ -61,7 +63,7 @@ public final class MetricsAdapterTester {
 
         MetricsAdapter metricsAdapter = new MetricsAdapter(context, metrics);
 
-        Assertions.assertThat(metricsAdapter).hasItem(metric, 0);
+        assertThat(metricsAdapter.getItem(0), is(metric));
     }
 
     private List<Metric> generateMetrics() {

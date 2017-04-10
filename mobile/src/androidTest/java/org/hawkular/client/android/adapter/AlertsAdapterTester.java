@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 Red Hat, Inc. and/or its affiliates
+ * Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,10 +16,13 @@
  */
 package org.hawkular.client.android.adapter;
 
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.android.api.Assertions;
 import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.backend.model.Note;
 import org.hawkular.client.android.util.Randomizer;
@@ -47,7 +50,7 @@ public final class AlertsAdapterTester {
 
         AlertsAdapter alertsAdapter = new AlertsAdapter(context, new AlertMenuAdapter(), alerts);
 
-        Assertions.assertThat(alertsAdapter).hasCount(alerts.size());
+        assertThat(alertsAdapter.getItemCount(), is(alerts.size()));
     }
 
     @Test
@@ -60,7 +63,7 @@ public final class AlertsAdapterTester {
 
         AlertsAdapter alertsAdapter = new AlertsAdapter(context, new AlertMenuAdapter(), alerts);
 
-        Assertions.assertThat(alertsAdapter).hasItem(alert, 0);
+        assertThat(alertsAdapter.getItem(0), is(alert));
     }
 
     private List<Alert> generateAlerts() {

@@ -4,6 +4,7 @@ plugins {
 
 apply plugin: "com.android.application"
 apply plugin: "android-apt"
+apply plugin: "checkstyle"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -122,6 +123,19 @@ def readProguardFiles() {
     return proguardFiles
 }
 
+tasks.withType(Checkstyle) {
+    configFile = rootProject.file('misc/checkstyle.xml')
+
+    source 'src'
+    include '**/*.java'
+    include '**/*.json'
+    include '**/*.xml'
+    exclude '**/gen/**'
+
+    classpath = files()
+
+}
+
 license {
     header rootProject.file('misc/HEADER.txt')
     strictCheck true
@@ -134,6 +148,7 @@ license {
     exclude "**/*.pro"
     exclude "**/*.properties"
     exclude "**/misc/*"
+    exclude "**/*.png"
 }
 
 dependencies {
