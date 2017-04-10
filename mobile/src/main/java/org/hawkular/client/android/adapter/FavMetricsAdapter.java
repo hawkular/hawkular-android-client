@@ -59,18 +59,9 @@ public class FavMetricsAdapter extends RecyclerView.Adapter<FavMetricsAdapter.Re
         this.metrics = metrics;
     }
 
+
     public Metric getItem(int position) {
         return metrics.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public int getItemCount() {
-        return metrics.size();
     }
 
     @Override
@@ -79,6 +70,7 @@ public class FavMetricsAdapter extends RecyclerView.Adapter<FavMetricsAdapter.Re
         view.setTag(new RecyclerViewHolder(view));
         return new RecyclerViewHolder(view);
     }
+
 
     @Override
     public void onBindViewHolder(RecyclerViewHolder holder, final int position) {
@@ -101,6 +93,19 @@ public class FavMetricsAdapter extends RecyclerView.Adapter<FavMetricsAdapter.Re
             }
         });
     }
+
+
+
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemCount() {
+        return metrics.size();
+    }
+
+
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_title) TextView titleText;
