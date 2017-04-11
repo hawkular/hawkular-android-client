@@ -49,6 +49,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.BindView;
@@ -64,7 +66,7 @@ import timber.log.Timber;
  */
 
 public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        TriggersAdapter.TriggerListener{
+        TriggersAdapter.TriggerListener {
 
     @BindView(R.id.list) RecyclerView recyclerView;
     @BindView(R.id.content) SwipeRefreshLayout contentLayout;
@@ -87,6 +89,7 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
         setUpTriggers();
         setUpList();
         setUpState(state);
+        setUpMenu();
     }
 
     @Override
@@ -115,6 +118,10 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
     private void setUpRefreshing() {
         contentLayout.setOnRefreshListener(this);
         contentLayout.setColorSchemeResources(ColorSchemer.getScheme());
+    }
+
+    private void setUpMenu() {
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -220,6 +227,12 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private TriggersAdapter getTriggersAdapter() {
         return (TriggersAdapter) recyclerView.getAdapter();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        super.onCreateOptionsMenu(menu, menuInflater);
+        menuInflater.inflate(R.menu.search, menu);
     }
 
     @Override
