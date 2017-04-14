@@ -83,6 +83,8 @@ public class AlertsAdapter extends RecyclerView.Adapter<AlertsAdapter.RecyclerVi
         holder.titleText.setText(getAlertTitle(context, currentAlert));
         holder.messageText.setText(getAlertMessage(context, currentAlert));
         holder.statusText.setText(currentAlert.getStatus());
+        holder.triggerText.setVisibility(View.VISIBLE);
+        holder.triggerText.setText(currentAlert.getTrigger().getId());
 
         final int alertPosition = position;
 
@@ -223,6 +225,7 @@ public class AlertsAdapter extends RecyclerView.Adapter<AlertsAdapter.RecyclerVi
         @BindView(R.id.text_status) TextView statusText;
         @BindView(R.id.button_menu) View menuButton;
         @BindView(R.id.data_box) LinearLayout dataBox;
+        @BindView(R.id.text_trigger) TextView triggerText;
 
         RecyclerViewHolder(View itemView) {
             super(itemView);
