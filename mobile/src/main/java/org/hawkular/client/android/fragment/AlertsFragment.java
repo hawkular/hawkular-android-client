@@ -300,6 +300,7 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu, menuInflater);
 
+        menuInflater.inflate(R.menu.search, menu);
         menuInflater.inflate(R.menu.toolbar_alerts, menu);
     }
 
