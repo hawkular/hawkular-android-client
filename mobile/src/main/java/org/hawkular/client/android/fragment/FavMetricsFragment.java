@@ -39,6 +39,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +75,7 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
         setUpRefreshing();
         setUpMetrics();
         setUpState(state);
+        setUpMenu();
 
     }
 
@@ -97,6 +100,10 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
 
         store.close();
 
+    }
+
+    private void setUpMenu() {
+        setHasOptionsMenu(true);
     }
 
     private void hideRefreshing() {
@@ -162,6 +169,12 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
     private void tearDownBindings() {
         //TODO: Modify it
         //ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        super.onCreateOptionsMenu(menu, menuInflater);
+        menuInflater.inflate(R.menu.search, menu);
     }
 
     @Override

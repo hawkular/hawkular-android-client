@@ -104,6 +104,7 @@
   <string name="operation_confirm_title">Confirm to proceed</string>
   <string name="execute">Execute</string>
   <string name="cancel">Cancel</string>
+  <string name="search">Search</string>
   <string name="error_websocket_close">WebSocket connection was closed. Cannot send any messages</string>
   <string name="success_websocket_request">Operation request is placed successfully</string>
   <string name="success_websocket_operation_complete">Operation executed successfully</string>
