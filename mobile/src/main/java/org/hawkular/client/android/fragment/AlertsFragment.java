@@ -39,10 +39,13 @@ import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,7 +65,7 @@ import timber.log.Timber;
  */
 
 public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        AlertsAdapter.AlertListener {
+        AlertsAdapter.AlertListener, SearchView.OnQueryTextListener {
 
     @BindView(R.id.list) RecyclerView recyclerView;
     @BindView(R.id.content) SwipeRefreshLayout swipeRefreshLayout;
@@ -73,6 +76,9 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public boolean isActionPlus;
     public int alertsTimeMenu;
     public boolean isAlertsFragmentAvailable;
+    public SearchView searchView;
+    public String searchText;
+    public AlertsAdapter alertsAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
@@ -220,12 +226,14 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         if (isActionPlus) {
             this.alerts = alertsDump;
             if (this.alerts != null) {
-                recyclerView.setAdapter(new AlertsAdapter(getActivity(), this, this.alerts));
+                alertsAdapter = new AlertsAdapter(getActivity(), this, this.alerts);
+                recyclerView.setAdapter(alertsAdapter);
             }
         } else {
             this.alerts = removeResolved();
             if (this.alerts != null) {
-                recyclerView.setAdapter(new AlertsAdapter(getActivity(), this, this.alerts));
+                alertsAdapter = new AlertsAdapter(getActivity(), this, this.alerts);
+                recyclerView.setAdapter(alertsAdapter);
             }
         }
 
@@ -300,7 +308,45 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu, menuInflater);
 
+        menuInflater.inflate(R.menu.search, menu);
         menuInflater.inflate(R.menu.toolbar_alerts, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(this);
+        if (searchText != null) {
+            searchView.setQuery(searchText, false);
+        }
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        if (alerts != null && alerts.size() != 0) {
+            if (!TextUtils.isEmpty(query)) {
+                ArrayList<Alert> filteredAlerts = new ArrayList<>();
+                filteredAlerts.clear();
+                for (int i=0;i<alerts.size();i++) {
+                    String alertID = alerts.get(i).getTrigger().getId().toLowerCase();
+                    if (alertID.contains(query.toLowerCase())) {
+                        filteredAlerts.add(alerts.get(i));
+                    }
+                }
+                alertsAdapter = new AlertsAdapter(getActivity(), this, filteredAlerts);
+                recyclerView.setAdapter(alertsAdapter);
+                searchText = query;
+            } else {
+                alertsAdapter = new AlertsAdapter(getActivity(), this, this.alerts);
+                recyclerView.setAdapter(alertsAdapter);
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        searchView.clearFocus();
+        return false;
     }
 
     @Override

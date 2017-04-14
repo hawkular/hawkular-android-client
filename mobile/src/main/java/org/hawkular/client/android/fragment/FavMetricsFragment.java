@@ -35,10 +35,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,12 +58,15 @@ import icepick.Icepick;
  */
 
 public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        FavMetricsAdapter.MetricListener {
+        FavMetricsAdapter.MetricListener, SearchView.OnQueryTextListener {
 
     @BindView(R.id.list) RecyclerView recyclerView;
     @BindView(R.id.content) SwipeRefreshLayout swipeRefreshLayout;
 
     ArrayList<Metric> metrics;
+    public SearchView searchView;
+    public String searchText;
+    public FavMetricsAdapter favMetricsAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
@@ -73,6 +81,7 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
         setUpRefreshing();
         setUpMetrics();
         setUpState(state);
+        setUpMenu();
 
     }
 
@@ -97,6 +106,10 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
 
         store.close();
 
+    }
+
+    private void setUpMenu() {
+        setHasOptionsMenu(true);
     }
 
     private void hideRefreshing() {
@@ -162,6 +175,49 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
     private void tearDownBindings() {
         //TODO: Modify it
         //ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        super.onCreateOptionsMenu(menu, menuInflater);
+        menuInflater.inflate(R.menu.search, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(this);
+        if (searchText != null) {
+            searchView.setQuery(searchText, false);
+        }
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        if (metrics != null && metrics.size() != 0) {
+            if (!TextUtils.isEmpty(query)) {
+                ArrayList<Metric> filteredMetrics = new ArrayList<>();
+                filteredMetrics.clear();
+                for (int i=0;i<metrics.size();i++) {
+                    String alertID = metrics.get(i).getName().toLowerCase();
+                    if (alertID.contains(query.toLowerCase())) {
+                        filteredMetrics.add(metrics.get(i));
+                    }
+                }
+                favMetricsAdapter = new FavMetricsAdapter(getActivity(), this, filteredMetrics);
+                recyclerView.setAdapter(favMetricsAdapter);
+                searchText = query;
+            } else {
+                favMetricsAdapter = new FavMetricsAdapter(getActivity(), this, this.metrics);
+                recyclerView.setAdapter(favMetricsAdapter);
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        searchView.clearFocus();
+        return false;
     }
 
     @Override
