@@ -40,4 +40,14 @@ public final class Randomizer {
     public static String generateString() {
         return UUID.randomUUID().toString();
     }
+
+    public static Boolean generateBoolean() {
+        int num = new Random().nextInt(Limits.NUMBER);
+
+        if (num<21) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

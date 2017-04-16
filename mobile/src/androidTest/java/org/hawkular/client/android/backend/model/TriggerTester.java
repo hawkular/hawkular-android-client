@@ -33,7 +33,7 @@ public final class TriggerTester {
     public void parcelable() {
         Map<String, String> test = new HashMap<>();
         test.put(Randomizer.generateString(), Randomizer.generateString());
-        Trigger originalTrigger = new Trigger(Randomizer.generateString(), test, Randomizer.generateString());
+        Trigger originalTrigger = new Trigger(Randomizer.generateString(), test, Randomizer.generateString(), Randomizer.generateBoolean());
         Trigger parceledTrigger = Parceler.parcel(Trigger.CREATOR, originalTrigger);
 
         Assertions.assertThat(parceledTrigger.getId()).isEqualTo(originalTrigger.getId());
