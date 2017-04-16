@@ -299,6 +299,9 @@ public final class MainActivity extends AppCompatActivity
     }
 
     private void showFavourites() {
+        if (atHome) {
+            return;
+        }
         atHome = true;
         title.setText(R.string.title_favourites);
         adapter.reset();
@@ -315,6 +318,9 @@ public final class MainActivity extends AppCompatActivity
     }
 
     private void showAlerts() {
+        if (!atHome) {
+            return;
+        }
         atHome = false;
         title.setText(R.string.title_alerts);
         adapter.reset();
