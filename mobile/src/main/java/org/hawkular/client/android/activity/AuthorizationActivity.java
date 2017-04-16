@@ -19,6 +19,7 @@ package org.hawkular.client.android.activity;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendEndpoints;
 import org.hawkular.client.android.util.Android;
+import org.hawkular.client.android.util.ErrorUtil;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Ports;
 
@@ -72,12 +73,12 @@ public final class AuthorizationActivity extends AppCompatActivity {
         String port = mPort.getText().toString().trim();
 
         if (host.isEmpty()) {
-            showError(mHost, R.string.error_empty);
+            ErrorUtil.showError(this,mHost, R.string.error_empty);
             return;
         }
 
         if ((!port.isEmpty()) && (!Ports.isCorrect(Integer.valueOf(port)))) {
-            showError(mPort, R.string.error_authorization_port);
+            ErrorUtil.showError(this,mPort, R.string.error_authorization_port);
             return;
         }
 
@@ -90,11 +91,6 @@ public final class AuthorizationActivity extends AppCompatActivity {
             Timber.d(e, "Authorization failed.");
         }
 
-    }
-
-    // TODO Should be moved to a util class and reused
-    private void showError(EditText errorEdit, @StringRes int errorMessage) {
-        errorEdit.setError(getString(errorMessage));
     }
 
 }

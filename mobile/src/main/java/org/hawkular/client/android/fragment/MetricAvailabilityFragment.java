@@ -28,6 +28,7 @@ import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricAvailability;
 import org.hawkular.client.android.backend.model.MetricBucket;
 import org.hawkular.client.android.util.ColorSchemer;
+import org.hawkular.client.android.util.ErrorUtil;
 import org.hawkular.client.android.util.Formatter;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Time;
@@ -378,10 +379,6 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         ViewDirector.of(this).using(R.id.animator).show(R.id.message);
     }
 
-    private void showError() {
-        ViewDirector.of(this).using(R.id.animator).show(R.id.error);
-    }
-
     @Override
     public void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
@@ -407,7 +404,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         public void onFailure(Exception e) {
             Timber.d(e, "Metric data fetching failed.");
 
-            getMetricFragment().showError();
+            ErrorUtil.showError(getMetricFragment(),R.id.animator,R.id.error);
         }
 
         private MetricAvailabilityFragment getMetricFragment() {
