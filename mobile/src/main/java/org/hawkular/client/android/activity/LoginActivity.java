@@ -24,6 +24,7 @@ import org.hawkular.client.android.auth.AuthData;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Persona;
+import org.hawkular.client.android.util.ErrorUtil;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Preferences;
 import org.hawkular.client.android.util.Urls;
@@ -111,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
 
         } catch (RuntimeException e) {
             Timber.d(e, "Authorization failed.");
-            showError(R.string.error_authorization_host_port);
+            ErrorUtil.showError(findViewById(android.R.id.content),R.string.error_authorization_host_port);
         }
 
     }
@@ -138,10 +139,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 
-    private void showError(@StringRes int errorMessage) {
-        Snackbar.make(findViewById(android.R.id.content), errorMessage, Snackbar.LENGTH_LONG).show();
-    }
-
     private static final class AuthorizeCallback extends AbstractActivityCallback<String> {
         @Override
         public void onSuccess(String authorization) {
@@ -163,18 +160,18 @@ public class LoginActivity extends AppCompatActivity {
             if (e instanceof HttpException) {
                 switch (((HttpException)e).getStatusCode()){
                     case 404:
-                        activity.showError(R.string.error_not_found);
+                        ErrorUtil.showError(activity.findViewById(android.R.id.content),R.string.error_not_found);
                         break;
                     case 401:
-                        activity.showError(R.string.error_unauth);
+                        ErrorUtil.showError(activity.findViewById(android.R.id.content),R.string.error_unauth);
                         break;
                     default:
-                        activity.showError(R.string.error_general);
+                        ErrorUtil.showError(activity.findViewById(android.R.id.content),R.string.error_general);
                 }
             } else if (e instanceof RuntimeException) {
-                activity.showError(R.string.error_internet_connection);
+                ErrorUtil.showError(activity.findViewById(android.R.id.content),R.string.error_internet_connection);
             } else {
-                activity.showError(R.string.error_general);
+                ErrorUtil.showError(activity.findViewById(android.R.id.content),R.string.error_general);
             }
         }
 

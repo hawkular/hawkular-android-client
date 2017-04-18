@@ -31,6 +31,7 @@ import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.util.ColorSchemer;
+import org.hawkular.client.android.util.ErrorUtil;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
@@ -196,10 +197,6 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
         ViewDirector.of(this).using(R.id.animator).show(R.id.message);
     }
 
-    private void showError() {
-        ViewDirector.of(this).using(R.id.animator).show(R.id.error);
-    }
-
     private void setUpFavTriggers() {
         Context context = this.getActivity();
         SQLStore<Trigger> store = openStore(context);
@@ -337,7 +334,7 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
             Timber.d(e, "Triggers fetching failed.");
 
             if (getTriggersFragment().isTriggersFragmentAvailable) {
-                getTriggersFragment().showError();
+                ErrorUtil.showError(getTriggersFragment(),R.id.animator,R.id.error);
             }
         }
 
