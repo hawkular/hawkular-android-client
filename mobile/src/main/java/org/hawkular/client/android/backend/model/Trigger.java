@@ -63,12 +63,10 @@ public class Trigger implements Parcelable {
     }
 
     @VisibleForTesting
-    public Trigger(@NonNull String id, @NonNull Map<String, String> tags, @NonNull String description, @NonNull
-                   boolean enabled) {
+    public Trigger(@NonNull String id, @NonNull Map<String, String> tags, @NonNull String description) {
         this.id = id;
         this.tags = tags;
         this.description = description;
-        this.enabled = enabled;
     }
 
     public static Creator<Trigger> CREATOR = new Creator<Trigger>() {

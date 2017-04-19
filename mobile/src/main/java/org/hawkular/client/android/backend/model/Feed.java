@@ -22,6 +22,7 @@ import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.VisibleForTesting;
 
 /**
  * Created by anuj on 7/6/16.
@@ -35,6 +36,7 @@ public class Feed implements Parcelable {
     @SerializedName("path")
     private String path;
 
+    @VisibleForTesting
     public Feed(String id) {
         this.id = id;
     }
