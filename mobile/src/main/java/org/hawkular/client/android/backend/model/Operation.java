@@ -22,6 +22,7 @@ import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.VisibleForTesting;
 
 public class Operation implements Parcelable {
 
@@ -35,6 +36,7 @@ public class Operation implements Parcelable {
     @SerializedName("path")
     private String path;
 
+    @VisibleForTesting
     public Operation(String id, String name) {
         this.id = id;
         this.name = name;

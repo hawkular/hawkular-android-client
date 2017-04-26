@@ -21,11 +21,13 @@ import com.google.gson.annotations.SerializedName;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 public final class Persona implements Parcelable {
     @SerializedName("id")
     private String id;
 
+    @VisibleForTesting
     public Persona(@NonNull String id) {
         this.id = id;
     }
