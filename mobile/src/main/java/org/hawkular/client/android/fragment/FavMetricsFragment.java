@@ -50,6 +50,7 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import icepick.Icepick;
 /**
  * Favourite Metrics fragment.
@@ -67,10 +68,13 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
     public SearchView searchView;
     public String searchText;
     public FavMetricsAdapter favMetricsAdapter;
+    private Unbinder unbinder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
@@ -173,8 +177,7 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
     }
 
     private void tearDownBindings() {
-        //TODO: Modify it
-        //ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override
