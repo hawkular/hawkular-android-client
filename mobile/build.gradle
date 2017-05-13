@@ -178,6 +178,7 @@ dependencies {
     compile "org.jboss.aerogear:aerogear-android-pipe:3.1.0"
     compile "org.jboss.aerogear:aerogear-android-push:4.0.2"
     compile "com.squareup:otto:1.3.8"
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
     compile "frankiesardo:icepick:3.1.0"
 
     testCompile 'junit:junit:4.12'
