@@ -56,6 +56,7 @@ import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import icepick.Icepick;
 import timber.log.Timber;
 
@@ -80,10 +81,13 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public SearchView searchView;
     public String searchText;
     public AlertsAdapter alertsAdapter;
+    private Unbinder unbinder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
@@ -425,8 +429,7 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void tearDownBindings() {
-        //TODO: Modify it
-        //ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override
