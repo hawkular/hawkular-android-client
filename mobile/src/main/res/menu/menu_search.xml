@@ -18,11 +18,12 @@
 
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:my_app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools">
     <item
-        android:id="@+id/menu_search"
+        android:id="@+id/menu_search1"
         android:icon="@drawable/ic_search"
         android:title="@string/search"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
+        my_app:actionViewClass="android.support.v7.widget.SearchView"
+        my_app:showAsAction="always|collapseActionView" />
 </menu>

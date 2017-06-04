@@ -313,10 +313,10 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu, menuInflater);
 
-        menuInflater.inflate(R.menu.search, menu);
+        menuInflater.inflate(R.menu.menu_search, menu);
         menuInflater.inflate(R.menu.toolbar_alerts, menu);
 
-        MenuItem item = menu.findItem(R.id.menu_search);
+        MenuItem item = menu.findItem(R.id.menu_search1);
         searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(this);
         if (searchText != null) {
@@ -358,7 +358,7 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        menu.findItem(alertsTimeMenu).setChecked(true);
+     //   menu.findItem(alertsTimeMenu).setChecked(true);
     }
 
     @Override

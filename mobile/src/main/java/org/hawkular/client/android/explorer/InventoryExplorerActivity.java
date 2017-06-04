@@ -285,7 +285,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d("Resources fetching failed.");
+            Timber.d("Resources fetching failed. 1");
 
         }
 
@@ -311,7 +311,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d("Resources fetching failed.");
+            Timber.d("Resources fetching failed. 2");
 
         }
 
@@ -338,7 +338,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d("Resources fetching failed.");
+            Timber.d("Resources fetching failed. 3");
 
         }
 
@@ -365,10 +365,10 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Exception e) {
-            Timber.d("Resources fetching failed.");
+            Timber.d("Resources fetching failed. 4");
 
         }
-
+   
         private InventoryExplorerActivity getInventoryExplorerActivity() {
             return (InventoryExplorerActivity) getActivity();
         }
