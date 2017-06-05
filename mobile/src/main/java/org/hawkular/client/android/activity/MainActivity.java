@@ -108,7 +108,7 @@ public final class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle state) {
         super.onCreate(state);
         setContentView(R.layout.activity_main);
-        atHome = true;
+        atHome = false;
 
         // -- Bind objects
 
