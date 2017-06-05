@@ -70,6 +70,7 @@ public class FavMetricsAdapter extends RecyclerView.Adapter<FavMetricsAdapter.Re
         view.setTag(new RecyclerViewHolder(view));
         return new RecyclerViewHolder(view);
     }
+    
 
 
     @Override
@@ -107,11 +108,14 @@ public class FavMetricsAdapter extends RecyclerView.Adapter<FavMetricsAdapter.Re
 
 
 
+        @BindView(R.id.data_box)
+        LinearLayout listItem;
     class RecyclerViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_title) TextView titleText;
         @BindView(R.id.text_message) TextView messageText;
         @BindView(R.id.button_menu) View menuButton;
         @BindView(R.id.data_box) LinearLayout listItem;
+
 
         RecyclerViewHolder(View itemView) {
             super(itemView);
