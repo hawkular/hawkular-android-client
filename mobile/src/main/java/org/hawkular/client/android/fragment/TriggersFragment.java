@@ -236,9 +236,9 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu, menuInflater);
-        menuInflater.inflate(R.menu.search, menu);
+        menuInflater.inflate(R.menu.menu_search, menu);
 
-        MenuItem item = menu.findItem(R.id.menu_search);
+        MenuItem item = menu.findItem(R.id.menu_search1);
         searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextListener(this);
         if (searchText != null) {

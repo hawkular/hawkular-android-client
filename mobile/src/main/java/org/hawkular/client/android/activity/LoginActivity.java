@@ -125,12 +125,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void succeed(Persona persona, Environment environment) {
+    private void succeed(Persona persona) {
         // Save Backend preferences
         Preferences.of(this).host().set(host.trim());
         if (!port.isEmpty()) Preferences.of(this).port().set(Integer.valueOf(port));
         Preferences.of(this).personaId().set(persona.getId());
-        Preferences.of(this).environment().set(environment.getId());
+        //Preferences.of(this).environment().set(environment.getId());
         if (authIndicator.isShowing()){
             authIndicator.dismiss();
         }
@@ -145,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
             LoginActivity activity = (LoginActivity) getActivity();
 
             activity.setUpBackendCommunication(new Persona("hawkular"));
-            BackendClient.of(getActivity()).getEnvironments(new EnvironmentsCallback(new Persona("hawkular")));
+            activity.succeed(new Persona("hawkular"));
         }
 
         @Override
@@ -190,7 +190,6 @@ public class LoginActivity extends AppCompatActivity {
             LoginActivity activity = (LoginActivity) getActivity();
 
             activity.setUpBackendCommunication(persona);
-            BackendClient.of(getActivity()).getEnvironments(new EnvironmentsCallback(persona));
         }
 
         @Override
@@ -204,31 +203,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private static final class EnvironmentsCallback extends AbstractActivityCallback<List<Environment>> {
-        private final Persona persona;
 
-        public EnvironmentsCallback(@NonNull Persona persona) {
-            this.persona = persona;
-        }
-
-        @Override
-        public void onSuccess(List<Environment> environments) {
-            if (environments.isEmpty()) {
-                onFailure(new RuntimeException("Environments list is empty, this should not happen."));
-                return;
-            }
-
-            // The first environment is picked and used everywhere, this should change in the future.
-            Environment environment = environments.get(0);
-            LoginActivity activity = (LoginActivity) getActivity();
-            activity.succeed(persona, environment);
-        }
-
-        @Override
-        public void onFailure(Exception e) {
-            Timber.d(e, "Environments fetching failed.");
-
-        }
-    }
 
 }
