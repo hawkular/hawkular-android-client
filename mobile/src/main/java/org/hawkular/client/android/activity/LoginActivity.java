@@ -146,7 +146,6 @@ public class LoginActivity extends AppCompatActivity {
 
             activity.setUpBackendCommunication(new Persona("hawkular"));
             activity.succeed(new Persona("hawkular"));
-            //BackendClient.of(getActivity()).getEnvironments(new EnvironmentsCallback(new Persona("hawkular")));
         }
 
         @Override
@@ -191,7 +190,6 @@ public class LoginActivity extends AppCompatActivity {
             LoginActivity activity = (LoginActivity) getActivity();
 
             activity.setUpBackendCommunication(persona);
-           // BackendClient.of(getActivity()).getEnvironments(new EnvironmentsCallback(persona));
         }
 
         @Override
@@ -205,31 +203,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private static final class EnvironmentsCallback extends AbstractActivityCallback<List<Environment>> {
-        private final Persona persona;
 
-        public EnvironmentsCallback(@NonNull Persona persona) {
-            this.persona = persona;
-        }
-
-        @Override
-        public void onSuccess(List<Environment> environments) {
-            if (environments.isEmpty()) {
-                onFailure(new RuntimeException("Environments list is empty, this should not happen."));
-                return;
-            }
-
-            // The first environment is picked and used everywhere, this should change in the future.
-            Environment environment = environments.get(0);
-            LoginActivity activity = (LoginActivity) getActivity();
-            activity.succeed(persona );
-        }
-
-        @Override
-        public void onFailure(Exception e) {
-            Timber.d(e, "Environments fetching failed.");
-
-        }
-    }
 
 }
