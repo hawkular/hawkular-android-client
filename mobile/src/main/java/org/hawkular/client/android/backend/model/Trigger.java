@@ -50,8 +50,16 @@ public class Trigger implements Parcelable {
         return tags;
     }
 
+    public void setTags(Map<String, String> tags) {
+        this.tags = tags;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean getEnableStatus(){

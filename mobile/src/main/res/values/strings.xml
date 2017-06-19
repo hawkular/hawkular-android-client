@@ -117,6 +117,41 @@
   <string name="favourites_removed">Removed from Favourites</string>
   <string name="trigger_on">Trigger is On</string>
   <string name="trigger_off">Trigger is Off</string>
+  <string name="tenantId">Tenant ID</string>
+  <string name="hawkular">hawkular</string>
+  <string name="id">ID</string>
+  <string name="name">Name</string>
+  <string name="type">Type</string>
+  <string name="eventType">Event Type</string>
+  <string name="eventCategory">Event Category</string>
+  <string name="eventText">Event Text</string>
+  <string name="severity">Severity</string>
+  <string name="autoDisable">Auto Disable</string>
+  <string name="autoEnable">Auto Enable</string>
+  <string name="autoResolveAlerts">Auto Resolve Alerts</string>
+  <string name="autoResolve">Auto Resolve</string>
+  <string name="autoResolveMatch">Auto Resolve Match</string>
+  <string name="enabled">Enabled</string>
+  <string name="firingMatch">Firing Match</string>
 
+  <string-array name="typeEntries">
+    <item>STANDARD</item>
+    <item>GROUP</item>
+    <item>DATA_DRIVEN_GROUP</item>
+    <item>MEMBER</item>
+    <item>ORPHAN</item>
+  </string-array>
+
+  <string-array name="eventTypeEntries">
+    <item>ALERT</item>
+    <item>EVENT</item>
+  </string-array>
+
+  <string-array name="severityEntries">
+    <item>LOW</item>
+    <item>MEDIUM</item>
+    <item>HIGH</item>
+    <item>CRITICAL</item>
+  </string-array>
 
 </resources>

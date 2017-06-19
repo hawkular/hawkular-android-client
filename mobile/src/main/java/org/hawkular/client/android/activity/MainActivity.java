@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -41,6 +42,7 @@ import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.event.Events;
 import org.hawkular.client.android.explorer.InventoryExplorerActivity;
+import org.hawkular.client.android.fragment.AlertSetupFragment;
 import org.hawkular.client.android.fragment.FavMetricsFragment;
 import org.hawkular.client.android.fragment.TriggersFragment;
 import org.hawkular.client.android.util.Fragments;
@@ -83,6 +85,10 @@ public final class MainActivity extends AppCompatActivity
 
     @BindView(R.id.title)
     TextView title;
+
+    @BindView(R.id.fab)
+    FloatingActionButton floatingActionButton;
+
 
     TextView host;
 
@@ -292,6 +298,21 @@ public final class MainActivity extends AppCompatActivity
     @OnClick(R.id.drawer_menu_icon)
     void openDrawerMenu() {
         drawer.openDrawer(GravityCompat.START);
+    }
+
+    // --- OnCLick Event for clicking Fab --- Adds a new trigger ---------
+
+    @OnClick(R.id.fab)
+    void onClickFab(){
+
+        Bundle bundle = new Bundle();
+        bundle.putString("state", "From Home");
+        AlertSetupFragment alertSetupFragment = new AlertSetupFragment();
+        alertSetupFragment.setArguments(bundle);
+
+        adapter.addFragment(alertSetupFragment,"Setup Alert");
+        adapter.notifyDataSetChanged();
+        floatingActionButton.setVisibility(View.GONE);
     }
 
     private void showNavigation(@IdRes int navigationId) {
