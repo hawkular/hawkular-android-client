@@ -42,7 +42,6 @@ import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.event.Events;
 import org.hawkular.client.android.explorer.InventoryExplorerActivity;
-import org.hawkular.client.android.fragment.AlertSetupFragment;
 import org.hawkular.client.android.fragment.FavMetricsFragment;
 import org.hawkular.client.android.fragment.TriggersFragment;
 import org.hawkular.client.android.util.Fragments;
@@ -305,13 +304,7 @@ public final class MainActivity extends AppCompatActivity
     @OnClick(R.id.fab)
     void onClickFab(){
 
-        Bundle bundle = new Bundle();
-        bundle.putString("state", "From Home");
-        AlertSetupFragment alertSetupFragment = new AlertSetupFragment();
-        alertSetupFragment.setArguments(bundle);
-
-        adapter.addFragment(alertSetupFragment,"Setup Alert");
-        adapter.notifyDataSetChanged();
+        startActivity(new Intent(getApplicationContext(), TriggerSetupActivity.class));
         floatingActionButton.setVisibility(View.GONE);
     }
 

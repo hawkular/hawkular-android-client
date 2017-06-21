@@ -14,15 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.client.android.fragment;
-
+package org.hawkular.client.android.activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -39,10 +34,7 @@ import icepick.Icepick;
  */
 
 
-public class AlertSetupFragment extends Fragment {
-
-    @BindView(R.id.et_id)
-    EditText textId;
+public class TriggerSetupActivity extends AppCompatActivity {
 
     @BindView(R.id.et_name)
     EditText textName;
@@ -62,25 +54,17 @@ public class AlertSetupFragment extends Fragment {
     @BindView(R.id.switch_autoEnable)
     Switch switchAutoEnable;
 
-    @BindView(R.id.switch_autoResolve)
-    Switch switchAutoResolve;
-
     @BindView(R.id.switch_enabled)
     Switch switchEnabled;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
-        View view = inflater.inflate(R.layout.fragment_setup_alert, container, false);
-        return view;
-    }
+    protected void onCreate(Bundle state) {
+        super.onCreate(state);
+        setContentView(R.layout.activity_setup_trigger);
 
-    @Override
-    public void onActivityCreated(Bundle state) {
-        super.onActivityCreated(state);
+        setUpBindings();
 
         setUpState(state);
-        setUpBindings();
     }
 
     private void setUpState(Bundle state) {
@@ -88,13 +72,13 @@ public class AlertSetupFragment extends Fragment {
     }
 
     private void setUpBindings() {
-        ButterKnife.bind(this, getView());
+        ButterKnife.bind(this);
     }
 
     @OnClick(R.id.button_submit)
     void getValues(){
         // a test printing statement to check if bindings are setup properly
-        Log.d("Value",textId.getText()+"" + switchAutoDisable.isChecked() + spinnerEventType.getSelectedItem().toString());
+        Log.d("Value", "" + switchAutoDisable.isChecked() + spinnerEventType.getSelectedItem().toString());
     }
 
 }
