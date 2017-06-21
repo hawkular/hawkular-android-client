@@ -305,7 +305,6 @@ public final class MainActivity extends AppCompatActivity
     void onClickFab(){
 
         startActivity(new Intent(getApplicationContext(), TriggerSetupActivity.class));
-        floatingActionButton.setVisibility(View.GONE);
     }
 
     private void showNavigation(@IdRes int navigationId) {

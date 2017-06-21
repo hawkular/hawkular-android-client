@@ -21,11 +21,16 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_margin="20dp"
     android:layout_height="wrap_content">
+
+    <include
+        layout="@layout/layout_toolbar" />
 
     <TableLayout
         android:layout_width="fill_parent"
@@ -34,6 +39,7 @@
         <TableRow
             android:layout_width="fill_parent"
             android:layout_weight="1"
+            android:layout_margin="15dp"
             android:layout_height="wrap_content">
 
             <TextView
@@ -56,7 +62,7 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_margin="15dp"
             android:layout_height="wrap_content">
 
             <TextView
@@ -76,7 +82,7 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_margin="15dp"
             android:layout_height="wrap_content">
 
             <TextView
@@ -97,7 +103,7 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_margin="15dp"
             android:layout_height="wrap_content">
 
             <TextView
@@ -118,7 +124,7 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_margin="15dp"
             android:layout_height="wrap_content">
 
             <TextView
@@ -139,7 +145,7 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_margin="15dp"
             android:layout_height="wrap_content">
 
             <TextView
@@ -163,7 +169,7 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_margin="15dp"
             android:layout_height="wrap_content">
 
             <TextView
@@ -189,7 +195,7 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_margin="15dp"
             android:layout_height="wrap_content">
 
             <TextView

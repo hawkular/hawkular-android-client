@@ -17,7 +17,9 @@
 package org.hawkular.client.android.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -35,6 +37,9 @@ import icepick.Icepick;
 
 
 public class TriggerSetupActivity extends AppCompatActivity {
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @BindView(R.id.et_name)
     EditText textName;
@@ -64,11 +69,24 @@ public class TriggerSetupActivity extends AppCompatActivity {
 
         setUpBindings();
 
+        setUpToolbar();
+
         setUpState(state);
     }
 
     private void setUpState(Bundle state) {
         Icepick.restoreInstanceState(this, state);
+    }
+
+    private void setUpToolbar() {
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() == null) {
+            return;
+        }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Trigger Setup");
     }
 
     private void setUpBindings() {
@@ -79,6 +97,18 @@ public class TriggerSetupActivity extends AppCompatActivity {
     void getValues(){
         // a test printing statement to check if bindings are setup properly
         Log.d("Value", "" + switchAutoDisable.isChecked() + spinnerEventType.getSelectedItem().toString());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(menuItem);
+        }
     }
 
 }
