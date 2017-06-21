@@ -68,6 +68,10 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
+            android:name=".activity.TriggerSetupActivity"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
             android:name=".activity.TriggerDetailActivity"
             android:windowSoftInputMode="adjustPan" />
 

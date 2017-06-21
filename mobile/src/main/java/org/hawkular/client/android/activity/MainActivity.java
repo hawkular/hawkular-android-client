@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -83,6 +84,10 @@ public final class MainActivity extends AppCompatActivity
 
     @BindView(R.id.title)
     TextView title;
+
+    @BindView(R.id.fab)
+    FloatingActionButton floatingActionButton;
+
 
     TextView host;
 
@@ -292,6 +297,14 @@ public final class MainActivity extends AppCompatActivity
     @OnClick(R.id.drawer_menu_icon)
     void openDrawerMenu() {
         drawer.openDrawer(GravityCompat.START);
+    }
+
+    // --- OnCLick Event for clicking Fab --- Adds a new trigger ---------
+
+    @OnClick(R.id.fab)
+    void onClickFab(){
+
+        startActivity(new Intent(getApplicationContext(), TriggerSetupActivity.class));
     }
 
     private void showNavigation(@IdRes int navigationId) {
