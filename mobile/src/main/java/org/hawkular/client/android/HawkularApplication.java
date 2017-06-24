@@ -16,15 +16,29 @@
  */
 package org.hawkular.client.android;
 
+import java.io.IOException;
+
 import org.hawkular.client.android.push.PushClient;
 import org.hawkular.client.android.util.Android;
+import org.hawkular.client.android.util.Preferences;
 
 import android.app.Application;
 import android.os.StrictMode;
-
+import android.util.Base64;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.moshi.MoshiConverterFactory;
 import timber.log.Timber;
 
 public final class HawkularApplication extends Application {
+
+    public static Retrofit retrofit;
+
+    public Boolean authenticaed;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -33,6 +47,40 @@ public final class HawkularApplication extends Application {
         setUpDetections();
 
         setUpPush();
+
+        setUpRetrofit();
+
+    }
+
+    public void setUpRetrofit() {
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Interceptor.Chain chain) throws IOException {
+                Request original = chain.request();
+
+                authenticaed = Preferences.of(getApplicationContext()).authenticated().get();
+
+                String cred = new String(Base64.encode(("jdoe:password").getBytes(), Base64.NO_WRAP));
+
+                Request request = original.newBuilder()
+                        .header("Hawkular-Tenant", "hawkular")
+                        .header("Authorization", "Basic " + cred)
+                        .method(original.method(), original.body())
+                        .build();
+
+                return chain.proceed(request);
+            }
+        });
+
+        OkHttpClient client = httpClient.build();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl("http://livingontheedge.hawkular.org/")
+                .addConverterFactory(MoshiConverterFactory.create())
+                .client(client)
+                .build();
     }
 
     private void setUpLogging() {

@@ -16,6 +16,8 @@
  */
 package org.hawkular.client.android.backend;
 
+import static org.hawkular.client.android.HawkularApplication.retrofit;
+
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ import org.hawkular.client.android.backend.model.OperationProperties;
 import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Trigger;
+import org.hawkular.client.android.service.TriggerService;
 import org.hawkular.client.android.util.CanonicalPath;
 import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Uris;
@@ -62,6 +65,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.Fragment;
+import retrofit2.Call;
 
 /**
  * Backend client.
@@ -133,7 +137,6 @@ public final class BackendClient {
         configurePipe(BackendPipes.Names.ALERTS, pipeUrl, pipeModules, Alert.class);
         configurePipe(BackendPipes.Names.ALERT_ACKNOWLEDGE, alertAckUrl, pipeModules, String.class);
         configurePipe(BackendPipes.Names.ALERT_RESOLVE, alertResolveUrl, pipeModules, String.class);
-        configurePipe(BackendPipes.Names.ENVIRONMENTS, pipeUrl, pipeModules, Environment.class);
         configurePipe(BackendPipes.Names.FEEDS, pipeUrl, pipeModules, Feed.class);
         configurePipe(BackendPipes.Names.FEED_METRICS, pipeUrl, pipeModules, Metric.class);
         configurePipe(BackendPipes.Names.FEED_CHILD_RESOURCES, pipeUrl, pipeModules, Resource.class);
@@ -321,6 +324,21 @@ public final class BackendClient {
         URI uri = Uris.getUri(BackendPipes.Paths.TRIGGERS);
 
         readPipe(BackendPipes.Names.TRIGGERS, uri, callback);
+    }
+
+    public void getRetroTriggers(@NonNull retrofit2.Callback<List<Trigger>> callback) {
+        URI uri = Uris.getUri(BackendPipes.Paths.TRIGGERS);
+        TriggerService service = retrofit.create(TriggerService.class);
+
+        /*
+        Map<String, String> map = new HashMap<>();
+        String cred = new String(Base64.encode(("jdoe:password").getBytes(), Base64.NO_WRAP));
+        map.put("Authorization", "Basic "+cred);
+        map.put("Hawkular-Tenant", "hawkular");
+        */
+        Call call = service.get();
+        call.enqueue(callback);
+
     }
 
     @SuppressWarnings("unchecked")

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
+import info.metadude.android.typedpreferences.BooleanPreference;
 import info.metadude.android.typedpreferences.IntPreference;
 import info.metadude.android.typedpreferences.StringPreference;
 
@@ -45,6 +46,7 @@ public final class Preferences {
         public static final String BACKEND_PERSONA_ID = "persona-id";
         public static final String BACKEND_PERSONA_NAME = "persona-name";
         public static final String BACKEND_ENVIRONMENT = "environment";
+        public static final String BACKEND_AUTHENTICATED = "authenticaed";
     }
 
     public static final class Defaults {
@@ -63,6 +65,11 @@ public final class Preferences {
 
     private Preferences(Context context, String preferencesLocation) {
         this.serverPreferences = context.getSharedPreferences(preferencesLocation, Context.MODE_PRIVATE);
+    }
+
+    @NonNull
+    public BooleanPreference authenticated() {
+        return new BooleanPreference(serverPreferences, Keys.BACKEND_AUTHENTICATED);
     }
 
     @NonNull
