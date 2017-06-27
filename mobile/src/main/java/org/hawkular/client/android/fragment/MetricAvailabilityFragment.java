@@ -62,6 +62,9 @@ import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.ColumnChartView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -176,8 +179,8 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     private void setUpMetricDataForced() {
 
         metric_name.setText(getMetric().getName());
-        BackendClient.of(this).getMetricData(
-                getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+        BackendClient.of(this).getRetroMetricData(
+                getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback(this));
     }
 
     private Metric getMetric() {
@@ -390,25 +393,37 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         Icepick.saveInstanceState(this, state);
     }
 
-    private static final class MetricDataCallback extends AbstractSupportFragmentCallback<List<MetricBucket>> {
-        @Override
-        public void onSuccess(List<MetricBucket> metricBuckets) {
-            if (!metricBuckets.isEmpty()) {
-                getMetricFragment().setUpMetricData(metricBuckets);
-            } else {
-                getMetricFragment().showMessage();
-            }
+    private static final class MetricDataCallback implements Callback<List<MetricBucket>> {
+
+
+        private MetricAvailabilityFragment metricAvailabilityFragment;
+
+        public MetricDataCallback(MetricAvailabilityFragment metricAvailabilityFragment) {
+            this.metricAvailabilityFragment = metricAvailabilityFragment;
+        }
+
+        private MetricAvailabilityFragment getMetricFragment(){
+            return metricAvailabilityFragment;
         }
 
         @Override
-        public void onFailure(Exception e) {
-            Timber.d(e, "Metric data fetching failed.");
+        public void onResponse(Call<List<MetricBucket>> call, Response<List<MetricBucket>> response) {
+            if(response.isSuccessful()){
+                List<MetricBucket> metricBuckets = response.body();
+                if (!metricBuckets.isEmpty()) {
+                    getMetricFragment().setUpMetricData(metricBuckets);
+                } else {
+                    getMetricFragment().showMessage();
+                }
+            }
+
+        }
+
+        @Override
+        public void onFailure(Call<List<MetricBucket>> call, Throwable t) {
+            Timber.d(t, "Metric data fetching failed.");
 
             ErrorUtil.showError(getMetricFragment(),R.id.animator,R.id.error);
-        }
-
-        private MetricAvailabilityFragment getMetricFragment() {
-            return (MetricAvailabilityFragment) getSupportFragment();
         }
     }
 

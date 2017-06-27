@@ -63,6 +63,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Alert Detail fragment.
@@ -220,12 +223,12 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
                 switch (menuItem.getItemId()) {
                     case R.id.menu_resolve:
                         BackendClient.of(AlertDetailFragment.this).
-                                resolveAlert(alert, new AlertActionCallback(R.string.alert_state_res));
+                                resolveRetroAlert(alert, new AlertActionCallback(R.string.alert_state_res));
                         return true;
 
                     case R.id.menu_acknowledge:
                         BackendClient.of(AlertDetailFragment.this).
-                                acknowledgeAlert(alert, new AlertActionCallback(R.string.alert_state_ack));
+                                acknowledgeRetroAlert(alert, new AlertActionCallback(R.string.alert_state_ack));
                         return true;
 
                     default:
@@ -370,7 +373,7 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
         return this;
     }
 
-    private final class AlertActionCallback extends AbstractSupportFragmentCallback<List<String>> {
+    private final class AlertActionCallback implements Callback<List<String>> {
 
         @StringRes int state;
 
@@ -379,17 +382,13 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
         }
 
         @Override
-        public void onSuccess(List<String> result) {
+        public void onResponse(Call<List<String>> call, Response<List<String>> response) {
             alertSateButton.setText(state);
         }
 
         @Override
-        public void onFailure(Exception e) {
+        public void onFailure(Call<List<String>> call, Throwable t) {
             ErrorUtil.showError(getActivity().findViewById(android.R.id.content),R.string.error_later);
-        }
-
-        private AlertsFragment getAlertsFragment() {
-            return (AlertsFragment) getSupportFragment();
         }
     }
 

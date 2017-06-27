@@ -57,6 +57,8 @@ import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -197,7 +199,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                 if (node.size() == 0) {
                     BackendClient.of(getInventoryExplorerActivity()).getRecResourcesFromFeed(
                             new ResourcesCallback(node), (Resource) item.value);
-                    BackendClient.of(getInventoryExplorerActivity()).getMetricsFromFeed(
+                    BackendClient.of(getInventoryExplorerActivity()).getRetroMetricsFromFeed(
                             new MetricsCallback(node), (Resource) item.value);
                     BackendClient.of(getInventoryExplorerActivity()).getOpreations(
                             new OperationsCallback(node), (Resource) item.value);
@@ -348,7 +350,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     }
 
-    private final class MetricsCallback extends AbstractActivityCallback<List<Metric>> {
+    private final class MetricsCallback implements retrofit2.Callback<List<Metric>> {
 
         private TreeNode parent;
 
@@ -356,21 +358,17 @@ public class InventoryExplorerActivity extends AppCompatActivity {
             this.parent = parent;
         }
 
+
         @Override
-        public void onSuccess(List<Metric> metrics) {
-            if (!metrics.isEmpty()) {
-                getInventoryExplorerActivity().setUpMetrics(metrics, parent);
+        public void onResponse(Call<List<Metric>> call, Response<List<Metric>> response) {
+            if(!response.body().isEmpty()){
+                setUpMetrics(response.body(), parent);
             }
         }
 
         @Override
-        public void onFailure(Exception e) {
+        public void onFailure(Call<List<Metric>> call, Throwable t) {
             Timber.d("Resources fetching failed.");
-
-        }
-   
-        private InventoryExplorerActivity getInventoryExplorerActivity() {
-            return (InventoryExplorerActivity) getActivity();
         }
     }
 

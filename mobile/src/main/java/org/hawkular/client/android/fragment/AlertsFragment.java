@@ -58,6 +58,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import icepick.Icepick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -148,11 +151,11 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private void setUpAlerts() {
         if(getResource() == null) {
-            BackendClient.of(this).getAlerts(getAlertsTime(), Time.current(), null, new AlertsCallback());
+            BackendClient.of(this).getRetroAlerts(getAlertsTime(), Time.current(), null, new AlertsCallback(this));
         } else if (!areTriggersAvailable()) {
             setUpTriggers();
         } else {
-            BackendClient.of(this).getAlerts(getAlertsTime(), Time.current(), triggers, new AlertsCallback());
+            BackendClient.of(this).getRetroAlerts(getAlertsTime(), Time.current(), triggers, new AlertsCallback(this));
         }
     }
 
@@ -166,7 +169,7 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void setUpTriggers() {
-        BackendClient.of(this).getTriggers(new TriggersCallback());
+        BackendClient.of(this).getRetroTriggers(new TriggersCallback(this));
     }
 
     private Date getAlertsTime() {
@@ -289,11 +292,11 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                 switch (menuItem.getItemId()) {
                     case R.id.menu_resolve:
-                        BackendClient.of(AlertsFragment.this).resolveAlert(alert, new AlertActionCallback());
+                        BackendClient.of(AlertsFragment.this).resolveRetroAlert(alert, new AlertActionCallback(AlertsFragment.this));
                         return true;
 
                     case R.id.menu_acknowledge:
-                        BackendClient.of(AlertsFragment.this).acknowledgeAlert(alert, new AlertActionCallback());
+                        BackendClient.of(AlertsFragment.this).acknowledgeRetroAlert(alert, new AlertActionCallback(AlertsFragment.this));
                         return true;
 
                     default:
@@ -437,70 +440,90 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     }
 
-    private static final class TriggersCallback extends AbstractSupportFragmentCallback<List<Trigger>> {
-        @Override
-        public void onSuccess(List<Trigger> triggers) {
-            if (triggers.isEmpty()) {
-                Timber.d("Triggers list is empty, this should not happen.");
+    private static final class TriggersCallback implements Callback<List<Trigger>> {
 
+        AlertsFragment alertsFragment;
+
+        public TriggersCallback(AlertsFragment alertsFragment) {
+            this.alertsFragment = alertsFragment;
+        }
+
+        private AlertsFragment getAlertsFragment() {
+            return alertsFragment;
+        }
+
+        @Override
+        public void onResponse(Call<List<Trigger>> call, Response<List<Trigger>> response) {
+            if(!response.body().isEmpty()){
+                Timber.d("Triggers list is empty, this should not happen.");
                 ErrorUtil.showError(getAlertsFragment(),R.id.animator,R.id.error);
                 return;
             }
 
-            getAlertsFragment().setUpAlertsTriggers(triggers);
+            getAlertsFragment().setUpAlertsTriggers(response.body());
         }
 
         @Override
-        public void onFailure(Exception e) {
-            Timber.d(e, "Triggers fetching failed.");
-
+        public void onFailure(Call<List<Trigger>> call, Throwable t) {
+            Timber.d(t, "Triggers fetching failed.");
             ErrorUtil.showError(getAlertsFragment(),R.id.animator,R.id.error);
-        }
-
-        private AlertsFragment getAlertsFragment() {
-            return (AlertsFragment) getSupportFragment();
         }
     }
 
-    private static final class AlertsCallback extends AbstractSupportFragmentCallback<List<Alert>> {
+    private static final class AlertsCallback implements Callback<List<Alert>> {
+
+        AlertsFragment alertsFragment;
+
+        public AlertsCallback(AlertsFragment alertsFragment) {
+            this.alertsFragment = alertsFragment;
+        }
+
+        private AlertsFragment getAlertsFragment() {
+           return alertsFragment;
+        }
+
         @Override
-        public void onSuccess(List<Alert> alerts) {
+        public void onResponse(Call<List<Alert>> call, Response<List<Alert>> response) {
             if (getAlertsFragment().isAlertsFragmentAvailable) {
-                if (!alerts.isEmpty()) {
-                    getAlertsFragment().setUpAlerts(alerts);
+                if (!response.body().isEmpty()) {
+                    getAlertsFragment().setUpAlerts(response.body());
                 } else {
                     getAlertsFragment().showMessage();
                     getAlertsFragment().cleanDump();
                 }
             }
+
         }
 
         @Override
-        public void onFailure(Exception e) {
-            Timber.d(e, "Alerts fetching failed.");
+        public void onFailure(Call<List<Alert>> call, Throwable t) {
+            Timber.d(t, "Alerts fetching failed.");
 
             if (getAlertsFragment().isAlertsFragmentAvailable) {
                 ErrorUtil.showError(getAlertsFragment(),R.id.animator,R.id.error);
             }
         }
-
-        private AlertsFragment getAlertsFragment() {
-            return (AlertsFragment) getSupportFragment();
-        }
     }
 
-    private static final class AlertActionCallback extends AbstractSupportFragmentCallback<List<String>> {
+    private static final class AlertActionCallback implements Callback<List<String>> {
+        AlertsFragment alertsFragment;
+
+        public AlertActionCallback(AlertsFragment alertsFragment) {
+            this.alertsFragment = alertsFragment;
+        }
+
+        private AlertsFragment getAlertsFragment() {
+            return alertsFragment;
+        }
+
         @Override
-        public void onSuccess(List<String> result) {
+        public void onResponse(Call<List<String>> call, Response<List<String>> response) {
             getAlertsFragment().setUpAlertsRefreshed();
         }
 
         @Override
-        public void onFailure(Exception e) {
-        }
+        public void onFailure(Call<List<String>> call, Throwable t) {
 
-        private AlertsFragment getAlertsFragment() {
-            return (AlertsFragment) getSupportFragment();
         }
     }
 

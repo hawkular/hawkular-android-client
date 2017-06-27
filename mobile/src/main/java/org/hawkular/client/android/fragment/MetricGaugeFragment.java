@@ -60,6 +60,9 @@ import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -165,8 +168,8 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
 
     private void setUpMetricDataForced() {
         metric_name.setText(getMetric().getName());
-        BackendClient.of(this).getMetricData(
-                getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+        BackendClient.of(this).getRetroMetricData(
+                getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback(this));
     }
 
     @OnClick(R.id.button_retry)
@@ -385,29 +388,33 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         Icepick.saveInstanceState(this, state);
     }
 
-    private static final class MetricDataCallback extends AbstractSupportFragmentCallback<List<MetricBucket>> {
+    private static final class MetricDataCallback implements Callback<List<MetricBucket>> {
+
+        MetricGaugeFragment metricGaugeFragment;
+
+        public MetricDataCallback(MetricGaugeFragment metricGaugeFragment) {
+            this.metricGaugeFragment = metricGaugeFragment;
+        }
+
+        private MetricGaugeFragment getMetricFragment() {
+            return metricGaugeFragment;
+        }
+
         @Override
-        public void onSuccess(List<MetricBucket> metricBuckets) {
-            if (!metricBuckets.isEmpty()) {
-                /*List<MetricBucket> formatted = new ArrayList<>();
-                for(MetricGaugeBucket metricGaugeBucket : metricBuckets){
-                    formatted.add(metricGaugeBucket);
-                }*/
-                getMetricFragment().setUpMetricData(metricBuckets);
-            } else {
+        public void onResponse(Call<List<MetricBucket>> call, Response<List<MetricBucket>> response) {
+            if(!response.body().isEmpty()){
+                getMetricFragment().setUpMetricData(response.body());
+            }
+            else {
                 getMetricFragment().showMessage();
             }
         }
 
         @Override
-        public void onFailure(Exception e) {
-            Timber.d(e, "Metric data fetching failed.");
+        public void onFailure(Call<List<MetricBucket>> call, Throwable t) {
+            Timber.d(t, "Metric data fetching failed.");
 
             ErrorUtil.showError(getMetricFragment(),R.id.animator,R.id.error);
-        }
-
-        private MetricGaugeFragment getMetricFragment() {
-            return (MetricGaugeFragment) getSupportFragment();
         }
     }
 
