@@ -26,12 +26,12 @@
     <item
       android:id="@+id/menu_favourites"
       android:icon="@drawable/ic_metrics"
-      android:title="@string/menu_favourites"/>
+      android:title="@string/drawer_menu_favourites"/>
 
     <item
       android:id="@+id/menu_alerts"
       android:icon="@drawable/ic_alerts"
-      android:title="@string/menu_alerts"/>
+      android:title="@string/drawer_menu_alerts"/>
 
   </group>
 
@@ -39,20 +39,23 @@
     android:id="@+id/menu_group_buttons">
 
     <item
-      android:id="@+id/menu_settings"
-      android:icon="@drawable/ic_settings"
-      android:title="@string/menu_settings"/>
-
-    <item
       android:id="@+id/menu_feedback"
       android:icon="@drawable/ic_feedback"
-      android:title="@string/menu_feedback"/>
+      android:title="@string/drawer_menu_feedback"/>
 
     <item
         android:id="@+id/menu_explorer"
         android:icon="@drawable/ic_explore"
-        android:title="@string/menu_explorer"/>
+        android:title="@string/drawer_menu_explorer"/>
 
+  </group>
+
+  <group
+      android:id="@+id/menu_group_login">
+    <item
+        android:id="@+id/menu_logout"
+        android:icon="@drawable/ic_drawer_logout"
+        android:title="@string/drawer_menu_logout"/>
   </group>
 
 </menu>

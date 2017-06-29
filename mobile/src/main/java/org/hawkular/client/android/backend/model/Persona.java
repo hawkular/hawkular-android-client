@@ -27,7 +27,6 @@ public final class Persona implements Parcelable {
     @SerializedName("id")
     private String id;
 
-    @VisibleForTesting
     public Persona(@NonNull String id) {
         this.id = id;
     }

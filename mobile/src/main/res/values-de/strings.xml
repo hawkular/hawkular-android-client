@@ -40,7 +40,7 @@
   <string name="mask_alert_threshold">Antwortzeit war über dem Schwellwert (%1$.1f ms) für %2$d Sekunden (bis %3$s). Die durchschnittliche Antwortzeit war %4$.1f ms.</string>
 
   <string name="menu_acknowledge">Bestätigen</string>
-  <string name="menu_feedback">Hilfe und Rückmeldung</string>
+  <string name="drawer_menu_feedback">Hilfe und Rückmeldung</string>
   <string name="menu_resolve">Klären</string>
   <string name="menu_time">Zeit</string>
   <string name="menu_time_day">Tag</string>

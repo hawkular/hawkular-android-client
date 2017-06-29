@@ -16,20 +16,20 @@
  */
 package org.hawkular.client.android.activity;
 
-import org.hawkular.client.android.R;
-import org.hawkular.client.android.util.Fragments;
-
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import org.hawkular.client.android.R;
+import org.hawkular.client.android.util.Fragments;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Settings activity.
- *
+ * <p>
  * Can be considered as a wrapper for {@link org.hawkular.client.android.fragment.SettingsFragment}.
  */
 public final class SettingsActivity extends AppCompatActivity {
@@ -41,33 +41,17 @@ public final class SettingsActivity extends AppCompatActivity {
         super.onCreate(state);
         setContentView(R.layout.activity_container);
 
-        setUpBindings();
-
-        setUpToolbar();
-
-        setUpSettings();
-    }
-
-    private void setUpBindings() {
         ButterKnife.bind(this);
-    }
 
-    private void setUpToolbar() {
         setSupportActionBar(toolbar);
 
-        if (getSupportActionBar() == null) {
-            return;
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    private void setUpSettings() {
-        Fragments.Operator.of(this).set(R.id.layout_container, getSettingsFragment());
-    }
-
-    private Fragment getSettingsFragment() {
-        return Fragments.Builder.buildSettingsFragment();
+        Fragments.Operator
+                .of(this)
+                .set(R.id.layout_container, Fragments.Builder.buildSettingsFragment());
     }
 
     @Override

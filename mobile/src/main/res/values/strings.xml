@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 
     Copyright 2015-2017 Red Hat, Inc. and/or its affiliates
     and other contributors as indicated by the @author tags.
@@ -19,29 +18,29 @@
 -->
 <resources>
 
-  <string name="application_name" translatable="false">Hawkular</string>
+    <string name="application_name" translatable="false">Hawkular</string>
 
-  <string name="button_authorize">Authorize</string>
-  <string name="button_retry">Try again</string>
+    <string name="button_authorize">Authorize</string>
+    <string name="button_retry">Try again</string>
 
-  <string name="error_authorization_host_port">Something is wrong with host or port.</string>
-  <string name="error_authorization_port">Should be a correct number.</string>
-  <string name="error_empty">Should not be empty.</string>
-  <string name="error_general">Something is wrong, please try again.</string>
+    <string name="error_authorization_host_port">Something is wrong with host or port.</string>
+    <string name="error_authorization_port">Should be a correct number.</string>
+    <string name="error_empty">Should not be empty.</string>
+    <string name="error_general">Something is wrong, please try again.</string>
 
-  <string name="hint_host">Host</string>
-  <string name="hint_port">Port</string>
+    <string name="hint_host">Host</string>
+    <string name="hint_port">Port</string>
 
-  <string name="label_authorization_description">Please provide the server location. The next step will require the
+    <string name="label_authorization_description">Please provide the server location. The next step will require the
     credentials.
   </string>
-  <string name="label_authorization_title">Authorization using a Hawkular server is necessary.</string>
-  <string name="label_authorization_support">The supported Hawkular version is Hawkular-Service 0.32.0.Final.</string>
-  <string name="label_availability_up">Up</string>
-  <string name="label_availability_down">Down</string>
+    <string name="label_authorization_title">Authorization using a Hawkular server is necessary.</string>
+    <string name="label_authorization_support">The supported Hawkular version is Hawkular-Service 0.32.0.Final.</string>
+    <string name="label_availability_up">Up</string>
+    <string name="label_availability_down">Down</string>
 
-  <string name="mask_alert_availability">Server was down for %1$d seconds (until %2$s).</string>
-  <string name="mask_alert_threshold">Response time was above the threshold (%1$.1f ms) for %2$d seconds (until %3$s).
+    <string name="mask_alert_availability">Server was down for %1$d seconds (until %2$s).</string>
+    <string name="mask_alert_threshold">Response time was above the threshold (%1$.1f ms) for %2$d seconds (until %3$s).
     The average response time was %4$.1f ms.
   </string>
 
@@ -153,5 +152,17 @@
     <item>HIGH</item>
     <item>CRITICAL</item>
   </string-array>
+
+  <!-- Drawer Menu -->
+  <string name="drawer_menu_favourites">@string/title_favourites</string>
+  <string name="drawer_menu_alerts">@string/title_alerts</string>
+  <string name="drawer_menu_feedback">Help &amp; feedback</string>
+  <string name="drawer_menu_explorer">Explorer</string>
+  <string name="drawer_menu_logout">Logout</string>
+
+  <!-- LoginActivity -->
+  <string name="logging">Logging in…</string>
+  <string name="cannot_be_blank">Cannot be blank</string>
+
 
 </resources>
