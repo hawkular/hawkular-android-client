@@ -1,36 +1,38 @@
 package org.hawkular.client.android.service;
 
 import org.hawkular.client.android.backend.model.Alert;
+import org.hawkular.client.android.backend.model.Note;
 import org.hawkular.client.android.backend.model.Trigger;
 
 import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
-
-/**
- * Created by pallavi on 26/06/17.
- */
 
 public interface AlertService {
 
+    @FormUrlEncoded
     @GET("hawkular/alerts")
-    Call<List<Alert>> get(
-            @QueryMap Map<String, String> parameters
-    );
+    Call<List<Alert>> get(@QueryMap Map<String, String> parameters);
+
+    @FormUrlEncoded
+    @POST("/hawkular/alerts/ack/{alertId}")
+    Call<List<String>> ackAlert(@Path("alertId") String alertId);
 
 
     @FormUrlEncoded
-    @POST("/hawkular/alerts/ack")
-    Call<List<String>> postAckAlert();
-
+    @POST("/hawkular/alerts/resolve/{alertId}")
+    Call<List<String>> resolveAlert(@Path("alertId") String alertId);
 
     @FormUrlEncoded
-    @POST("/hawkular/alerts/resolve")
-    Call<List<String>> postResolveAlert();
+    @POST("/hawkular/alerts/note/{alertId}")
+    Call<List<String>> noteOnAlert(@QueryMap Map<String, String> parameters, @Path("alertId") String alertId);
 
 }

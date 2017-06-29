@@ -151,11 +151,11 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private void setUpAlerts() {
         if(getResource() == null) {
-            BackendClient.of(this).getRetroAlerts(getAlertsTime(), Time.current(), null, new AlertsCallback(this));
+            BackendClient.of(this).getAlerts(getAlertsTime(), Time.current(), null, new AlertsCallback(this));
         } else if (!areTriggersAvailable()) {
             setUpTriggers();
         } else {
-            BackendClient.of(this).getRetroAlerts(getAlertsTime(), Time.current(), triggers, new AlertsCallback(this));
+            BackendClient.of(this).getAlerts(getAlertsTime(), Time.current(), triggers, new AlertsCallback(this));
         }
     }
 
@@ -169,7 +169,7 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void setUpTriggers() {
-        BackendClient.of(this).getRetroTriggers(new TriggersCallback(this));
+        BackendClient.of(this).getTriggers(new TriggersCallback(this));
     }
 
     private Date getAlertsTime() {
@@ -296,7 +296,7 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         return true;
 
                     case R.id.menu_acknowledge:
-                        BackendClient.of(AlertsFragment.this).acknowledgeRetroAlert(alert, new AlertActionCallback(AlertsFragment.this));
+                        BackendClient.of(AlertsFragment.this).acknowledgeAlert(alert, new AlertActionCallback(AlertsFragment.this));
                         return true;
 
                     default:

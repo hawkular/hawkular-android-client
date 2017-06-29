@@ -103,7 +103,7 @@ public class MetricsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     private void setUpMetricsForced() {
-        BackendClient.of(this).getRetroMetrics(getEnvironment(), getResource(), new MetricsCallback(this));
+        BackendClient.of(this).getMetrics(getResource(), new MetricsCallback(this));
     }
 
     private void showProgress() {

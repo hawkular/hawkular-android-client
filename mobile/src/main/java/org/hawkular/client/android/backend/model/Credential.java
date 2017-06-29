@@ -28,6 +28,18 @@ public class Credential {
 
     private String password;
 
+    private String host;
+
+    private String port;
+
+    public Credential(String id, String username, String password, String host, String port) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.host = host;
+        this.port = port;
+    }
+
     public String getId() {
         return id;
     }
@@ -50,5 +62,21 @@ public class Credential {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
     }
 }

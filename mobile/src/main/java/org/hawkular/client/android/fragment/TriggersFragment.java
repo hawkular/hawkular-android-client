@@ -108,7 +108,7 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
         if( getArguments().getString("state").equalsIgnoreCase("From Favourite")) {
             setUpFavTriggers();
         } else {
-            BackendClient.of(this).getRetroTriggers(new TriggersCallback(this));
+            BackendClient.of(this).getTriggers(new TriggersCallback(this));
         }
     }
 
@@ -145,7 +145,7 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
             setUpFavTriggers();
         }
         else {
-            BackendClient.of(this).getRetroTriggers(new TriggersCallback(this));
+            BackendClient.of(this).getTriggers(new TriggersCallback(this));
         }
     }
 
@@ -349,13 +349,14 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
     }
 
-    private class TriggerUpdateCallback extends AbstractSupportFragmentCallback{
-        @Override
-        public void onSuccess(Object data) {
+    private class TriggerUpdateCallback implements Callback{
+
+        @Override public void onResponse(Call call, Response response) {
+
         }
 
-        @Override
-        public void onFailure(Exception e) {
+        @Override public void onFailure(Call call, Throwable t) {
+
         }
     }
 

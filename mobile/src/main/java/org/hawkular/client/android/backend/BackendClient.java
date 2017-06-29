@@ -18,59 +18,34 @@ package org.hawkular.client.android.backend;
 
 import static org.hawkular.client.android.HawkularApplication.retrofit;
 
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hawkular.client.android.auth.ModuleKeeper;
-import org.hawkular.client.android.auth.SecretStoreAuthzModule;
 import org.hawkular.client.android.backend.model.Alert;
-import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.Metric;
-import org.hawkular.client.android.backend.model.MetricAvailabilityBucket;
 import org.hawkular.client.android.backend.model.MetricBucket;
-import org.hawkular.client.android.backend.model.MetricCounterBucket;
-import org.hawkular.client.android.backend.model.MetricGaugeBucket;
 import org.hawkular.client.android.backend.model.MetricType;
 import org.hawkular.client.android.backend.model.Note;
 import org.hawkular.client.android.backend.model.Operation;
 import org.hawkular.client.android.backend.model.OperationProperties;
-import org.hawkular.client.android.backend.model.Persona;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.service.AlertService;
 import org.hawkular.client.android.service.MetricService;
 import org.hawkular.client.android.service.TriggerService;
-import org.hawkular.client.android.util.CanonicalPath;
-import org.hawkular.client.android.util.Ports;
-import org.hawkular.client.android.util.Uris;
-import org.hawkular.client.android.util.Urls;
-import org.jboss.aerogear.android.authorization.AuthzModule;
-import org.jboss.aerogear.android.core.Callback;
-import org.jboss.aerogear.android.core.ReadFilter;
-import org.jboss.aerogear.android.pipe.LoaderPipe;
-import org.jboss.aerogear.android.pipe.PipeConfiguration;
-import org.jboss.aerogear.android.pipe.PipeManager;
-import org.jboss.aerogear.android.pipe.module.PipeModule;
-import org.jboss.aerogear.android.pipe.rest.RestfulPipeConfiguration;
+import org.jboss.aerogear.android.pipe.callback.AbstractCallback;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
-import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ServiceCompat;
-import android.util.Base64;
-
 import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Backend client.
@@ -91,6 +66,7 @@ import retrofit2.Call;
  * {@link org.jboss.aerogear.android.core.Callback} over them.
  */
 public final class BackendClient {
+
     private final Activity activity;
     private final Fragment fragment;
 
@@ -111,97 +87,11 @@ public final class BackendClient {
         this.fragment = fragment;
     }
 
-    public void configureAuthorization(Context context) {
-        ModuleKeeper.modules.put("hawkular", new SecretStoreAuthzModule(context));
-    }
-
-    public void configureCommunication(@NonNull String host, @NonNull Persona persona) {
-        URL backendUrl = Urls.getUrl(host);
-
-        configurePipes(backendUrl, persona);
-    }
-
-    public void configureCommunication(@NonNull String host,
-                                       @IntRange(from = Ports.MINIMUM, to = Ports.MAXIMUM) int port,
-                                       @NonNull Persona persona) {
-        URL backendUrl = Urls.getUrl(host, port);
-
-        configurePipes(backendUrl, persona);
-    }
-
-    private void configurePipes(URL backendUrl, Persona persona) {
-        URL pipeUrl = Urls.getUrl(backendUrl, BackendPipes.Paths.ROOT);
-        URL alertResolveUrl = Urls.getUrl(pipeUrl, BackendPipes.Paths.ALERT_RESOLVE);
-        URL alertAckUrl = Urls.getUrl(pipeUrl, BackendPipes.Paths.ALERT_ACKNOWLEDGE);
-        URL alertNoteUrl = Urls.getUrl(pipeUrl, BackendPipes.Paths.ALERT_NOTE);
-        URL triggerUpdateUrl = Urls.getUrl(pipeUrl,BackendPipes.Paths.UPDATE_TRIGGER);
-        List<PipeModule> pipeModules = Arrays.asList(
-                getAuthorizationModule(),
-                getPersonnelModule(persona));
-
-        configurePipe(BackendPipes.Names.ALERTS, pipeUrl, pipeModules, Alert.class);
-        configurePipe(BackendPipes.Names.ALERT_ACKNOWLEDGE, alertAckUrl, pipeModules, String.class);
-        configurePipe(BackendPipes.Names.ALERT_RESOLVE, alertResolveUrl, pipeModules, String.class);
-        configurePipe(BackendPipes.Names.FEEDS, pipeUrl, pipeModules, Feed.class);
-        configurePipe(BackendPipes.Names.FEED_METRICS, pipeUrl, pipeModules, Metric.class);
-        configurePipe(BackendPipes.Names.FEED_CHILD_RESOURCES, pipeUrl, pipeModules, Resource.class);
-        configurePipe(BackendPipes.Names.FEED_RESOURCES, pipeUrl, pipeModules, Resource.class);
-        configurePipe(BackendPipes.Names.METRICS, pipeUrl, pipeModules, Metric.class);
-        configurePipe(BackendPipes.Names.METRIC_DATA_AVAILABILITY, pipeUrl, pipeModules,
-                MetricAvailabilityBucket.class);
-        configurePipe(BackendPipes.Names.METRIC_DATA_COUNTER, pipeUrl, pipeModules, MetricCounterBucket.class);
-        configurePipe(BackendPipes.Names.METRIC_DATA_GAUGE, pipeUrl, pipeModules, MetricGaugeBucket.class);
-        configurePipe(BackendPipes.Names.NOTE, alertNoteUrl, pipeModules, Note.class);
-        configurePipe(BackendPipes.Names.OPERATIONS, pipeUrl, pipeModules, Operation.class);
-        configurePipe(BackendPipes.Names.OPERATION_PROPERTIES, pipeUrl, pipeModules, OperationProperties.class);
-        configurePipe(BackendPipes.Names.PERSONA, backendUrl, pipeModules, Persona.class);
-        configurePipe(BackendPipes.Names.TRIGGERS, pipeUrl, pipeModules, Trigger.class);
-        configurePipe(BackendPipes.Names.UPDATE_TRIGGER, triggerUpdateUrl ,pipeModules,String.class);
-    }
-
-    private AuthzModule getAuthorizationModule() {
-        return ModuleKeeper.modules.get("hawkular");
-    }
-
-    private PipeModule getPersonnelModule(Persona persona) {
-        return new BackendPersonnel(persona);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> void configurePipe(String pipeName, URL pipeUrl, List<PipeModule> pipeModules, Class<T> pipeClass) {
-        PipeConfiguration pipeConfiguration = PipeManager.config(pipeName, RestfulPipeConfiguration.class)
-                .withUrl(pipeUrl);
-
-        for (PipeModule pipeModule : pipeModules) {
-            pipeConfiguration.module(pipeModule);
-        }
-
-        pipeConfiguration.forClass(pipeClass);
-    }
-
-    public void authorize(@NonNull Activity activity, @NonNull Callback<String> callback) {
-        getAuthorizationModule().requestAccess(activity, callback);
-    }
-
-    public void deauthorize() {
-        AuthzModule authorizationModule = getAuthorizationModule();
-
-        if (authorizationModule.hasCredentials()) {
-            authorizationModule.deleteAccount();
-        }
-    }
-
-
-    public void getRetroAlerts(@NonNull Date startTime, @NonNull Date finishTime, @NonNull List<Trigger> triggers,
-                          @NonNull retrofit2.Callback<List<Alert>> callback) {
+    public void getAlerts(@NonNull Date startTime, @NonNull Date finishTime, @NonNull List<Trigger> triggers,
+                               @NonNull Callback<List<Alert>> callback) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(BackendPipes.Parameters.START_TIME, String.valueOf(startTime.getTime()));
         parameters.put(BackendPipes.Parameters.FINISH_TIME, String.valueOf(finishTime.getTime()));
-
-        if (triggers != null) {
-            parameters.put(BackendPipes.Parameters.TRIGGERS, Uris.getParameter(getTriggerIds(triggers)));
-        }
-        URI uri = Uris.getUri(BackendPipes.Paths.ALERTS, parameters);
 
         AlertService service = retrofit.create(AlertService.class);
         Call call = service.get(parameters);
@@ -219,171 +109,97 @@ public final class BackendClient {
         return triggerIds;
     }
 
-    public void acknowledgeAlert(@NonNull Alert alert,
-                                 @NonNull Callback<List<String>> callback) {
-        savePipe(BackendPipes.Names.ALERT_ACKNOWLEDGE, alert, callback);
-    }
-
-    public void acknowledgeRetroAlert(@NonNull Alert alert,
-                                 @NonNull retrofit2.Callback<List<String>> callback) {
+    public void acknowledgeAlert(@NonNull Alert alert, @NonNull Callback<List<String>> callback) {
 
         AlertService service = retrofit.create(AlertService.class);
-        Call call = service.postAckAlert();
+        Call call = service.ackAlert(alert.getId());
         call.enqueue(callback);
 
     }
 
-    public void resolveRetroAlert(@NonNull Alert alert,
-                                  @NonNull retrofit2.Callback<List<String>> callback) {
+    public void resolveRetroAlert(@NonNull Alert alert, @NonNull Callback<List<String>> callback) {
 
         AlertService service = retrofit.create(AlertService.class);
-        Call call = service.postResolveAlert();
+        Call call = service.resolveAlert(alert.getId());
         call.enqueue(callback);
     }
 
-    public void resolveAlert(@NonNull Alert alert,
-                             @NonNull Callback<List<String>> callback) {
-        savePipe(BackendPipes.Names.ALERT_RESOLVE, alert, callback);
-    }
+    public void noteOnAlert(@NonNull Note note, @NonNull String alertId, @NonNull Callback<List<String>> callback) {
 
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("user", note.getUser());
+        parameters.put("text", note.getMessage());
 
-    public void noteOnAlert(@NonNull Note note,
-                            @NonNull Callback<List<String>> callback) {
-        savePipe(BackendPipes.Names.NOTE, note, callback);
+        AlertService service = retrofit.create(AlertService.class);
+        Call call = service.noteOnAlert(parameters, alertId);
+        call.enqueue(callback);
     }
 
     public void updateTrigger(@NonNull Trigger trigger, @NonNull Callback<List<String>> callback){
-        savePipe(BackendPipes.Names.UPDATE_TRIGGER,trigger,callback);
-    }
-
-
-    public void getFeeds(@NonNull Callback<List<Feed>> callback) {
-        URI uri = Uris.getUri(BackendPipes.Paths.FEEDS);
-
-        readPipe(BackendPipes.Names.FEEDS, uri, callback);
-    }
-
-    public void getOpreations(@NonNull Callback<List<Operation>> callback, Resource resource) {
-        URI uri = Uris.getUri(CanonicalPath.getByString(resource.getType().getPath())
-                .fix(BackendPipes.Paths.OPERATIONS));
-
-        readPipe(BackendPipes.Names.OPERATIONS, uri, callback);
-    }
-
-    public void getOperationProperties(@NonNull Callback<List<OperationProperties>> callback, Operation operation, Resource resource) {
-        URI uri = Uris.getUri(CanonicalPath.getByString(resource.getType().getPath())
-                .fix(BackendPipes.Paths.OPERATIONS)+";name="+operation.getName()+"/d;parameterTypes");
-
-        readPipe(BackendPipes.Names.OPERATION_PROPERTIES, uri, callback);
-    }
-
-    public void getResourcesFromFeed(@NonNull Callback<List<Resource>> callback, Feed feed) {
-        URI uri = Uris.getUri(CanonicalPath.getByString(feed.getPath()).fix(BackendPipes.Paths.FEED_RESOURCES));
-
-        readPipe(BackendPipes.Names.FEED_RESOURCES, uri, callback);
-    }
-
-
-    public void getRecResourcesFromFeed(@NonNull Callback<List<Resource>> callback, Resource resource) {
-
-        URI uri = Uris.getUri(CanonicalPath.getByString(resource.getPath()).
-                fix(BackendPipes.Paths.FEED_CHILD_RESOURCES));
-
-        readPipe(BackendPipes.Names.FEED_CHILD_RESOURCES, uri, callback);
-    }
-
-
-    public void getRetroMetricsFromFeed(@NonNull retrofit2.Callback<List<Metric>> callback, Resource resource) {
-        URI uri = Uris.getUri(CanonicalPath.getByString(resource.getPath()).
-                fix(BackendPipes.Paths.FEED_METRICS));
-
-        MetricService service = retrofit.create(MetricService.class);
-        Call call = service.getMetricFromFeed();
+        TriggerService service = retrofit.create(TriggerService.class);
+        Call call = service.updateTrigger(trigger.getId(), trigger);
         call.enqueue(callback);
     }
 
 
-    public void getRetroMetrics(@NonNull Environment environment, @NonNull Resource resource,
-                                @NonNull retrofit2.Callback<List<Metric>> callback){
+    public void getFeeds(@NonNull AbstractCallback<List<Feed>> callback) {
+        // TODO : after moving to retrofit complete
+    }
 
-        URI uri = Uris.getUri(CanonicalPath.getByString(resource.getPath()).
-                fix(BackendPipes.Paths.METRICS));
+    public void getOpreations(@NonNull AbstractCallback<List<Operation>> callback, Resource resource) {
+        // TODO : after moving to retrofit complete
+    }
 
-        MetricService service = retrofit.create(MetricService.class);
+    public void getOperationProperties(@NonNull AbstractCallback<List<OperationProperties>> callback, Operation operation, Resource resource) {
+        // TODO : after moving to retrofit complete
+    }
 
-        Call call = service.get();
-        call.enqueue(callback);
+    public void getResourcesFromFeed(@NonNull AbstractCallback<List<Resource>> callback, Feed feed) {
+        // TODO : after moving to retrofit complete
     }
 
 
-    public void getRetroMetricData(@NonNull Metric metric, long bucket,
-                                   @NonNull Date startTime, @NonNull Date finishTime,
-                                   @NonNull retrofit2.Callback<List<MetricBucket>> callback) {
+    public void getRecResourcesFromFeed(@NonNull AbstractCallback<List<Resource>> callback, Resource resource) {
+        // TODO : after moving to retrofit complete
+    }
+
+
+    public void getMetricsFromFeed(@NonNull AbstractCallback<List<Metric>> callback, Resource resource) {
+        // TODO : after moving to retrofit complete
+    }
+
+
+    public void getMetrics(@NonNull Resource resource, @NonNull Callback<List<Metric>> callback){
+        // TODO : after moving to retrofit complete
+    }
+
+
+    public void getMetricData(@NonNull Metric metric, long bucket,
+                                          @NonNull Date startTime, @NonNull Date finishTime,
+                                          @NonNull Callback<List<MetricBucket>> callback) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTime()));
         parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
         parameters.put(BackendPipes.Parameters.BUCKETS, String.valueOf(bucket));
 
-        String path;
-        String name;
-
-        if (metric.getConfiguration().getType()== MetricType.AVAILABILITY) {
-            path = BackendPipes.Paths.METRIC_DATA_AVAILABILITY;
-            name = BackendPipes.Names.METRIC_DATA_AVAILABILITY;
-        } else if (metric.getConfiguration().getType()== MetricType.COUNTER) {
-            path = BackendPipes.Paths.METRIC_DATA_COUNTER;
-            name = BackendPipes.Names.METRIC_DATA_COUNTER;
-        } else {
-            path = BackendPipes.Paths.METRIC_DATA_GAUGE;
-            name = BackendPipes.Names.METRIC_DATA_GAUGE;
-        }
-
-        URI uri = Uris.getUri(String.format(path, Uris.getEncodedParameter(metric.getId())), parameters);
-
-        //readPipe(name, uri, callback);
         MetricService service = retrofit.create(MetricService.class);
-        Call call = service.getMetricData(uri.toString());
-        call.enqueue(callback);
-    }
 
-    public void getRetroTriggers(@NonNull retrofit2.Callback<List<Trigger>> callback) {
-        URI uri = Uris.getUri(BackendPipes.Paths.TRIGGERS);
-        TriggerService service = retrofit.create(TriggerService.class);
-
-
-        Map<String, String> map = new HashMap<>();
-        String cred = new String(Base64.encode(("jdoe:password").getBytes(), Base64.NO_WRAP));
-        map.put("Authorization", "Basic "+cred);
-        map.put("Hawkular-Tenant", "hawkular");
-
-        Call call = service.get(map);
-        call.enqueue(callback);
-
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> void readPipe(String pipeName, URI uri, Callback<List<T>> callback) {
-        getPipe(pipeName).read(getFilter(uri), callback);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> void savePipe(String pipeName, Object object, Callback<List<T>> callback) {
-        getPipe(pipeName).save(object, callback);
-    }
-
-    private LoaderPipe getPipe(String pipeName) {
-        if (activity != null) {
-            return PipeManager.getPipe(pipeName, activity);
-        } else {
-            return PipeManager.getPipe(pipeName, fragment, fragment.getActivity().getApplicationContext());
+        Call call = null;
+        if (metric.getConfiguration().getType()== MetricType.AVAILABILITY) {
+            call = service.getMetricAvailabilityData(metric.getId(), parameters);
+        } else if (metric.getConfiguration().getType()== MetricType.COUNTER) {
+            call = service.getMetricAvailabilityData(metric.getId(), parameters);
+        } else if (metric.getConfiguration().getType()== MetricType.GAUGE) {
+            call = service.getMetricAvailabilityData(metric.getId(), parameters);
         }
+
+        call.enqueue(callback);
     }
 
-    private ReadFilter getFilter(URI uri) {
-        ReadFilter filter = new ReadFilter();
+    public void getTriggers(@NonNull Callback<List<Trigger>> callback) {
+        TriggerService service = retrofit.create(TriggerService.class);
+        Call call = service.get();
+        call.enqueue(callback);
 
-        filter.setLinkUri(uri);
-
-        return filter;
     }
 }

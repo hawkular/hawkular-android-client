@@ -168,7 +168,7 @@ public final class MetricCounterFragment extends Fragment implements SwipeRefres
 
     private void setUpMetricDataForced() {
         metric_name.setText(getMetric().getName());
-        BackendClient.of(this).getRetroMetricData(
+        BackendClient.of(this).getMetricData(
                 getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback(this));
     }
 

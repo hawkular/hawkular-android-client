@@ -17,9 +17,6 @@
 
 package org.hawkular.client.android.backend.model;
 
-
-import org.jboss.aerogear.android.core.RecordId;
-
 import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
@@ -28,10 +25,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 public final class Note implements Parcelable {
-
-    @RecordId
-    @SerializedName("alertid")
-    private String alertid;
 
     @SerializedName("user")
     private String user;
@@ -50,19 +43,10 @@ public final class Note implements Parcelable {
     }
 
 
-    public Note(String alertid, String user, String message, long timestamp) {
-        this.alertid = alertid;
+    public Note(String user, String message, long timestamp) {
         this.user = user;
         this.message = message;
         this.timestamp = timestamp;
-    }
-
-    public String getAlertid() {
-        return alertid;
-    }
-
-    public void setAlertid(String alertid) {
-        this.alertid = alertid;
     }
 
     public String getUser() {
@@ -90,7 +74,6 @@ public final class Note implements Parcelable {
     };
 
     private Note(Parcel parcel) {
-        this.alertid = parcel.readString();
         this.user = parcel.readString();
         this.timestamp = parcel.readLong();
         this.message = parcel.readString();
@@ -98,7 +81,6 @@ public final class Note implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeString(alertid);
         parcel.writeString(user);
         parcel.writeLong(timestamp);
         parcel.writeString(message);
