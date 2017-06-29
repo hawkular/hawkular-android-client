@@ -47,6 +47,9 @@ public class TriggerSetupActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    @BindView(R.id.et_tenant_id)
+    EditText id;
+
     @BindView(R.id.et_name)
     EditText textName;
 
@@ -108,9 +111,12 @@ public class TriggerSetupActivity extends AppCompatActivity {
         FullTrigger trigger = null;
 
         if (textName.getText().toString()!=null) {
-            trigger = new FullTrigger(textName.getText().toString(),null,textName.getText().toString(),switchEnabled.isChecked(),severitySpinner.getSelectedItem().toString());
+            trigger = new FullTrigger(id.getText().toString(),null,textName.getText().toString(),switchEnabled.isChecked(),severitySpinner.getSelectedItem().toString());
         }
 
+        else{
+            Toast.makeText(getApplicationContext(),"Trigger NAme cannot be empty",Toast.LENGTH_SHORT);
+        }
         trigger.setAutoDisable(switchAutoDisable.isChecked());
         trigger.setType(spinnerType.getSelectedItem().toString());
         trigger.setEventType(spinnerEventType.getSelectedItem().toString());
@@ -137,11 +143,15 @@ public class TriggerSetupActivity extends AppCompatActivity {
         @Override
         public void onResponse(Call call, Response response) {
 
-            if(response.code()==200){
+            if (response.code() == 200) {
                 finish();
-            }
-        }
+            } else {
+                Snackbar snackbar = Snackbar.make(getCurrentFocus(),response.message(),Snackbar.LENGTH_LONG);
+                snackbar.show();
 
+            }
+
+        }
         @Override
         public void onFailure(Call call, Throwable t) {
 

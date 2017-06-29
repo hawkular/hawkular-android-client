@@ -116,7 +116,7 @@
   <string name="favourites_removed">Removed from Favourites</string>
   <string name="trigger_on">Trigger is On</string>
   <string name="trigger_off">Trigger is Off</string>
-  <string name="tenantId">Tenant ID</string>
+  <string name="tenantId">ID</string>
   <string name="hawkular">hawkular</string>
   <string name="id">ID</string>
   <string name="name">Name</string>
