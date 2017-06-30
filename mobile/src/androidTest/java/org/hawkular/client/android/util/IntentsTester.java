@@ -16,12 +16,15 @@
  */
 package org.hawkular.client.android.util;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
+
 import org.assertj.android.api.Assertions;
 import org.hawkular.client.android.activity.AlertsActivity;
-import org.hawkular.client.android.activity.AuthorizationActivity;
 import org.hawkular.client.android.activity.MetricActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
-import org.hawkular.client.android.activity.SettingsActivity;
 import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricConfiguration;
@@ -30,15 +33,9 @@ import org.hawkular.client.android.backend.model.MetricType;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.ResourceProperties;
 import org.hawkular.client.android.backend.model.ResourceType;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import android.content.Context;
-import android.content.Intent;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public final class IntentsTester {
