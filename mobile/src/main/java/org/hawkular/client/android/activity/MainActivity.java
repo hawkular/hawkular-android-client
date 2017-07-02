@@ -16,7 +16,6 @@
  */
 package org.hawkular.client.android.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,10 +44,8 @@ import org.hawkular.client.android.explorer.InventoryExplorerActivity;
 import org.hawkular.client.android.fragment.FavMetricsFragment;
 import org.hawkular.client.android.fragment.TriggersFragment;
 import org.hawkular.client.android.util.Fragments;
-import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Ports;
 import org.hawkular.client.android.util.Preferences;
-import org.jboss.aerogear.android.core.Callback;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,7 +62,7 @@ import icepick.State;
  * Manages personas and a current mode, i. e. Metrics and Alerts.}
  */
 public final class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, Callback<String> {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -116,7 +113,6 @@ public final class MainActivity extends AppCompatActivity
         atHome = false;
 
         // -- Bind objects
-
         ButterKnife.bind(this);
 
         View headerView = navigation.getHeaderView(0);
@@ -127,11 +123,7 @@ public final class MainActivity extends AppCompatActivity
         personasActionIcon = ButterKnife.findById(headerView, R.id.image_personas_action);
         title.setText(R.string.title_favourites);
 
-        // -- Setup State
-        Icepick.restoreInstanceState(this, state);
-
         // -- Toolbar
-
         setSupportActionBar(toolbar);
 
         // -- Navigation
@@ -145,6 +137,16 @@ public final class MainActivity extends AppCompatActivity
 
         setUpBackendClient();
 
+        // -- Setup Navigation Header
+        host.setText(Preferences.of(this).host().get());
+        persona.setText(getPersona().getId());
+
+        // By default show favorites and set it as selected on drawer menu
+        navigation.getMenu().findItem(R.id.menu_favourites).setChecked(true);
+        showFavourites();
+
+        // -- Retrieve old screen state
+        Icepick.restoreInstanceState(this, state);
     }
 
     @Override
@@ -168,25 +170,6 @@ public final class MainActivity extends AppCompatActivity
         Icepick.saveInstanceState(this, state);
     }
 
-    @Override
-    protected void onActivityResult(int request, int result, Intent intent) {
-        super.onActivityResult(request, result, intent);
-
-        if (request == Intents.Requests.AUTHORIZATION) {
-            if (result == Activity.RESULT_OK) {
-                setUpBackendClient();
-            } else {
-                finish();
-            }
-        }
-
-        if (request == Intents.Requests.DEAUTHORIZATION) {
-            if (result == Activity.RESULT_OK) {
-                setUpBackendClient();
-            }
-        }
-    }
-
     // -- NavigationView.OnNavigationItemSelectedListener -----------------------------------------
 
     @Override
@@ -201,11 +184,6 @@ public final class MainActivity extends AppCompatActivity
             case R.id.menu_alerts:
                 showAlerts();
                 menuItem.setChecked(true);
-                break;
-
-            case R.id.menu_settings:
-                Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
-                startActivityForResult(settingsIntent, Intents.Requests.DEAUTHORIZATION);
                 break;
 
             case R.id.menu_feedback:
@@ -223,6 +201,11 @@ public final class MainActivity extends AppCompatActivity
                 startActivity(new Intent(getApplicationContext(), InventoryExplorerActivity.class));
                 break;
 
+            case R.id.menu_logout:
+                BackendClient.of(this).deauthorize();
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                break;
+
             default:
                 break;
         }
@@ -233,29 +216,6 @@ public final class MainActivity extends AppCompatActivity
 
         return true;
 
-    }
-
-    // -- Callback --------------------------------------------------------------------------------
-
-    @Override
-    public void onSuccess(String authorization) {
-        if (currentNavigationId == 0) {
-            showNavigation(R.id.menu_favourites);
-
-            showFavourites();
-        } else {
-            showNavigation(currentNavigationId);
-        }
-
-        // -- Setup Navigation Header
-        host.setText(Preferences.of(this).host().get());
-        persona.setText(getPersona().getId());
-    }
-
-    @Override
-    public void onFailure(Exception e) {
-        Intent intent = new Intent(getApplicationContext(), AuthorizationActivity.class);
-        startActivityForResult(intent, Intents.Requests.AUTHORIZATION);
     }
 
     // -- Gets ------------------------------------------------------------------------------------
@@ -276,8 +236,8 @@ public final class MainActivity extends AppCompatActivity
         int backendPort = Preferences.of(this).port().get();
 
         if (backendHost.isEmpty() && !Ports.isCorrect(backendPort)) {
-            Intent intent = new Intent(getApplicationContext(), AuthorizationActivity.class);
-            startActivityForResult(intent, Intents.Requests.AUTHORIZATION);
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
             return;
         }
 
@@ -288,8 +248,6 @@ public final class MainActivity extends AppCompatActivity
             BackendClient.of(this).configureAuthorization(getApplicationContext());
             BackendClient.of(this).configureCommunication(backendHost, backendPort, persona);
         }
-
-        BackendClient.of(this).authorize(this, this);
     }
 
     // -- Navigation ------------------------------------------------------------------------------
@@ -299,7 +257,6 @@ public final class MainActivity extends AppCompatActivity
         drawer.openDrawer(GravityCompat.START);
     }
 
-    // --- OnCLick Event for clicking Fab --- Adds a new trigger ---------
 
     @OnClick(R.id.fab)
     void onClickFab(){
@@ -327,7 +284,6 @@ public final class MainActivity extends AppCompatActivity
         adapter.addFragment(new FavMetricsFragment(), "Metrics");
         adapter.addFragment(triggersFragment, "Triggers");
         adapter.notifyDataSetChanged();
-
     }
 
     private void showAlerts() {

@@ -17,30 +17,26 @@
 package org.hawkular.client.android.activity;
 
 import java.net.URL;
-import java.util.List;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.auth.AuthData;
 import org.hawkular.client.android.backend.BackendClient;
-import org.hawkular.client.android.backend.model.Environment;
+import org.hawkular.client.android.backend.BackendEndpoints;
 import org.hawkular.client.android.backend.model.Persona;
-import org.hawkular.client.android.util.ErrorUtil;
-import org.hawkular.client.android.util.Intents;
+import org.hawkular.client.android.util.Android;
 import org.hawkular.client.android.util.Preferences;
 import org.hawkular.client.android.util.Urls;
 import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
 import org.jboss.aerogear.android.pipe.http.HttpException;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -54,17 +50,18 @@ import timber.log.Timber;
 
 public class LoginActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-
     @BindView(R.id.username)
     EditText mUsername;
 
     @BindView(R.id.password)
     EditText mPassword;
 
-    private String host;
-    private String port;
+    @BindView(R.id.host)
+    EditText mHost;
+
+    @BindView(R.id.port)
+    EditText mPort;
+
     private ProgressDialog authIndicator;
 
     @Override
@@ -72,52 +69,88 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Bundle bundle = getIntent().getExtras();
-        host = bundle.getString(Intents.Extras.HOST);
-        port = bundle.getString(Intents.Extras.PORT);
+        // -- Bind objects
 
         ButterKnife.bind(this);
-        setSupportActionBar(mToolbar);
+
+        // -- Debug helper
+        if (Android.isDebugging()) {
+            mHost.setText(BackendEndpoints.Demo.HOST);
+            mPort.setText(BackendEndpoints.Demo.PORT);
+        }
     }
 
     @OnClick(R.id.button_login)
     public void login() {
 
+        if(!validForm()) {
+            return;
+        }
+
         try {
+
+            String host = mHost.getText().toString().trim();
+            String port = mPort.getText().toString().trim();
+            String user = mUsername.getText().toString().trim();
+            String pass = mPassword.getText().toString().trim();
 
             URL backendUrl;
             if (port.isEmpty()) {
-                backendUrl = Urls.getUrl(host.trim());
+                backendUrl = Urls.getUrl(host);
             } else {
-                backendUrl = Urls.getUrl(host.trim(), Integer.valueOf(port));
+                backendUrl = Urls.getUrl(host, Integer.valueOf(port));
             }
 
-            String username = mUsername.getText().toString();
-            String password = mPassword.getText().toString();
-
             BackendClient.of(this).configureAuthorization(getApplicationContext());
+
+            // Force logout before login
             BackendClient.of(this).deauthorize();
 
+            // Authentication
+
             Intent intent = this.getIntent();
-            intent.putExtra(AuthData.Credentials.USERNAME, username);
-            intent.putExtra(AuthData.Credentials.PASSWORD, password);
+            intent.putExtra(AuthData.Credentials.USERNAME, user);
+            intent.putExtra(AuthData.Credentials.PASSWORD, pass);
             intent.putExtra(AuthData.Credentials.URL, backendUrl.toString());
             intent.putExtra(AuthData.Credentials.CONTAIN, "true");
 
             BackendClient.of(this).authorize(this, new AuthorizeCallback());
-            authIndicator=new ProgressDialog(this);
+
+            // Progress
+
+            authIndicator = new ProgressDialog(this);
             authIndicator.setCancelable(false);
-            authIndicator.setMessage("logging in...");
+            authIndicator.setMessage(getString(R.string.logging));
             authIndicator.show();
 
         } catch (RuntimeException e) {
             Timber.d(e, "Authorization failed.");
-            ErrorUtil.showError(findViewById(android.R.id.content),R.string.error_authorization_host_port);
+            showError(R.string.error_authorization_host_port);
         }
 
     }
 
+    private boolean validForm() {
+
+        boolean check = true;
+
+        TextView[] fields = new TextView[] {mHost, mUsername, mPassword};
+
+        for (TextView field : fields) {
+            if(field.getText().toString().trim().isEmpty()) {
+                field.setError(getString(R.string.cannot_be_blank));
+                check = false;
+            }
+        }
+
+        return check;
+
+    }
+
     private void setUpBackendCommunication(Persona persona) {
+        String host = mHost.getText().toString().trim();
+        String port = mPort.getText().toString().trim();
+
         if (port.isEmpty()) {
             BackendClient.of(this).configureCommunication(host.trim(), persona);
         } else {
@@ -125,27 +158,37 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void succeed(Persona persona) {
-        // Save Backend preferences
+    private void succeed() {
+        String host = mHost.getText().toString().trim();
+        String port = mPort.getText().toString().trim();
+
+        // Save backend preferences
         Preferences.of(this).host().set(host.trim());
         if (!port.isEmpty()) Preferences.of(this).port().set(Integer.valueOf(port));
-        Preferences.of(this).personaId().set(persona.getId());
-        //Preferences.of(this).environment().set(environment.getId());
-        if (authIndicator.isShowing()){
+
+        if (authIndicator.isShowing()) {
             authIndicator.dismiss();
         }
-        setResult(Activity.RESULT_OK);
-        finish();
+
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        finish();
     }
 
+    private void showError(@StringRes int errorMessage) {
+        Snackbar
+                .make(findViewById(android.R.id.content), errorMessage, Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+
     private static final class AuthorizeCallback extends AbstractActivityCallback<String> {
+
         @Override
         public void onSuccess(String authorization) {
             LoginActivity activity = (LoginActivity) getActivity();
 
             activity.setUpBackendCommunication(new Persona("hawkular"));
-            activity.succeed(new Persona("hawkular"));
+            ((LoginActivity) getActivity()).succeed();
         }
 
         @Override
@@ -153,56 +196,30 @@ public class LoginActivity extends AppCompatActivity {
             Timber.d(e, "Authorization failed.");
 
             LoginActivity activity = (LoginActivity) getActivity();
-            if (activity.authIndicator.isShowing()){
-                activity.authIndicator.setMessage("Error occurred");
+
+            if (activity.authIndicator.isShowing()) {
                 activity.authIndicator.dismiss();
             }
+
             if (e instanceof HttpException) {
-                switch (((HttpException)e).getStatusCode()){
+                switch (((HttpException) e).getStatusCode()) {
                     case 404:
-                        ErrorUtil.showError(activity.findViewById(android.R.id.content),R.string.error_not_found);
+                        activity.showError(R.string.error_not_found);
                         break;
                     case 401:
-                        ErrorUtil.showError(activity.findViewById(android.R.id.content),R.string.error_unauth);
+                        activity.showError(R.string.error_unauth);
                         break;
                     default:
-                        ErrorUtil.showError(activity.findViewById(android.R.id.content),R.string.error_general);
+                        activity.showError(R.string.error_general);
                 }
             } else if (e instanceof RuntimeException) {
-                ErrorUtil.showError(activity.findViewById(android.R.id.content),R.string.error_internet_connection);
+                activity.showError(R.string.error_internet_connection);
             } else {
-                ErrorUtil.showError(activity.findViewById(android.R.id.content),R.string.error_general);
+                activity.showError(R.string.error_general);
             }
         }
 
     }
-
-    private static final class PersonasCallback extends AbstractActivityCallback<List<Persona>> {
-        @Override
-        public void onSuccess(List<Persona> personas) {
-            if (personas.isEmpty()) {
-                onFailure(new RuntimeException("Personas list is empty, this should not happen."));
-                return;
-            }
-
-            // Unfortunately AeroGear does not support single item fetching.
-            Persona persona = personas.get(0);
-            LoginActivity activity = (LoginActivity) getActivity();
-
-            activity.setUpBackendCommunication(persona);
-        }
-
-        @Override
-        public void onFailure(Exception e) {
-            LoginActivity activity = (LoginActivity) getActivity();
-            if (activity.authIndicator.isShowing()){
-                activity.authIndicator.setMessage("Error occurred");
-                activity.authIndicator.dismiss();
-            }
-            Timber.d(e, "Personas fetching failed.");
-        }
-    }
-
 
 
 }

@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import org.hawkular.client.android.activity.AlertsActivity;
-import org.hawkular.client.android.activity.AuthorizationActivity;
 import org.hawkular.client.android.activity.LoginActivity;
 import org.hawkular.client.android.activity.MetricActivity;
 import org.hawkular.client.android.activity.MetricsActivity;
