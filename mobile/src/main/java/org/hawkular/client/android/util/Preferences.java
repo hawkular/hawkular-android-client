@@ -43,6 +43,9 @@ public final class Preferences {
 
         public static final String BACKEND_HOST = "host";
         public static final String BACKEND_PORT = "port";
+        public static final String BACKEND_URL= "url";
+        public static final String BACKEND_USERNAME= "username";
+        public static final String BACKEND_PASSWORD= "password";
         public static final String BACKEND_PERSONA_ID = "persona-id";
         public static final String BACKEND_PERSONA_NAME = "persona-name";
         public static final String BACKEND_ENVIRONMENT = "environment";
@@ -85,6 +88,21 @@ public final class Preferences {
     @NonNull
     public IntPreference port() {
         return new IntPreference(serverPreferences, Keys.BACKEND_PORT, Defaults.BACKEND_PORT);
+    }
+
+    @NonNull
+    public StringPreference url() {
+        return new StringPreference(serverPreferences, Keys.BACKEND_URL);
+    }
+
+    @NonNull
+    public StringPreference username() {
+        return new StringPreference(serverPreferences, Keys.BACKEND_USERNAME);
+    }
+
+    @NonNull
+    public StringPreference password() {
+        return new StringPreference(serverPreferences, Keys.BACKEND_PASSWORD);
     }
 
     @NonNull

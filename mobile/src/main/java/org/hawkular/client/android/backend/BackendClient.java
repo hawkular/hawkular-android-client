@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.Metric;
@@ -37,10 +38,12 @@ import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.service.AlertService;
 import org.hawkular.client.android.service.MetricService;
 import org.hawkular.client.android.service.TriggerService;
+import org.hawkular.client.android.util.Preferences;
 import org.jboss.aerogear.android.pipe.callback.AbstractCallback;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.Fragment;
@@ -201,5 +204,27 @@ public final class BackendClient {
         Call call = service.get();
         call.enqueue(callback);
 
+    }
+
+    public void configureAuthorization(String url, String username, String password) {
+        HawkularApplication.setUpRetrofit(url, username, password);
+    }
+
+
+    public void authorize(Callback<List<Metric>> callback) {
+        MetricService service = retrofit.create(MetricService.class);
+        Call call = service.getAvailabilityMetrics();
+        call.enqueue(callback);
+    }
+
+    public void deauthorize(Context context) {
+        Preferences.of(context).authenticated().set(false);
+    }
+
+    public void configureAuthorization(Context context) {
+        String url = Preferences.of(context).url().get();
+        String username = Preferences.of(context).username().get();
+        String password = Preferences.of(context).password().get();
+        HawkularApplication.setUpRetrofit(url, username, password);
     }
 }

@@ -20,7 +20,6 @@ import java.io.IOException;
 
 import org.hawkular.client.android.push.PushClient;
 import org.hawkular.client.android.util.Android;
-import org.hawkular.client.android.util.Preferences;
 
 import android.app.Application;
 import android.os.StrictMode;
@@ -37,8 +36,6 @@ public final class HawkularApplication extends Application {
 
     public static Retrofit retrofit;
 
-    public Boolean authenticaed;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -48,11 +45,9 @@ public final class HawkularApplication extends Application {
 
         setUpPush();
 
-        setUpRetrofit();
-
     }
 
-    public void setUpRetrofit() {
+    public static void setUpRetrofit(String url, final String username, final String password) {
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(new Interceptor() {
@@ -60,9 +55,7 @@ public final class HawkularApplication extends Application {
             public Response intercept(Interceptor.Chain chain) throws IOException {
                 Request original = chain.request();
 
-                authenticaed = Preferences.of(getApplicationContext()).authenticated().get();
-
-                String cred = new String(Base64.encode(("jdoe:password").getBytes(), Base64.NO_WRAP));
+                String cred = new String(Base64.encode((username + ":" +password).getBytes(), Base64.NO_WRAP));
 
                 Request request = original.newBuilder()
                         .header("Hawkular-Tenant", "hawkular")
@@ -77,7 +70,7 @@ public final class HawkularApplication extends Application {
         OkHttpClient client = httpClient.build();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://livingontheedge.hawkular.org/")
+                .baseUrl(url)
                 .addConverterFactory(MoshiConverterFactory.create())
                 .client(client)
                 .build();
