@@ -132,6 +132,7 @@
   <string name="autoResolveMatch">Auto Resolve Match</string>
   <string name="enabled">Enabled</string>
   <string name="firingMatch">Firing Match</string>
+  <string name="error_agin">Error occered. Please Try again later</string>
 
   <string-array name="typeEntries">
     <item>STANDARD</item>

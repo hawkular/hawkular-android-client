@@ -17,17 +17,15 @@
 package org.hawkular.client.android.activity;
 
 import java.net.URL;
+import java.util.List;
 
 import org.hawkular.client.android.R;
-import org.hawkular.client.android.auth.AuthData;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.BackendEndpoints;
-import org.hawkular.client.android.backend.model.Persona;
+import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.util.Android;
 import org.hawkular.client.android.util.Preferences;
 import org.hawkular.client.android.util.Urls;
-import org.jboss.aerogear.android.pipe.callback.AbstractActivityCallback;
-import org.jboss.aerogear.android.pipe.http.HttpException;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -40,6 +38,9 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -63,6 +64,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText mPort;
 
     private ProgressDialog authIndicator;
+
+    private URL backendUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,27 +97,15 @@ public class LoginActivity extends AppCompatActivity {
             String user = mUsername.getText().toString().trim();
             String pass = mPassword.getText().toString().trim();
 
-            URL backendUrl;
             if (port.isEmpty()) {
                 backendUrl = Urls.getUrl(host);
             } else {
                 backendUrl = Urls.getUrl(host, Integer.valueOf(port));
             }
 
-            BackendClient.of(this).configureAuthorization(getApplicationContext());
+            BackendClient.of(this).configureAuthorization(backendUrl.toString(), user, pass);
 
-            // Force logout before login
-            BackendClient.of(this).deauthorize();
-
-            // Authentication
-
-            Intent intent = this.getIntent();
-            intent.putExtra(AuthData.Credentials.USERNAME, user);
-            intent.putExtra(AuthData.Credentials.PASSWORD, pass);
-            intent.putExtra(AuthData.Credentials.URL, backendUrl.toString());
-            intent.putExtra(AuthData.Credentials.CONTAIN, "true");
-
-            BackendClient.of(this).authorize(this, new AuthorizeCallback());
+            BackendClient.of(this).authorize(new AuthorizeCallback(this));
 
             // Progress
 
@@ -147,24 +138,15 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void setUpBackendCommunication(Persona persona) {
-        String host = mHost.getText().toString().trim();
-        String port = mPort.getText().toString().trim();
-
-        if (port.isEmpty()) {
-            BackendClient.of(this).configureCommunication(host.trim(), persona);
-        } else {
-            BackendClient.of(this).configureCommunication(host.trim(), Integer.valueOf(port), persona);
-        }
-    }
-
     private void succeed() {
-        String host = mHost.getText().toString().trim();
-        String port = mPort.getText().toString().trim();
 
-        // Save backend preferences
-        Preferences.of(this).host().set(host.trim());
-        if (!port.isEmpty()) Preferences.of(this).port().set(Integer.valueOf(port));
+        String username = mUsername.getText().toString();
+        String password = mPassword.getText().toString();
+
+        Preferences.of(getApplicationContext()).authenticated().set(true);
+        Preferences.of(getApplicationContext()).url().set(backendUrl.toString());
+        Preferences.of(getApplicationContext()).username().set(username);
+        Preferences.of(getApplicationContext()).password().set(password);
 
         if (authIndicator.isShowing()) {
             authIndicator.dismiss();
@@ -181,44 +163,56 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private static final class AuthorizeCallback extends AbstractActivityCallback<String> {
+    private static final class AuthorizeCallback implements Callback<List<Metric>> {
 
-        @Override
-        public void onSuccess(String authorization) {
-            LoginActivity activity = (LoginActivity) getActivity();
+        LoginActivity activity;
 
-            activity.setUpBackendCommunication(new Persona("hawkular"));
-            ((LoginActivity) getActivity()).succeed();
+        public AuthorizeCallback(LoginActivity activity) {
+            this.activity = activity;
         }
 
-        @Override
-        public void onFailure(Exception e) {
-            Timber.d(e, "Authorization failed.");
+        @Override public void onResponse(Call<List<Metric>> call, Response<List<Metric>> response) {
+            if (response.isSuccessful()){
+                getActivity().succeed();
+            }
+            else {
+                LoginActivity activity = getActivity();
+                if (activity.authIndicator.isShowing()){
+                    activity.authIndicator.setMessage("Error occurred");
+                    activity.authIndicator.dismiss();
+                }
+                    switch (response.code()){
+                        case 404:
+                            activity.showError(R.string.error_not_found);
+                            break;
+                        case 401:
+                            activity.showError(R.string.error_unauth);
+                            break;
+                        default:
+                            activity.showError(R.string.error_general);
+                    }
+                }
+        }
 
-            LoginActivity activity = (LoginActivity) getActivity();
+        @Override public void onFailure(Call<List<Metric>> call, Throwable t) {
+            Timber.d(t, "Authorization failed.");
 
-            if (activity.authIndicator.isShowing()) {
-                activity.authIndicator.dismiss();
+            if (getActivity().authIndicator.isShowing()) {
+                getActivity().authIndicator.dismiss();
             }
 
-            if (e instanceof HttpException) {
-                switch (((HttpException) e).getStatusCode()) {
-                    case 404:
-                        activity.showError(R.string.error_not_found);
-                        break;
-                    case 401:
-                        activity.showError(R.string.error_unauth);
-                        break;
-                    default:
-                        activity.showError(R.string.error_general);
-                }
-            } else if (e instanceof RuntimeException) {
+            if (t instanceof RuntimeException) {
                 activity.showError(R.string.error_internet_connection);
-            } else {
+            }
+            else {
                 activity.showError(R.string.error_general);
             }
+
         }
 
+        public LoginActivity getActivity() {
+            return activity;
+        }
     }
 
 

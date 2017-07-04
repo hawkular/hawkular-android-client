@@ -83,8 +83,6 @@ public final class SettingsFragment extends PreferenceFragmentCompat implements 
         Preferences.of(activity).personaName().delete();
         Preferences.of(activity).environment().delete();
 
-        BackendClient.of(this).deauthorize();
-
         // TODO: remove after upstream fix.
         // https://issues.jboss.org/browse/AGDROID-485
         Cookies.clear();

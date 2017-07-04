@@ -161,6 +161,7 @@ dependencies {
 
     provided "frankiesardo:icepick-processor:3.1.0"
 
+
     compile "com.android.support:appcompat-v7:${supportLibraryVersion}"
     compile "com.android.support:design:${supportLibraryVersion}"
     compile "com.android.support:preference-v7:${supportLibraryVersion}"
@@ -173,6 +174,8 @@ dependencies {
     compile "com.jakewharton.timber:timber:3.1.0"
     compile "com.squareup.okhttp:okhttp:2.7.5"
     compile "com.squareup.okhttp:okhttp-ws:2.7.5"
+    compile "com.squareup.retrofit2:retrofit:2.2.0"
+    compile 'com.squareup.retrofit2:converter-moshi:2.2.0'
     compile "info.metadude.android:typed-preferences:2.0.0"
     compile "org.jboss.aerogear:aerogear-android-authz:3.0.0"
     compile "org.jboss.aerogear:aerogear-android-pipe:3.1.0"

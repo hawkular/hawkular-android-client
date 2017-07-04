@@ -47,6 +47,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import icepick.Icepick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -100,7 +103,7 @@ public class MetricsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     private void setUpMetricsForced() {
-        BackendClient.of(this).getMetrics(getEnvironment(), getResource(), new MetricsCallback());
+        BackendClient.of(this).getMetrics(getResource(), new MetricsCallback(this));
     }
 
     private void showProgress() {
@@ -184,26 +187,35 @@ public class MetricsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         unbinder.unbind();
     }
 
-    private static final class MetricsCallback extends AbstractSupportFragmentCallback<List<Metric>> {
+    private static final class MetricsCallback implements Callback<List<Metric>> {
+
+        MetricsFragment metricsFragment;
+
+        public MetricsCallback(MetricsFragment metricsFragment) {
+            this.metricsFragment = metricsFragment;
+        }
+
+        private MetricsFragment getMetricsFragment() {
+            return metricsFragment;
+        }
+
 
         @Override
-        public void onSuccess(List<Metric> metrics) {
-            if (!metrics.isEmpty()) {
-                getMetricsFragment().setUpMetrics(metrics);
-            } else {
-                getMetricsFragment().showMessage();
+        public void onResponse(Call<List<Metric>> call, Response<List<Metric>> response) {
+            if(response!=null){
+                if(!response.body().isEmpty()){
+                    getMetricsFragment().setUpMetrics(response.body());
+                } else {
+                    getMetricsFragment().showMessage();
+                }
             }
         }
 
         @Override
-        public void onFailure(Exception e) {
-            Timber.d(e, "Metrics fetching failed.");
+        public void onFailure(Call<List<Metric>> call, Throwable t) {
+            Timber.d(t, "Metrics fetching failed.");
 
             ErrorUtil.showError(getMetricsFragment(),R.id.animator,R.id.error);
-        }
-
-        private MetricsFragment getMetricsFragment() {
-            return (MetricsFragment) getSupportFragment();
         }
     }
 

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
+import info.metadude.android.typedpreferences.BooleanPreference;
 import info.metadude.android.typedpreferences.IntPreference;
 import info.metadude.android.typedpreferences.StringPreference;
 
@@ -42,9 +43,13 @@ public final class Preferences {
 
         public static final String BACKEND_HOST = "host";
         public static final String BACKEND_PORT = "port";
+        public static final String BACKEND_URL= "url";
+        public static final String BACKEND_USERNAME= "username";
+        public static final String BACKEND_PASSWORD= "password";
         public static final String BACKEND_PERSONA_ID = "persona-id";
         public static final String BACKEND_PERSONA_NAME = "persona-name";
         public static final String BACKEND_ENVIRONMENT = "environment";
+        public static final String BACKEND_AUTHENTICATED = "authenticaed";
     }
 
     public static final class Defaults {
@@ -66,6 +71,11 @@ public final class Preferences {
     }
 
     @NonNull
+    public BooleanPreference authenticated() {
+        return new BooleanPreference(serverPreferences, Keys.BACKEND_AUTHENTICATED);
+    }
+
+    @NonNull
     public StringPreference environment() {
         return new StringPreference(serverPreferences, Keys.BACKEND_ENVIRONMENT);
     }
@@ -78,6 +88,21 @@ public final class Preferences {
     @NonNull
     public IntPreference port() {
         return new IntPreference(serverPreferences, Keys.BACKEND_PORT, Defaults.BACKEND_PORT);
+    }
+
+    @NonNull
+    public StringPreference url() {
+        return new StringPreference(serverPreferences, Keys.BACKEND_URL);
+    }
+
+    @NonNull
+    public StringPreference username() {
+        return new StringPreference(serverPreferences, Keys.BACKEND_USERNAME);
+    }
+
+    @NonNull
+    public StringPreference password() {
+        return new StringPreference(serverPreferences, Keys.BACKEND_PASSWORD);
     }
 
     @NonNull

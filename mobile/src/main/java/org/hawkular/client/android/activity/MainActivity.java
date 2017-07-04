@@ -138,7 +138,7 @@ public final class MainActivity extends AppCompatActivity
         setUpBackendClient();
 
         // -- Setup Navigation Header
-        host.setText(Preferences.of(this).host().get());
+        host.setText(Preferences.of(this).url().get());
         persona.setText(getPersona().getId());
 
         // By default show favorites and set it as selected on drawer menu
@@ -202,7 +202,7 @@ public final class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.menu_logout:
-                BackendClient.of(this).deauthorize();
+                BackendClient.of(this).deauthorize(getApplicationContext());
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 break;
 
@@ -232,22 +232,15 @@ public final class MainActivity extends AppCompatActivity
     }
 
     private void setUpBackendClient(Persona persona) {
-        String backendHost = Preferences.of(this).host().get();
-        int backendPort = Preferences.of(this).port().get();
+        boolean authenticated = Preferences.of(this).authenticated().get();
 
-        if (backendHost.isEmpty() && !Ports.isCorrect(backendPort)) {
+        if (!authenticated) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             return;
         }
 
-        if (!Ports.isCorrect(backendPort)) {
-            BackendClient.of(this).configureAuthorization(getApplicationContext());
-            BackendClient.of(this).configureCommunication(backendHost, persona);
-        } else {
-            BackendClient.of(this).configureAuthorization(getApplicationContext());
-            BackendClient.of(this).configureCommunication(backendHost, backendPort, persona);
-        }
+        BackendClient.of(this).configureAuthorization(getApplicationContext());
     }
 
     // -- Navigation ------------------------------------------------------------------------------

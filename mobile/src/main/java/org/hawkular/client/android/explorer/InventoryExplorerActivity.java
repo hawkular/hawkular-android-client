@@ -368,7 +368,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
             Timber.d("Resources fetching failed.");
 
         }
-   
+
         private InventoryExplorerActivity getInventoryExplorerActivity() {
             return (InventoryExplorerActivity) getActivity();
         }

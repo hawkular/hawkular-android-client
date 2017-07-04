@@ -16,15 +16,26 @@
  */
 package org.hawkular.client.android;
 
+import java.io.IOException;
+
 import org.hawkular.client.android.push.PushClient;
 import org.hawkular.client.android.util.Android;
 
 import android.app.Application;
 import android.os.StrictMode;
-
+import android.util.Base64;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.moshi.MoshiConverterFactory;
 import timber.log.Timber;
 
 public final class HawkularApplication extends Application {
+
+    public static Retrofit retrofit;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -33,6 +44,36 @@ public final class HawkularApplication extends Application {
         setUpDetections();
 
         setUpPush();
+
+    }
+
+    public static void setUpRetrofit(String url, final String username, final String password) {
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Interceptor.Chain chain) throws IOException {
+                Request original = chain.request();
+
+                String cred = new String(Base64.encode((username + ":" +password).getBytes(), Base64.NO_WRAP));
+
+                Request request = original.newBuilder()
+                        .header("Hawkular-Tenant", "hawkular")
+                        .header("Authorization", "Basic " + cred)
+                        .method(original.method(), original.body())
+                        .build();
+
+                return chain.proceed(request);
+            }
+        });
+
+        OkHttpClient client = httpClient.build();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(MoshiConverterFactory.create())
+                .client(client)
+                .build();
     }
 
     private void setUpLogging() {

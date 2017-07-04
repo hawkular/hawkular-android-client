@@ -27,7 +27,6 @@ import org.hawkular.client.android.R;
 import org.hawkular.client.android.activity.TriggerDetailActivity;
 import org.hawkular.client.android.adapter.TriggersAdapter;
 import org.hawkular.client.android.backend.BackendClient;
-import org.hawkular.client.android.backend.model.Environment;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.util.ColorSchemer;
@@ -62,6 +61,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import icepick.Icepick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -106,7 +108,7 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
         if( getArguments().getString("state").equalsIgnoreCase("From Favourite")) {
             setUpFavTriggers();
         } else {
-            BackendClient.of(this).getTriggers(new TriggersCallback());
+            BackendClient.of(this).getTriggers(new TriggersCallback(this));
         }
     }
 
@@ -143,7 +145,7 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
             setUpFavTriggers();
         }
         else {
-            BackendClient.of(this).getTriggers(new TriggersCallback());
+            BackendClient.of(this).getTriggers(new TriggersCallback(this));
         }
     }
 
@@ -159,10 +161,6 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private void showProgress() {
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
-    }
-
-    private Environment getEnvironment() {
-        return getArguments().getParcelable(Fragments.Arguments.ENVIRONMENT);
     }
 
     private Resource getResource() {
@@ -317,39 +315,48 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
         startActivity(intent);
     }
 
-    private static final class TriggersCallback extends AbstractSupportFragmentCallback<List<Trigger>> {
-        @Override
-        public void onSuccess(List<Trigger> triggers) {
-            if (getTriggersFragment().isTriggersFragmentAvailable) {
-                if (!triggers.isEmpty()) {
-                    getTriggersFragment().setUpTriggers(triggers);
-                } else {
-                    getTriggersFragment().showMessage();
+    private static final class TriggersCallback implements Callback<List<Trigger>> {
+
+        private TriggersFragment triggersFragment;
+
+        public TriggersCallback(TriggersFragment triggersFragment) {
+            this.triggersFragment = triggersFragment;
+        }
+
+        @Override public void onResponse(Call<List<Trigger>> call, Response<List<Trigger>> response) {
+            if (response.isSuccessful()) {
+                List<Trigger> triggers = response.body();
+                if (getTriggersFragment().isTriggersFragmentAvailable) {
+                    if (!triggers.isEmpty()) {
+                        getTriggersFragment().setUpTriggers(triggers);
+                    } else {
+                        getTriggersFragment().showMessage();
+                    }
                 }
             }
         }
 
-        @Override
-        public void onFailure(Exception e) {
-            Timber.d(e, "Triggers fetching failed.");
+        @Override public void onFailure(Call<List<Trigger>> call, Throwable t) {
+            Timber.d(t, "Triggers fetching failed.");
 
             if (getTriggersFragment().isTriggersFragmentAvailable) {
                 ErrorUtil.showError(getTriggersFragment(),R.id.animator,R.id.error);
             }
         }
 
-        private TriggersFragment getTriggersFragment() {
-            return (TriggersFragment) getSupportFragment();
+        public TriggersFragment getTriggersFragment() {
+            return triggersFragment;
         }
     }
 
-    private class TriggerUpdateCallback extends AbstractSupportFragmentCallback{
-        @Override
-        public void onSuccess(Object data) {
+    private class TriggerUpdateCallback implements Callback{
+
+        @Override public void onResponse(Call call, Response response) {
+            return;
         }
 
-        @Override
-        public void onFailure(Exception e) {
+        @Override public void onFailure(Call call, Throwable t) {
+            return;
         }
     }
 

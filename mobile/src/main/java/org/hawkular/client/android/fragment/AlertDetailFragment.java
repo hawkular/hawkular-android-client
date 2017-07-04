@@ -16,13 +16,10 @@
  */
 package org.hawkular.client.android.fragment;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.hawkular.client.android.R;
@@ -37,16 +34,13 @@ import org.hawkular.client.android.util.ErrorUtil;
 import org.hawkular.client.android.util.Formatter;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Preferences;
-import org.hawkular.client.android.util.Uris;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -63,6 +57,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Alert Detail fragment.
@@ -171,16 +168,10 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
                 } else {
                 editNote.setEnabled(false);
                 String name = Preferences.of(getActivity()).personaName().get();
-                Map<String, String> parameters = new HashMap<>();
-                parameters.put("user", name);
-                parameters.put("text", editNote.getText().toString());
-                URI uri = Uris.getUri("", parameters);
-                    /*Small work around of adding query parameter in the end of recordid of Note
-                     *have been done here to use the aerogear pipe in the condition
-                     * of PUT request with query parameter*/
-                Note note = new Note(alert.getId()+uri.toString(), name,
-                        editNote.getText().toString(), (new Date()).getTime());
-                BackendClient.of(getFragment()).noteOnAlert(note, new NoteActionCallback(note));
+
+                Note note = new Note(name, editNote.getText().toString(), (new Date()).getTime());
+                BackendClient.of(getFragment())
+                        .noteOnAlert(note, alert.getId(), new NoteActionCallback(note));
                 }
             }
         });
@@ -220,7 +211,7 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
                 switch (menuItem.getItemId()) {
                     case R.id.menu_resolve:
                         BackendClient.of(AlertDetailFragment.this).
-                                resolveAlert(alert, new AlertActionCallback(R.string.alert_state_res));
+                                resolveRetroAlert(alert, new AlertActionCallback(R.string.alert_state_res));
                         return true;
 
                     case R.id.menu_acknowledge:
@@ -370,7 +361,7 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
         return this;
     }
 
-    private final class AlertActionCallback extends AbstractSupportFragmentCallback<List<String>> {
+    private final class AlertActionCallback implements Callback<List<String>> {
 
         @StringRes int state;
 
@@ -379,41 +370,36 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
         }
 
         @Override
-        public void onSuccess(List<String> result) {
+        public void onResponse(Call<List<String>> call, Response<List<String>> response) {
             alertSateButton.setText(state);
         }
 
         @Override
-        public void onFailure(Exception e) {
+        public void onFailure(Call<List<String>> call, Throwable t) {
             ErrorUtil.showError(getActivity().findViewById(android.R.id.content),R.string.error_later);
-        }
-
-        private AlertsFragment getAlertsFragment() {
-            return (AlertsFragment) getSupportFragment();
         }
     }
 
-    private final class NoteActionCallback extends AbstractSupportFragmentCallback<List<String>> {
+    private final class NoteActionCallback implements Callback<List<String>> {
 
-        Note note;
+        private Note note;
 
         public NoteActionCallback(Note note) {
             this.note = note;
         }
 
-        @Override
-        public void onSuccess(List<String> result) {
-            editNote.setText("");
-            editNote.setEnabled(true);
-            alert.getNotes().add(note);
-            setUpNotes();
+        @Override public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+            if (response.isSuccessful()){
+                editNote.setText("");
+                editNote.setEnabled(true);
+                alert.getNotes().add(note);
+                setUpNotes();
+            }
         }
 
-        @Override
-        public void onFailure(Exception e) {
+        @Override public void onFailure(Call<List<String>> call, Throwable t) {
             editNote.setEnabled(true);
         }
-
     }
 
 }

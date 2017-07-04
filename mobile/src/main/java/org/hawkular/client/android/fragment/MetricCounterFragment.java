@@ -60,6 +60,9 @@ import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.view.LineChartView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -166,7 +169,7 @@ public final class MetricCounterFragment extends Fragment implements SwipeRefres
     private void setUpMetricDataForced() {
         metric_name.setText(getMetric().getName());
         BackendClient.of(this).getMetricData(
-                getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback());
+                getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback(this));
     }
 
     @OnClick(R.id.button_retry)
@@ -387,25 +390,36 @@ public final class MetricCounterFragment extends Fragment implements SwipeRefres
         Icepick.saveInstanceState(this, state);
     }
 
-    private static final class MetricDataCallback extends AbstractSupportFragmentCallback<List<MetricBucket>> {
-        @Override
-        public void onSuccess(List<MetricBucket> metricBuckets) {
-            if (!metricBuckets.isEmpty()) {
-                getMetricFragment().setUpMetricData(metricBuckets);
-            } else {
-                getMetricFragment().showMessage();
-            }
-        }
+    private static final class MetricDataCallback implements Callback<List<MetricBucket>> {
 
-        @Override
-        public void onFailure(Exception e) {
-            Timber.d(e, "Metric data fetching failed.");
+        private MetricCounterFragment metricCounterFragment ;
 
-            ErrorUtil.showError(getMetricFragment(),R.id.animator,R.id.error);
+        public MetricDataCallback(MetricCounterFragment metricCounterFragment) {
+            this.metricCounterFragment = metricCounterFragment;
         }
 
         private MetricCounterFragment getMetricFragment() {
-            return (MetricCounterFragment) getSupportFragment();
+            return metricCounterFragment;
+        }
+
+        @Override
+        public void onResponse(Call<List<MetricBucket>> call, Response<List<MetricBucket>> response) {
+            if(response.isSuccessful()){
+                List<MetricBucket> metricBuckets = response.body();
+                if (!metricBuckets.isEmpty()) {
+                    getMetricFragment().setUpMetricData(metricBuckets);
+                } else {
+                    getMetricFragment().showMessage();
+                }
+            }
+
+        }
+
+        @Override
+        public void onFailure(Call<List<MetricBucket>> call, Throwable t) {
+            Timber.d(t, "Metric data fetching failed.");
+
+            ErrorUtil.showError(getMetricFragment(),R.id.animator,R.id.error);
         }
     }
 
