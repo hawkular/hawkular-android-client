@@ -16,20 +16,26 @@
  */
 package org.hawkular.client.android.activity;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import org.hawkular.client.android.R;
+import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.FullTrigger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import icepick.Icepick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by pallavi on 19/06/17.
@@ -62,6 +68,7 @@ public class TriggerSetupActivity extends AppCompatActivity {
     @BindView(R.id.switch_enabled)
     Switch switchEnabled;
 
+    Snackbar snackbar;
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
@@ -85,6 +92,8 @@ public class TriggerSetupActivity extends AppCompatActivity {
             return;
         }
 
+
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Trigger Setup");
     }
@@ -94,9 +103,21 @@ public class TriggerSetupActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.button_submit)
-    void getValues(){
-        // a test printing statement to check if bindings are setup properly
-        Log.d("Value", "" + switchAutoDisable.isChecked() + spinnerEventType.getSelectedItem().toString());
+    void setUpTriggerValues(){
+
+        FullTrigger trigger = null;
+
+        if (textName.getText().toString()!=null) {
+            trigger = new FullTrigger(textName.getText().toString(),null,textName.getText().toString(),switchEnabled.isChecked(),severitySpinner.getSelectedItem().toString());
+        }
+
+        trigger.setAutoDisable(switchAutoDisable.isChecked());
+        trigger.setType(spinnerType.getSelectedItem().toString());
+        trigger.setEventType(spinnerEventType.getSelectedItem().toString());
+        trigger.setAutoEnable(switchAutoEnable.isChecked());
+
+        BackendClient.of(this).createRetroTrigger(trigger,new TriggerCreateCallback());
+
     }
 
     @Override
@@ -110,6 +131,23 @@ public class TriggerSetupActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(menuItem);
         }
     }
+
+    private class TriggerCreateCallback implements Callback {
+
+        @Override
+        public void onResponse(Call call, Response response) {
+
+            if(response.code()==200){
+                finish();
+            }
+        }
+
+        @Override
+        public void onFailure(Call call, Throwable t) {
+
+        }
+    }
+
 
 }
 

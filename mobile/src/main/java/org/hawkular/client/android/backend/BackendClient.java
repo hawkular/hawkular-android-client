@@ -27,6 +27,7 @@ import java.util.Map;
 import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.backend.model.Feed;
+import org.hawkular.client.android.backend.model.FullTrigger;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricBucket;
 import org.hawkular.client.android.backend.model.MetricType;
@@ -47,6 +48,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -150,8 +153,19 @@ public final class BackendClient {
         call.enqueue(callback);
     }
 
-    public void getFeeds(@NonNull AbstractCallback<List<Feed>> callback) {
-        // TODO : after moving to retrofit complete
+
+    public void createRetroTrigger(@NonNull FullTrigger trigger, @NonNull retrofit2.Callback<List<String>> callback){
+        TriggerService service = retrofit.create(TriggerService.class);
+        Call call = service.postCreateTrigger(trigger);
+        call.enqueue(callback);
+    }
+
+
+
+    public void getFeeds(@NonNull Callback<List<Feed>> callback) {
+        URI uri = Uris.getUri(BackendPipes.Paths.FEEDS);
+
+        readPipe(BackendPipes.Names.FEEDS, uri, callback);
     }
 
     public void getOpreations(@NonNull AbstractCallback<List<Operation>> callback, Resource resource) {

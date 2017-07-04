@@ -18,6 +18,7 @@ package org.hawkular.client.android.service;
 
 import java.util.List;
 
+import org.hawkular.client.android.backend.model.FullTrigger;
 import org.hawkular.client.android.backend.model.Trigger;
 
 import retrofit2.Call;
@@ -38,6 +39,10 @@ public interface TriggerService {
             @Body Trigger trigger
     );
 
+    @POST("/hawkular/alerts/triggers")
+    Call<FullTrigger> postCreateTrigger(
+            @Body FullTrigger trigger
+    );
 
 
 }
