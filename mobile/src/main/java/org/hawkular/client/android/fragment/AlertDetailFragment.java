@@ -170,8 +170,7 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
                 String name = Preferences.of(getActivity()).personaName().get();
 
                 Note note = new Note(name, editNote.getText().toString(), (new Date()).getTime());
-                BackendClient.of(getFragment())
-                        .noteOnAlert(note, alert.getId(), new NoteActionCallback(note));
+                    BackendClient.of(getFragment()).noteOnAlert(note, new NoteActionCallback(note));
                 }
             }
         });
@@ -211,7 +210,7 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
                 switch (menuItem.getItemId()) {
                     case R.id.menu_resolve:
                         BackendClient.of(AlertDetailFragment.this).
-                                resolveRetroAlert(alert, new AlertActionCallback(R.string.alert_state_res));
+                                resolveAlert(alert, new AlertActionCallback(R.string.alert_state_res));
                         return true;
 
                     case R.id.menu_acknowledge:

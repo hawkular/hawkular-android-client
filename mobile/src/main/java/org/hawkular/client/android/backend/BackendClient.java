@@ -27,6 +27,8 @@ import java.util.Map;
 import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.backend.model.Alert;
 import org.hawkular.client.android.backend.model.Feed;
+import org.hawkular.client.android.backend.model.FullTrigger;
+import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricBucket;
 import org.hawkular.client.android.backend.model.MetricType;
@@ -47,6 +49,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.Fragment;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -97,7 +100,7 @@ public final class BackendClient {
         parameters.put(BackendPipes.Parameters.FINISH_TIME, String.valueOf(finishTime.getTime()));
 
         AlertService service = retrofit.create(AlertService.class);
-        Call call = service.get(parameters);
+        Call call = service.get();
         call.enqueue(callback);
 
     }
@@ -112,41 +115,43 @@ public final class BackendClient {
         return triggerIds;
     }
 
-    public void acknowledgeAlert(@NonNull Alert alert, @NonNull Callback<List<String>> callback) {
-
+    public void acknowledgeAlert(@NonNull Alert alert,
+                                 @NonNull retrofit2.Callback<List<String>> callback) {
         AlertService service = retrofit.create(AlertService.class);
         Call call = service.ackAlert(alert.getId());
         call.enqueue(callback);
 
     }
 
-    public void resolveRetroAlert(@NonNull Alert alert, @NonNull Callback<List<String>> callback) {
-
+    public void resolveAlert(@NonNull Alert alert, @NonNull Callback<List<String>> callback) {
         AlertService service = retrofit.create(AlertService.class);
         Call call = service.resolveAlert(alert.getId());
         call.enqueue(callback);
     }
 
-    public void noteOnAlert(@NonNull Note note, @NonNull String alertId, @NonNull Callback<List<String>> callback) {
 
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("user", note.getUser());
-        parameters.put("text", note.getMessage());
-
-        AlertService service = retrofit.create(AlertService.class);
-        Call call = service.noteOnAlert(parameters, alertId);
-        call.enqueue(callback);
-    }
-
-    public void updateTrigger(@NonNull Trigger trigger, @NonNull Callback<List<String>> callback){
-        TriggerService service = retrofit.create(TriggerService.class);
-        Call call = service.updateTrigger(trigger.getId(), trigger);
-        call.enqueue(callback);
-    }
-
-
-    public void getFeeds(@NonNull AbstractCallback<List<Feed>> callback) {
+    public void noteOnAlert(@NonNull Note note,
+                            @NonNull Callback<List<String>> callback) {
         // TODO : after moving to retrofit complete
+    }
+
+    public void updateTrigger(@NonNull Trigger trigger, @NonNull retrofit2.Callback<List<String>> callback){
+        TriggerService service = retrofit.create(TriggerService.class);
+        Call call = service.updateTrigger(trigger);
+        call.enqueue(callback);
+    }
+
+    public void createTrigger(@NonNull FullTrigger trigger, @NonNull retrofit2.Callback<List<String>> callback){
+        TriggerService service = retrofit.create(TriggerService.class);
+        Call call = service.createTrigger(trigger);
+        call.enqueue(callback);
+    }
+
+
+    public void getFeeds(@NonNull retrofit2.Callback<Feed> callback) {
+        TriggerService service = retrofit.create(TriggerService.class);
+        Call call = service.getFeeds();
+        call.enqueue(callback);
     }
 
     public void getOpreations(@NonNull AbstractCallback<List<Operation>> callback, Resource resource) {
@@ -157,8 +162,11 @@ public final class BackendClient {
         // TODO : after moving to retrofit complete
     }
 
-    public void getResourcesFromFeed(@NonNull AbstractCallback<List<Resource>> callback, Feed feed) {
-        // TODO : after moving to retrofit complete
+    public void getResourcesFromFeed(@NonNull retrofit2.Callback<List<Resource>> callback, @NonNull InventoryResponseBody body){
+
+        TriggerService service = retrofit.create(TriggerService.class);
+        Call call = service.getResourcesFromFeed(body);
+        call.enqueue(callback);
     }
 
 
@@ -203,6 +211,7 @@ public final class BackendClient {
         TriggerService service = retrofit.create(TriggerService.class);
         Call call = service.get();
         call.enqueue(callback);
+
 
     }
 

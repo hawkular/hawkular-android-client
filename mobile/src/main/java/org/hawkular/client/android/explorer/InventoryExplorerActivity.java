@@ -16,12 +16,15 @@
  */
 package org.hawkular.client.android.explorer;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.Error;
 import org.hawkular.client.android.backend.model.Feed;
+import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.Operation;
 import org.hawkular.client.android.backend.model.Resource;
@@ -36,6 +39,8 @@ import org.jboss.aerogear.android.store.generator.IdGenerator;
 import org.jboss.aerogear.android.store.sql.SQLStore;
 import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
@@ -46,10 +51,8 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -57,6 +60,8 @@ import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -138,11 +143,11 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         }
     }
 
-    private void setUpFeeds(List<Feed> feeds) {
-        for (Feed feed : feeds) {
+    private void setUpFeeds(List<String> feeds) {
+        for (String feed : feeds) {
             int icon = getResources().getIdentifier("drawable/" + "feed_icon", null, getPackageName());
             TreeNode newFeed = new TreeNode(new IconTreeItemHolder.IconTreeItem(
-                    icon, IconTreeItemHolder.IconTreeItem.Type.FEED, feed.getId(), feed));
+                    icon, IconTreeItemHolder.IconTreeItem.Type.FEED, feed, feed));
             tView.addNode(root, newFeed);
         }
 
@@ -190,15 +195,21 @@ public class InventoryExplorerActivity extends AppCompatActivity {
             IconTreeItemHolder.IconTreeItem item = (IconTreeItemHolder.IconTreeItem) value;
             if (item.type == IconTreeItemHolder.IconTreeItem.Type.FEED) {
                 if (node.size() == 0) {
+                    String path1;
+                    String feed = (String) item.value;
+                    path1 = "feed:"+ feed + ",type:rt";
+
+                    InventoryResponseBody body = new InventoryResponseBody("true","DESC",path1);
+                    Log.d("Full path", path1);
                     BackendClient.of(getInventoryExplorerActivity()).getResourcesFromFeed(
-                            new ResourcesCallback(node), (Feed) item.value);
+                            new ResourcesCallback(node), body);
                 }
             } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.RESOURCE) {
                 if (node.size() == 0) {
-                    BackendClient.of(getInventoryExplorerActivity()).getRecResourcesFromFeed(
-                            new ResourcesCallback(node), (Resource) item.value);
-                    BackendClient.of(getInventoryExplorerActivity()).getMetricsFromFeed(
-                            new MetricsCallback(node), (Resource) item.value);
+                    //BackendClient.of(getInventoryExplorerActivity()).getRecResourcesFromFeed(
+                      //      new ResourcesCallback(node), (Resource) item.value);
+                   // BackendClient.of(getInventoryExplorerActivity()).getRetroMetricsFromFeed(
+                     //       new MetricsCallback(node), (Resource) item.value);
                     BackendClient.of(getInventoryExplorerActivity()).getOpreations(
                             new OperationsCallback(node), (Resource) item.value);
                 }
@@ -275,22 +286,27 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     }
 
 
-    private final class FeedsCallback extends AbstractActivityCallback<List<Feed>> {
+    private final class FeedsCallback implements retrofit2.Callback<Feed>{
+
         @Override
-        public void onSuccess(List<Feed> feeds) {
-            if (!feeds.isEmpty()) {
-                getInventoryExplorerActivity().setUpFeeds(feeds);
+        public void onResponse(Call<Feed> call, Response<Feed> response) {
+
+
+            Feed feed = response.body();
+
+            if (response.isSuccessful()) {
+                Log.d("response on feed","id is =" + feed.getFeed().get(0));
+                getInventoryExplorerActivity().setUpFeeds(response.body().getFeed());
             }
         }
 
         @Override
-        public void onFailure(Exception e) {
-            Timber.d("Resources fetching failed.");
-
+        public void onFailure(Call<Feed> call, Throwable t) {
+                Log.d("Fetching Failed", t.getMessage());
         }
 
         private InventoryExplorerActivity getInventoryExplorerActivity() {
-            return (InventoryExplorerActivity) getActivity();
+            return InventoryExplorerActivity.this;
         }
     }
 
@@ -320,32 +336,46 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         }
     }
 
-    private final class ResourcesCallback extends AbstractActivityCallback<List<Resource>> {
+    private final class ResourcesCallback implements retrofit2.Callback<List<Resource>> {
 
         private TreeNode parent;
 
         ResourcesCallback(TreeNode parent) {
             this.parent = parent;
         }
-
         @Override
-        public void onSuccess(List<Resource> resources) {
-            if (!resources.isEmpty()) {
-                getInventoryExplorerActivity().setUpResources(resources, parent);
-            } else {
+        public void onResponse(Call<List<Resource>> call, Response<List<Resource>> response) {
+
+            if(!response.isSuccessful()) {
+                Gson gson = new GsonBuilder().create();
+                try {
+                    Error mApiError = gson.fromJson(response.errorBody().string(), Error.class);
+                    Log.d("Response on feed metric", mApiError.getErrorMsg());
+                } catch (IOException e) {
+                    // handle failure to read error
+                }
             }
+
+            else
+            {
+                //Log.d("Response","code="+ response.code());
+                getInventoryExplorerActivity().setUpResources(response.body(), parent);
+            }
+
+            //Log.d("Response on feed metric", error.getErrorMsg());
+            /*if(!response.body().isEmpty()) {
+                getInventoryExplorerActivity().setUpResources(response.body(), parent);
+            }
+            else {
+            }*/
+
         }
 
         @Override
-        public void onFailure(Exception e) {
+        public void onFailure(Call<List<Resource>> call, Throwable t) {
             Timber.d("Resources fetching failed.");
-
+            Log.d("Response on feed metric", t.getMessage());
         }
-
-        private InventoryExplorerActivity getInventoryExplorerActivity() {
-            return (InventoryExplorerActivity) getActivity();
-        }
-
     }
 
     private final class MetricsCallback extends AbstractActivityCallback<List<Metric>> {

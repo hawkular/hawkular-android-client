@@ -64,7 +64,7 @@ final class BackendPipes {
         public static final String ENVIRONMENTS = "inventory/traversal/type=e";
         public static final String FEEDS = "metrics/strings/tags/module:inventory,feed:*";
         public static final String FEED_METRICS = "metrics/strings/tags/module:inventory,feed:*";
-        public static final String FEED_RESOURCES = "metrics/strings/tags/module:inventory,feed:*,type=rt";
+        public static final String FEED_RESOURCES = "metrics/strings/raw/query";
         public static final String FEED_CHILD_RESOURCES = "inventory/traversal/f;{f}/{r}/rl;isParentOf/type=r";
         public static final String METRICS = "inventory/traversal/e;{e}/{r}/rl;incorporates/type=m";
         public static final String METRIC_DATA_AVAILABILITY= "metrics/availability/%s/data";

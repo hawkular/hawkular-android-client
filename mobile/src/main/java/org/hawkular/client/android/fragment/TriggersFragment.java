@@ -34,7 +34,6 @@ import org.hawkular.client.android.util.ErrorUtil;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 import org.jboss.aerogear.android.store.DataManager;
 import org.jboss.aerogear.android.store.generator.IdGenerator;
 import org.jboss.aerogear.android.store.sql.SQLStore;
@@ -51,6 +50,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -304,6 +304,7 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
             Snackbar snackbar = Snackbar.make(getView(),R.string.trigger_off, Snackbar.LENGTH_SHORT);
             snackbar.show();
         }
+
         BackendClient.of(TriggersFragment.this).updateTrigger(updatedTrigger,new TriggerUpdateCallback());
     }
 
@@ -351,12 +352,14 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private class TriggerUpdateCallback implements Callback{
 
-        @Override public void onResponse(Call call, Response response) {
-            return;
+        @Override
+        public void onResponse(Call call, Response response) {
+            Log.d("Update Trigger Response", response.message());
         }
 
-        @Override public void onFailure(Call call, Throwable t) {
-            return;
+        @Override
+        public void onFailure(Call call, Throwable t) {
+            Timber.d(t, "Triggers fetching failed.");
         }
     }
 

@@ -17,25 +17,39 @@
 package org.hawkular.client.android.service;
 
 import java.util.List;
-
+import org.hawkular.client.android.backend.model.Feed;
+import org.hawkular.client.android.backend.model.FullTrigger;
+import org.hawkular.client.android.backend.model.InventoryResponseBody;
+import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Trigger;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
-import retrofit2.http.Path;
 
 public interface TriggerService {
 
     @GET("hawkular/alerts/triggers")
-    Call<List<Trigger>> get();
+    Call<List<Trigger>> get(
+    );
 
-    @PUT("hawkular/alerts/triggers/{id}")
-    Call<List<String>> updateTrigger(@Path("id") String id, @Body Trigger trigger);
+    @POST("/hawkular/alerts/triggers")
+    Call<List<String>> updateTrigger(
+            @Body Trigger trigger
+    );
 
-    @POST("hawkular/alerts/triggers/")
-    Call<List<String>> createTrigger(@Body Trigger trigger);
+    @POST("/hawkular/alerts/triggers")
+    Call<FullTrigger> createTrigger(
+            @Body FullTrigger trigger
+    );
+
+    @POST("/hawkular/metrics/strings/raw/query/")
+    Call<List<Resource>> getResourcesFromFeed(
+            @Body InventoryResponseBody inventoryResponseBody
+            );
+
+    @GET("/hawkular/metrics/strings/tags/module:inventory,feed:*")
+    Call<Feed> getFeeds();
 
 }

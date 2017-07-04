@@ -35,7 +35,6 @@ import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.Time;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -292,7 +291,7 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                 switch (menuItem.getItemId()) {
                     case R.id.menu_resolve:
-                        BackendClient.of(AlertsFragment.this).resolveRetroAlert(alert, new AlertActionCallback(AlertsFragment.this));
+                        BackendClient.of(AlertsFragment.this).resolveAlert(alert, new AlertActionCallback(AlertsFragment.this));
                         return true;
 
                     case R.id.menu_acknowledge:

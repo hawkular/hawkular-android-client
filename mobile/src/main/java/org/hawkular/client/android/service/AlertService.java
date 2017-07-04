@@ -31,7 +31,7 @@ import retrofit2.http.QueryMap;
 public interface AlertService {
 
     @GET("hawkular/alerts")
-    Call<List<Alert>> get(@QueryMap Map<String, String> parameters);
+    Call<List<Alert>> get();
 
     @FormUrlEncoded
     @POST("/hawkular/alerts/ack/{alertId}")
