@@ -173,7 +173,6 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override public void onResponse(Call<List<Metric>> call, Response<List<Metric>> response) {
             if (response.isSuccessful()){
-                LoginActivity activity = getActivity();
                 getActivity().succeed();
             }
         }
@@ -181,10 +180,8 @@ public class LoginActivity extends AppCompatActivity {
         @Override public void onFailure(Call<List<Metric>> call, Throwable t) {
             Timber.d(t, "Authorization failed.");
 
-            LoginActivity activity = getActivity();
-
-            if (activity.authIndicator.isShowing()) {
-                activity.authIndicator.dismiss();
+            if (getActivity().authIndicator.isShowing()) {
+                getActivity().authIndicator.dismiss();
             }
 
         }

@@ -352,11 +352,11 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
     private class TriggerUpdateCallback implements Callback{
 
         @Override public void onResponse(Call call, Response response) {
-
+            return;
         }
 
         @Override public void onFailure(Call call, Throwable t) {
-
+            return;
         }
     }
 

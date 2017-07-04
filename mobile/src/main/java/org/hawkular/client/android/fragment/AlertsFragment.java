@@ -523,7 +523,7 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         @Override
         public void onFailure(Call<List<String>> call, Throwable t) {
-
+            Timber.d(t, "State uodate failed.");
         }
     }
 
