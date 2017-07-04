@@ -167,7 +167,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         for (Resource resource : resources) {
             int icon = getResources().getIdentifier("drawable/" + "resource_icon", null, getPackageName());
             TreeNode newResource = new TreeNode(new IconTreeItemHolder.IconTreeItem(
-                    icon, IconTreeItemHolder.IconTreeItem.Type.RESOURCE, resource.getName(), resource));
+                    icon, IconTreeItemHolder.IconTreeItem.Type.RESOURCE, resource.getId(), resource));
             tView.addNode(parent, newResource);
         }
 
@@ -197,7 +197,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                 if (node.size() == 0) {
                     String path1;
                     String feed = (String) item.value;
-                    path1 = "feed:"+ feed + ",type:rt";
+                    path1 = "feed:"+ feed + ",type:r";
 
                     InventoryResponseBody body = new InventoryResponseBody("true","DESC",path1);
                     Log.d("Full path", path1);
