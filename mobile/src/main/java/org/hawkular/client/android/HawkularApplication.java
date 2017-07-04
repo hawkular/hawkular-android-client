@@ -22,8 +22,13 @@ import org.hawkular.client.android.push.PushClient;
 import org.hawkular.client.android.util.Android;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.StrictMode;
 import android.util.Base64;
+
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
+
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -35,6 +40,7 @@ import timber.log.Timber;
 public final class HawkularApplication extends Application {
 
     public static Retrofit retrofit;
+    private RefWatcher refWatcher;
 
     @Override
     public void onCreate() {
@@ -42,9 +48,21 @@ public final class HawkularApplication extends Application {
 
         setUpLogging();
         setUpDetections();
-
         setUpPush();
+        setUpLeakCanary();
 
+    }
+
+    private void setUpLeakCanary() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+        refWatcher = LeakCanary.install(this);
+    }
+
+    public static RefWatcher getRefWatcher(Context context) {
+        HawkularApplication application = (HawkularApplication) context.getApplicationContext();
+        return application.refWatcher;
     }
 
     public static void setUpRetrofit(String url, final String username, final String password) {
