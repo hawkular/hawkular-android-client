@@ -17,6 +17,7 @@
 package org.hawkular.client.android.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.FullTrigger;

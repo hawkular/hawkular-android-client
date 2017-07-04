@@ -116,15 +116,15 @@ public final class BackendClient {
         return triggerIds;
     }
 
-
+    public void acknowledgeAlert(@NonNull Alert alert,
+                                 @NonNull retrofit2.Callback<List<String>> callback) {
         AlertService service = retrofit.create(AlertService.class);
-        Call call = service.ackAlert(alert.getId());
+        Call call = service.postAckAlert();
         call.enqueue(callback);
 
     }
 
-    public void resolveRetroAlert(@NonNull Alert alert, @NonNull Callback<List<String>> callback) {
-
+    public void resolveAlert(@NonNull Alert alert, @NonNull Callback<List<String>> callback) {
         AlertService service = retrofit.create(AlertService.class);
         Call call = service.resolveAlert(alert.getId());
         call.enqueue(callback);
@@ -133,38 +133,26 @@ public final class BackendClient {
 
     public void noteOnAlert(@NonNull Note note,
                             @NonNull Callback<List<String>> callback) {
-        savePipe(BackendPipes.Names.NOTE, note, callback);
+        // TODO : after moving to retrofit complete
     }
 
-    public void updateTrigger(@NonNull Trigger trigger, @NonNull Callback<List<String>> callback){
-        TriggerService service = retrofit.create(TriggerService.class);
-        Call call = service.updateTrigger(trigger.getId(), trigger);
-        call.enqueue(callback);
-    }
-
-    public void updateRetroTrigger(@NonNull Trigger trigger, @NonNull retrofit2.Callback<List<String>> callback){
+    public void updateTrigger(@NonNull Trigger trigger, @NonNull retrofit2.Callback<List<String>> callback){
         TriggerService service = retrofit.create(TriggerService.class);
         Call call = service.postUpdateTrigger(trigger);
         call.enqueue(callback);
     }
 
-
-    public void createRetroTrigger(@NonNull FullTrigger trigger, @NonNull retrofit2.Callback<List<String>> callback){
+    public void createTrigger(@NonNull FullTrigger trigger, @NonNull retrofit2.Callback<List<String>> callback){
         TriggerService service = retrofit.create(TriggerService.class);
         Call call = service.postCreateTrigger(trigger);
         call.enqueue(callback);
     }
 
 
-
-    public void getRetroFeeds(@NonNull retrofit2.Callback<Feed> callback) {
-        URI uri = Uris.getUri(BackendPipes.Paths.FEEDS);
-
+    public void getFeeds(@NonNull retrofit2.Callback<Feed> callback) {
         TriggerService service = retrofit.create(TriggerService.class);
         Call call = service.getFeeds();
         call.enqueue(callback);
-
-        //readPipe(BackendPipes.Names.FEEDS, uri, callback);
     }
 
     public void getOpreations(@NonNull AbstractCallback<List<Operation>> callback, Resource resource) {
@@ -175,8 +163,7 @@ public final class BackendClient {
         // TODO : after moving to retrofit complete
     }
 
-    public void getRetroResourcesFromFeed(@NonNull retrofit2.Callback<List<Resource>> callback, @NonNull InventoryResponseBody body){
-        URI uri = Uris.getUri(BackendPipes.Paths.FEED_RESOURCES);
+    public void getResourcesFromFeed(@NonNull retrofit2.Callback<List<Resource>> callback, @NonNull InventoryResponseBody body){
 
         TriggerService service = retrofit.create(TriggerService.class);
         Call call = service.postGetResourcesFromFeed(body);
@@ -223,8 +210,14 @@ public final class BackendClient {
 
     public void getTriggers(@NonNull Callback<List<Trigger>> callback) {
         TriggerService service = retrofit.create(TriggerService.class);
-        Call call = service.get();
+        Map<String, String> map = new HashMap<>();
+        String cred = new String(Base64.encode(("jdoe:password").getBytes(), Base64.NO_WRAP));
+        map.put("Authorization", "Basic "+cred);
+        map.put("Hawkular-Tenant", "hawkular");
+
+        Call call = service.get(map);
         call.enqueue(callback);
+
 
     }
 

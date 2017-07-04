@@ -34,7 +34,6 @@ import org.hawkular.client.android.util.ErrorUtil;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 import org.jboss.aerogear.android.store.DataManager;
 import org.jboss.aerogear.android.store.generator.IdGenerator;
 import org.jboss.aerogear.android.store.sql.SQLStore;
@@ -306,7 +305,7 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
             snackbar.show();
         }
 
-        BackendClient.of(TriggersFragment.this).updateRetroTrigger(updatedTrigger,new TriggerUpdateCallback());
+        BackendClient.of(TriggersFragment.this).updateTrigger(updatedTrigger,new TriggerUpdateCallback());
     }
 
     @Override

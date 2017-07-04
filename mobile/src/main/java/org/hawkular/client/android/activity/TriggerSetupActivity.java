@@ -122,7 +122,7 @@ public class TriggerSetupActivity extends AppCompatActivity {
         trigger.setEventType(spinnerEventType.getSelectedItem().toString());
         trigger.setAutoEnable(switchAutoEnable.isChecked());
 
-        BackendClient.of(this).createRetroTrigger(trigger,new TriggerCreateCallback());
+        BackendClient.of(this).createTrigger(trigger,new TriggerCreateCallback());
 
     }
 

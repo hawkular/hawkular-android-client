@@ -52,7 +52,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Annotation;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -62,11 +61,8 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
-import retrofit2.Converter;
 import retrofit2.Response;
 import timber.log.Timber;
-
-import static org.hawkular.client.android.HawkularApplication.retrofit;
 
 /**
  * Inventory Explorer activity.
@@ -108,7 +104,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         tView.setDefaultNodeLongClickListener(nodeLongClickListener);
         containerView.addView(tView.getView());
 
-        BackendClient.of(this).getRetroFeeds(new FeedsCallback());
+        BackendClient.of(this).getFeeds(new FeedsCallback());
 
         if (savedInstanceState != null) {
             String state = savedInstanceState.getString("tState");
@@ -205,15 +201,15 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
                     InventoryResponseBody body = new InventoryResponseBody("true","DESC",path1);
                     Log.d("Full path", path1);
-                    BackendClient.of(getInventoryExplorerActivity()).getRetroResourcesFromFeed(
+                    BackendClient.of(getInventoryExplorerActivity()).getResourcesFromFeed(
                             new ResourcesCallback(node), body);
                 }
             } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.RESOURCE) {
                 if (node.size() == 0) {
                     //BackendClient.of(getInventoryExplorerActivity()).getRecResourcesFromFeed(
                       //      new ResourcesCallback(node), (Resource) item.value);
-                    BackendClient.of(getInventoryExplorerActivity()).getRetroMetricsFromFeed(
-                            new MetricsCallback(node), (Resource) item.value);
+                   // BackendClient.of(getInventoryExplorerActivity()).getRetroMetricsFromFeed(
+                     //       new MetricsCallback(node), (Resource) item.value);
                     BackendClient.of(getInventoryExplorerActivity()).getOpreations(
                             new OperationsCallback(node), (Resource) item.value);
                 }
