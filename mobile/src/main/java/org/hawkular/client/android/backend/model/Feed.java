@@ -16,67 +16,62 @@
  */
 package org.hawkular.client.android.backend.model;
 
-import org.jboss.aerogear.android.core.RecordId;
-
 import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.VisibleForTesting;
+
+import java.util.List;
 
 /**
  * Created by anuj on 7/6/16.
  */
-public class Feed implements Parcelable {
+public class Feed implements Parcelable
+{
 
-    @RecordId
-    @SerializedName("id")
-    private String id;
+    @SerializedName("feed")
+    private List<String> feed = null;
+    @SerializedName("module")
+    private List<String> module = null;
 
-    @SerializedName("path")
-    private String path;
+    public final static Parcelable.Creator<Feed> CREATOR = new Creator<Feed>() {
 
-    @VisibleForTesting
-    public Feed(String id) {
-        this.id = id;
-    }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public static Creator<Feed> CREATOR = new Creator<Feed>() {
-        @Override
-        public Feed createFromParcel(Parcel parcel) {
-            return new Feed(parcel);
+        @SuppressWarnings({"unchecked"})
+        public Feed createFromParcel(Parcel in) {
+            Feed instance = new Feed();
+            in.readList(instance.feed, (java.lang.String.class.getClassLoader()));
+            in.readList(instance.module, (java.lang.String.class.getClassLoader()));
+            return instance;
         }
 
-        @Override
         public Feed[] newArray(int size) {
-            return new Feed[size];
+            return (new Feed[size]);
         }
+
     };
 
-    private Feed(Parcel parcel) {
-        this.id = parcel.readString();
-        this.path = parcel.readString();
+    public List<String> getFeed() {
+        return feed;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeString(id);
-        parcel.writeString(path);
+    public void setFeed(List<String> feed) {
+        this.feed = feed;
     }
 
-    @Override
+    public List<String> getModule() {
+        return module;
+    }
+
+    public void setModule(List<String> module) {
+        this.module = module;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeList(feed);
+        dest.writeList(module);
+    }
+
     public int describeContents() {
         return 0;
     }
