@@ -16,6 +16,7 @@
  */
 package org.hawkular.client.android.fragment;
 
+import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.animation.MyBounceInterpolator;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.model.Trigger;
@@ -35,6 +36,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
+
+import com.squareup.leakcanary.RefWatcher;
 
 import java.util.UUID;
 
@@ -99,6 +102,16 @@ public class TriggerDetailFragment extends android.support.v4.app.Fragment {
         return (SQLStore<Trigger>) DataManager.getStore("FavouriteTriggers");
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        detectLeaks();
+    }
+
+    private void detectLeaks() {
+        RefWatcher refWatcher = HawkularApplication.getRefWatcher(getActivity());
+        refWatcher.watch(this);
+    }
 
     @Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

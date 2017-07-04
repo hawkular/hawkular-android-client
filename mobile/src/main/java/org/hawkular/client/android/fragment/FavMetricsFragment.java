@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
+import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.adapter.FavMetricsAdapter;
 import org.hawkular.client.android.backend.model.Metric;
@@ -48,6 +49,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
+
+import com.squareup.leakcanary.RefWatcher;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -174,6 +178,12 @@ public class FavMetricsFragment extends Fragment implements SwipeRefreshLayout.O
         super.onDestroyView();
 
         tearDownBindings();
+        detectLeaks();
+    }
+
+    private void detectLeaks() {
+        RefWatcher refWatcher = HawkularApplication.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 
     private void tearDownBindings() {

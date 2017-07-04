@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.adapter.MetricsAdapter;
 import org.hawkular.client.android.backend.BackendClient;
@@ -42,6 +43,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.squareup.leakcanary.RefWatcher;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -181,6 +185,12 @@ public class MetricsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         super.onDestroyView();
 
         tearDownBindings();
+        detectLeaks();
+    }
+
+    private void detectLeaks() {
+        RefWatcher refWatcher = HawkularApplication.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 
     private void tearDownBindings() {
