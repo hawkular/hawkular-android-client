@@ -175,6 +175,23 @@ public class LoginActivity extends AppCompatActivity {
             if (response.isSuccessful()){
                 getActivity().succeed();
             }
+            else {
+                LoginActivity activity = getActivity();
+                if (activity.authIndicator.isShowing()){
+                    activity.authIndicator.setMessage("Error occurred");
+                    activity.authIndicator.dismiss();
+                }
+                    switch (response.code()){
+                        case 404:
+                            activity.showError(R.string.error_not_found);
+                            break;
+                        case 401:
+                            activity.showError(R.string.error_unauth);
+                            break;
+                        default:
+                            activity.showError(R.string.error_general);
+                    }
+                }
         }
 
         @Override public void onFailure(Call<List<Metric>> call, Throwable t) {
@@ -182,6 +199,13 @@ public class LoginActivity extends AppCompatActivity {
 
             if (getActivity().authIndicator.isShowing()) {
                 getActivity().authIndicator.dismiss();
+            }
+
+            if (t instanceof RuntimeException) {
+                activity.showError(R.string.error_internet_connection);
+            }
+            else {
+                activity.showError(R.string.error_general);
             }
 
         }
