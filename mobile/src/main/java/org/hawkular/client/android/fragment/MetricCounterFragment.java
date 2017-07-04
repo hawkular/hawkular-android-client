@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Metric;
@@ -48,6 +49,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.squareup.leakcanary.RefWatcher;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -384,6 +388,17 @@ public final class MetricCounterFragment extends Fragment implements SwipeRefres
         super.onSaveInstanceState(state);
 
         tearDownState(state);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        detectLeaks();
+    }
+
+    private void detectLeaks() {
+        RefWatcher refWatcher = HawkularApplication.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 
     private void tearDownState(Bundle state) {

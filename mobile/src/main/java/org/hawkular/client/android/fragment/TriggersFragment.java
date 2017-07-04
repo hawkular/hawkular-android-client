@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.activity.TriggerDetailActivity;
 import org.hawkular.client.android.adapter.TriggersAdapter;
@@ -57,6 +58,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.squareup.leakcanary.RefWatcher;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -290,6 +294,12 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
         super.onDestroyView();
 
         isTriggersFragmentAvailable = false;
+        detectLeaks();
+    }
+
+    private void detectLeaks() {
+        RefWatcher refWatcher = HawkularApplication.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 
     @Override

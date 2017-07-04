@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.activity.AlertDetailActivity;
 import org.hawkular.client.android.adapter.AlertsAdapter;
@@ -52,6 +53,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.squareup.leakcanary.RefWatcher;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -428,6 +432,12 @@ public class AlertsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         isAlertsFragmentAvailable = false;
 
         tearDownBindings();
+        detectLeaks();
+    }
+
+    private void detectLeaks() {
+        RefWatcher refWatcher = HawkularApplication.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 
     private void tearDownBindings() {
