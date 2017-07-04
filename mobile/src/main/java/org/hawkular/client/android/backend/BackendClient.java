@@ -144,6 +144,11 @@ public final class BackendClient {
         call.enqueue(callback);
     }
 
+    public void updateRetroTrigger(@NonNull Trigger trigger, @NonNull retrofit2.Callback<List<String>> callback){
+        TriggerService service = retrofit.create(TriggerService.class);
+        Call call = service.postUpdateTrigger(trigger);
+        call.enqueue(callback);
+    }
 
     public void getFeeds(@NonNull AbstractCallback<List<Feed>> callback) {
         // TODO : after moving to retrofit complete

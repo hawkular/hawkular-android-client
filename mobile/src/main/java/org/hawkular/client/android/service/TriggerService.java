@@ -24,18 +24,20 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
-import retrofit2.http.Path;
+import retrofit2.http.QueryMap;
 
 public interface TriggerService {
 
     @GET("hawkular/alerts/triggers")
-    Call<List<Trigger>> get();
+    Call<List<Trigger>> get(
+            @QueryMap Map<String, String> parameters
+    );
 
-    @PUT("hawkular/alerts/triggers/{id}")
-    Call<List<String>> updateTrigger(@Path("id") String id, @Body Trigger trigger);
+    @POST("/hawkular/alerts/triggers")
+    Call<List<String>> postUpdateTrigger(
+            @Body Trigger trigger
+    );
 
-    @POST("hawkular/alerts/triggers/")
-    Call<List<String>> createTrigger(@Body Trigger trigger);
+
 
 }
