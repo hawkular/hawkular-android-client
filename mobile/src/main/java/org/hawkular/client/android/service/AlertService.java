@@ -34,8 +34,8 @@ public interface AlertService {
     Call<List<Alert>> get();
 
     @FormUrlEncoded
-    @POST("/hawkular/alerts/ack")
-    Call<List<String>> AckAlert();
+    @POST("/hawkular/alerts/ack/{alertId}")
+    Call<List<String>> ackAlert(@Path("alertId") String alertId);
 
 
     @FormUrlEncoded

@@ -21,7 +21,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
 
 /**
  * Created by pallavi on 02/07/17.

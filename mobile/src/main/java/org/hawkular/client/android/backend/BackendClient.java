@@ -49,7 +49,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.Fragment;
-import android.util.Base64;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -119,7 +118,7 @@ public final class BackendClient {
     public void acknowledgeAlert(@NonNull Alert alert,
                                  @NonNull retrofit2.Callback<List<String>> callback) {
         AlertService service = retrofit.create(AlertService.class);
-        Call call = service.AckAlert();
+        Call call = service.ackAlert(alert.getId());
         call.enqueue(callback);
 
     }

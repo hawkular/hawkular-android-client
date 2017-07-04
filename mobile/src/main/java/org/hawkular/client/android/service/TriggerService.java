@@ -17,8 +17,6 @@
 package org.hawkular.client.android.service;
 
 import java.util.List;
-import java.util.Map;
-
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.FullTrigger;
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
@@ -29,7 +27,6 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.QueryMap;
 
 public interface TriggerService {
 
