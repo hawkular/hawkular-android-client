@@ -359,7 +359,7 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         @Override
         public void onFailure(Call call, Throwable t) {
-
+            Timber.d(t, "Triggers fetching failed.");
         }
     }
 

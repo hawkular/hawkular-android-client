@@ -35,21 +35,20 @@ public interface TriggerService {
 
     @GET("hawkular/alerts/triggers")
     Call<List<Trigger>> get(
-            @QueryMap Map<String, String> parameters
     );
 
     @POST("/hawkular/alerts/triggers")
-    Call<List<String>> postUpdateTrigger(
+    Call<List<String>> updateTrigger(
             @Body Trigger trigger
     );
 
     @POST("/hawkular/alerts/triggers")
-    Call<FullTrigger> postCreateTrigger(
+    Call<FullTrigger> createTrigger(
             @Body FullTrigger trigger
     );
 
     @POST("/hawkular/metrics/strings/raw/query/")
-    Call<List<Resource>> postGetResourcesFromFeed(
+    Call<List<Resource>> getResourcesFromFeed(
             @Body InventoryResponseBody inventoryResponseBody
             );
 

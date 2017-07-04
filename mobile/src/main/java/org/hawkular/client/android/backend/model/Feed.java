@@ -26,8 +26,7 @@ import java.util.List;
 /**
  * Created by anuj on 7/6/16.
  */
-public class Feed implements Parcelable
-{
+public class Feed implements Parcelable {
 
     @SerializedName("feed")
     private List<String> feed = null;
@@ -35,7 +34,6 @@ public class Feed implements Parcelable
     private List<String> module = null;
 
     public final static Parcelable.Creator<Feed> CREATOR = new Creator<Feed>() {
-
 
         @SuppressWarnings({"unchecked"})
         public Feed createFromParcel(Parcel in) {

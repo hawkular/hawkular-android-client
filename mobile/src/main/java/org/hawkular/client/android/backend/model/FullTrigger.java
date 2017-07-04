@@ -24,7 +24,6 @@ import com.google.gson.annotations.SerializedName;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 public class FullTrigger implements Parcelable {

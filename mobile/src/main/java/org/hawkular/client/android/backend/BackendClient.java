@@ -101,7 +101,7 @@ public final class BackendClient {
         parameters.put(BackendPipes.Parameters.FINISH_TIME, String.valueOf(finishTime.getTime()));
 
         AlertService service = retrofit.create(AlertService.class);
-        Call call = service.get(parameters);
+        Call call = service.get();
         call.enqueue(callback);
 
     }
@@ -119,7 +119,7 @@ public final class BackendClient {
     public void acknowledgeAlert(@NonNull Alert alert,
                                  @NonNull retrofit2.Callback<List<String>> callback) {
         AlertService service = retrofit.create(AlertService.class);
-        Call call = service.postAckAlert();
+        Call call = service.AckAlert();
         call.enqueue(callback);
 
     }
@@ -138,13 +138,13 @@ public final class BackendClient {
 
     public void updateTrigger(@NonNull Trigger trigger, @NonNull retrofit2.Callback<List<String>> callback){
         TriggerService service = retrofit.create(TriggerService.class);
-        Call call = service.postUpdateTrigger(trigger);
+        Call call = service.updateTrigger(trigger);
         call.enqueue(callback);
     }
 
     public void createTrigger(@NonNull FullTrigger trigger, @NonNull retrofit2.Callback<List<String>> callback){
         TriggerService service = retrofit.create(TriggerService.class);
-        Call call = service.postCreateTrigger(trigger);
+        Call call = service.createTrigger(trigger);
         call.enqueue(callback);
     }
 
@@ -166,7 +166,7 @@ public final class BackendClient {
     public void getResourcesFromFeed(@NonNull retrofit2.Callback<List<Resource>> callback, @NonNull InventoryResponseBody body){
 
         TriggerService service = retrofit.create(TriggerService.class);
-        Call call = service.postGetResourcesFromFeed(body);
+        Call call = service.getResourcesFromFeed(body);
         call.enqueue(callback);
     }
 
@@ -210,12 +210,7 @@ public final class BackendClient {
 
     public void getTriggers(@NonNull Callback<List<Trigger>> callback) {
         TriggerService service = retrofit.create(TriggerService.class);
-        Map<String, String> map = new HashMap<>();
-        String cred = new String(Base64.encode(("jdoe:password").getBytes(), Base64.NO_WRAP));
-        map.put("Authorization", "Basic "+cred);
-        map.put("Hawkular-Tenant", "hawkular");
-
-        Call call = service.get(map);
+        Call call = service.get();
         call.enqueue(callback);
 
 

@@ -36,6 +36,7 @@ import icepick.Icepick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import timber.log.Timber;
 
 /**
  * Created by pallavi on 19/06/17.
@@ -154,7 +155,7 @@ public class TriggerSetupActivity extends AppCompatActivity {
         }
         @Override
         public void onFailure(Call call, Throwable t) {
-
+            Timber.d(t, "Triggers fetching failed.");
         }
     }
 

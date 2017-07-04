@@ -195,7 +195,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
             IconTreeItemHolder.IconTreeItem item = (IconTreeItemHolder.IconTreeItem) value;
             if (item.type == IconTreeItemHolder.IconTreeItem.Type.FEED) {
                 if (node.size() == 0) {
-                    String path1, path;
+                    String path1;
                     String feed = (String) item.value;
                     path1 = "feed:"+ feed + ",type:rt";
 
@@ -286,7 +286,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     }
 
 
-    private final class FeedsCallback implements retrofit2.Callback<Feed> {
+    private final class FeedsCallback implements retrofit2.Callback<Feed>{
 
         @Override
         public void onResponse(Call<Feed> call, Response<Feed> response) {
