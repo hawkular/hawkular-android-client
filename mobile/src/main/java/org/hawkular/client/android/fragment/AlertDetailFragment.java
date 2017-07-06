@@ -48,6 +48,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -162,6 +163,23 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
 
         notes = new ArrayList<>(alert.getNotes());
         list.setAdapter(new NotesAdapter(getActivity(), notes));
+        list.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                boolean enable = false;
+                if (list != null && list.getChildCount()>0){
+                    boolean firstRowVisible = list.getFirstVisiblePosition()==0;
+                    boolean firstRowTopVisible = list.getChildAt(0).getTop()==0;
+                    enable = firstRowVisible && firstRowTopVisible;
+                }
+                contentLayout.setEnabled(enable);
+            }
+        });
         hideRefreshing();
         showList();
 
