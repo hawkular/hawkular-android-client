@@ -467,8 +467,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
             if (masterNode.getTags() != null && masterNode.getTags().getChunks() != null) {
                     int nbChunks = Integer.parseInt(masterNode.getTags().getChunks());
                     int totalSize = Integer.parseInt(masterNode.getTags().getSize());
-                    byte[] master = masterNode.getValue().getBytes();
-                    master = Base64.decode(master, Base64.DEFAULT);
+                    byte[] master = Base64.decode(masterNode.getValue(), Base64.DEFAULT);
 
                     Log.d("tags", masterNode.getTags().getChunks());
                     if (master.length == 0) {
@@ -496,11 +495,10 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                             // Then, caller must just wait a little bit before retrying
                             return "";
                         }
-                        byte[] slave = slaveNode.getValue().getBytes();
-                        slave = Base64.decode(slave, Base64.DEFAULT);
+                        byte[] slave = Base64.decode(masterNode.getValue(), Base64.DEFAULT);
                         System.arraycopy(slave, 0, all1, pos, slave.length);
                         pos += slave.length;
-                        all1 = Base64.decode(all1, Base64.DEFAULT);
+
                     }
                 } else {
                     // Not chunked
