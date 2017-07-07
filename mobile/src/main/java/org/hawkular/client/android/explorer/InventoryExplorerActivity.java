@@ -16,9 +16,26 @@
  */
 package org.hawkular.client.android.explorer;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Environment;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.unnamed.b.atv.model.TreeNode;
+import com.unnamed.b.atv.view.AndroidTreeView;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
@@ -39,24 +56,16 @@ import org.jboss.aerogear.android.store.generator.IdGenerator;
 import org.jboss.aerogear.android.store.sql.SQLStore;
 import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.unnamed.b.atv.model.TreeNode;
-import com.unnamed.b.atv.view.AndroidTreeView;
-
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.Toast;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.List;
+import java.util.UUID;
+import java.util.zip.GZIPInputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,6 +83,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    private static final String FILENAME = "myFile.txt";
     private AndroidTreeView tView;
     private TreeNode.BaseNodeViewHolder holder;
     private TreeNode root;
@@ -83,6 +93,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_explorer);
+
 
         callback = new PerformOperationCallback();
 
@@ -197,19 +208,19 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                 if (node.size() == 0) {
                     String path1;
                     String feed = (String) item.value;
-                    path1 = "feed:"+ feed + ",type:r";
+                    path1 = "feed:" + feed + ",type:r";
 
-                    InventoryResponseBody body = new InventoryResponseBody("true","DESC",path1);
+                    InventoryResponseBody body = new InventoryResponseBody("true", "DESC", path1);
                     Log.d("Full path", path1);
                     BackendClient.of(getInventoryExplorerActivity()).getResourcesFromFeed(
                             new ResourcesCallback(node), body);
                 }
             } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.RESOURCE) {
                 if (node.size() == 0) {
-                    //BackendClient.of(getInventoryExplorerActivity()).getRecResourcesFromFeed(
-                      //      new ResourcesCallback(node), (Resource) item.value);
-                   // BackendClient.of(getInventoryExplorerActivity()).getRetroMetricsFromFeed(
-                     //       new MetricsCallback(node), (Resource) item.value);
+                    BackendClient.of(getInventoryExplorerActivity()).getRecResourcesFromFeed(
+                            new ResourcesCallback(node), (Resource) item.value);
+                    // BackendClient.of(getInventoryExplorerActivity()).getRetroMetricsFromFeed(
+                    //       new MetricsCallback(node), (Resource) item.value);
                     BackendClient.of(getInventoryExplorerActivity()).getOpreations(
                             new OperationsCallback(node), (Resource) item.value);
                 }
@@ -248,7 +259,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                addMetricToFav((Metric)item.value);
+                                addMetricToFav((Metric) item.value);
                             }
                         });
                 builder.setNegativeButton("Cancel", null);
@@ -286,7 +297,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     }
 
 
-    private final class FeedsCallback implements retrofit2.Callback<Feed>{
+    private final class FeedsCallback implements retrofit2.Callback<Feed> {
 
         @Override
         public void onResponse(Call<Feed> call, Response<Feed> response) {
@@ -295,14 +306,14 @@ public class InventoryExplorerActivity extends AppCompatActivity {
             Feed feed = response.body();
 
             if (response.isSuccessful()) {
-                Log.d("response on feed","id is =" + feed.getFeed().get(0));
+                Log.d("response on feed", "id is =" + feed.getFeed().get(0));
                 getInventoryExplorerActivity().setUpFeeds(response.body().getFeed());
             }
         }
 
         @Override
         public void onFailure(Call<Feed> call, Throwable t) {
-                Log.d("Fetching Failed", t.getMessage());
+            Log.d("Fetching Failed", t.getMessage());
         }
 
         private InventoryExplorerActivity getInventoryExplorerActivity() {
@@ -343,10 +354,11 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         ResourcesCallback(TreeNode parent) {
             this.parent = parent;
         }
+
         @Override
         public void onResponse(Call<List<Resource>> call, Response<List<Resource>> response) {
 
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 Gson gson = new GsonBuilder().create();
                 try {
                     Error mApiError = gson.fromJson(response.errorBody().string(), Error.class);
@@ -354,12 +366,20 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     // handle failure to read error
                 }
-            }
-
-            else
-            {
+            } else {
                 //Log.d("Response","code="+ response.code());
-                getInventoryExplorerActivity().setUpResources(response.body(), parent);
+                //getInventoryExplorerActivity().setUpResources(response.body(), parent);
+
+                String response1 = rebuildFromChunks(response.body());
+                //writeToFile(response1);
+
+                int maxLogSize = 1000;
+                for(int i = 0; i <= response1.length() / maxLogSize; i++) {
+                    int start = i * maxLogSize;
+                    int end = (i+1) * maxLogSize;
+                    end = end > response1.length() ? response1.length() : end;
+                    Log.v("Decoded Response", response1.substring(start, end));
+                }
             }
 
             //Log.d("Response on feed metric", error.getErrorMsg());
@@ -374,7 +394,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         @Override
         public void onFailure(Call<List<Resource>> call, Throwable t) {
             Timber.d("Resources fetching failed.");
-            Log.d("Response on feed metric", t.getMessage());
+
         }
     }
 
@@ -406,13 +426,117 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     private final class PerformOperationCallback implements Callback<String> {
 
-        @Override public void onSuccess(String data) {
+        @Override
+        public void onSuccess(String data) {
             Snackbar.make(findViewById(android.R.id.content), data, Snackbar.LENGTH_LONG).show();
 
         }
 
-        @Override public void onFailure(Exception e) {
+        @Override
+        public void onFailure(Exception e) {
             Snackbar.make(findViewById(android.R.id.content), R.string.operation_fail, Snackbar.LENGTH_LONG).show();
         }
     }
+
+    private String rebuildFromChunks(List<Resource> dataNode) {
+        if (dataNode.isEmpty()) {
+            return "";
+        }
+        try {
+            Resource masterNode = dataNode.get(0);
+            final byte[] all;
+            if (masterNode.getData().get(0).getTags() != null && masterNode.getData().get(0).getTags().getChunks() != null) {
+                int nbChunks = Integer.parseInt(masterNode.getData().get(0).getTags().getChunks());
+                int totalSize = Integer.parseInt(masterNode.getData().get(0).getTags().getSize());
+                byte[] master = masterNode.getData().get(0).getValue().getBytes();
+                Log.d("tags", masterNode.getData().get(0).getTags().getChunks());
+                if (master.length == 0) {
+                    return "";
+                }
+                if (nbChunks > dataNode.size()) {
+                    // Race condition: some, but not all chunks have been written on DB while reading?
+                    // Then, caller must just wait a little bit before retrying
+                    return "";
+                }
+                long masterTimestamp = masterNode.getData().get(0).getTimestamp().longValue();
+                all = new byte[totalSize];
+                int pos = 0;
+                System.arraycopy(master, 0, all, pos, master.length);
+                pos += master.length;
+                for (int i = 1; i < nbChunks; i++) {
+                    Resource slaveNode = dataNode.get(i);
+
+                    // Perform sanity check using timestamps; they should all be contiguous, in decreasing order
+                    long slaveTimestamp = slaveNode.getData().get(0).getTimestamp().longValue();
+                    if (slaveTimestamp != masterTimestamp - i) {
+                        // Race condition: some, but not all chunks have been written on DB while reading?
+                        // Then, caller must just wait a little bit before retrying
+                        return "";
+                    }
+                    byte[] slave = slaveNode.getData().get(0).getValue().getBytes();
+                    System.arraycopy(slave, 0, all, pos, slave.length);
+                    pos += slave.length;
+                }
+            } else {
+                // Not chunked
+                all = Base64.decode(masterNode.getData().get(0).getValue(), Base64.DEFAULT);
+            }
+            String decompressed = decompress(all);
+            Log.d("decompressed", decompressed);
+            return decompressed;
+        } catch (Exception e) {
+            Log.d("Exceptions", e.getMessage());
+        }
+        return "";
+    }
+
+
+    private static String decompress(byte[] gzipped) throws IOException {
+        if ((gzipped == null) || (gzipped.length == 0)) {
+            return "";
+        }
+
+        StringBuilder outStr = new StringBuilder();
+        GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(gzipped));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(gis, "UTF-8"));
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            outStr.append(line);
+        }
+        bufferedReader.close();
+        gis.close();
+        return outStr.toString();
+
+    }
+
+    public void writeToFile(String data)
+    {
+
+        String path =
+                 Environment.getExternalStorageDirectory() + File.separator  + "Hawkular";
+        // Create the folder.
+        File folder = new File(path);
+        folder.mkdirs();
+
+        // Create the file.
+        File file = new File(folder, "config.txt");
+
+        try
+        {
+            file.createNewFile();
+            FileOutputStream fOut = new FileOutputStream(file);
+            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+            myOutWriter.append(data);
+
+            myOutWriter.close();
+
+            fOut.flush();
+            fOut.close();
+        }
+        catch (IOException e)
+        {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
 }
+

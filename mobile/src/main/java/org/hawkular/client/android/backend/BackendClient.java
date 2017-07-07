@@ -16,13 +16,12 @@
  */
 package org.hawkular.client.android.backend;
 
-import static org.hawkular.client.android.HawkularApplication.retrofit;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
+import android.support.v4.app.Fragment;
 
 import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.backend.model.Alert;
@@ -43,15 +42,16 @@ import org.hawkular.client.android.service.TriggerService;
 import org.hawkular.client.android.util.Preferences;
 import org.jboss.aerogear.android.pipe.callback.AbstractCallback;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresPermission;
-import android.support.v4.app.Fragment;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+
+import static org.hawkular.client.android.HawkularApplication.retrofit;
 
 /**
  * Backend client.
@@ -170,7 +170,7 @@ public final class BackendClient {
     }
 
 
-    public void getRecResourcesFromFeed(@NonNull AbstractCallback<List<Resource>> callback, Resource resource) {
+    public void getRecResourcesFromFeed(@NonNull retrofit2.Callback callback, Resource resource) {
         // TODO : after moving to retrofit complete
     }
 
