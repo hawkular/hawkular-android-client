@@ -39,6 +39,7 @@ import com.unnamed.b.atv.view.AndroidTreeView;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.Data;
 import org.hawkular.client.android.backend.model.Error;
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
@@ -55,6 +56,8 @@ import org.jboss.aerogear.android.store.DataManager;
 import org.jboss.aerogear.android.store.generator.IdGenerator;
 import org.jboss.aerogear.android.store.sql.SQLStore;
 import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -63,6 +66,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
@@ -370,16 +374,29 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                 //Log.d("Response","code="+ response.code());
                 //getInventoryExplorerActivity().setUpResources(response.body(), parent);
 
-                String response1 = rebuildFromChunks(response.body());
-                //writeToFile(response1);
+                List<Resource> resources;
+                resources = response.body();
 
-                int maxLogSize = 1000;
-                for(int i = 0; i <= response1.length() / maxLogSize; i++) {
-                    int start = i * maxLogSize;
-                    int end = (i+1) * maxLogSize;
-                    end = end > response1.length() ? response1.length() : end;
-                    Log.v("Decoded Response", response1.substring(start, end));
+
+                for(Resource resource: resources){
+                    String decoded = rebuildFromChunks(resource.getData());
+                    Log.d("idididididid",resource.getId());
+                    Log.d("decoded",decoded);
+
+
+                    try {
+                        JSONObject structure =(new JSONObject(decoded)).getJSONObject("inventoryStructure");
+                        JSONObject data = structure.getJSONObject("data");
+                        String res_name = data.getString("name");
+                        Log.d("namename",resource.getId()+ " :  "+ res_name);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
                 }
+                //writeToFile(response1);
             }
 
             //Log.d("Response on feed metric", error.getErrorMsg());
@@ -438,53 +455,54 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         }
     }
 
-    private String rebuildFromChunks(List<Resource> dataNode) {
-        if (dataNode.isEmpty()) {
-            return "";
-        }
-        try {
-            Resource masterNode = dataNode.get(0);
-            final byte[] all;
-            if (masterNode.getData().get(0).getTags() != null && masterNode.getData().get(0).getTags().getChunks() != null) {
-                int nbChunks = Integer.parseInt(masterNode.getData().get(0).getTags().getChunks());
-                int totalSize = Integer.parseInt(masterNode.getData().get(0).getTags().getSize());
-                byte[] master = masterNode.getData().get(0).getValue().getBytes();
-                Log.d("tags", masterNode.getData().get(0).getTags().getChunks());
-                if (master.length == 0) {
-                    return "";
-                }
-                if (nbChunks > dataNode.size()) {
-                    // Race condition: some, but not all chunks have been written on DB while reading?
-                    // Then, caller must just wait a little bit before retrying
-                    return "";
-                }
-                long masterTimestamp = masterNode.getData().get(0).getTimestamp().longValue();
-                all = new byte[totalSize];
-                int pos = 0;
-                System.arraycopy(master, 0, all, pos, master.length);
-                pos += master.length;
-                for (int i = 1; i < nbChunks; i++) {
-                    Resource slaveNode = dataNode.get(i);
+    private String rebuildFromChunks(List<Data> dataNode) {
 
-                    // Perform sanity check using timestamps; they should all be contiguous, in decreasing order
-                    long slaveTimestamp = slaveNode.getData().get(0).getTimestamp().longValue();
-                    if (slaveTimestamp != masterTimestamp - i) {
+
+        try {
+            Data masterNode = dataNode.get(0);
+
+                final byte[] all;
+                if (masterNode.getTags() != null && masterNode.getTags().getChunks() != null) {
+                    int nbChunks = Integer.parseInt(masterNode.getTags().getChunks());
+                    int totalSize = Integer.parseInt(masterNode.getTags().getSize());
+                    byte[] master = masterNode.getValue().getBytes();
+                    Log.d("tags", masterNode.getTags().getChunks());
+                    if (master.length == 0) {
+                        return "";
+                    }
+                    if (nbChunks > dataNode.size()) {
                         // Race condition: some, but not all chunks have been written on DB while reading?
                         // Then, caller must just wait a little bit before retrying
                         return "";
                     }
-                    byte[] slave = slaveNode.getData().get(0).getValue().getBytes();
-                    System.arraycopy(slave, 0, all, pos, slave.length);
-                    pos += slave.length;
+                    long masterTimestamp = masterNode.getTimestamp().longValue();
+                    all = new byte[totalSize];
+                    int pos = 0;
+                    System.arraycopy(master, 0, all, pos, master.length);
+                    pos += master.length;
+                    for (int i = 1; i < nbChunks; i++) {
+                        Data slaveNode = dataNode.get(i);
+
+                        // Perform sanity check using timestamps; they should all be contiguous, in decreasing order
+                        long slaveTimestamp = slaveNode.getTimestamp().longValue();
+                        if (slaveTimestamp != masterTimestamp - i) {
+                            // Race condition: some, but not all chunks have been written on DB while reading?
+                            // Then, caller must just wait a little bit before retrying
+                            return "";
+                        }
+                        byte[] slave = slaveNode.getValue().getBytes();
+                        System.arraycopy(slave, 0, all, pos, slave.length);
+                        pos += slave.length;
+                    }
+                } else {
+                    // Not chunked
+                    all = Base64.decode(masterNode.getValue(), Base64.DEFAULT);
                 }
-            } else {
-                // Not chunked
-                all = Base64.decode(masterNode.getData().get(0).getValue(), Base64.DEFAULT);
-            }
-            String decompressed = decompress(all);
-            Log.d("decompressed", decompressed);
-            return decompressed;
-        } catch (Exception e) {
+                String decompressed = decompress(all);
+                Log.d("decompressed", decompressed);
+                return decompressed;
+
+        }catch (Exception e) {
             Log.d("Exceptions", e.getMessage());
         }
         return "";
