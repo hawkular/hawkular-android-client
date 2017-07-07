@@ -462,10 +462,14 @@ public class InventoryExplorerActivity extends AppCompatActivity {
             Data masterNode = dataNode.get(0);
 
                 final byte[] all;
-                if (masterNode.getTags() != null && masterNode.getTags().getChunks() != null) {
+            byte[] all1;
+
+            if (masterNode.getTags() != null && masterNode.getTags().getChunks() != null) {
                     int nbChunks = Integer.parseInt(masterNode.getTags().getChunks());
                     int totalSize = Integer.parseInt(masterNode.getTags().getSize());
                     byte[] master = masterNode.getValue().getBytes();
+                    master = Base64.decode(master, Base64.DEFAULT);
+
                     Log.d("tags", masterNode.getTags().getChunks());
                     if (master.length == 0) {
                         return "";
@@ -475,11 +479,13 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                         // Then, caller must just wait a little bit before retrying
                         return "";
                     }
+
                     long masterTimestamp = masterNode.getTimestamp().longValue();
-                    all = new byte[totalSize];
+                    all1 = new byte[totalSize];
                     int pos = 0;
-                    System.arraycopy(master, 0, all, pos, master.length);
+                    System.arraycopy(master, 0, all1, pos, master.length);
                     pos += master.length;
+
                     for (int i = 1; i < nbChunks; i++) {
                         Data slaveNode = dataNode.get(i);
 
@@ -491,14 +497,17 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                             return "";
                         }
                         byte[] slave = slaveNode.getValue().getBytes();
-                        System.arraycopy(slave, 0, all, pos, slave.length);
+                        slave = Base64.decode(slave, Base64.DEFAULT);
+                        System.arraycopy(slave, 0, all1, pos, slave.length);
                         pos += slave.length;
+                        all1 = Base64.decode(all1, Base64.DEFAULT);
                     }
                 } else {
                     // Not chunked
-                    all = Base64.decode(masterNode.getValue(), Base64.DEFAULT);
+                    all1 = Base64.decode(masterNode.getValue(), Base64.DEFAULT);
                 }
-                String decompressed = decompress(all);
+            all = all1;
+            String decompressed = decompress(all);
                 Log.d("decompressed", decompressed);
                 return decompressed;
 
