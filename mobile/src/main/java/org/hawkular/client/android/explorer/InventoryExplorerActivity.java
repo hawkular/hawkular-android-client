@@ -67,7 +67,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 
@@ -178,11 +180,11 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     }
 
-    private void setUpResources(List<Resource> resources, TreeNode parent) {
+    private void setUpResources(List<Resource> resources, Map<String,String> map, TreeNode parent) {
         for (Resource resource : resources) {
             int icon = getResources().getIdentifier("drawable/" + "resource_icon", null, getPackageName());
             TreeNode newResource = new TreeNode(new IconTreeItemHolder.IconTreeItem(
-                    icon, IconTreeItemHolder.IconTreeItem.Type.RESOURCE, resource.getId(), resource));
+                    icon, IconTreeItemHolder.IconTreeItem.Type.RESOURCE, map.get(resource.getId()), resource));
             tView.addNode(parent, newResource);
         }
 
@@ -213,9 +215,8 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                     String path1;
                     String feed = (String) item.value;
                     path1 = "feed:" + feed + ",type:r";
-
                     InventoryResponseBody body = new InventoryResponseBody("true", "DESC", path1);
-                    Log.d("Full path", path1);
+
                     BackendClient.of(getInventoryExplorerActivity()).getResourcesFromFeed(
                             new ResourcesCallback(node), body);
                 }
@@ -361,6 +362,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
         @Override
         public void onResponse(Call<List<Resource>> call, Response<List<Resource>> response) {
+            HashMap<String, String> hashMap = new HashMap<String, String>();
 
             if (!response.isSuccessful()) {
                 Gson gson = new GsonBuilder().create();
@@ -371,40 +373,32 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                     // handle failure to read error
                 }
             } else {
-                //Log.d("Response","code="+ response.code());
-                //getInventoryExplorerActivity().setUpResources(response.body(), parent);
 
                 List<Resource> resources;
                 resources = response.body();
 
-
                 for(Resource resource: resources){
                     String decoded = rebuildFromChunks(resource.getData());
-                    Log.d("idididididid",resource.getId());
-                    Log.d("decoded",decoded);
-
 
                     try {
                         JSONObject structure =(new JSONObject(decoded)).getJSONObject("inventoryStructure");
                         JSONObject data = structure.getJSONObject("data");
                         String res_name = data.getString("name");
+
+                        hashMap.put(resource.getId(),res_name);
                         Log.d("namename",resource.getId()+ " :  "+ res_name);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-
                 }
-                //writeToFile(response1);
             }
 
-            //Log.d("Response on feed metric", error.getErrorMsg());
-            /*if(!response.body().isEmpty()) {
-                getInventoryExplorerActivity().setUpResources(response.body(), parent);
+            if(!response.body().isEmpty()) {
+                getInventoryExplorerActivity().setUpResources(response.body(),hashMap, parent);
             }
             else {
-            }*/
+            }
 
         }
 
@@ -487,15 +481,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
                     for (int i = 1; i < nbChunks; i++) {
                         Data slaveNode = dataNode.get(i);
-
-                        // Perform sanity check using timestamps; they should all be contiguous, in decreasing order
-                        long slaveTimestamp = slaveNode.getTimestamp().longValue();
-                        if (slaveTimestamp != masterTimestamp - i) {
-                            // Race condition: some, but not all chunks have been written on DB while reading?
-                            // Then, caller must just wait a little bit before retrying
-                            return "";
-                        }
-                        byte[] slave = Base64.decode(masterNode.getValue(), Base64.DEFAULT);
+                        byte[] slave = Base64.decode(slaveNode.getValue(), Base64.DEFAULT);
                         System.arraycopy(slave, 0, all1, pos, slave.length);
                         pos += slave.length;
 
@@ -532,36 +518,6 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         gis.close();
         return outStr.toString();
 
-    }
-
-    public void writeToFile(String data)
-    {
-
-        String path =
-                 Environment.getExternalStorageDirectory() + File.separator  + "Hawkular";
-        // Create the folder.
-        File folder = new File(path);
-        folder.mkdirs();
-
-        // Create the file.
-        File file = new File(folder, "config.txt");
-
-        try
-        {
-            file.createNewFile();
-            FileOutputStream fOut = new FileOutputStream(file);
-            OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-            myOutWriter.append(data);
-
-            myOutWriter.close();
-
-            fOut.flush();
-            fOut.close();
-        }
-        catch (IOException e)
-        {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
     }
 }
 
