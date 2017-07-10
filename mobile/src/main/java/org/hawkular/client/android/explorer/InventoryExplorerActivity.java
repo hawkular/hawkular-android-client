@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -61,12 +60,8 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +84,6 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    private static final String FILENAME = "myFile.txt";
     private AndroidTreeView tView;
     private TreeNode.BaseNodeViewHolder holder;
     private TreeNode root;
@@ -450,8 +444,6 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     }
 
     private String rebuildFromChunks(List<Data> dataNode) {
-
-
         try {
             Data masterNode = dataNode.get(0);
 
@@ -473,7 +465,6 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                         return "";
                     }
 
-                    long masterTimestamp = masterNode.getTimestamp().longValue();
                     all1 = new byte[totalSize];
                     int pos = 0;
                     System.arraycopy(master, 0, all1, pos, master.length);
