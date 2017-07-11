@@ -18,35 +18,11 @@
 package org.hawkular.client.android.util;
 
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import org.hawkular.client.android.R;
-import org.hawkular.client.android.auth.AuthData;
-import org.hawkular.client.android.auth.Session;
-import org.jboss.aerogear.android.core.Callback;
-import org.jboss.aerogear.android.store.DataManager;
-import org.jboss.aerogear.android.store.generator.IdGenerator;
-import org.jboss.aerogear.android.store.sql.SQLStore;
-import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
-import com.squareup.okhttp.ws.WebSocket;
-import com.squareup.okhttp.ws.WebSocketCall;
-import com.squareup.okhttp.ws.WebSocketListener;
-
-import android.content.Context;
-import okio.Buffer;
-import timber.log.Timber;
-
 public class OperationManager {
 
+    //TODO:
+
+/*
     private String username;
     private String password;
     private final Context context;
@@ -205,5 +181,6 @@ public class OperationManager {
             }
         }
     }
+    */
 
 }

@@ -58,10 +58,6 @@ import retrofit2.Callback;
  * <p/>
  * A master controller for all backend-related operations.
  * <p/>
- * Configures proper {@link org.jboss.aerogear.android.pipe.module.PipeModule} instances for authorization
- * using {@link org.jboss.aerogear.android.authorization.AuthorizationManager}. Configures used in the application
- * {@link org.jboss.aerogear.android.pipe.Pipe} instances.
- * <p/>
  * Most of the configuration is stored using internal AeroGear long-lived objects. It is not necessary to handle
  * this class objects as singletons, it is intended to be used as a short-lived object.
  * <p/>
