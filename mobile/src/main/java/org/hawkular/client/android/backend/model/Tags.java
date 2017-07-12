@@ -17,54 +17,54 @@
 
 package org.hawkular.client.android.backend.model;
 
-import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 
-public class Resource implements Parcelable
+public class Tags implements Parcelable
 {
 
-    private String id;
-    private List<Data> data = null;
-    public final static Creator<Resource> CREATOR = new Creator<Resource>() {
+    private String chunks;
+    private String size;
+    public final static Creator<Tags> CREATOR = new Creator<Tags>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public Resource createFromParcel(Parcel in) {
-            Resource instance = new Resource();
-            instance.id = ((String) in.readValue((String.class.getClassLoader())));
-            in.readList(instance.data, (Data.class.getClassLoader()));
+        public Tags createFromParcel(Parcel in) {
+            Tags instance = new Tags();
+            instance.chunks = ((String) in.readValue((String.class.getClassLoader())));
+            instance.size = ((String) in.readValue((String.class.getClassLoader())));
             return instance;
         }
 
-        public Resource[] newArray(int size) {
-            return (new Resource[size]);
+        public Tags[] newArray(int size) {
+            return (new Tags[size]);
         }
 
     }
     ;
 
-    public String getId() {
-        return id;
+    public String getChunks() {
+        return chunks;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setChunks(String chunks) {
+        this.chunks = chunks;
     }
 
-    public List<Data> getData() {
-        return data;
+    public String getSize() {
+        return size;
     }
 
-    public void setData(List<Data> data) {
-        this.data = data;
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(id);
-        dest.writeList(data);
+        dest.writeValue(chunks);
+        dest.writeValue(size);
     }
 
     public int describeContents() {

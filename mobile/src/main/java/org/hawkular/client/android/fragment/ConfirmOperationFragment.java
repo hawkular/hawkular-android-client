@@ -120,7 +120,7 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
     }
 
     private void setOperationDetail() {
-        operationDetail.setText(operation.getName() + " on " + resource.getName());
+        operationDetail.setText(operation.getName() + " on " + resource.getId());
     }
 
     private Resource getResource() {
@@ -183,7 +183,7 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
         JSONObject body = new JSONObject();
         try {
             body.put("operationName", operation.getId());
-            body.put("resourcePath", resource.getPath());
+           // body.put("resourcePath", // TODO: 05/07/17 Fix it );
             if (custom.isChecked()) {
                 Set<Map.Entry<String, String>> set = map.entrySet();
                 JSONObject params = new JSONObject();

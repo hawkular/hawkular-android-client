@@ -16,12 +16,29 @@
  */
 package org.hawkular.client.android.explorer;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.unnamed.b.atv.model.TreeNode;
+import com.unnamed.b.atv.view.AndroidTreeView;
 
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.Data;
 import org.hawkular.client.android.backend.model.Error;
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
@@ -38,25 +55,18 @@ import org.jboss.aerogear.android.store.DataManager;
 import org.jboss.aerogear.android.store.generator.IdGenerator;
 import org.jboss.aerogear.android.store.sql.SQLStore;
 import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.unnamed.b.atv.model.TreeNode;
-import com.unnamed.b.atv.view.AndroidTreeView;
-
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.Toast;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.zip.GZIPInputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,6 +93,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_explorer);
+
 
         callback = new PerformOperationCallback();
 
@@ -163,11 +174,11 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     }
 
-    private void setUpResources(List<Resource> resources, TreeNode parent) {
+    private void setUpResources(List<Resource> resources, Map<String,String> map, TreeNode parent) {
         for (Resource resource : resources) {
             int icon = getResources().getIdentifier("drawable/" + "resource_icon", null, getPackageName());
             TreeNode newResource = new TreeNode(new IconTreeItemHolder.IconTreeItem(
-                    icon, IconTreeItemHolder.IconTreeItem.Type.RESOURCE, resource.getName(), resource));
+                    icon, IconTreeItemHolder.IconTreeItem.Type.RESOURCE, map.get(resource.getId()), resource));
             tView.addNode(parent, newResource);
         }
 
@@ -197,19 +208,18 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                 if (node.size() == 0) {
                     String path1;
                     String feed = (String) item.value;
-                    path1 = "feed:"+ feed + ",type:rt";
+                    path1 = "feed:" + feed + ",type:r";
+                    InventoryResponseBody body = new InventoryResponseBody("true", "DESC", path1);
 
-                    InventoryResponseBody body = new InventoryResponseBody("true","DESC",path1);
-                    Log.d("Full path", path1);
                     BackendClient.of(getInventoryExplorerActivity()).getResourcesFromFeed(
                             new ResourcesCallback(node), body);
                 }
             } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.RESOURCE) {
                 if (node.size() == 0) {
-                    //BackendClient.of(getInventoryExplorerActivity()).getRecResourcesFromFeed(
-                      //      new ResourcesCallback(node), (Resource) item.value);
-                   // BackendClient.of(getInventoryExplorerActivity()).getRetroMetricsFromFeed(
-                     //       new MetricsCallback(node), (Resource) item.value);
+                    BackendClient.of(getInventoryExplorerActivity()).getRecResourcesFromFeed(
+                            new ResourcesCallback(node), (Resource) item.value);
+                    // BackendClient.of(getInventoryExplorerActivity()).getRetroMetricsFromFeed(
+                    //       new MetricsCallback(node), (Resource) item.value);
                     BackendClient.of(getInventoryExplorerActivity()).getOpreations(
                             new OperationsCallback(node), (Resource) item.value);
                 }
@@ -248,7 +258,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                addMetricToFav((Metric)item.value);
+                                addMetricToFav((Metric) item.value);
                             }
                         });
                 builder.setNegativeButton("Cancel", null);
@@ -286,7 +296,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     }
 
 
-    private final class FeedsCallback implements retrofit2.Callback<Feed>{
+    private final class FeedsCallback implements retrofit2.Callback<Feed> {
 
         @Override
         public void onResponse(Call<Feed> call, Response<Feed> response) {
@@ -295,14 +305,14 @@ public class InventoryExplorerActivity extends AppCompatActivity {
             Feed feed = response.body();
 
             if (response.isSuccessful()) {
-                Log.d("response on feed","id is =" + feed.getFeed().get(0));
+                Log.d("response on feed", "id is =" + feed.getFeed().get(0));
                 getInventoryExplorerActivity().setUpFeeds(response.body().getFeed());
             }
         }
 
         @Override
         public void onFailure(Call<Feed> call, Throwable t) {
-                Log.d("Fetching Failed", t.getMessage());
+            Log.d("Fetching Failed", t.getMessage());
         }
 
         private InventoryExplorerActivity getInventoryExplorerActivity() {
@@ -343,10 +353,12 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         ResourcesCallback(TreeNode parent) {
             this.parent = parent;
         }
+
         @Override
         public void onResponse(Call<List<Resource>> call, Response<List<Resource>> response) {
+            HashMap<String, String> hashMap = new HashMap<String, String>();
 
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 Gson gson = new GsonBuilder().create();
                 try {
                     Error mApiError = gson.fromJson(response.errorBody().string(), Error.class);
@@ -354,27 +366,40 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     // handle failure to read error
                 }
+            } else {
+
+                List<Resource> resources;
+                resources = response.body();
+
+                for(Resource resource: resources){
+                    String decoded = rebuildFromChunks(resource.getData());
+
+                    try {
+                        JSONObject structure =(new JSONObject(decoded)).getJSONObject("inventoryStructure");
+                        JSONObject data = structure.getJSONObject("data");
+                        String res_name = data.getString("name");
+
+                        hashMap.put(resource.getId(),res_name);
+                        Log.d("namename",resource.getId()+ " :  "+ res_name);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
-            else
-            {
-                //Log.d("Response","code="+ response.code());
-                getInventoryExplorerActivity().setUpResources(response.body(), parent);
-            }
-
-            //Log.d("Response on feed metric", error.getErrorMsg());
-            /*if(!response.body().isEmpty()) {
-                getInventoryExplorerActivity().setUpResources(response.body(), parent);
+            if(!response.body().isEmpty()) {
+                getInventoryExplorerActivity().setUpResources(response.body(),hashMap, parent);
             }
             else {
-            }*/
+            }
 
         }
 
         @Override
         public void onFailure(Call<List<Resource>> call, Throwable t) {
             Timber.d("Resources fetching failed.");
-            Log.d("Response on feed metric", t.getMessage());
+
         }
     }
 
@@ -406,13 +431,84 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     private final class PerformOperationCallback implements Callback<String> {
 
-        @Override public void onSuccess(String data) {
+        @Override
+        public void onSuccess(String data) {
             Snackbar.make(findViewById(android.R.id.content), data, Snackbar.LENGTH_LONG).show();
 
         }
 
-        @Override public void onFailure(Exception e) {
+        @Override
+        public void onFailure(Exception e) {
             Snackbar.make(findViewById(android.R.id.content), R.string.operation_fail, Snackbar.LENGTH_LONG).show();
         }
     }
+
+    private String rebuildFromChunks(List<Data> dataNode) {
+        try {
+            Data masterNode = dataNode.get(0);
+
+                final byte[] all;
+            byte[] all1;
+
+            if (masterNode.getTags() != null && masterNode.getTags().getChunks() != null) {
+                    int nbChunks = Integer.parseInt(masterNode.getTags().getChunks());
+                    int totalSize = Integer.parseInt(masterNode.getTags().getSize());
+                    byte[] master = Base64.decode(masterNode.getValue(), Base64.DEFAULT);
+
+                    Log.d("tags", masterNode.getTags().getChunks());
+                    if (master.length == 0) {
+                        return "";
+                    }
+                    if (nbChunks > dataNode.size()) {
+                        // Race condition: some, but not all chunks have been written on DB while reading?
+                        // Then, caller must just wait a little bit before retrying
+                        return "";
+                    }
+
+                    all1 = new byte[totalSize];
+                    int pos = 0;
+                    System.arraycopy(master, 0, all1, pos, master.length);
+                    pos += master.length;
+
+                    for (int i = 1; i < nbChunks; i++) {
+                        Data slaveNode = dataNode.get(i);
+                        byte[] slave = Base64.decode(slaveNode.getValue(), Base64.DEFAULT);
+                        System.arraycopy(slave, 0, all1, pos, slave.length);
+                        pos += slave.length;
+
+                    }
+                } else {
+                    // Not chunked
+                    all1 = Base64.decode(masterNode.getValue(), Base64.DEFAULT);
+                }
+            all = all1;
+            String decompressed = decompress(all);
+                Log.d("decompressed", decompressed);
+                return decompressed;
+
+        }catch (Exception e) {
+            Log.d("Exceptions", e.getMessage());
+        }
+        return "";
+    }
+
+
+    private static String decompress(byte[] gzipped) throws IOException {
+        if ((gzipped == null) || (gzipped.length == 0)) {
+            return "";
+        }
+
+        StringBuilder outStr = new StringBuilder();
+        GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(gzipped));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(gis, "UTF-8"));
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            outStr.append(line);
+        }
+        bufferedReader.close();
+        gis.close();
+        return outStr.toString();
+
+    }
 }
+
