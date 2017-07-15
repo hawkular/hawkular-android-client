@@ -76,7 +76,6 @@ import java.util.zip.GZIPInputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import clojure.lang.IFn;
 import retrofit2.Call;
 import retrofit2.Response;
 import timber.log.Timber;
@@ -510,8 +509,6 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         @Override
         public void onResponse(Call<List<Resource>> call, Response<List<Resource>> response) {
 
-            HashMap<String, String> hashMap = new HashMap<String, String>();
-
             if (!response.isSuccessful()) {
                 Log.d("Error", response.errorBody().toString());
 
@@ -524,10 +521,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                     JSONObject structure = (new JSONObject(decoded)).getJSONObject("inventoryStructure");
                     JSONObject data = structure.getJSONObject("data");
                     String type1 = data.getString("type");
-
                     metric1.getConfiguration().setType(type1);
-
-                    Log.d("Type",  metric1.getConfiguration().getType());
                     Intent intent = Intents.Builder.of(getApplicationContext()).buildMetricIntent(metric1);
                     startActivity(intent);
 
