@@ -29,7 +29,6 @@ import org.hawkular.client.android.backend.model.OperationParameter;
 import org.hawkular.client.android.backend.model.OperationProperties;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.util.Fragments;
-import org.hawkular.client.android.util.OperationManager;
 import org.jboss.aerogear.android.core.Callback;
 import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
 import org.json.JSONException;
@@ -199,9 +198,14 @@ public class ConfirmOperationFragment extends AppCompatDialogFragment {
             Timber.e(e.getMessage());
         }
 
+        // TODO : Activate OperationManager when Operations are stable
+
+        /*
         OperationManager operationManager =
                 OperationManager.getInstance(getActivity(), callback);
         operationManager.sendRequest(body.toString());
+        */
+        
         dismiss();
     }
 
