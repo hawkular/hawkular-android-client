@@ -43,10 +43,14 @@ import org.hawkular.client.android.backend.model.Error;
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.MetricConfiguration;
+import org.hawkular.client.android.backend.model.MetricInfo;
+import org.hawkular.client.android.backend.model.MetricTemp;
 import org.hawkular.client.android.backend.model.Operation;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.explorer.holder.IconTreeItemHolder;
 import org.hawkular.client.android.fragment.ConfirmOperationFragment;
+import org.hawkular.client.android.util.CanonicalPath;
 import org.hawkular.client.android.util.Fragments;
 import org.hawkular.client.android.util.Intents;
 import org.jboss.aerogear.android.core.Callback;
@@ -55,6 +59,7 @@ import org.jboss.aerogear.android.store.DataManager;
 import org.jboss.aerogear.android.store.generator.IdGenerator;
 import org.jboss.aerogear.android.store.sql.SQLStore;
 import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,6 +67,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +94,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     private TreeNode.BaseNodeViewHolder holder;
     private TreeNode root;
     private Callback<String> callback;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +123,8 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         containerView.addView(tView.getView());
 
         BackendClient.of(this).getFeeds(new FeedsCallback());
+
+        //String path = CanonicalPath.getByString("/t;hawkular/f;400e8e5737ca/mt;Runtime%20Availability~VM%20Availability").getMetricType();
 
         if (savedInstanceState != null) {
             String state = savedInstanceState.getString("tState");
@@ -184,11 +193,11 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
     }
 
-    private void setUpMetrics(List<Metric> metrics, TreeNode parent) {
-        for (Metric metric : metrics) {
+    private void setUpMetrics(List<MetricTemp> metrics, TreeNode parent) {
+        for (MetricTemp metric : metrics) {
             int icon = getResources().getIdentifier("drawable/" + "metric_icon", null, getPackageName());
             TreeNode newMetric = new TreeNode(new IconTreeItemHolder.IconTreeItem(
-                    icon, IconTreeItemHolder.IconTreeItem.Type.METRIC, metric.getName(), metric));
+                    icon, IconTreeItemHolder.IconTreeItem.Type.METRIC, metric.getMetricInfo().getName(), metric));
             tView.addNode(parent, newMetric);
         }
 
@@ -218,15 +227,42 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                 if (node.size() == 0) {
                     BackendClient.of(getInventoryExplorerActivity()).getRecResourcesFromFeed(
                             new ResourcesCallback(node), (Resource) item.value);
-                    // BackendClient.of(getInventoryExplorerActivity()).getRetroMetricsFromFeed(
-                    //       new MetricsCallback(node), (Resource) item.value);
+                    String path1;
+
+                    Resource resource = (Resource) item.value;
+                    String temp = resource.getId();
+                    String temp1 = temp.substring(temp.indexOf(".r.") + 3);
+                    path1 = "id:"+temp1;
+
+                    InventoryResponseBody body = new InventoryResponseBody("true", "DESC", path1);
+
+                    BackendClient.of(getInventoryExplorerActivity()).getMetricsFromFeed(
+                           new MetricsCallback(node), body);
+
                     BackendClient.of(getInventoryExplorerActivity()).getOpreations(
                             new OperationsCallback(node), (Resource) item.value);
                 }
-            } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.METRIC) {
-                Intent intent = Intents.Builder.of(getApplicationContext()).buildMetricIntent((Metric) item.value);
-                startActivity(intent);
-            } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.OPERATION) {
+            }
+
+            else if (item.type == IconTreeItemHolder.IconTreeItem.Type.METRIC) {
+
+                MetricTemp metricInfo = (MetricTemp) item.value;
+                String metricTypePath = metricInfo.getMetricInfo().getMetricTypePath();
+                String path = CanonicalPath.getByString(metricTypePath).getMetricType();
+                path = "id:"+ path;
+                InventoryResponseBody body = new InventoryResponseBody("true", "DESC", path);
+                MetricConfiguration configuration = new MetricConfiguration("null");
+                Metric metric1 = new Metric(metricInfo.getMetricInfo().getId(),null,configuration);
+                BackendClient.of(getInventoryExplorerActivity()).getMetricType(new MetricTypeCallback(metric1),body);
+
+
+                Log.d("Metric",metric1.getConfiguration().getType());
+
+
+            }
+
+
+            else if (item.type == IconTreeItemHolder.IconTreeItem.Type.OPERATION) {
                 Resource resource = (Resource) ((IconTreeItemHolder.IconTreeItem) node.getParent().getValue()).value;
                 Operation operation = (Operation) ((IconTreeItemHolder.IconTreeItem) node.getValue()).value;
 
@@ -378,9 +414,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                         JSONObject structure =(new JSONObject(decoded)).getJSONObject("inventoryStructure");
                         JSONObject data = structure.getJSONObject("data");
                         String res_name = data.getString("name");
-
                         hashMap.put(resource.getId(),res_name);
-                        Log.d("namename",resource.getId()+ " :  "+ res_name);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -403,7 +437,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         }
     }
 
-    private final class MetricsCallback extends AbstractActivityCallback<List<Metric>> {
+    private final class MetricsCallback implements retrofit2.Callback<List<Resource>> {
 
         private TreeNode parent;
 
@@ -411,24 +445,97 @@ public class InventoryExplorerActivity extends AppCompatActivity {
             this.parent = parent;
         }
 
+
+        private InventoryExplorerActivity getInventoryExplorerActivity() {
+            return InventoryExplorerActivity.this;
+        }
+
+
         @Override
-        public void onSuccess(List<Metric> metrics) {
-            if (!metrics.isEmpty()) {
-                getInventoryExplorerActivity().setUpMetrics(metrics, parent);
+        public void onResponse(Call<List<Resource>> call, Response<List<Resource>> response) {
+
+            if (!response.isSuccessful()) {
+                Log.d("Error", response.errorBody().toString());
+
+            } else {
+
+                List<MetricTemp> list = new ArrayList<MetricTemp>();
+                List<Resource> resources = response.body();
+                String decoded = rebuildFromChunks(resources.get(0).getData());
+
+
+                try {
+                    JSONObject structure = (new JSONObject(decoded)).getJSONObject("inventoryStructure");
+                    JSONObject data = structure.getJSONObject("children");
+                    if (data != null) {
+                        JSONArray jsonArray = data.getJSONArray("metric");
+
+                        if (jsonArray != null) {
+                            for(int i =0; i< jsonArray.length();i++){
+                                JSONObject data2 = jsonArray.getJSONObject(i);
+                                JSONObject data1 = data2.getJSONObject("data");
+                                MetricInfo metric_info = new MetricInfo(data1.getString("id"), data1.getString("name"), data1.getString("metricTypePath"));
+                                MetricTemp metricTemp = new MetricTemp(metric_info);
+
+                                list.add(metricTemp);
+                            }
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if (!list.isEmpty()) {
+                    getInventoryExplorerActivity().setUpMetrics(list, parent);
+                }
+
             }
         }
 
         @Override
-        public void onFailure(Exception e) {
-            Timber.d("Resources fetching failed.");
-
-        }
-
-        private InventoryExplorerActivity getInventoryExplorerActivity() {
-            return (InventoryExplorerActivity) getActivity();
+        public void onFailure(Call<List<Resource>> call, Throwable t) {
+            Timber.d(t.getMessage());
         }
     }
 
+    private final class MetricTypeCallback implements retrofit2.Callback<List<Resource>>{
+
+        Metric metric1;
+        public MetricTypeCallback(Metric metric) {
+            metric1 = metric;
+        }
+
+        @Override
+        public void onResponse(Call<List<Resource>> call, Response<List<Resource>> response) {
+
+            if (!response.isSuccessful()) {
+                Log.d("Error", response.errorBody().toString());
+
+            } else {
+
+                List<Resource> resources = response.body();
+                String decoded = rebuildFromChunks(resources.get(0).getData());
+
+                try {
+                    JSONObject structure = (new JSONObject(decoded)).getJSONObject("inventoryStructure");
+                    JSONObject data = structure.getJSONObject("data");
+                    String type1 = data.getString("type");
+                    metric1.getConfiguration().setType(type1);
+                    Intent intent = Intents.Builder.of(getApplicationContext()).buildMetricIntent(metric1);
+                    startActivity(intent);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<Resource>> call, Throwable t) {
+            Timber.d(t.getMessage());
+        }
+    }
     private final class PerformOperationCallback implements Callback<String> {
 
         @Override

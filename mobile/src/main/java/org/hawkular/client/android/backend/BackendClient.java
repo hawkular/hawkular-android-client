@@ -22,6 +22,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.backend.model.Alert;
@@ -150,6 +151,12 @@ public final class BackendClient {
         call.enqueue(callback);
     }
 
+    public void getMetricType(@NonNull retrofit2.Callback callback, @NonNull InventoryResponseBody body){
+        MetricService service = retrofit.create(MetricService.class);
+        Call call = service.getMetricType(body);
+        call.enqueue(callback);
+    }
+
     public void getOpreations(@NonNull AbstractCallback<List<Operation>> callback, Resource resource) {
         // TODO : after moving to retrofit complete
     }
@@ -171,8 +178,10 @@ public final class BackendClient {
     }
 
 
-    public void getMetricsFromFeed(@NonNull AbstractCallback<List<Metric>> callback, Resource resource) {
-        // TODO : after moving to retrofit complete
+    public void getMetricsFromFeed(@NonNull retrofit2.Callback<List<Resource>> callback, @NonNull InventoryResponseBody body) {
+        MetricService service = retrofit.create(MetricService.class);
+        Call call = service.getMetricFromFeed(body);
+        call.enqueue(callback);
     }
 
 
@@ -191,12 +200,13 @@ public final class BackendClient {
 
         MetricService service = retrofit.create(MetricService.class);
 
+        Log.d("BackendClient",metric.getConfiguration().getType());
         Call call = null;
-        if (metric.getConfiguration().getType()== MetricType.AVAILABILITY) {
+        if (metric.getConfiguration().getType().equalsIgnoreCase("AVAILABILITY")) {
             call = service.getMetricAvailabilityData(metric.getId(), parameters);
-        } else if (metric.getConfiguration().getType()== MetricType.COUNTER) {
+        } else if (metric.getConfiguration().getType().equalsIgnoreCase("COUNTER")){
             call = service.getMetricAvailabilityData(metric.getId(), parameters);
-        } else if (metric.getConfiguration().getType()== MetricType.GAUGE) {
+        } else if (metric.getConfiguration().getType().equalsIgnoreCase("GAUGE")) {
             call = service.getMetricAvailabilityData(metric.getId(), parameters);
         }
 
