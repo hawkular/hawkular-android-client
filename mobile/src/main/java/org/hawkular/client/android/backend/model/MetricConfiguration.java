@@ -24,22 +24,32 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 public final class MetricConfiguration implements Parcelable {
-    @SerializedName("type")
-    private MetricType type;
 
-    @VisibleForTesting
-    public MetricConfiguration(@NonNull MetricType type) {
+    @SerializedName("type")
+    private String type;
+
+    public MetricConfiguration(String type) {
         this.type = type;
     }
 
-    public MetricType getType() {
-        return type;
+    protected MetricConfiguration(Parcel in) {
+        type = in.readString();
     }
 
-    public static Creator<MetricConfiguration> CREATOR = new Creator<MetricConfiguration>() {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(type);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<MetricConfiguration> CREATOR = new Creator<MetricConfiguration>() {
         @Override
-        public MetricConfiguration createFromParcel(Parcel parcel) {
-            return new MetricConfiguration(parcel);
+        public MetricConfiguration createFromParcel(Parcel in) {
+            return new MetricConfiguration(in);
         }
 
         @Override
@@ -48,17 +58,12 @@ public final class MetricConfiguration implements Parcelable {
         }
     };
 
-    private MetricConfiguration(Parcel parcel) {
-        this.type = parcel.readParcelable(MetricType.class.getClassLoader());
+    public String getType() {
+        return type;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeParcelable(type, flags);
+    public void setType(String type) {
+        this.type = type;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 }

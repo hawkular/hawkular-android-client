@@ -73,13 +73,13 @@ public final class MetricActivity extends AppCompatActivity {
 
     private Fragment getMetricFragment() {
         switch (getMetric().getConfiguration().getType()) {
-            case AVAILABILITY:
+            case "AVAILABILITY":
                 return Fragments.Builder.buildMetricAvailabilityFragment(getMetric());
 
-            case GAUGE:
+            case "GAUGE":
                 return Fragments.Builder.buildMetricGaugeFragment(getMetric());
 
-            case COUNTER:
+            case "COUNTER":
                 return Fragments.Builder.buildMetricCounterFragment(getMetric());
 
             default:

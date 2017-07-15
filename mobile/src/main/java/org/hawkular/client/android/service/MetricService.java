@@ -19,11 +19,15 @@ package org.hawkular.client.android.service;
 import java.util.List;
 import java.util.Map;
 
+import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricAvailabilityBucket;
+import org.hawkular.client.android.backend.model.Resource;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 
@@ -40,6 +44,12 @@ public interface MetricService {
 
     @GET("/hawkular/metrics/gauges")
     Call<List<Metric>> getGaugeMetrics();
+
+    @POST("/hawkular/metrics/strings/raw/query")
+    Call<List<Resource>> getMetricType(  @Body InventoryResponseBody inventoryResponseBody);
+
+    @POST("/hawkular/metrics/strings/raw/query")
+    Call<List<Resource>> getMetricFromFeed(@Body InventoryResponseBody inventoryResponseBody);
 
     @GET("/hawkular/metrics/availability/{id}/data")
     Call<List<MetricAvailabilityBucket>> getMetricAvailabilityData(@Path("id") String id,

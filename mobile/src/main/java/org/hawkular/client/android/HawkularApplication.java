@@ -67,6 +67,7 @@ public final class HawkularApplication extends Application {
 
     public static void setUpRetrofit(String url, final String username, final String password) {
 
+
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(new Interceptor() {
             @Override
