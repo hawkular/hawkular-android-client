@@ -31,7 +31,6 @@ import org.hawkular.client.android.backend.model.FullTrigger;
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricBucket;
-import org.hawkular.client.android.backend.model.MetricType;
 import org.hawkular.client.android.backend.model.Note;
 import org.hawkular.client.android.backend.model.Operation;
 import org.hawkular.client.android.backend.model.OperationProperties;
@@ -41,7 +40,6 @@ import org.hawkular.client.android.service.AlertService;
 import org.hawkular.client.android.service.MetricService;
 import org.hawkular.client.android.service.TriggerService;
 import org.hawkular.client.android.util.Preferences;
-import org.hawkular.client.android.util.Uris;
 import org.jboss.aerogear.android.pipe.callback.AbstractCallback;
 
 import java.io.UnsupportedEncodingException;

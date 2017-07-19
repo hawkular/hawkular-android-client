@@ -16,18 +16,15 @@
  */
 package org.hawkular.client.android.service;
 
-import java.util.List;
-import java.util.Map;
-
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Metric;
-import org.hawkular.client.android.backend.model.MetricAvailability;
 import org.hawkular.client.android.backend.model.MetricAvailabilityBucket;
-import org.hawkular.client.android.backend.model.MetricBucket;
 import org.hawkular.client.android.backend.model.MetricCounterBucket;
-import org.hawkular.client.android.backend.model.MetricData;
 import org.hawkular.client.android.backend.model.MetricGaugeBucket;
 import org.hawkular.client.android.backend.model.Resource;
+
+import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
