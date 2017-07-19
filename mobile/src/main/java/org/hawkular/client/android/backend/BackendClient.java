@@ -41,8 +41,11 @@ import org.hawkular.client.android.service.AlertService;
 import org.hawkular.client.android.service.MetricService;
 import org.hawkular.client.android.service.TriggerService;
 import org.hawkular.client.android.util.Preferences;
+import org.hawkular.client.android.util.Uris;
 import org.jboss.aerogear.android.pipe.callback.AbstractCallback;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -198,16 +201,25 @@ public final class BackendClient {
         parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
         parameters.put(BackendPipes.Parameters.BUCKETS, String.valueOf(bucket));
 
-        MetricService service = retrofit.create(MetricService.class);
 
-        Log.d("BackendClient",metric.getConfiguration().getType());
+        MetricService service = retrofit.create(MetricService.class);
+        String id = metric.getId();
+        String encodedurl = "";
+        try{
+            encodedurl = URLEncoder.encode(id,"utf-8").replace("+", "%20").replace("*", "%2A").replace("%7E", "~");
+        }
+        catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("BackendClient",encodedurl);
         Call call = null;
         if (metric.getConfiguration().getType().equalsIgnoreCase("AVAILABILITY")) {
-            call = service.getMetricAvailabilityData(metric.getId(), parameters);
+            call = service.getMetricAvailabilityData(encodedurl, parameters);
         } else if (metric.getConfiguration().getType().equalsIgnoreCase("COUNTER")){
-            call = service.getMetricAvailabilityData(metric.getId(), parameters);
+            call = service.getMetricCounterData(encodedurl, parameters);
         } else if (metric.getConfiguration().getType().equalsIgnoreCase("GAUGE")) {
-            call = service.getMetricAvailabilityData(metric.getId(), parameters);
+            call = service.getMetricGaugesData(encodedurl, parameters);
         }
 
         call.enqueue(callback);

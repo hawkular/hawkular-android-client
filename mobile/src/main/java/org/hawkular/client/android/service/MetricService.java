@@ -21,7 +21,12 @@ import java.util.Map;
 
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.MetricAvailability;
 import org.hawkular.client.android.backend.model.MetricAvailabilityBucket;
+import org.hawkular.client.android.backend.model.MetricBucket;
+import org.hawkular.client.android.backend.model.MetricCounterBucket;
+import org.hawkular.client.android.backend.model.MetricData;
+import org.hawkular.client.android.backend.model.MetricGaugeBucket;
 import org.hawkular.client.android.backend.model.Resource;
 
 import retrofit2.Call;
@@ -51,9 +56,17 @@ public interface MetricService {
     @POST("/hawkular/metrics/strings/raw/query")
     Call<List<Resource>> getMetricFromFeed(@Body InventoryResponseBody inventoryResponseBody);
 
-    @GET("/hawkular/metrics/availability/{id}/data")
-    Call<List<MetricAvailabilityBucket>> getMetricAvailabilityData(@Path("id") String id,
-                                                                   @QueryMap Map<String, String> parameters);
+    @GET("/hawkular/metrics/availability/{id}/stats")
+    Call<List<MetricAvailabilityBucket>> getMetricAvailabilityData(@Path(value = "id", encoded = true) String id, @QueryMap Map<String, String> parameters
+                                                                   );
+
+    @GET("/hawkular/metrics/gauges/{id}/stats")
+    Call<List<MetricGaugeBucket>> getMetricGaugesData(@Path(value = "id", encoded = true) String id, @QueryMap Map<String, String> parameters
+    );
+
+    @GET("/hawkular/metrics/counters/{id}/stats")
+    Call<List<MetricCounterBucket>> getMetricCounterData(@Path(value = "id", encoded = true) String id, @QueryMap Map<String, String> parameters
+    );
 
 }
 
