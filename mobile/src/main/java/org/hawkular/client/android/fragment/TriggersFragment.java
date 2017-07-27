@@ -315,7 +315,7 @@ public class TriggersFragment extends Fragment implements SwipeRefreshLayout.OnR
             snackbar.show();
         }
 
-        BackendClient.of(TriggersFragment.this).updateTrigger(updatedTrigger,new TriggerUpdateCallback());
+        BackendClient.of(TriggersFragment.this).updateTrigger(updatedTrigger.getId(),state,new TriggerUpdateCallback());
     }
 
     @Override
