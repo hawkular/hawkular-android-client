@@ -27,6 +27,8 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Query;
 
 public interface TriggerService {
 
@@ -34,9 +36,10 @@ public interface TriggerService {
     Call<List<Trigger>> get(
     );
 
-    @POST("/hawkular/alerts/triggers")
+    @PUT("/hawkular/alerts/triggers/enabled")
     Call<List<String>> updateTrigger(
-            @Body Trigger trigger
+            @Query("triggerIds") String triggerId,
+            @Query("enabled") Boolean enabled
     );
 
     @POST("/hawkular/alerts/triggers")
