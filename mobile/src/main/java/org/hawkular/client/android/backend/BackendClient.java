@@ -127,9 +127,11 @@ public final class BackendClient {
     }
 
 
-    public void noteOnAlert(@NonNull Note note,
+    public void noteOnAlert(String alertId,String user, String text,
                             @NonNull Callback<List<String>> callback) {
-        // TODO : after moving to retrofit complete
+        AlertService service = retrofit.create(AlertService.class);
+        Call call= service.noteOnAlert(alertId,user,text);
+        call.enqueue(callback);
     }
 
     public void updateTrigger(@NonNull String triggerId, Boolean enabled, @NonNull retrofit2.Callback<List<String>> callback){

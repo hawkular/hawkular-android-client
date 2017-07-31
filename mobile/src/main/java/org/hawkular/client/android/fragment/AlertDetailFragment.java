@@ -191,8 +191,9 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
                 editNote.setEnabled(false);
                 String name = Preferences.of(getActivity()).personaName().get();
 
+                    String alertId = alert.getId();
                 Note note = new Note(name, editNote.getText().toString(), (new Date()).getTime());
-                    BackendClient.of(getFragment()).noteOnAlert(note, new NoteActionCallback(note));
+                    BackendClient.of(getFragment()).noteOnAlert(alertId,name,editNote.getText().toString(), new NoteActionCallback(note));
                 }
             }
         });
@@ -407,7 +408,7 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
         }
     }
 
-    private final class NoteActionCallback implements Callback<List<String>> {
+    private final class NoteActionCallback implements Callback {
 
         private Note note;
 
@@ -415,7 +416,8 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
             this.note = note;
         }
 
-        @Override public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+        @Override
+        public void onResponse(Call call, Response response) {
             if (response.isSuccessful()){
                 editNote.setText("");
                 editNote.setEnabled(true);
@@ -424,7 +426,8 @@ public class AlertDetailFragment extends Fragment implements SwipeRefreshLayout.
             }
         }
 
-        @Override public void onFailure(Call<List<String>> call, Throwable t) {
+        @Override
+        public void onFailure(Call call, Throwable t) {
             editNote.setEnabled(true);
         }
     }
