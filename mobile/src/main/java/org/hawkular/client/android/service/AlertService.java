@@ -17,16 +17,15 @@
 package org.hawkular.client.android.service;
 
 import java.util.List;
-import java.util.Map;
-
 import org.hawkular.client.android.backend.model.Alert;
 
 import retrofit2.Call;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
-import retrofit2.http.QueryMap;
+import retrofit2.http.Query;
 
 public interface AlertService {
 
@@ -43,7 +42,8 @@ public interface AlertService {
     Call<List<String>> resolveAlert(@Path("alertId") String alertId);
 
     @FormUrlEncoded
-    @POST("/hawkular/alerts/note/{alertId}")
-    Call<List<String>> noteOnAlert(@QueryMap Map<String, String> parameters, @Path("alertId") String alertId);
+    @PUT("/hawkular/alerts/note/{alertId}")
+    Call<List<String>> noteOnAlert(@Path("alertId") String alertId,  @Query("user") String user,
+                                   @Query("text") String text);
 
 }
