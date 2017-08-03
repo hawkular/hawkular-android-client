@@ -38,5 +38,16 @@
         app:srcCompat="@drawable/ic_favorite"
          />
 
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="100dp"
+        android:scaleType="fitXY"
+        android:id="@+id/trigger_delete"
+        android:background="@color/background_window"
+        app:srcCompat="@drawable/ic_delete"
+        />
+
 </LinearLayout>
 

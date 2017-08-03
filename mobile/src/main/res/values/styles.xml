@@ -24,11 +24,6 @@
     <!--<item name="android:divider">@android:drawable/divider_horizontal_bright</item>-->
   </style>
 
-  <style name="TreeNodeStyleDivided">
-    <item name="android:showDividers">middle</item>
-    <item name="android:divider">@android:drawable/divider_horizontal_bright</item>
-  </style>
-
   <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
     <item name="colorAccent">#FFF</item>
     <item name="android:textColorPrimary">#FFF</item>
