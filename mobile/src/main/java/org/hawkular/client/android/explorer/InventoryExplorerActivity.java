@@ -253,7 +253,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                 InventoryResponseBody body = new InventoryResponseBody("true", "DESC", path);
                 MetricConfiguration configuration = new MetricConfiguration("null");
                 Metric metric1 = new Metric(metricInfo.getMetricInfo().getId(),null,configuration);
-                BackendClient.of(getInventoryExplorerActivity()).getMetricType(new MetricTypeCallback(metric1),body);
+                BackendClient.of(getInventoryExplorerActivity()).getMetricType(new MetricTypeCallback(metric1,true),body);
 
 
                 Log.d("Metric",metric1.getConfiguration().getType());
@@ -286,6 +286,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
             } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.RESOURCE) {
 
             } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.METRIC) {
+
                 AlertDialog.Builder builder =
                         new AlertDialog.Builder(getInventoryExplorerActivity(), R.style.AlertDialogStyle);
                 builder.setTitle("Hey");
@@ -294,7 +295,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                addMetricToFav((Metric) item.value);
+                                addMetricToFav((MetricTemp) item.value);
                             }
                         });
                 builder.setNegativeButton("Cancel", null);
@@ -305,11 +306,16 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     };
 
 
-    private void addMetricToFav(final Metric metric) {
-        SQLStore<Metric> store = openStore(getApplicationContext());
-        store.openSync();
-        store.save(metric);
-        Toast.makeText(getApplicationContext(), "Metric added to favourite", Toast.LENGTH_SHORT).show();
+    private void addMetricToFav(final MetricTemp metricTemp) {
+
+        String metricTypePath = metricTemp.getMetricInfo().getMetricTypePath();
+        String path = CanonicalPath.getByString(metricTypePath).getMetricType();
+        path = "id:"+ path;
+        InventoryResponseBody body = new InventoryResponseBody("true", "DESC", path);
+        MetricConfiguration configuration = new MetricConfiguration("null");
+        Metric metric1 = new Metric(metricTemp.getMetricInfo().getId(),null,configuration);
+
+        BackendClient.of(getInventoryExplorerActivity()).getMetricType(new MetricTypeCallback(metric1,false),body);
 
     }
 
@@ -502,8 +508,10 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     private final class MetricTypeCallback implements retrofit2.Callback<List<Resource>>{
 
         Metric metric1;
-        public MetricTypeCallback(Metric metric) {
+        Boolean flag;
+        public MetricTypeCallback(Metric metric, boolean flag) {
             metric1 = metric;
+            this.flag = flag;
         }
 
         @Override
@@ -522,8 +530,17 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                     JSONObject data = structure.getJSONObject("data");
                     String type1 = data.getString("type");
                     metric1.getConfiguration().setType(type1);
-                    Intent intent = Intents.Builder.of(getApplicationContext()).buildMetricIntent(metric1);
-                    startActivity(intent);
+
+                    if(flag) {
+                        Intent intent = Intents.Builder.of(getApplicationContext()).buildMetricIntent(metric1);
+                        startActivity(intent);
+                    }
+                    else{
+                        SQLStore<Metric> store = openStore(getApplicationContext());
+                        store.openSync();
+                        store.save(metric1);
+                        Toast.makeText(getApplicationContext(), "Metric added to favourite", Toast.LENGTH_SHORT).show();
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
