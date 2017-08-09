@@ -22,6 +22,7 @@ import java.util.Map;
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricAvailabilityBucket;
+import org.hawkular.client.android.backend.model.MetricCounterBucket;
 import org.hawkular.client.android.backend.model.Resource;
 
 import retrofit2.Call;
@@ -55,5 +56,8 @@ public interface MetricService {
     Call<List<MetricAvailabilityBucket>> getMetricAvailabilityData(@Path("id") String id,
                                                                    @QueryMap Map<String, String> parameters);
 
+    @GET("/hawkular/metrics/counters/{id}/data")
+    Call<List<MetricCounterBucket>> getMetricCounterData(@Path("id") String id,
+                                                         @QueryMap Map<String, String> parameters);
 }
 

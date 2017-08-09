@@ -17,12 +17,44 @@
 package org.hawkular.client.android.backend.model;
 
 
-import com.google.gson.annotations.SerializedName;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MetricCounterBucket extends MetricBucket implements Parcelable {
+import com.google.gson.annotations.SerializedName;
+
+public class MetricCounterBucket implements Parcelable{
+
+    @SerializedName("start")
+    protected long startTimestamp;
+
+    @SerializedName("end")
+    protected long endTimestamp;
+
+    @SerializedName("empty")
+    protected boolean empty;
+
+    @SerializedName("avg")
+    private String value;
+
+    protected MetricCounterBucket(Parcel in) {
+        startTimestamp = in.readLong();
+        endTimestamp = in.readLong();
+        empty = in.readByte() != 0;
+        value = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(startTimestamp);
+        dest.writeLong(endTimestamp);
+        dest.writeByte((byte) (empty ? 1 : 0));
+        dest.writeString(value);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
     public static final Creator<MetricCounterBucket> CREATOR = new Creator<MetricCounterBucket>() {
         @Override
@@ -35,28 +67,37 @@ public class MetricCounterBucket extends MetricBucket implements Parcelable {
             return new MetricCounterBucket[size];
         }
     };
-    @SerializedName("avg")
-    private String value;
 
-    protected MetricCounterBucket(Parcel in) {
-        value = in.readString();
-        empty = in.readString().equals("true");
-        startTimestamp = in.readLong();
-        endTimestamp = in.readLong();
+    public long getStartTimestamp() {
+        return startTimestamp;
+    }
+
+    public void setStartTimestamp(long startTimestamp) {
+        this.startTimestamp = startTimestamp;
+    }
+
+    public long getEndTimestamp() {
+        return endTimestamp;
+    }
+
+    public void setEndTimestamp(long endTimestamp) {
+        this.endTimestamp = endTimestamp;
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
     }
 
     public String getValue() {
         return value;
     }
 
-    @Override public int describeContents() {
-        return 0;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    @Override public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(value);
-        dest.writeString(empty ? "true" : "false");
-        dest.writeLong(startTimestamp);
-        dest.writeLong(endTimestamp);
-    }
 }
