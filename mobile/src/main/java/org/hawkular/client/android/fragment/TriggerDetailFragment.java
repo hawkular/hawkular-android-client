@@ -16,16 +16,6 @@
  */
 package org.hawkular.client.android.fragment;
 
-import org.hawkular.client.android.HawkularApplication;
-import org.hawkular.client.android.animation.MyBounceInterpolator;
-import org.hawkular.client.android.R;
-import org.hawkular.client.android.backend.model.Trigger;
-import org.hawkular.client.android.util.Fragments;
-import org.jboss.aerogear.android.store.DataManager;
-import org.jboss.aerogear.android.store.generator.IdGenerator;
-import org.jboss.aerogear.android.store.sql.SQLStore;
-import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -39,12 +29,27 @@ import android.widget.ImageButton;
 
 import com.squareup.leakcanary.RefWatcher;
 
+import org.hawkular.client.android.HawkularApplication;
+import org.hawkular.client.android.R;
+import org.hawkular.client.android.animation.MyBounceInterpolator;
+import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.Trigger;
+import org.hawkular.client.android.util.Fragments;
+import org.jboss.aerogear.android.store.DataManager;
+import org.jboss.aerogear.android.store.generator.IdGenerator;
+import org.jboss.aerogear.android.store.sql.SQLStore;
+import org.jboss.aerogear.android.store.sql.SQLStoreConfiguration;
+
 import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import icepick.State;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import timber.log.Timber;
 
 
 public class TriggerDetailFragment extends android.support.v4.app.Fragment {
@@ -55,6 +60,8 @@ public class TriggerDetailFragment extends android.support.v4.app.Fragment {
     @BindView(R.id.favourite_button)
     ImageButton addButton;
 
+    @BindView(R.id.trigger_delete)
+    ImageButton deleteButton;
 
     @Nullable @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,7 +77,6 @@ public class TriggerDetailFragment extends android.support.v4.app.Fragment {
 
 
         addButton.startAnimation(myAnim);
-
         SQLStore<Trigger> store = openStore(context);
 
         if (store.read(trigger.getId()) == null) {
@@ -89,6 +95,19 @@ public class TriggerDetailFragment extends android.support.v4.app.Fragment {
 
         store.close();
     }
+
+    @OnClick(R.id.trigger_delete)
+    public void trigger_delete(){
+        Context context = getActivity();
+        final Animation myAnim = AnimationUtils.loadAnimation(context, R.anim.bounce);
+        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
+        myAnim.setInterpolator(interpolator);
+
+        deleteButton.startAnimation(myAnim);
+        BackendClient.of(this).deleteTriggers(new DeleteTriggerCallback(this) ,trigger.getId());
+
+    }
+
 
     private SQLStore<Trigger> openStore(Context context) {
         DataManager.config("FavouriteTriggers", SQLStoreConfiguration.class)
@@ -111,6 +130,32 @@ public class TriggerDetailFragment extends android.support.v4.app.Fragment {
     private void detectLeaks() {
         RefWatcher refWatcher = HawkularApplication.getRefWatcher(getActivity());
         refWatcher.watch(this);
+    }
+
+
+
+    private static final class DeleteTriggerCallback implements Callback<Void>{
+
+        private TriggerDetailFragment triggerDetailFragment;
+
+        public DeleteTriggerCallback(TriggerDetailFragment triggerDetailFragment) {
+            this.triggerDetailFragment = triggerDetailFragment;
+        }
+        public TriggerDetailFragment getTriggerDetailFragment(){
+            return this.triggerDetailFragment;
+        }
+
+        @Override
+        public void onResponse(Call<Void> call, Response<Void> response) {
+
+            Snackbar snackbar = Snackbar.make(getTriggerDetailFragment().getView(),R.string.trigger_deleted,Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
+
+        @Override
+        public void onFailure(Call<Void> call, Throwable t) {
+            Timber.d("on Failure",t.getMessage());
+        }
     }
 
     @Override public void onActivityCreated(Bundle savedInstanceState) {

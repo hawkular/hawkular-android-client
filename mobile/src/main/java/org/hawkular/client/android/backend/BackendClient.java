@@ -31,8 +31,6 @@ import org.hawkular.client.android.backend.model.FullTrigger;
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricBucket;
-import org.hawkular.client.android.backend.model.MetricType;
-import org.hawkular.client.android.backend.model.Note;
 import org.hawkular.client.android.backend.model.Operation;
 import org.hawkular.client.android.backend.model.OperationProperties;
 import org.hawkular.client.android.backend.model.Resource;
@@ -222,6 +220,13 @@ public final class BackendClient {
 
 
     }
+
+    public void deleteTriggers(@NonNull Callback<Void> callback, String triggerId){
+        TriggerService service = retrofit.create(TriggerService.class);
+        Call call = service.deleteTrigger(triggerId);
+        call.enqueue(callback);
+    }
+
 
     public void configureAuthorization(String url, String username, String password) {
         HawkularApplication.setUpRetrofit(url, username, password);

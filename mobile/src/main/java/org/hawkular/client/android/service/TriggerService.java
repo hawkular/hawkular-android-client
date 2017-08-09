@@ -16,18 +16,21 @@
  */
 package org.hawkular.client.android.service;
 
-import java.util.List;
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.FullTrigger;
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Resource;
 import org.hawkular.client.android.backend.model.Trigger;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface TriggerService {
@@ -55,4 +58,6 @@ public interface TriggerService {
     @GET("/hawkular/metrics/strings/tags/module:inventory,feed:*")
     Call<Feed> getFeeds();
 
+    @DELETE("hawkular/alerts/triggers/{triggerId}")
+    Call<Void> deleteTrigger(@Path("triggerId") String triggerId);
 }

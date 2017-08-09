@@ -24,11 +24,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.Error;
 import org.hawkular.client.android.backend.model.FullTrigger;
-
+import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -146,10 +148,17 @@ public class TriggerSetupActivity extends AppCompatActivity {
 
             if (response.code() == 200) {
                 finish();
-            } else {
-                Snackbar snackbar = Snackbar.make(getCurrentFocus(),response.message(),Snackbar.LENGTH_LONG);
+            }
+            else {
+                Gson gson = new GsonBuilder().create();
+                Error mApiError = null;
+                try {
+                    mApiError = gson.fromJson(response.errorBody().string(), Error.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Snackbar snackbar = Snackbar.make(getCurrentFocus(),mApiError.getErrorMsg(),Snackbar.LENGTH_LONG);
                 snackbar.show();
-
             }
 
         }
