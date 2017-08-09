@@ -16,26 +16,6 @@
  */
 package org.hawkular.client.android.fragment;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-
-import org.hawkular.client.android.HawkularApplication;
-import org.hawkular.client.android.R;
-import org.hawkular.client.android.backend.BackendClient;
-import org.hawkular.client.android.backend.model.Metric;
-import org.hawkular.client.android.backend.model.MetricAvailability;
-import org.hawkular.client.android.backend.model.MetricBucket;
-import org.hawkular.client.android.util.ColorSchemer;
-import org.hawkular.client.android.util.ErrorUtil;
-import org.hawkular.client.android.util.Formatter;
-import org.hawkular.client.android.util.Fragments;
-import org.hawkular.client.android.util.Time;
-import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
-
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
@@ -52,7 +32,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.squareup.leakcanary.RefWatcher;
+import org.hawkular.client.android.R;
+import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.MetricAvailability;
+import org.hawkular.client.android.backend.model.MetricAvailabilityBucket;
+import org.hawkular.client.android.util.ColorSchemer;
+import org.hawkular.client.android.util.ErrorUtil;
+import org.hawkular.client.android.util.Formatter;
+import org.hawkular.client.android.util.Fragments;
+import org.hawkular.client.android.util.Time;
+import org.hawkular.client.android.util.ViewDirector;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,7 +90,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     SwipeRefreshLayout contentLayout;
 
     @State
-    ArrayList<MetricBucket> metricBucket;
+    ArrayList<MetricAvailabilityBucket> metricBucket;
 
     @State
     @IdRes
@@ -183,7 +179,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     private void setUpMetricDataForced() {
 
         metric_name.setText(getMetric().getName());
-        BackendClient.of(this).getMetricData(
+        BackendClient.of(this).getMetricAvailabilityData(
                 getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback(this));
     }
 
@@ -237,7 +233,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         ViewDirector.of(this).using(R.id.animator).show(R.id.progress);
     }
 
-    private void setUpMetricData(List<MetricBucket> metricBucketList) {
+    private void setUpMetricData(List<MetricAvailabilityBucket> metricBucketList) {
         this.metricBucket = new ArrayList<>(metricBucketList);
 
         sortMetricData(metricBucket);
@@ -250,7 +246,7 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         showChart();
     }
 
-    private void sortMetricData(List<MetricBucket> metricBucketList) {
+    private void sortMetricData(List<MetricAvailabilityBucket> metricBucketList) {
         Collections.sort(metricBucketList, new MetricBucketComparator());
     }
 
@@ -272,11 +268,11 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     private List<Column> getChartColumns() {
         List<Column> chartColumns = new ArrayList<>(metricBucket.size());
 
-        for (MetricBucket metricBucket : this.metricBucket) {
+        for (MetricAvailabilityBucket metricBucket : this.metricBucket) {
             MetricAvailability metricAvailability = null;
-            if (metricBucket.isEmpty()) {
+            if (metricBucket.getEmpty()) {
                 metricAvailability = MetricAvailability.from("unknown");
-            } else if (Float.parseFloat(metricBucket.getValue()) >= .5) {
+            } else if (Float.parseFloat(metricBucket.getvalue()) >= 0.5) {
                 metricAvailability = MetricAvailability.from("up");
             } else {
                 metricAvailability = MetricAvailability.from("down");
@@ -335,13 +331,13 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
             switch (timeMenu) {
                 case R.id.menu_time_hour:
                 case R.id.menu_time_day:
-                    chartAxisPointLabel = Formatter.formatTime(metricBucket.get(metricDataPoint).getStartTimestamp());
+                    chartAxisPointLabel = Formatter.formatTime(metricBucket.get(metricDataPoint).getStart());
                     break;
                 case R.id.menu_time_week:
                 case R.id.menu_time_month:
                 case R.id.menu_time_year:
                 default:
-                    chartAxisPointLabel = Formatter.formatDate(metricBucket.get(metricDataPoint).getStartTimestamp());
+                    chartAxisPointLabel = Formatter.formatDate(metricBucket.get(metricDataPoint).getEnd());
             }
 
 
@@ -396,19 +392,19 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        detectLeaks();
+        // detectLeaks();
     }
 
-    private void detectLeaks() {
+   /* private void detectLeaks() {
         RefWatcher refWatcher = HawkularApplication.getRefWatcher(getActivity());
         refWatcher.watch(this);
-    }
+    }*/
 
     private void tearDownState(Bundle state) {
         Icepick.saveInstanceState(this, state);
     }
 
-    private static final class MetricDataCallback implements Callback<List<MetricBucket>> {
+    private static final class MetricDataCallback implements Callback<List<MetricAvailabilityBucket>> {
 
 
         private MetricAvailabilityFragment metricAvailabilityFragment;
@@ -422,9 +418,9 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         }
 
         @Override
-        public void onResponse(Call<List<MetricBucket>> call, Response<List<MetricBucket>> response) {
+        public void onResponse(Call<List<MetricAvailabilityBucket>> call, Response<List<MetricAvailabilityBucket>> response) {
             if(response.isSuccessful()){
-                List<MetricBucket> metricBuckets = response.body();
+                List<MetricAvailabilityBucket> metricBuckets = response.body();
                 if (!metricBuckets.isEmpty()) {
                     getMetricFragment().setUpMetricData(metricBuckets);
                 } else {
@@ -435,18 +431,18 @@ public final class MetricAvailabilityFragment extends Fragment implements SwipeR
         }
 
         @Override
-        public void onFailure(Call<List<MetricBucket>> call, Throwable t) {
+        public void onFailure(Call<List<MetricAvailabilityBucket>> call, Throwable t) {
             Timber.d(t, "Metric data fetching failed.");
 
             ErrorUtil.showError(getMetricFragment(),R.id.animator,R.id.error);
         }
-    }
 
-    private static final class MetricBucketComparator implements Comparator<MetricBucket> {
+    }
+    private static final class MetricBucketComparator implements Comparator<MetricAvailabilityBucket> {
         @Override
-        public int compare(MetricBucket leftMetricBucket, MetricBucket rightMetricBucket) {
-            Date leftMetricBucketTimestamp = new Date(leftMetricBucket.getStartTimestamp());
-            Date rightMetricBucketTimestamp = new Date(rightMetricBucket.getStartTimestamp());
+        public int compare(MetricAvailabilityBucket leftMetricBucket, MetricAvailabilityBucket rightMetricBucket) {
+            Date leftMetricBucketTimestamp = new Date(leftMetricBucket.getStart());
+            Date rightMetricBucketTimestamp = new Date(rightMetricBucket.getEnd());
 
             return leftMetricBucketTimestamp.compareTo(rightMetricBucketTimestamp);
         }

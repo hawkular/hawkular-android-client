@@ -30,6 +30,7 @@ import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.FullTrigger;
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.MetricAvailabilityBucket;
 import org.hawkular.client.android.backend.model.MetricBucket;
 import org.hawkular.client.android.backend.model.Operation;
 import org.hawkular.client.android.backend.model.OperationProperties;
@@ -205,11 +206,30 @@ public final class BackendClient {
         if (metric.getConfiguration().getType().equalsIgnoreCase("AVAILABILITY")) {
             call = service.getMetricAvailabilityData(metric.getId(), parameters);
         } else if (metric.getConfiguration().getType().equalsIgnoreCase("COUNTER")){
-            call = service.getMetricAvailabilityData(metric.getId(), parameters);
+           // call = service.getMetricAvailabilityData(metric.getId(), parameters);
         } else if (metric.getConfiguration().getType().equalsIgnoreCase("GAUGE")) {
-            call = service.getMetricAvailabilityData(metric.getId(), parameters);
+            //call = service.getMetricAvailabilityData(metric.getId(), parameters);
         }
 
+        call.enqueue(callback);
+    }
+
+
+    public void getMetricAvailabilityData(@NonNull Metric metric, long bucket, @NonNull Date startTime,
+                                          @NonNull Date finishTime, @NonNull Callback<List<MetricAvailabilityBucket>> callback){
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTime()));
+        parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
+        parameters.put(BackendPipes.Parameters.BUCKETS, String.valueOf(bucket));
+
+        MetricService service = retrofit.create(MetricService.class);
+
+        Log.d("BackendClient",metric.getConfiguration().getType());
+        Call call = null;
+
+        if (metric.getConfiguration().getType().equalsIgnoreCase("AVAILABILITY")) {
+            call = service.getMetricAvailabilityData(metric.getId(), parameters);
+        }
         call.enqueue(callback);
     }
 
