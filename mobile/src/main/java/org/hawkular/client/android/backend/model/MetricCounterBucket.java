@@ -25,10 +25,10 @@ import com.google.gson.annotations.SerializedName;
 public class MetricCounterBucket implements Parcelable{
 
     @SerializedName("start")
-    protected long startTimestamp;
+    protected long start;
 
     @SerializedName("end")
-    protected long endTimestamp;
+    protected long end;
 
     @SerializedName("empty")
     protected boolean empty;
@@ -37,16 +37,16 @@ public class MetricCounterBucket implements Parcelable{
     private String value;
 
     protected MetricCounterBucket(Parcel in) {
-        startTimestamp = in.readLong();
-        endTimestamp = in.readLong();
+        start = in.readLong();
+        end = in.readLong();
         empty = in.readByte() != 0;
         value = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(startTimestamp);
-        dest.writeLong(endTimestamp);
+        dest.writeLong(start);
+        dest.writeLong(end);
         dest.writeByte((byte) (empty ? 1 : 0));
         dest.writeString(value);
     }
@@ -69,19 +69,19 @@ public class MetricCounterBucket implements Parcelable{
     };
 
     public long getStartTimestamp() {
-        return startTimestamp;
+        return start;
     }
 
     public void setStartTimestamp(long startTimestamp) {
-        this.startTimestamp = startTimestamp;
+        this.start = startTimestamp;
     }
 
     public long getEndTimestamp() {
-        return endTimestamp;
+        return end;
     }
 
     public void setEndTimestamp(long endTimestamp) {
-        this.endTimestamp = endTimestamp;
+        this.end = endTimestamp;
     }
 
     public boolean isEmpty() {

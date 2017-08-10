@@ -21,17 +21,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
-import com.squareup.moshi.Json;
 
 import java.io.Serializable;
 
 public class MetricAvailabilityBucket implements Serializable,Parcelable {
 
     @SerializedName("start")
-    protected long startTimestamp;
+    protected long start;
 
     @SerializedName("end")
-    protected long endTimestamp;
+    protected long end;
 
     @SerializedName("empty")
     protected boolean empty;
@@ -40,8 +39,8 @@ public class MetricAvailabilityBucket implements Serializable,Parcelable {
     protected String uptimeRatio;
 
     protected MetricAvailabilityBucket(Parcel in) {
-        startTimestamp = in.readLong();
-        endTimestamp = in.readLong();
+        start = in.readLong();
+        end = in.readLong();
         empty = in.readByte() != 0;
         uptimeRatio = in.readString();
     }
@@ -59,19 +58,19 @@ public class MetricAvailabilityBucket implements Serializable,Parcelable {
     };
 
     public long getStart() {
-        return startTimestamp;
+        return start;
     }
 
     public void setStartTimestamp(long startTimestamp) {
-        this.startTimestamp = startTimestamp;
+        this.start = startTimestamp;
     }
 
     public long getEnd() {
-        return endTimestamp;
+        return end;
     }
 
     public void setEndTimestamp(long endTimestamp) {
-        this.endTimestamp = endTimestamp;
+        this.end = endTimestamp;
     }
 
     public boolean getEmpty() {
@@ -98,8 +97,8 @@ public class MetricAvailabilityBucket implements Serializable,Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(startTimestamp);
-        dest.writeLong(endTimestamp);
+        dest.writeLong(start);
+        dest.writeLong(end);
         dest.writeByte((byte) (empty ? 1 : 0));
         dest.writeString(uptimeRatio);
     }
