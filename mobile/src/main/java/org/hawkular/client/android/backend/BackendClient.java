@@ -33,6 +33,7 @@ import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricAvailabilityBucket;
 import org.hawkular.client.android.backend.model.MetricBucket;
 import org.hawkular.client.android.backend.model.MetricCounterBucket;
+import org.hawkular.client.android.backend.model.MetricGaugeBucket;
 import org.hawkular.client.android.backend.model.Operation;
 import org.hawkular.client.android.backend.model.OperationProperties;
 import org.hawkular.client.android.backend.model.Resource;
@@ -251,6 +252,26 @@ public final class BackendClient {
         }
         call.enqueue(callback);
     }
+
+    public void getMetricGaugeData(@NonNull Metric metric, long bucket, @NonNull Date startTime,
+                                     @NonNull Date finishTime, @NonNull Callback<List<MetricGaugeBucket>> callback){
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTime()));
+        parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
+        parameters.put(BackendPipes.Parameters.BUCKETS, String.valueOf(bucket));
+
+        MetricService service = retrofit.create(MetricService.class);
+
+        Log.d("BackendClient",metric.getConfiguration().getType());
+        Call call = null;
+
+        if (metric.getConfiguration().getType().equalsIgnoreCase("GAUGE")) {
+            call = service.getMetricGaugeData(metric.getId(), parameters);
+        }
+        call.enqueue(callback);
+    }
+
+
 
 
     public void getTriggers(@NonNull Callback<List<Trigger>> callback) {

@@ -21,6 +21,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -268,8 +269,14 @@ public final class MetricCounterFragment extends Fragment implements SwipeRefres
 
         for (MetricCounterBucket metricBucket : this.metricBucket) {
             float chartPointHorizontal = getChartRelativeTimestamp(metricBucket.getStartTimestamp());
-            float chartPointVertical = metricBucket.isEmpty()
-                    ? 0 : Float.valueOf(metricBucket.getValue());
+            float chartPointVertical;
+            if( metricBucket.isEmpty()){
+                chartPointVertical = 0;
+            }
+            else{
+                chartPointVertical = Float.valueOf(metricBucket.getValue());
+                Log.d("counter"," "+ chartPointVertical);
+            }
 
             chartPoints.add(new PointValue(chartPointHorizontal, chartPointVertical));
         }

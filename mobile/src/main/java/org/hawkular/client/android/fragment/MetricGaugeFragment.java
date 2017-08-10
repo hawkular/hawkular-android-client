@@ -16,32 +16,12 @@
  */
 package org.hawkular.client.android.fragment;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import org.hawkular.client.android.HawkularApplication;
-import org.hawkular.client.android.R;
-import org.hawkular.client.android.backend.BackendClient;
-import org.hawkular.client.android.backend.model.Metric;
-import org.hawkular.client.android.backend.model.MetricBucket;
-import org.hawkular.client.android.util.ColorSchemer;
-import org.hawkular.client.android.util.ErrorUtil;
-import org.hawkular.client.android.util.Formatter;
-import org.hawkular.client.android.util.Fragments;
-import org.hawkular.client.android.util.Time;
-import org.hawkular.client.android.util.ViewDirector;
-import org.jboss.aerogear.android.pipe.callback.AbstractSupportFragmentCallback;
-
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,6 +31,26 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.squareup.leakcanary.RefWatcher;
+
+import org.hawkular.client.android.HawkularApplication;
+import org.hawkular.client.android.R;
+import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.MetricGaugeBucket;
+import org.hawkular.client.android.util.ColorSchemer;
+import org.hawkular.client.android.util.ErrorUtil;
+import org.hawkular.client.android.util.Formatter;
+import org.hawkular.client.android.util.Fragments;
+import org.hawkular.client.android.util.Time;
+import org.hawkular.client.android.util.ViewDirector;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,7 +86,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
     SwipeRefreshLayout contentLayout;
 
     @State
-    ArrayList<MetricBucket> metricBucket;
+    ArrayList<MetricGaugeBucket> metricBucket;
 
     @State
     @IdRes
@@ -172,7 +172,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
 
     private void setUpMetricDataForced() {
         metric_name.setText(getMetric().getName());
-        BackendClient.of(this).getMetricData(
+        BackendClient.of(this).getMetricGaugeData(
                 getMetric(), getBuckets(), getMetricStartTime(), getMetricFinishTime(), new MetricDataCallback(this));
     }
 
@@ -227,7 +227,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         return getArguments().getParcelable(Fragments.Arguments.METRIC);
     }
 
-    private void setUpMetricData(List<MetricBucket> metricDataList) {
+    private void setUpMetricData(List<MetricGaugeBucket> metricDataList) {
         this.metricBucket = new ArrayList<>(metricDataList);
 
         sortMetricData(metricBucket);
@@ -240,7 +240,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         showChart();
     }
 
-    private void sortMetricData(List<MetricBucket> metricBucketList) {
+    private void sortMetricData(List<MetricGaugeBucket> metricBucketList) {
         Collections.sort(metricBucketList, new MetricBucketComparator());
     }
 
@@ -266,10 +266,18 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
     private List<PointValue> getChartPoints() {
         List<PointValue> chartPoints = new ArrayList<>(metricBucket.size());
 
-        for (MetricBucket metricBucket : this.metricBucket) {
+        for (MetricGaugeBucket metricBucket : this.metricBucket) {
             float chartPointHorizontal = getChartRelativeTimestamp(metricBucket.getStartTimestamp());
-            float chartPointVertical = metricBucket.isEmpty()
-                    ? 0 : Float.valueOf(metricBucket.getValue());
+
+            float chartPointVertical;
+
+                    if(metricBucket.isEmpty()){
+                        chartPointVertical = 0;
+                        Log.d("empty"," " + chartPointVertical);
+                    }else{
+
+                        chartPointVertical = Float.parseFloat(metricBucket.getValue());
+                    }
 
             chartPoints.add(new PointValue(chartPointHorizontal, chartPointVertical));
         }
@@ -403,7 +411,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         Icepick.saveInstanceState(this, state);
     }
 
-    private static final class MetricDataCallback implements Callback<List<MetricBucket>> {
+    private static final class MetricDataCallback implements Callback<List<MetricGaugeBucket>> {
 
         MetricGaugeFragment metricGaugeFragment;
 
@@ -416,7 +424,7 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         }
 
         @Override
-        public void onResponse(Call<List<MetricBucket>> call, Response<List<MetricBucket>> response) {
+        public void onResponse(Call<List<MetricGaugeBucket>> call, Response<List<MetricGaugeBucket>> response) {
             if(!response.body().isEmpty()){
                 getMetricFragment().setUpMetricData(response.body());
             }
@@ -426,16 +434,16 @@ public final class MetricGaugeFragment extends Fragment implements SwipeRefreshL
         }
 
         @Override
-        public void onFailure(Call<List<MetricBucket>> call, Throwable t) {
+        public void onFailure(Call<List<MetricGaugeBucket>> call, Throwable t) {
             Timber.d(t, "Metric data fetching failed.");
 
             ErrorUtil.showError(getMetricFragment(),R.id.animator,R.id.error);
         }
     }
 
-    private static final class MetricBucketComparator implements Comparator<MetricBucket> {
+    private static final class MetricBucketComparator implements Comparator<MetricGaugeBucket> {
         @Override
-        public int compare(MetricBucket leftMetricBucket, MetricBucket rightMetricBucket) {
+        public int compare(MetricGaugeBucket leftMetricBucket, MetricGaugeBucket rightMetricBucket) {
             Date leftMetricBucketTimestamp = new Date(leftMetricBucket.getStartTimestamp());
             Date rightMetricBucketTimestamp = new Date(rightMetricBucket.getStartTimestamp());
 
