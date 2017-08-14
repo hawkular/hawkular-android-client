@@ -14,14 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.client.android.backend.model;
 
-import com.google.gson.annotations.SerializedName;
+package org.hawkular.client.android.backend.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MetricAvailabilityBucket extends MetricBucket implements Parcelable {
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class MetricAvailabilityBucket implements Serializable,Parcelable {
+
+    @SerializedName("start")
+    protected long start;
+
+    @SerializedName("end")
+    protected long end;
+
+    @SerializedName("empty")
+    protected boolean empty;
+
+    @SerializedName("uptimeRatio")
+    protected String uptimeRatio;
+
+    protected MetricAvailabilityBucket(Parcel in) {
+        start = in.readLong();
+        end = in.readLong();
+        empty = in.readByte() != 0;
+        uptimeRatio = in.readString();
+    }
 
     public static final Creator<MetricAvailabilityBucket> CREATOR = new Creator<MetricAvailabilityBucket>() {
         @Override
@@ -34,28 +56,50 @@ public class MetricAvailabilityBucket extends MetricBucket implements Parcelable
             return new MetricAvailabilityBucket[size];
         }
     };
-    @SerializedName("uptimeRatio")
-    private String value;
 
-    protected MetricAvailabilityBucket(Parcel in) {
-        value = in.readString();
-        empty = in.readString().equals("true");
-        startTimestamp = in.readLong();
-        endTimestamp = in.readLong();
+    public long getStart() {
+        return start;
     }
 
-    public String getValue() {
-        return value;
+    public void setStartTimestamp(long startTimestamp) {
+        this.start = startTimestamp;
     }
 
-    @Override public int describeContents() {
+    public long getEnd() {
+        return end;
+    }
+
+    public void setEndTimestamp(long endTimestamp) {
+        this.end = endTimestamp;
+    }
+
+    public boolean getEmpty() {
+        return empty;
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
+    public String getvalue() {
+        return uptimeRatio;
+    }
+
+    public void setUptimeRatio(String uptimeRatio) {
+        this.uptimeRatio = uptimeRatio;
+    }
+
+
+    @Override
+    public int describeContents() {
         return 0;
     }
 
-    @Override public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(value);
-        dest.writeString(empty ? "true" : "false");
-        dest.writeLong(startTimestamp);
-        dest.writeLong(endTimestamp);
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(start);
+        dest.writeLong(end);
+        dest.writeByte((byte) (empty ? 1 : 0));
+        dest.writeString(uptimeRatio);
     }
 }
