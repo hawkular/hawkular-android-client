@@ -17,7 +17,6 @@
 package org.hawkular.client.android.service;
 
 import org.hawkular.client.android.backend.model.AvailabilityCondition;
-import org.hawkular.client.android.backend.model.Condition;
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.FullTrigger;
 import org.hawkular.client.android.backend.model.InventoryResponseBody;

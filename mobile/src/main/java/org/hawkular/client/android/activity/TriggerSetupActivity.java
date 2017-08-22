@@ -311,7 +311,7 @@ public class TriggerSetupActivity extends AppCompatActivity {
 
         @Override
         public void onResponse(Call call, Response response) {
-
+            finish();
         }
 
         @Override
