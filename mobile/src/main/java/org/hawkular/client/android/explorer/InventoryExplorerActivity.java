@@ -37,6 +37,7 @@ import com.unnamed.b.atv.model.TreeNode;
 import com.unnamed.b.atv.view.AndroidTreeView;
 
 import org.hawkular.client.android.R;
+import org.hawkular.client.android.activity.TriggerSetupActivity;
 import org.hawkular.client.android.backend.BackendClient;
 import org.hawkular.client.android.backend.model.Data;
 import org.hawkular.client.android.backend.model.Error;
@@ -253,7 +254,7 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                 InventoryResponseBody body = new InventoryResponseBody("true", "DESC", path);
                 MetricConfiguration configuration = new MetricConfiguration("null");
                 Metric metric1 = new Metric(metricInfo.getMetricInfo().getId(),null,configuration);
-                BackendClient.of(getInventoryExplorerActivity()).getMetricType(new MetricTypeCallback(metric1,true),body);
+                BackendClient.of(getInventoryExplorerActivity()).getMetricType(new MetricTypeCallback(metric1," "),body);
 
 
                 Log.d("Metric",metric1.getConfiguration().getType());
@@ -287,23 +288,28 @@ public class InventoryExplorerActivity extends AppCompatActivity {
 
             } else if (item.type == IconTreeItemHolder.IconTreeItem.Type.METRIC) {
 
-                AlertDialog.Builder builder =
-                        new AlertDialog.Builder(getInventoryExplorerActivity(), R.style.AlertDialogStyle);
-                builder.setTitle("Hey");
-                builder.setMessage("Do you want to add this Metric to Favourite list?");
-                builder.setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                addMetricToFav((MetricTemp) item.value);
-                            }
-                        });
+                CharSequence options[] = new CharSequence[] {"Add metric to Favourite", "Add trigger to this metric"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getInventoryExplorerActivity());
+                builder.setTitle("Select");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which == 0){
+                            addMetricToFav((MetricTemp) item.value);
+                        }
+                        if(which == 1){
+                            startTrigger((MetricTemp) item.value);
+
+                        }
+                    }
+                });
                 builder.setNegativeButton("Cancel", null);
                 builder.show();
             }
             return true;
         }
     };
+
 
 
     private void addMetricToFav(final MetricTemp metricTemp) {
@@ -314,10 +320,25 @@ public class InventoryExplorerActivity extends AppCompatActivity {
         InventoryResponseBody body = new InventoryResponseBody("true", "DESC", path);
         MetricConfiguration configuration = new MetricConfiguration("null");
         Metric metric1 = new Metric(metricTemp.getMetricInfo().getId(),null,configuration);
+        metric1.setName(metricTemp.getMetricInfo().getName());
 
-        BackendClient.of(getInventoryExplorerActivity()).getMetricType(new MetricTypeCallback(metric1,false),body);
+        BackendClient.of(getInventoryExplorerActivity()).getMetricType(new MetricTypeCallback(metric1,"fav"),body);
 
     }
+
+    private void startTrigger(final MetricTemp metricTemp) {
+
+        String metricTypePath = metricTemp.getMetricInfo().getMetricTypePath();
+        String path = CanonicalPath.getByString(metricTypePath).getMetricType();
+        path = "id:"+ path;
+        InventoryResponseBody body = new InventoryResponseBody("true", "DESC", path);
+        MetricConfiguration configuration = new MetricConfiguration("null");
+        Metric metric1 = new Metric(metricTemp.getMetricInfo().getId(),null,configuration);
+        metric1.setName(metricTemp.getMetricInfo().getName());
+        BackendClient.of(getInventoryExplorerActivity()).getMetricType(new MetricTypeCallback(metric1,"trigger"),body);
+
+    }
+
 
     private SQLStore<Metric> openStore(Context context) {
         DataManager.config("Favourite", SQLStoreConfiguration.class)
@@ -508,8 +529,8 @@ public class InventoryExplorerActivity extends AppCompatActivity {
     private final class MetricTypeCallback implements retrofit2.Callback<List<Resource>>{
 
         Metric metric1;
-        Boolean flag;
-        public MetricTypeCallback(Metric metric, boolean flag) {
+        String flag;
+        public MetricTypeCallback(Metric metric, String flag) {
             metric1 = metric;
             this.flag = flag;
         }
@@ -531,15 +552,20 @@ public class InventoryExplorerActivity extends AppCompatActivity {
                     String type1 = data.getString("type");
                     metric1.getConfiguration().setType(type1);
 
-                    if(flag) {
+                    if(flag.equalsIgnoreCase(" ")) {
                         Intent intent = Intents.Builder.of(getApplicationContext()).buildMetricIntent(metric1);
                         startActivity(intent);
                     }
-                    else{
+                    else if(flag.equalsIgnoreCase("fav")){
                         SQLStore<Metric> store = openStore(getApplicationContext());
                         store.openSync();
                         store.save(metric1);
                         Toast.makeText(getApplicationContext(), "Metric added to favourite", Toast.LENGTH_SHORT).show();
+                    }
+                    else if(flag.equalsIgnoreCase("trigger")){
+                        Intent i = new Intent(getApplicationContext(), TriggerSetupActivity.class);
+                        i.putExtra(Intents.Extras.METRIC,metric1);
+                        startActivity(i);
                     }
 
                 } catch (JSONException e) {

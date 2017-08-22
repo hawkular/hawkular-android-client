@@ -16,14 +16,14 @@
  */
 package org.hawkular.client.android.backend.model;
 
-import org.jboss.aerogear.android.core.RecordId;
-
-import com.google.gson.annotations.SerializedName;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+
+import com.google.gson.annotations.SerializedName;
+
+import org.jboss.aerogear.android.core.RecordId;
 
 public final class Metric implements Parcelable {
     @RecordId
@@ -48,6 +48,10 @@ public final class Metric implements Parcelable {
         this.path = path;
         this.properties = properties;
         this.configuration = config;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getId() {
