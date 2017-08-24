@@ -15,22 +15,36 @@
  * limitations under the License.
  */
 package org.hawkular.client.android.activity;
+
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import org.hawkular.client.android.R;
 import org.hawkular.client.android.backend.BackendClient;
+import org.hawkular.client.android.backend.model.AvailabilityCondition;
 import org.hawkular.client.android.backend.model.Error;
 import org.hawkular.client.android.backend.model.FullTrigger;
+import org.hawkular.client.android.backend.model.Metric;
+import org.hawkular.client.android.backend.model.ThresholdCondition;
+import org.hawkular.client.android.util.Intents;
+
 import java.io.IOException;
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -118,7 +132,7 @@ public class TriggerSetupActivity extends AppCompatActivity {
         }
 
         else{
-            Toast.makeText(getApplicationContext(),"Trigger NAme cannot be empty",Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(),"Trigger Name cannot be empty",Toast.LENGTH_SHORT);
         }
         trigger.setAutoDisable(switchAutoDisable.isChecked());
         trigger.setType(spinnerType.getSelectedItem().toString());
@@ -147,7 +161,29 @@ public class TriggerSetupActivity extends AppCompatActivity {
         public void onResponse(Call call, Response response) {
 
             if (response.code() == 200) {
-                finish();
+                final FullTrigger t = (FullTrigger) response.body();
+
+                CharSequence options[] = new CharSequence[] {"Add conditions to the trigger", "Finish Creating trigger"};
+                 AlertDialog.Builder builder = new AlertDialog.Builder(TriggerSetupActivity.this);
+                        builder.setTitle("Select one");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which == 0){
+                            if(getMetric().getConfiguration().getType().equalsIgnoreCase("gauge"))
+                                showDialogBox(t.getId(),"gauge");
+                            else if(getMetric().getConfiguration().getType().equalsIgnoreCase("availability"))
+                                showDialogBox(t.getId(),"availability");
+
+                        }
+                        if(which == 1){
+                         finish();
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.show();
+
             }
             else {
                 Gson gson = new GsonBuilder().create();
@@ -168,6 +204,124 @@ public class TriggerSetupActivity extends AppCompatActivity {
         }
     }
 
+    void showDialogBox(final String t_id, final String type){
+        // get prompts.xml view
+        LayoutInflater li = LayoutInflater.from(this);
+
+        if(type.equalsIgnoreCase("gauge")){
+            View promptsView = li.inflate(R.layout.custom_threshold, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+            // set prompts.xml to alertdialog builder
+            alertDialogBuilder.setView(promptsView);
+
+            final  Spinner optional1 = (Spinner) promptsView.findViewById(R.id.spinner_threshold);
+            final EditText threshold = (EditText) promptsView.findViewById(R.id.editTextDialogUserInput1);
+
+            // set dialog message
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    prepareCallBack(optional1,threshold,t_id, type);
+
+                                }
+                            })
+                    .setNegativeButton("Cancel", null);
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+        }
+
+        if(type.equalsIgnoreCase("availability")){
+            View promptsView = li.inflate(R.layout.custom_availability, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+            // set prompts.xml to alertdialog builder
+            alertDialogBuilder.setView(promptsView);
+
+            final Spinner optional1 = (Spinner) promptsView.findViewById(R.id.spinner_avail);
+
+            // set dialog message
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    prepareCallBack(optional1,null,t_id, type);
+
+                                }
+                            })
+                    .setNegativeButton("Cancel", null);
+
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+        }
+
+
+    }
+
+    void prepareCallBack (Spinner optional, EditText threshold, String id, String type){
+
+
+        if(type.equalsIgnoreCase("gauge")){
+
+            ArrayList<ThresholdCondition> list = new ArrayList<>();
+            ThresholdCondition condition = new ThresholdCondition();
+
+            String dataId = "hm_g_" + getMetric().getId();
+            condition.setType("THRESHOLD");
+            condition.setDataId(dataId);
+
+            condition.setOperator(optional.getSelectedItem().toString().toUpperCase());
+            condition.setThreshold(Integer.parseInt(threshold.getText().toString()));
+
+            list.add(0,condition);
+            BackendClient.of(this).putTriggerThresholdCondition(id,"FIRING",list,new ConditionCallback());
+        }
+
+        if(type.equalsIgnoreCase("availability")){
+
+            ArrayList<AvailabilityCondition> list = new ArrayList<>();
+            AvailabilityCondition condition = new AvailabilityCondition();
+
+            String dataId = "hm_a_" + getMetric().getId();
+            condition.setType("AVAILABILITY");
+            condition.setDataId(dataId);
+
+            condition.setOperator(optional.getSelectedItem().toString().toUpperCase());
+            list.add(0,condition);
+            BackendClient.of(this).putTriggerAvailabilityCondition(id,"FIRING",list,new ConditionCallback());
+        }
+
+
+    }
+
+    private class ConditionCallback implements Callback{
+
+
+        @Override
+        public void onResponse(Call call, Response response) {
+            finish();
+        }
+
+        @Override
+        public void onFailure(Call call, Throwable t) {
+            finish();
+        }
+    }
+    private Metric getMetric() {
+        return getIntent().getParcelableExtra(Intents.Extras.METRIC);
+    }
 
 }
 

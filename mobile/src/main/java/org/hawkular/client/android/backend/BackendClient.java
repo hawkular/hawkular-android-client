@@ -26,17 +26,18 @@ import android.util.Log;
 
 import org.hawkular.client.android.HawkularApplication;
 import org.hawkular.client.android.backend.model.Alert;
+import org.hawkular.client.android.backend.model.AvailabilityCondition;
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.FullTrigger;
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Metric;
 import org.hawkular.client.android.backend.model.MetricAvailabilityBucket;
-import org.hawkular.client.android.backend.model.MetricBucket;
 import org.hawkular.client.android.backend.model.MetricCounterBucket;
 import org.hawkular.client.android.backend.model.MetricGaugeBucket;
 import org.hawkular.client.android.backend.model.Operation;
 import org.hawkular.client.android.backend.model.OperationProperties;
 import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.backend.model.ThresholdCondition;
 import org.hawkular.client.android.backend.model.Trigger;
 import org.hawkular.client.android.service.AlertService;
 import org.hawkular.client.android.service.MetricService;
@@ -141,7 +142,7 @@ public final class BackendClient {
         call.enqueue(callback);
     }
 
-    public void createTrigger(@NonNull FullTrigger trigger, @NonNull retrofit2.Callback<List<String>> callback){
+    public void createTrigger(@NonNull FullTrigger trigger, @NonNull retrofit2.Callback<Trigger> callback){
         TriggerService service = retrofit.create(TriggerService.class);
         Call call = service.createTrigger(trigger);
         call.enqueue(callback);
@@ -192,31 +193,6 @@ public final class BackendClient {
         // TODO : after moving to retrofit complete
     }
 
-
-    public void getMetricData(@NonNull Metric metric, long bucket,
-                                          @NonNull Date startTime, @NonNull Date finishTime,
-                                          @NonNull Callback<List<MetricBucket>> callback) {
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put(BackendPipes.Parameters.START, String.valueOf(startTime.getTime()));
-        parameters.put(BackendPipes.Parameters.FINISH, String.valueOf(finishTime.getTime()));
-        parameters.put(BackendPipes.Parameters.BUCKETS, String.valueOf(bucket));
-
-        MetricService service = retrofit.create(MetricService.class);
-
-        Log.d("BackendClient",metric.getConfiguration().getType());
-        Call call = null;
-        if (metric.getConfiguration().getType().equalsIgnoreCase("AVAILABILITY")) {
-            call = service.getMetricAvailabilityData(metric.getId(), parameters);
-        } else if (metric.getConfiguration().getType().equalsIgnoreCase("COUNTER")){
-           // call = service.getMetricAvailabilityData(metric.getId(), parameters);
-        } else if (metric.getConfiguration().getType().equalsIgnoreCase("GAUGE")) {
-            //call = service.getMetricAvailabilityData(metric.getId(), parameters);
-        }
-
-        call.enqueue(callback);
-    }
-
-
     public void getMetricAvailabilityData(@NonNull Metric metric, long bucket, @NonNull Date startTime,
                                           @NonNull Date finishTime, @NonNull Callback<List<MetricAvailabilityBucket>> callback){
         Map<String, String> parameters = new HashMap<>();
@@ -252,6 +228,19 @@ public final class BackendClient {
         }
         call.enqueue(callback);
     }
+
+    public void putTriggerThresholdCondition(String triggerId, String triggerMode, List<ThresholdCondition> body, @NonNull  retrofit2.Callback<String> callback){
+        TriggerService triggerService = retrofit.create(TriggerService.class);
+        Call call = triggerService.setConditionsForTrigger(triggerId,triggerMode,body);
+        call.enqueue(callback);
+    }
+
+    public void putTriggerAvailabilityCondition(String triggerId, String triggerMode, List<AvailabilityCondition> body, @NonNull retrofit2.Callback<String>  callback){
+        TriggerService triggerService = retrofit.create(TriggerService.class);
+        Call call = triggerService.setConditionsForAvailabilityTrigger(triggerId,triggerMode,body);
+        call.enqueue(callback);
+    }
+
 
     public void getMetricGaugeData(@NonNull Metric metric, long bucket, @NonNull Date startTime,
                                      @NonNull Date finishTime, @NonNull Callback<List<MetricGaugeBucket>> callback){

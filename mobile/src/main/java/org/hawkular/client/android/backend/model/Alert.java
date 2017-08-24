@@ -40,10 +40,10 @@ public final class Alert implements Parcelable {
     private String status;
 
     @SerializedName("ctime")
-    private long timestamp;
+    private long ctime;
 
     @SerializedName("evalSets")
-    private List<Lister> evaluations;
+    private List<List<AlertEvaluation>> evalSets;
 
     @SerializedName("notes")
     private List<Note> notes;
@@ -52,11 +52,11 @@ public final class Alert implements Parcelable {
     private Trigger trigger;
 
     @VisibleForTesting
-    public Alert(@NonNull String id, long timestamp, @NonNull List<Lister> evaluations, @NonNull String severity,
+    public Alert(@NonNull String id, long timestamp, @NonNull List<List<AlertEvaluation>> evaluations, @NonNull String severity,
                  @NonNull String status, @NonNull List<Note> notes) {
         this.id = id;
-        this.timestamp = timestamp;
-        this.evaluations = evaluations;
+        this.ctime = timestamp;
+        this.evalSets = evaluations;
         this.severity = severity;
         this.status = status;
         this.notes = notes;
@@ -79,11 +79,11 @@ public final class Alert implements Parcelable {
     }
 
     public long getTimestamp() {
-        return timestamp;
+        return ctime;
     }
 
-    public List<Lister> getEvaluations() {
-        return evaluations;
+    public List<List<AlertEvaluation>>  getEvaluations() {
+        return evalSets;
     }
 
     public Trigger getTrigger() {
@@ -110,12 +110,12 @@ public final class Alert implements Parcelable {
         this.id = parcel.readString();
         this.severity = parcel.readString();
         this.status = parcel.readString();
-        this.timestamp = parcel.readLong();
+        this.ctime = parcel.readLong();
 
-        evaluations = new ArrayList<>();
+        evalSets = new ArrayList<>();
         notes = new ArrayList<>();
 
-        parcel.readList(evaluations, Lister.class.getClassLoader());
+        parcel.readList(evalSets, Lister.class.getClassLoader());
         parcel.readList(notes, Note.class.getClassLoader());
 
         this.trigger = parcel.readParcelable(Trigger.class.getClassLoader());
@@ -126,9 +126,9 @@ public final class Alert implements Parcelable {
         parcel.writeString(id);
         parcel.writeString(severity);
         parcel.writeString(status);
-        parcel.writeLong(timestamp);
+        parcel.writeLong(ctime);
 
-        parcel.writeList(evaluations);
+        parcel.writeList(evalSets);
         parcel.writeList(notes);
 
         parcel.writeParcelable(trigger, flags);

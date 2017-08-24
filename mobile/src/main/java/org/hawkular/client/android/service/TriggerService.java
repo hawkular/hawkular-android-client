@@ -16,10 +16,12 @@
  */
 package org.hawkular.client.android.service;
 
+import org.hawkular.client.android.backend.model.AvailabilityCondition;
 import org.hawkular.client.android.backend.model.Feed;
 import org.hawkular.client.android.backend.model.FullTrigger;
 import org.hawkular.client.android.backend.model.InventoryResponseBody;
 import org.hawkular.client.android.backend.model.Resource;
+import org.hawkular.client.android.backend.model.ThresholdCondition;
 import org.hawkular.client.android.backend.model.Trigger;
 
 import java.util.List;
@@ -60,4 +62,10 @@ public interface TriggerService {
 
     @DELETE("hawkular/alerts/triggers/{triggerId}")
     Call<Void> deleteTrigger(@Path("triggerId") String triggerId);
+
+    @PUT("hawkular/alerts/triggers/{triggerId}/conditions/{triggerMode}")
+    Call<String> setConditionsForTrigger(@Path("triggerId") String triggerId, @Path("triggerMode") String triggerMode, @Body List<ThresholdCondition> condition);
+
+    @PUT("hawkular/alerts/triggers/{triggerId}/conditions/{triggerMode}")
+    Call<String> setConditionsForAvailabilityTrigger(@Path("triggerId") String triggerId, @Path("triggerMode") String triggerMode, @Body List<AvailabilityCondition> condition);
 }
